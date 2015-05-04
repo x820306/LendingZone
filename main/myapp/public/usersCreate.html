@@ -71,9 +71,21 @@
 			<div class="row">
 				<div class="col-md-9">
 					
-					<form action="/Users/create" method="post">
-						Account：<input type="text" class="form-control" name="Account"><br>
+					<form enctype="multipart/form-data" action="/Users/createTest" method="post">
+						Username:<input type="text" class="form-control" name="Username"><br>
 						Password：<input type="text" class="form-control" name="Password"><br>
+						Name：<input type="text" class="form-control" name="Name"><br>
+						Gender：<br>
+						<label class="radio-inline"><input type="radio" name="Gender" value="Male">Male</label>
+						<label class="radio-inline"><input type="radio" name="Gender" value="Female">Female</label><br><br>
+						BirthDay:<input type="date" class="form-control" name="BirthDay"><br>
+						IdCard:<input type="file" name="IdCard" accept="image/*"><br>
+						SecondCard:<input type="file" name="SecondCard" accept="image/*"><br>
+						Phone:<input type="text" class="form-control" name="Phone"><br>
+						Address:<input type="text" class="form-control" name="Address"><br>
+						BankAccountNumber<input type="text" class="form-control" name="BankAccountNumber"><br>
+						BankAccountPassword<input type="text" class="form-control" name="BankAccountPassword"><br>
+						MoneyInBankAccount<input type="number" class="form-control" name="MoneyInBankAccount"><br>
 						<button type="submit" class="btn btn-info" id="loginSubmit">提交</button>
 					</form>
 					

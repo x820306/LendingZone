@@ -12,15 +12,7 @@
 	<!-- bootstrap css-->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
 	<!-- local css-->
-	<style type="text/css">
-		.my-footer{
-			border-top: 1px solid #e5e5e5;
-			padding-top: 40px;
-			padding-bottom: 40px;
-			margin-top: 50px;
-			text-align: center;
-		}
-	</style>
+	<link rel="stylesheet" href="/stylesheets/ourStyle.css">
 </head>
 <body>
 	<header role="banner">
@@ -67,12 +59,26 @@
 						</div> 
 					</form>
 					<ul class="nav navbar-nav navbar-right">
-						<li><a href="#" data-toggle="modal" data-target="#myModal">登入</a></li>
-						<li
-							<% if(nav_cur=='signUp'){ %>
-								class="active"
-							<% } %>
-						><a href="/signUp">註冊</a></li>
+						<% if(userName=='none'){ %>
+							<li><a href="#" data-toggle="modal" data-target="#myModal">登入</a></li>
+							<li
+								<% if(nav_cur=='signup'){ %>
+									class="active"
+								<% } %>
+							><a href="/signup">註冊</a></li>
+						<% }else{ %>
+							<li class="dropdown">
+								<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><%=userName%> <span class="caret"></span></a>
+								<ul class="dropdown-menu" role="menu">
+									<li><a href="/logout">登出</a></li>
+									<li
+										<% if(nav_cur=='profile'){ %>
+											class="active"
+										<% } %>
+									><a href="/profile">個人檔案</a></li>
+								</ul>
+							</li>
+						<% } %>
 					</ul>
 				</div><!-- /.navbar-collapse -->
 			</div><!-- /.container-fluid -->
