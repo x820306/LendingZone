@@ -95,42 +95,94 @@ passport.deserializeUser(function (user, done) {
 
 
 app.get('/', function (req, res) {
+	var auRst='none';
 	if(req.isAuthenticated()){
-		res.render('index',{userName:req.user.Username});
-	}else{
-		res.render('index',{userName:'none'});
+		auRst=req.user.Username;
 	}
+	
+	res.render('index',{userName:auRst});
 });
 
 app.get('/message/:content?', function (req, res) {
 	var temp=decodeURIComponent(req.query.content);
-	
+	var auRst='none';
 	if(req.isAuthenticated()){
-		res.render('message',{userName:req.user.Username, content:temp});
-	}else{
-		res.render('message',{userName:'none', content:req.query.content});
+		auRst=req.user.Username;
 	}
+	
+	res.render('message',{userName:auRst, content:temp});
 });
 
-app.get('/search', function (req, res) {
+app.get('/search/:keyword?/:action?/:page?', function (req, res) {
+	var auRst='none';
 	if(req.isAuthenticated()){
-		res.render('search',{userName:req.user.Username});
-	}else{
-		res.render('search',{userName:'none'});
+		auRst=req.user.Username;
 	}
+	
+	var resArrays=[];
+	var action=decodeURIComponent(req.query.action);
+	var keyword=decodeURIComponent(req.query.keyword);
+	var targetPage=parseInt(req.query.page);
+	var pageNum=0
+	var totalResultNumber;
+	
+	var actionRec;
+	
+	if(action=='最新'){
+		actionRec="-Updated";
+	}else if(action=='最緊急'){
+		actionRec="TimeLimit";
+	}else if(action=='最熱門'){
+		actionRec="-LikeNumber";
+	}
+	
+	var Borrows  = mongoose.model('Borrows');
+	var Users  = mongoose.model('Users');
+	Borrows.find({$or:[{"StoryTitle": new RegExp(keyword,'i')},{"Story": new RegExp(keyword,'i')}],$and:[{"StoryTitle": {'$ne': '' }},{"Story": {'$ne': '' }}]}).populate('CreatedBy', 'Username').sort(actionRec).exec( function (err, borrows, count){
+		if (err) {
+			console.log(err);
+			res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+		}else{
+			totalResultNumber=borrows.length;
+			if(totalResultNumber==0){
+				res.render('search',{userName:auRst,keywordDefault:keyword,actionDefault:action,jsonArray:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage});
+			}else{
+				var divider=2;
+				pageNum=Math.ceil(borrows.length/divider);
+				
+				if(pageNum<targetPage){
+					res.redirect('/message?content='+chineseEncodeToURI('錯誤頁碼!'));
+				}else{
+					var starter=divider*(targetPage-1);
+					var ender;
+					if(targetPage==pageNum){
+						ender=borrows.length;
+					}else{
+						ender=starter+divider;
+					}
+					for(i=starter;i<ender;i++){
+						resArrays.push(borrows[i]);
+					}
+					res.render('search',{userName:auRst,keywordDefault:keyword,actionDefault:action,jsonArray:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage});
+				}
+			}
+		}
+	});
 });
 
 app.get('/story', function (req, res) {
+	var auRst='none';
 	if(req.isAuthenticated()){
-		res.render('story',{userName:req.user.Username});
-	}else{
-		res.render('story',{userName:'none'});
+		auRst=req.user.Username;
 	}
+	
+	res.render('story',{userName:auRst});
 });
 
 app.get('/lend', ensureAuthenticated, function (req, res) {
 	var Lends  = mongoose.model('Lends');
 	var BankAccounts  = mongoose.model('BankAccounts');
+	var Transactions  = mongoose.model('Transactions');
 	BankAccounts.findOne({"OwnedBy": req.user._id}).exec(function (err, bankaccount){
 		if (err) {
 			console.log(err);
@@ -139,16 +191,29 @@ app.get('/lend', ensureAuthenticated, function (req, res) {
 			if(!bankaccount){
 				res.redirect('/message?content='+chineseEncodeToURI('無銀行帳戶!'));
 			}else{
-				Lends.findOne({"CreatedBy": req.user._id}).exec(function (err, lend){
+				var moneyLendedCumulated=0
+				Transactions.find({"Lender": req.user._id}).exec(function (err, transactions){
 					if (err) {
 						console.log(err);
 						res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
 					}else{
-						if(!lend){
-							res.render('lend',{userName:req.user.Username,MoneyInBankAccountValue:bankaccount.MoneyInBankAccount,ifFound:false,MaxMoneyToLendValue:0,InterestRateValue:'',MonthPeriodValue:0,_idValue:''});
-						}else{
-							res.render('lend',{userName:req.user.Username,MoneyInBankAccountValue:bankaccount.MoneyInBankAccount,ifFound:true,MaxMoneyToLendValue:lend.MaxMoneyToLend,InterestRateValue:lend.InterestRate,MonthPeriodValue:lend.MonthPeriod,_idValue:lend._id});
+						if(transactions.length>0){
+							for(i=0;i<transactions.length;i++){
+								moneyLendedCumulated+=transactions[i].Principal;
+							}
 						}
+						Lends.findOne({"CreatedBy": req.user._id}).exec(function (err, lend){
+							if (err) {
+								console.log(err);
+								res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+							}else{
+								if(!lend){
+									res.render('lend',{userName:req.user.Username,MoneyInBankAccountValue:bankaccount.MoneyInBankAccount,ifFound:false,MaxMoneyToLendValue:0,InterestRateValue:'',MonthPeriodValue:0,_idValue:'',MoneyLended:moneyLendedCumulated});
+								}else{
+									res.render('lend',{userName:req.user.Username,MoneyInBankAccountValue:bankaccount.MoneyInBankAccount,ifFound:true,MaxMoneyToLendValue:lend.MaxMoneyToLend,InterestRateValue:lend.InterestRate,MonthPeriodValue:lend.MonthPeriod,_idValue:lend._id,MoneyLended:moneyLendedCumulated});
+								}
+							}
+						});
 					}
 				});
 			}

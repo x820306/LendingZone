@@ -6,6 +6,7 @@ var Borrows = new Schema({
 	MaxInterestRateAccepted: { type: Number, default: 0 },
 	MonthPeriodAccepted: { type: Number, default: 1 },
 	TimeLimit: { type: Date, default: Date.now },
+	StoryTitle: { type: String, default:''},
 	Story: { type: String, default:''},
 	LikeNumber: { type: Number, default: 0 },
 	Likes: [{ type: Schema.Types.ObjectId, ref: 'Users' }],

@@ -1,8 +1,8 @@
-<%- include('layout_header',{nav_cur:'lend'}); -%>
+<%- include('layout_header',{nav_cur:'lend',actionDefault:'最新',keywordDefault:''}); -%>
 <div class="container">
 	<div class="row">
 		<div class="col-md-9">
-				<div style="font-size:40pt">自動出借設定</div>
+				<div style="font-size:30pt">自動出借設定</div>
 				</br>
 				<div class="panel panel-default">
 					<div class="panel-heading">
@@ -10,6 +10,15 @@
 					</div>
 					<div class="panel-body">
 						<input type="text" class="textForm" value="<%=MoneyInBankAccountValue%>" readonly="readonly" />
+					</div>					
+				</div>
+				</br>
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title">已借出金額</h3>
+					</div>
+					<div class="panel-body">
+						<input type="text" class="textForm" value="<%=MoneyLended%>" readonly="readonly" />
 					</div>					
 				</div>
 				</br>

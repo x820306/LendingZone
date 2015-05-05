@@ -45,12 +45,12 @@
 					</ul>
 					<form class="navbar-form navbar-left" role="search">
 						<div class="input-group">
-							<input type="text" class="form-control" id="keywordIpt" placeholder="搜尋借入者的故事">
+							<input type="text" style="height:32px;" class="form-control" id="keywordIpt" placeholder="搜尋借入者的故事" value="<%=keywordDefault%>">
 							<span class="input-group-btn">
-								<button type="button" class="btn btn-default" id="searchActionSelected" data-toggle="dropdown" aria-expanded="false">最新 <span class='caret'></span></button>
-								<button type="button" class="btn btn-default" onclick="window.open('/search?keyword='+$('#keywordIpt').val()+'&action='+$('#searchAction0').text(),'_self');"><span class="glyphicon glyphicon-search"></span></button>
+								<button type="button" style="height:32px;" class="btn btn-default" id="searchActionSelected" data-toggle="dropdown" aria-expanded="false"><%=actionDefault%> <span class='caret'></span></button>
+								<button type="button" style="height:32px;" class="btn btn-default" onclick="window.open('/search?keyword='+$('#keywordIpt').val()+'&action='+$('#searchAction0').text()+'&page=1','_self');"><span class="glyphicon glyphicon-search"></span></button>
 								<ul class="dropdown-menu" role="menu">
-									<li style="display:none"><a href="#" id="searchAction0"></a></li>
+									<li style="display:none"><a href="#" id="searchAction0"><%=actionDefault%></a></li>
 									<li><a href="#" onclick="$('#searchActionSelected').html('');$('#searchActionSelected').html($('#searchAction1').text());$('#searchAction0').html($('#searchActionSelected').text());$('#searchActionSelected').append(' <span class=\'caret\'><\/span>');" id="searchAction1">最新</a></li>
 									<li><a href="#" onclick="$('#searchActionSelected').html('');$('#searchActionSelected').html($('#searchAction2').text());$('#searchAction0').html($('#searchActionSelected').text());$('#searchActionSelected').append(' <span class=\'caret\'><\/span>');" id="searchAction2">最緊急</a></li>
 									<li><a href="#" onclick="$('#searchActionSelected').html('');$('#searchActionSelected').html($('#searchAction3').text());$('#searchAction0').html($('#searchActionSelected').text());$('#searchActionSelected').append(' <span class=\'caret\'><\/span>');" id="searchAction3">最熱門</a></li>

@@ -1,3 +1,63 @@
 <%- include('layout_header',{nav_cur:'search'}); -%>
 
+<div class="container">
+	<div class="row">
+		<div class="col-md-9">
+			<div style="font-size:30pt">搜尋結果</div>
+			<% if(totalResultNum==0){ %>
+				<div style="font-size:20pt">&nbsp;0 result</div>
+				<br>
+			<% }else{ %>
+				<div style="font-size:20pt">&nbsp;<%=totalResultNum%> result</div>
+				<br>
+				<% for(var i=0; i<jsonArray.length; i++) { %>
+					<table width="100%">
+						<tr>
+							<td align="right">
+								<div style="font-size:15px;color:#0000D1;">Deadline：<%=jsonArray[i].TimeLimit.getFullYear()%>/<%=jsonArray[i].TimeLimit.getMonth()+1%>/<%=jsonArray[i].TimeLimit.getDate()%>&nbsp;&nbsp;&nbsp;&nbsp;Updated：<%=jsonArray[i].Updated.getFullYear()%>/<%=jsonArray[i].Updated.getMonth()+1%>/<%=jsonArray[i].Updated.getDate()%></div>
+							</td>
+						<tr>
+					</table>
+					<div class="panel panel-default pd">
+						<div class="panel-body">
+							<table width="100%">
+								<tr>
+									<td>
+										<a style="font-size:25px;" href="/story?id=<%=jsonArray[i]._id%>"><%=jsonArray[i].StoryTitle%></a>
+										<div style="font-size:15px;color:#0000D1;">by <%=jsonArray[i].CreatedBy.Username%></div>
+									</td>
+									<td align="right">
+										<div style="font-size:25px;color: red;"><img src="images/like.png" width="21" height="18">&nbsp;<%=jsonArray[i].LikeNumber%></div>
+									</td>
+								<tr>
+							</table>
+							<br>
+							<div>
+								 <%=jsonArray[i].Story%>
+							</div>
+						</div>
+					</div>
+					<br>
+				<% } %>
+				<table align="center">
+					<tr>
+						<td>
+							<div class="btn-toolbar" role="toolbar">
+								<% for(var j=1; j<=pageNumber; j++) { %>
+									<div class="btn-group" role="group">
+										<a href="/search?keyword=<%=keywordDefault%>&action=<%=actionDefault%>&page=<%=j%>">
+											<button class="btn btn-default<%if(j==targetPageNumber){%>active<%}%>"><%=j%></button>
+										</a>
+									</div>
+								<%}%>
+							</div>
+						</td>
+					</tr>
+				</table>
+			<% } %>
+		</div>
+		<div class="col-md-3">
+		</div>
+	</div>
+</div>
 <%- include('layout_footer'); -%>
