@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 var Borrows  = mongoose.model('Borrows');
-var ToLendMessages  = mongoose.model('ToLendMessages');
+var Messages  = mongoose.model('Messages');
 var BankAccounts  = mongoose.model('BankAccounts');
 var sanitizer = require('sanitizer');
 
@@ -8,7 +8,7 @@ var express = require('express');
 var router = express.Router();
 
 router.post('/createTest', function(req, res, next) {
-	var toCreate = new ToLendMessages();
+	var toCreate = new Messages();
 	toCreate.FromBorrowRequest=sanitizer.sanitize(req.body.FromBorrowRequest);
 	toCreate.Message=sanitizer.sanitize(req.body.Message);
 	toCreate.MoneyToLend=sanitizer.sanitize(req.body.MoneyToLend);
@@ -16,35 +16,19 @@ router.post('/createTest', function(req, res, next) {
 	toCreate.MonthPeriod=sanitizer.sanitize(req.body.MonthPeriod);
 	toCreate.SendTo=sanitizer.sanitize(req.body.SendTo);
 	toCreate.CreatedBy=sanitizer.sanitize(req.body.CreatedBy);
+	toCreate.Type=sanitizer.sanitize(req.body.Type);
 	
 	toCreate.save(function (err,newCreate) {
 		if (err){
 			console.log(err);
 			res.json({error: err.name}, 500);
 		}else{
-			Borrows.findById(req.body.FromBorrowRequest).exec(function (err, borrow){
-				if (err) {
-					console.log(err);
-					res.json({error: err.name}, 500);
-				}else{
-
-					borrow.ToLendMessages.push(newCreate._id);
-
-					borrow.save(function (err,updatedborrow){
-						if (err) {
-							console.log(err);
-							res.json({error: err.name}, 500);
-						}else{
-							res.json(newCreate);
-						}
-					});
-				}
-			});
+			res.json(newCreate);
 		}
 	});
 });
 
-function samePart(res,req,differentPart,outterPara){
+function toLendSamePart(res,req,differentPart,outterPara){
 	Borrows.findById(req.body.FromBorrowRequest).exec(function (err, borrow){
 		if (err) {
 			console.log(err);
@@ -81,7 +65,7 @@ function samePart(res,req,differentPart,outterPara){
 							}else if(rate>maxRate){
 								res.redirect('/message?content='+chineseEncodeToURI('超過期望利率上限!'));
 							}else{
-								differentPart(res,req,borrow,outterPara);
+								differentPart(res,req,borrow.CreatedBy,outterPara);
 							}
 						}
 					}
@@ -91,15 +75,16 @@ function samePart(res,req,differentPart,outterPara){
 	});	
 }
 
-function createPart(res,req,borrow,outterPara){
-	var toCreate = new ToLendMessages();
+function createPart(res,req,sendToIpt,typeIpt){
+	var toCreate = new Messages();
 	toCreate.FromBorrowRequest=sanitizer.sanitize(req.body.FromBorrowRequest);
 	toCreate.Message=sanitizer.sanitize(req.body.Message);
 	toCreate.MoneyToLend=sanitizer.sanitize(req.body.MoneyToLend);
 	toCreate.InterestRate=sanitizer.sanitize(req.body.InterestRate);
 	toCreate.MonthPeriod=sanitizer.sanitize(req.body.MonthPeriod);
 	toCreate.CreatedBy= req.user._id
-	toCreate.SendTo=borrow.CreatedBy;
+	toCreate.SendTo=sendToIpt;
+	toCreate.Type=typeIpt;
 	
 	toCreate.save(function (err,newCreate) {
 		if (err){
@@ -110,71 +95,87 @@ function createPart(res,req,borrow,outterPara){
 				if (err){
 					res.redirect('/message?content='+chineseEncodeToURI('新建失敗!'));
 				}else{
-					res.redirect('/story?id='+req.body.FromBorrowRequest);
+					if(newCreate.Type=='toLend'){
+						res.redirect('/story?id='+req.body.FromBorrowRequest);
+					}else if(newCreate.Type=='toBorrow'){
+						res.redirect('/');
+					}
 				}
 			});
 		}
 	});
 }
 
-function updatePart(res,req,innerPara,toLendMessage){
-	toLendMessage.Message=sanitizer.sanitize(req.body.Message);
-	toLendMessage.MoneyToLend=sanitizer.sanitize(req.body.MoneyToLend);
-	toLendMessage.InterestRate=sanitizer.sanitize(req.body.InterestRate);
-	toLendMessage.MonthPeriod=sanitizer.sanitize(req.body.MonthPeriod);
-	toLendMessage.Updated = Date.now();
-	
-	toLendMessage.save(function (err,newUpdate) {
-		if (err){
-			console.log(err);
-			res.redirect('/message?content='+chineseEncodeToURI('更新失敗!'));
-		}else{
-			res.redirect('/story?id='+req.body.FromBorrowRequest);
-		}
-	});
-}
-
-router.post('/create', ensureAuthenticated, function(req, res, next) {
-	samePart(res,req,createPart,null);
-});
-
-router.post('/update', ensureAuthenticated, function(req, res, next) {
-	ToLendMessages.findById(req.body._id).exec(function (err, toLendMessage){
+function preUpdatePart(res,req,lendOrBorrow){
+	Messages.findById(req.body._id).exec(function (err, message){
 		if (err) {
 			console.log(err);
 			res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
 		}else{
-			if(!toLendMessage){
+			if(!message){
 				res.redirect('/message?content='+chineseEncodeToURI('未找到更新目標!'));
 			}else{
-				if(toLendMessage.CreatedBy!=req.user._id){
+				if(message.CreatedBy!=req.user._id){
 					res.redirect('/message?content='+chineseEncodeToURI('認證錯誤!'));
 				}else{
-					samePart(res,req,updatePart,toLendMessage);	
+					lendOrBorrow(res,req,updatePart,message);	
 				}
 			}
 		}
 	});
+}
+
+function updatePart(res,req,innerPara,message){
+	message.Message=sanitizer.sanitize(req.body.Message);
+	message.MoneyToLend=sanitizer.sanitize(req.body.MoneyToLend);
+	message.InterestRate=sanitizer.sanitize(req.body.InterestRate);
+	message.MonthPeriod=sanitizer.sanitize(req.body.MonthPeriod);
+	message.Updated = Date.now();
+	
+	message.save(function (err,newUpdate) {
+		if (err){
+			console.log(err);
+			res.redirect('/message?content='+chineseEncodeToURI('更新失敗!'));
+		}else{
+			if(newUpdate.Type=='toLend'){
+				res.redirect('/story?id='+req.body.FromBorrowRequest);
+			}else if(newUpdate.Type=='toBorrow'){
+				res.redirect('/');
+			}
+		}
+	});
+}
+
+router.post('/toLendCreate', ensureAuthenticated, function(req, res, next) {
+	toLendSamePart(res,req,createPart,'toLend');
+});
+
+router.post('/toLendUpdate', ensureAuthenticated, function(req, res, next) {
+	preUpdatePart(res,req,toLendSamePart);
 });
 
 router.post('/destroy', ensureAuthenticated, function(req, res, next) {
-	ToLendMessages.findById(req.body._id).exec(function (err, toLendMessage){
+	Messages.findById(req.body._id).exec(function (err, message){
 		if (err) {
 			console.log(err);
 			res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
 		}else{
-			if(!toLendMessage){
+			if(!message){
 				res.redirect('/message?content='+chineseEncodeToURI('未找到刪除目標!'));
 			}else{
-				if(toLendMessage.CreatedBy!=req.user._id){
+				if(message.CreatedBy!=req.user._id){
 					res.redirect('/message?content='+chineseEncodeToURI('認證錯誤!'));
 				}else{
-					toLendMessage.remove(function (err,removedItem) {
+					message.remove(function (err,removedItem) {
 						if (err){
 							console.log(err);
 							res.redirect('/message?content='+chineseEncodeToURI('刪除失敗!'));
 						}else{
-							res.redirect('/story?id='+req.body.FromBorrowRequest);
+							if(removedItem.Type=='toLend'){
+								res.redirect('/story?id='+req.body.FromBorrowRequest);
+							}else if(removedItem.Type=='toBorrow'){
+								res.redirect('/');
+							}
 						}
 					});
 				}

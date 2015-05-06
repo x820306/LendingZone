@@ -16,8 +16,7 @@ var LocalStrategy = require('passport-local').Strategy;
 var Users= require('./routes/Users');
 var Borrows= require('./routes/Borrows');
 var Lends= require('./routes/Lends');
-var ToBorrowMessages= require('./routes/ToBorrowMessages');
-var ToLendMessages= require('./routes/ToLendMessages');
+var Messages= require('./routes/Messages');
 var BankAccounts= require('./routes/BankAccounts');
 var Transactions= require('./routes/Transactions');
 var Discussions= require('./routes/Discussions');
@@ -179,7 +178,7 @@ app.get('/story/:id?', function (req, res) {
 	
 	var Borrows  = mongoose.model('Borrows');
 	var Discussions  = mongoose.model('Discussions');
-	var ToLendMessages  = mongoose.model('ToLendMessages');
+	var Messages  = mongoose.model('Messages');
 	var BankAccounts  = mongoose.model('BankAccounts');
 	var Transactions  = mongoose.model('Transactions');
 	Borrows.findById(req.query.id).populate('CreatedBy', 'Username Level').exec(function (err, borrow){
@@ -197,7 +196,7 @@ app.get('/story/:id?', function (req, res) {
 					}else{
 						var ifLikedValue=false;
 						if(!auRst){
-							res.render('story',{userName:auRst,ifLiked:ifLikedValue,json:borrow,jsonComment:discussions,jsonToLendMessage:null,MoneyInBankAccountValue:0,MoneyLended:0});
+							res.render('story',{userName:auRst,ifLiked:ifLikedValue,json:borrow,jsonComment:discussions,jsonMessage:null,MoneyInBankAccountValue:0,MoneyLended:0});
 						}else{
 							var j = 0;
 							for (j = 0; j < borrow.Likes.length; j++) {
@@ -224,12 +223,12 @@ app.get('/story/:id?', function (req, res) {
 														moneyLendedCumulated+=transactions[i].Principal;
 													}
 												}
-												ToLendMessages.findOne({$and:[{"CreatedBy": req.user._id},{"FromBorrowRequest": req.query.id}]}).exec(function (err, toLendMessage){
+												Messages.findOne({$and:[{"CreatedBy": req.user._id},{"FromBorrowRequest": req.query.id},{"Type": "toLend"}]}).exec(function (err, message){
 													if (err) {
 														console.log(err);
 														res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
 													}else{
-														res.render('story',{userName:auRst,ifLiked:ifLikedValue,json:borrow,jsonComment:discussions,jsonToLendMessage:toLendMessage,MoneyInBankAccountValue:bankaccount.MoneyInBankAccount,MoneyLended:moneyLendedCumulated});
+														res.render('story',{userName:auRst,ifLiked:ifLikedValue,json:borrow,jsonComment:discussions,jsonMessage:message,MoneyInBankAccountValue:bankaccount.MoneyInBankAccount,MoneyLended:moneyLendedCumulated});
 													}
 												});
 											}
@@ -328,8 +327,7 @@ app.get('/signup', function (req, res) {
 app.use('/Users', Users);
 app.use('/Borrows', Borrows);
 app.use('/Lends', Lends);
-app.use('/ToBorrowMessages', ToBorrowMessages);
-app.use('/ToLendMessages', ToLendMessages);
+app.use('/Messages', Messages);
 app.use('/BankAccounts', BankAccounts);
 app.use('/Transactions', Transactions);
 app.use('/Discussions', Discussions);

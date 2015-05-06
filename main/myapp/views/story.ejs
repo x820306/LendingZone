@@ -159,12 +159,12 @@
 											<span style="color:#337ab7;">現在無法出借</span>
 									</button>
 							<%}else{%>
-								<%if(!jsonToLendMessage){ %>
+								<%if(!jsonMessage){ %>
 									<button class="btn btn-default" data-toggle="modal" data-target="#hendLendModal">
 										<span style="color:#337ab7;">我想借錢給此人</span>
 									</button>
 								<% }else{ %>
-									<%if(jsonToLendMessage.IfComfirmed){ %>
+									<%if(jsonMessage.IfComfirmed){ %>
 										<button class="btn btn-default disabled">
 											<span style="color:#337ab7;">已經出借</span>
 										</button>
@@ -191,7 +191,7 @@
 </div>
 <%if(userName){ %>
 	<%if(json.IfReadable){ %>
-		<%if(!jsonToLendMessage){ %>
+		<%if(!jsonMessage){ %>
 			<div class="modal fade" id="hendLendModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 				<div class="modal-dialog modal-md">
 					<div class="modal-content">
@@ -206,7 +206,7 @@
 							<h4>已借出金額：</h4>
 							<input type="text" class="form-control" readonly="readonly" value="<%=MoneyLended%>">
 							<br>
-						<form action="/ToLendMessages/create" method="post">
+						<form action="/Messages/toLendCreate" method="post">
 							<h4>本次欲借出金額：</h4>
 							<input type="number" class="form-control" name="MoneyToLend">
 							<br>
@@ -232,7 +232,7 @@
 				</div>
 			</div>
 		<%}else{%>
-			<%if(!jsonToLendMessage.IfComfirmed){ %>
+			<%if(!jsonMessage.IfComfirmed){ %>
 				<div class="modal fade" id="hendLendModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 					<div class="modal-dialog modal-md">
 						<div class="modal-content">
@@ -247,21 +247,21 @@
 								<h4>已借出金額：</h4>
 								<input type="text" class="form-control" readonly="readonly" value="<%=MoneyLended%>">
 								<br>
-							<form action="/ToLendMessages/update" method="post" id="formID">
+							<form action="/Messages/toLendUpdate" method="post" id="formID">
 								<h4>本次欲借出金額：</h4>
-								<input type="number" class="form-control" name="MoneyToLend" value="<%=jsonToLendMessage.MoneyToLend%>">
+								<input type="number" class="form-control" name="MoneyToLend" value="<%=jsonMessage.MoneyToLend%>">
 								<br>
 								<h4>本次欲借出利率：</h4>
-								<input type="text" class="form-control" name="InterestRate" value="<%=jsonToLendMessage.InterestRate%>">
+								<input type="text" class="form-control" name="InterestRate" value="<%=jsonMessage.InterestRate%>">
 								<br>
 								<h4>本次欲借出期數（單位/月）：</h4>
-								<input type="number" class="form-control" name="MonthPeriod" value="<%=jsonToLendMessage.MonthPeriod%>">
+								<input type="number" class="form-control" name="MonthPeriod" value="<%=jsonMessage.MonthPeriod%>">
 								<br>
 								<h4>訊息：</h4>
-								<textarea class="form-control" name="Message" rows="3"><%=jsonToLendMessage.Message%></textarea>
+								<textarea class="form-control" name="Message" rows="3"><%=jsonMessage.Message%></textarea>
 								</div>
 								<input type="hidden" name="FromBorrowRequest" value="<%=json._id%>">
-								<input type="hidden" name="_id" value="<%=jsonToLendMessage._id%>">
+								<input type="hidden" name="_id" value="<%=jsonMessage._id%>">
 								<div class="modal-footer">
 									<div class="btn-toolbar" role="toolbar">
 										<div class="btn-group" role="group">
@@ -308,6 +308,7 @@
 									var date=dateObj.getDate();
 									$('#discussionDiv').append(Jdata.result[i].CreatedBy.Username+'：<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+Jdata.result[i].Content+'<br>'+year+'/'+month+'/'+date+'<br><br>');
 								}
+								$('#iptCtr').val('');
 								$('#iptCtr').attr('onkeypress','if(event.keyCode==13){sendComment();}');
 								$('#iptCtr').removeAttr("readonly");
 								origInner=$('#sendButton').attr('class');
@@ -397,11 +398,11 @@
 		}
 		
 		<%if(json.IfReadable){ %>
-			<% if(jsonToLendMessage){ %>
-				<% if(!jsonToLendMessage.IfComfirmed){ %>
+			<% if(jsonMessage){ %>
+				<% if(!jsonMessage.IfComfirmed){ %>
 					function destroy(){
 						var form=document.getElementById('formID');
-						form.action="/ToLendMessages/destroy";
+						form.action="/Messages/destroy";
 						form.submit();
 					}
 				<%}%>
