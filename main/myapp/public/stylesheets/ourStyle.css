@@ -22,3 +22,23 @@
 	word-wrap: break-word;
 	word-break: normal;
 }
+
+.my-tab-content{
+	border-left: 1px solid #ddd;
+	border-right: 1px solid #ddd;
+	border-bottom: 1px solid #ddd;
+	height: 300px;
+	padding: 10px;
+	overflow: auto;
+	word-wrap: break-word;
+	word-break: normal;
+}
+
+.my_discussion {
+  height: 225px;
+  overflow: auto;
+}
+
+.my_discussion_ipt {
+  margin-top: 12px;
+}

@@ -10,7 +10,7 @@ var Borrows = new Schema({
 	Story: { type: String, default:''},
 	LikeNumber: { type: Number, default: 0 },
 	Likes: [{ type: Schema.Types.ObjectId, ref: 'Users' }],
-	ToBorrowMessages: [{ type: Schema.Types.ObjectId, ref: 'ToBorrowMessages'}],
+	IfReadable: { type: Boolean, default: true },
 	CreatedBy: { type: Schema.Types.ObjectId, ref: 'Users' },
 	Updated: { type: Date, default: Date.now },
 	Created: { type: Date, default: Date.now }
@@ -26,6 +26,8 @@ var Lends = new Schema({
 });
 
 var ToLendMessages = new Schema({
+	FromBorrowRequest: { type: Schema.Types.ObjectId, ref: 'Borrows' },
+	Message: { type: String, default:''},
 	MoneyToLend: { type: Number, default: 0 },
 	InterestRate: { type: Number, default: 0 },
 	MonthPeriod: { type: Number, default: 1 },
@@ -38,6 +40,7 @@ var ToLendMessages = new Schema({
 
 var ToBorrowMessages = new Schema({
 	FromBorrowRequest: { type: Schema.Types.ObjectId, ref: 'Borrows' },
+	Message: { type: String, default:''},
 	IfComfirmed: { type: Boolean, default: false },
 	SendTo:{ type: Schema.Types.ObjectId, ref: 'Users' },
 	CreatedBy: { type: Schema.Types.ObjectId, ref: 'Users' },
@@ -58,6 +61,7 @@ var Users = new Schema({
 	Phone: { type: String},
 	Address: { type: String},
 	Level: { type: Number, default: 0 },
+	MaxTotalMoneyCanBorrow: { type: Number, default: 0 },
 	Updated: { type: Date, default: Date.now },
 	Created: { type: Date, default: Date.now }
 });
@@ -81,6 +85,14 @@ var Transactions = new Schema({
 	Created: { type: Date, default: Date.now }
 });
 
+var Discussions = new Schema({
+	Content: { type: String },
+	BelongTo: { type: Schema.Types.ObjectId, ref: 'Borrows' },
+	CreatedBy: { type: Schema.Types.ObjectId , ref: 'Users' },
+	Updated: { type: Date, default: Date.now },
+	Created: { type: Date, default: Date.now }
+});
+
 mongoose.model( 'Users', Users );
 mongoose.model( 'Borrows', Borrows );
 mongoose.model( 'Lends', Lends );
@@ -88,4 +100,5 @@ mongoose.model( 'ToBorrowMessages', ToBorrowMessages );
 mongoose.model( 'ToLendMessages', ToLendMessages );
 mongoose.model( 'BankAccounts', BankAccounts );
 mongoose.model( 'Transactions', Transactions );
+mongoose.model( 'Discussions', Discussions );
 mongoose.connect( 'mongodb://lendingZone:lendingZone@ds031972.mongolab.com:31972/lending' );

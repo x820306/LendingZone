@@ -25,6 +25,75 @@ router.post('/create', function(req, res, next) {
 	});
 });
 
+router.post('/like', function(req, res, next) {
+	Borrows.findById(req.body._id).exec(function (err, borrow){
+		if (err) {
+			console.log(err);
+			res.json({error: "something wrong",success:false}, 500);
+		}else{
+			if(!borrow){
+				res.json({error: "ID not found",success:false}, 500);
+			}else{
+				var i = 0;
+				var flag = 0;
+				for (i = 0; i < borrow.Likes.length; i++) {
+					if (borrow.Likes[i].toString() === req.user._id.toString()) {
+						flag = 1;
+					}
+				}
+				if (flag === 1) {
+					res.json({error: "already liked",success:false}, 500);
+				}else{
+					borrow.Likes.push(req.user._id);
+					borrow.LikeNumber ++ ;
+					borrow.save(function (err, newborrow){
+						if (err) {
+							console.log(err);
+							res.json({error: err.name,success:false},500);
+						}
+						res.json({success:true,result:newborrow.LikeNumber});
+					})
+				}
+			}
+		}
+	});
+});
+
+router.post('/unlike', function(req, res, next) {
+	Borrows.findById(req.body._id).exec(function (err, borrow){
+		if (err) {
+			console.log(err);
+			res.json({error: "something wrong",success:false}, 500);
+		}else{
+			if(!borrow){
+				res.json({error: "ID not found",success:false}, 500);
+			}else{
+				var i = 0;
+				var flag = 0;
+				for (i = 0; i < borrow.Likes.length; i++) {
+					if (borrow.Likes[i].toString() === req.user._id.toString()) {
+						flag = 1;
+						break;
+					}
+				}
+				if (flag === 0) {
+					res.json({error: "haven't liked",success:false}, 500);
+				}else{
+					borrow.Likes.splice(i, 1);;
+					borrow.LikeNumber -- ;
+					borrow.save(function (err, newborrow){
+						if (err) {
+							console.log(err);
+							res.json({error: err.name,success:false},500);
+						}
+						res.json({success:true,result:newborrow.LikeNumber});
+					})
+				}
+			}
+		}
+	});
+});
+
 module.exports = router;
 
 function ensureAuthenticated(req, res, next) {

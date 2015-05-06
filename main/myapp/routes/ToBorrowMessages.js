@@ -9,6 +9,7 @@ var router = express.Router();
 router.post('/create', function(req, res, next) {
 	var toCreate = new ToBorrowMessages();
 	toCreate.FromBorrowRequest=sanitizer.sanitize(req.body.FromBorrowRequest);
+	toCreate.Message=sanitizer.sanitize(req.body.Message);
 	toCreate.SendTo=sanitizer.sanitize(req.body.SendTo);
 	toCreate.CreatedBy=sanitizer.sanitize(req.body.CreatedBy);
 	
@@ -17,25 +18,7 @@ router.post('/create', function(req, res, next) {
 			console.log(err);
 			res.json({error: err.name}, 500);
 		}else{
-		
-			Borrows.findById(req.body.FromBorrowRequest).exec(function (err, borrow){
-				if (err) {
-					console.log(err);
-					res.json({error: err.name}, 500);
-				}else{
-
-					borrow.ToBorrowMessages.push(newCreate._id);
-
-					borrow.save(function (err,updatedborrow){
-						if (err) {
-							console.log(err);
-							res.json({error: err.name}, 500);
-						}else{
-							res.json(newCreate);
-						}
-					});
-				}
-			});
+			res.json(newCreate);
 		}
 	});
 });

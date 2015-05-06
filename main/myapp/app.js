@@ -20,6 +20,7 @@ var ToBorrowMessages= require('./routes/ToBorrowMessages');
 var ToLendMessages= require('./routes/ToLendMessages');
 var BankAccounts= require('./routes/BankAccounts');
 var Transactions= require('./routes/Transactions');
+var Discussions= require('./routes/Discussions');
 
 var app = express();
 
@@ -95,7 +96,7 @@ passport.deserializeUser(function (user, done) {
 
 
 app.get('/', function (req, res) {
-	var auRst='none';
+	var auRst=null;
 	if(req.isAuthenticated()){
 		auRst=req.user.Username;
 	}
@@ -105,7 +106,7 @@ app.get('/', function (req, res) {
 
 app.get('/message/:content?', function (req, res) {
 	var temp=decodeURIComponent(req.query.content);
-	var auRst='none';
+	var auRst=null;
 	if(req.isAuthenticated()){
 		auRst=req.user.Username;
 	}
@@ -114,7 +115,7 @@ app.get('/message/:content?', function (req, res) {
 });
 
 app.get('/search/:keyword?/:action?/:page?', function (req, res) {
-	var auRst='none';
+	var auRst=null;
 	if(req.isAuthenticated()){
 		auRst=req.user.Username;
 	}
@@ -138,7 +139,7 @@ app.get('/search/:keyword?/:action?/:page?', function (req, res) {
 	
 	var Borrows  = mongoose.model('Borrows');
 	var Users  = mongoose.model('Users');
-	Borrows.find({$or:[{"StoryTitle": new RegExp(keyword,'i')},{"Story": new RegExp(keyword,'i')}],$and:[{"StoryTitle": {'$ne': '' }},{"Story": {'$ne': '' }}]}).populate('CreatedBy', 'Username').sort(actionRec).exec( function (err, borrows, count){
+	Borrows.find({$or:[{"StoryTitle": new RegExp(keyword,'i')},{"Story": new RegExp(keyword,'i')}],$and:[{"StoryTitle": {'$ne': '' }},{"Story": {'$ne': '' }},{"IfReadable": true}]}).populate('CreatedBy', 'Username').sort(actionRec).exec( function (err, borrows, count){
 		if (err) {
 			console.log(err);
 			res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
@@ -170,13 +171,78 @@ app.get('/search/:keyword?/:action?/:page?', function (req, res) {
 	});
 });
 
-app.get('/story', function (req, res) {
-	var auRst='none';
+app.get('/story/:id?', function (req, res) {
+	var auRst=null;
 	if(req.isAuthenticated()){
 		auRst=req.user.Username;
 	}
 	
-	res.render('story',{userName:auRst});
+	var Borrows  = mongoose.model('Borrows');
+	var Discussions  = mongoose.model('Discussions');
+	var ToLendMessages  = mongoose.model('ToLendMessages');
+	var BankAccounts  = mongoose.model('BankAccounts');
+	var Transactions  = mongoose.model('Transactions');
+	Borrows.findById(req.query.id).populate('CreatedBy', 'Username Level').exec(function (err, borrow){
+		if (err) {
+			console.log(err);
+			res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+		}else{
+			if(!borrow){
+				res.redirect('/message?content='+chineseEncodeToURI('錯誤ID!'));
+			}else{
+				Discussions.find({"BelongTo": req.query.id}).populate('CreatedBy', 'Username').exec(function (err, discussions){
+					if (err) {
+						console.log(err);
+						res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+					}else{
+						var ifLikedValue=false;
+						if(!auRst){
+							res.render('story',{userName:auRst,ifLiked:ifLikedValue,json:borrow,jsonComment:discussions,jsonToLendMessage:null,MoneyInBankAccountValue:0,MoneyLended:0});
+						}else{
+							var j = 0;
+							for (j = 0; j < borrow.Likes.length; j++) {
+								if (borrow.Likes[j].toString() === req.user._id.toString()) {
+									ifLikedValue = true;
+								}
+							}
+							BankAccounts.findOne({"OwnedBy": req.user._id}).exec(function (err, bankaccount){
+								if (err) {
+									console.log(err);
+									res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+								}else{
+									if(!bankaccount){
+										res.redirect('/message?content='+chineseEncodeToURI('無銀行帳戶!'));
+									}else{
+										var moneyLendedCumulated=0
+										Transactions.find({"Lender": req.user._id}).exec(function (err, transactions){
+											if (err) {
+												console.log(err);
+												res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+											}else{
+												if(transactions.length>0){
+													for(i=0;i<transactions.length;i++){
+														moneyLendedCumulated+=transactions[i].Principal;
+													}
+												}
+												ToLendMessages.findOne({$and:[{"CreatedBy": req.user._id},{"FromBorrowRequest": req.query.id}]}).exec(function (err, toLendMessage){
+													if (err) {
+														console.log(err);
+														res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+													}else{
+														res.render('story',{userName:auRst,ifLiked:ifLikedValue,json:borrow,jsonComment:discussions,jsonToLendMessage:toLendMessage,MoneyInBankAccountValue:bankaccount.MoneyInBankAccount,MoneyLended:moneyLendedCumulated});
+													}
+												});
+											}
+										});
+									}
+								}
+							});
+						}
+					}
+				});
+			}
+		}
+	});
 });
 
 app.get('/lend', ensureAuthenticated, function (req, res) {
@@ -207,11 +273,7 @@ app.get('/lend', ensureAuthenticated, function (req, res) {
 								console.log(err);
 								res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
 							}else{
-								if(!lend){
-									res.render('lend',{userName:req.user.Username,MoneyInBankAccountValue:bankaccount.MoneyInBankAccount,ifFound:false,MaxMoneyToLendValue:0,InterestRateValue:'',MonthPeriodValue:0,_idValue:'',MoneyLended:moneyLendedCumulated});
-								}else{
-									res.render('lend',{userName:req.user.Username,MoneyInBankAccountValue:bankaccount.MoneyInBankAccount,ifFound:true,MaxMoneyToLendValue:lend.MaxMoneyToLend,InterestRateValue:lend.InterestRate,MonthPeriodValue:lend.MonthPeriod,_idValue:lend._id,MoneyLended:moneyLendedCumulated});
-								}
+								res.render('lend',{userName:req.user.Username,MoneyInBankAccountValue:bankaccount.MoneyInBankAccount,MoneyLended:moneyLendedCumulated,jsonLend:lend});
 							}
 						});
 					}
@@ -221,8 +283,16 @@ app.get('/lend', ensureAuthenticated, function (req, res) {
 	});
 });
 
-app.get('/hand_lend', ensureAuthenticated, function (req, res) {
-	res.render('hand_lend',{userName:req.user.Username});
+app.get('/income', ensureAuthenticated, function (req, res) {
+	res.render('income',{userName:req.user.Username});
+});
+
+app.get('/lenderSendMessages', ensureAuthenticated, function (req, res) {
+	res.render('lenderSendMessages',{userName:req.user.Username});
+});
+
+app.get('/lenderReceiveMessages', ensureAuthenticated, function (req, res) {
+	res.render('lenderReceiveMessages',{userName:req.user.Username});
 });
 
 app.get('/profile', ensureAuthenticated, function (req, res) {
@@ -237,8 +307,8 @@ app.post('/login', passport.authenticate('local', { failureRedirect: '/message?c
 	}else{
 		console.log('no');
 	}*/
-	//res.redirect(req.get('referer'));
-	res.redirect('/');
+	res.redirect(req.get('referer'));
+	//res.redirect('/');
 });
 
 app.get('/logout', function (req, res) {
@@ -247,11 +317,12 @@ app.get('/logout', function (req, res) {
 });
 
 app.get('/signup', function (req, res) {
-   if(req.isAuthenticated()){
-		res.render('signup',{userName:req.user.Username});
-	}else{
-		res.render('signup',{userName:'none'});
+   var auRst=null;
+	if(req.isAuthenticated()){
+		auRst=req.user.Username;
 	}
+	
+	res.render('signup',{userName:auRst});
 });
 
 app.use('/Users', Users);
@@ -261,6 +332,7 @@ app.use('/ToBorrowMessages', ToBorrowMessages);
 app.use('/ToLendMessages', ToLendMessages);
 app.use('/BankAccounts', BankAccounts);
 app.use('/Transactions', Transactions);
+app.use('/Discussions', Discussions);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

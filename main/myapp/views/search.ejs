@@ -3,18 +3,24 @@
 <div class="container">
 	<div class="row">
 		<div class="col-md-9">
-			<div style="font-size:30pt">搜尋結果</div>
+			<div style="font-size:30pt;color:#337ab7;">搜尋結果</div>
 			<% if(totalResultNum==0){ %>
-				<div style="font-size:20pt">&nbsp;0 result</div>
+				<div style="font-size:20pt;color:#0000D1;">&nbsp;0 result</div>
 				<br>
 			<% }else{ %>
-				<div style="font-size:20pt">&nbsp;<%=totalResultNum%> result</div>
+				<div style="font-size:20pt;color:#0000D1;">&nbsp;<%=totalResultNum%> result</div>
 				<br>
 				<% for(var i=0; i<jsonArray.length; i++) { %>
 					<table width="100%">
 						<tr>
 							<td align="right">
-								<div style="font-size:15px;color:#0000D1;">Deadline：<%=jsonArray[i].TimeLimit.getFullYear()%>/<%=jsonArray[i].TimeLimit.getMonth()+1%>/<%=jsonArray[i].TimeLimit.getDate()%>&nbsp;&nbsp;&nbsp;&nbsp;Updated：<%=jsonArray[i].Updated.getFullYear()%>/<%=jsonArray[i].Updated.getMonth()+1%>/<%=jsonArray[i].Updated.getDate()%></div>
+								<div style="font-size:15px;color:#337ab7;display:inline;">
+									Deadline：<%=jsonArray[i].TimeLimit.getFullYear()%>/<%=jsonArray[i].TimeLimit.getMonth()+1%>/<%=jsonArray[i].TimeLimit.getDate()%>
+								</div>
+								&nbsp;&nbsp;&nbsp;&nbsp;
+								<div style="font-size:15px;color:#337ab7;display:inline;">
+									Updated：<%=jsonArray[i].Updated.getFullYear()%>/<%=jsonArray[i].Updated.getMonth()+1%>/<%=jsonArray[i].Updated.getDate()%>
+								</div>
 							</td>
 						<tr>
 					</table>
@@ -27,7 +33,12 @@
 										<div style="font-size:15px;color:#0000D1;">by <%=jsonArray[i].CreatedBy.Username%></div>
 									</td>
 									<td align="right">
-										<div style="font-size:25px;color: red;"><img src="images/like.png" width="21" height="18">&nbsp;<%=jsonArray[i].LikeNumber%></div>
+										<div style="font-size:20px;display:inline;color:#337ab7;">
+											<span class="glyphicon glyphicon-thumbs-up"></span>
+										</div>
+										<div style="font-size:25px;color: red;display:inline;">
+											&nbsp;<%=jsonArray[i].LikeNumber%>
+										</div>
 									</td>
 								<tr>
 							</table>

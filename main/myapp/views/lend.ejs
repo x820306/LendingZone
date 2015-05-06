@@ -2,14 +2,14 @@
 <div class="container">
 	<div class="row">
 		<div class="col-md-9">
-				<div style="font-size:30pt">自動出借設定</div>
+				<div style="font-size:30pt;color:#337ab7;">自動借出設定</div>
 				</br>
 				<div class="panel panel-default">
 					<div class="panel-heading">
 						<h3 class="panel-title">銀行帳戶內餘額</h3>
 					</div>
-					<div class="panel-body">
-						<input type="text" class="textForm" value="<%=MoneyInBankAccountValue%>" readonly="readonly" />
+					<div style="color:#ccc;" class="panel-body">
+						<input type="text" class="textForm" value="<%=MoneyInBankAccountValue%>" readonly="readonly" >
 					</div>					
 				</div>
 				</br>
@@ -17,12 +17,12 @@
 					<div class="panel-heading">
 						<h3 class="panel-title">已借出金額</h3>
 					</div>
-					<div class="panel-body">
-						<input type="text" class="textForm" value="<%=MoneyLended%>" readonly="readonly" />
+					<div style="color:#ccc;" class="panel-body">
+						<input type="text" class="textForm" value="<%=MoneyLended%>" readonly="readonly" >
 					</div>					
 				</div>
 				</br>
-		<% if(!ifFound){ %>
+		<% if(!jsonLend){ %>
 			<form action="/Lends/create" method="post" id="formID">
 		<% }else{ %>
 			<form action="/Lends/update" method="post" id="formID">
@@ -32,23 +32,23 @@
 						<h3 class="panel-title">最大可借出金額</h3>
 					</div>
 					<div class="panel-body">
-						<% if(!ifFound){ %>
+						<% if(!jsonLend){ %>
 							<input type="number" class="textForm" name="MaxMoneyToLend">
 						<% }else{ %>
-							<input type="number" class="textForm" name="MaxMoneyToLend" value="<%=MaxMoneyToLendValue%>">
+							<input type="number" class="textForm" name="MaxMoneyToLend" value="<%=jsonLend.MaxMoneyToLend%>">
 						<% } %>
 					</div>					
 				</div>
 				</br>
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						<h3 class="panel-title">欲出借利率</h3>
+						<h3 class="panel-title">欲借出利率</h3>
 					</div>
 					<div class="panel-body">
-						<% if(!ifFound){ %>
+						<% if(!jsonLend){ %>
 							<input type="text" class="textForm" name="InterestRate">
 						<% }else{ %>
-							<input type="text" class="textForm" name="InterestRate" value="<%=InterestRateValue%>">
+							<input type="text" class="textForm" name="InterestRate" value="<%=jsonLend.InterestRate%>">
 						<% } %>
 					</div>
 				</div>
@@ -58,22 +58,22 @@
 						<h3 class="panel-title">期數（單位/月）</h3>
 					</div>
 					<div class="panel-body">
-						<% if(!ifFound){ %>
+						<% if(!jsonLend){ %>
 							<input type="number" class="textForm" name="MonthPeriod">
 						<% }else{ %>
-							<input type="number" class="textForm" name="MonthPeriod" value="<%=MonthPeriodValue%>">
+							<input type="number" class="textForm" name="MonthPeriod" value="<%=jsonLend.MonthPeriod%>">
 						<% } %>
 					</div>
 				</div>
 				</br>
-				<% if(!ifFound){ %>
+				<% if(!jsonLend){ %>
 					<div class="btn-toolbar" role="toolbar">
 						<div class="btn-group" role="group">
 							<button type="submit" class="btn btn-info">新建</button>
 						</div>
 					</div>
 				<% }else{ %>
-					<input type="hidden" name="_id" value="<%=_idValue%>">
+					<input type="hidden" name="_id" value="<%=jsonLend._id%>">
 					<div class="btn-toolbar" role="toolbar">
 						<div class="btn-group" role="group">
 							<button type="submit" class="btn btn-info">更新</button>
@@ -89,6 +89,7 @@
 		</div>
 	</div>
 </div>
+<% if(jsonLend){ %>
 <script>
 	function destroy(){
 		var form=document.getElementById('formID');
@@ -96,4 +97,5 @@
 		form.submit();
 	}
 </script>
+<% } %>
 <%- include('layout_footer'); -%>

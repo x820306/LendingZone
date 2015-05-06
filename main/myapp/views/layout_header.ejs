@@ -37,15 +37,20 @@
 								class="active"
 							<% } %>
 						><a href="/borrow">借入</a></li>
-						<li
-							<% if(nav_cur=='lend'){ %>
-								class="active"
-							<% } %>
-						><a href="/lend">借出</a></li>
+						<li class="dropdown<% if((nav_cur=='lend')||(nav_cur=='lenderSendMessages')||(nav_cur=='lenderReceiveMessages')||(nav_cur=='lenderTransactions')){ %> active<% } %>">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">借出 <span class="caret"></span></a>
+							<ul class="dropdown-menu" role="menu">
+								<li <% if(nav_cur=='lend'){ %> class="active"<% } %>><% if(!userName){ %><a href="#" data-toggle="modal" data-target="#myModal"><% }else{ %><a href="/lend"><%}%>自動借出設定</a></li>
+								<li <% if(nav_cur=='income'){ %> class="active"<% } %>><% if(!userName){ %><a href="#" data-toggle="modal" data-target="#myModal"><% }else{ %><a href="/income"><%}%>收入分析</a></li>
+								<li class="divider"></li>
+								<li <% if(nav_cur=='lenderReceiveMessages'){ %> class="active"<% } %>><% if(!userName){ %><a href="#" data-toggle="modal" data-target="#myModal"><% }else{ %><a href="/lenderReceiveMessages"><%}%>收到之欲借入訊息</a></li>
+								<li <% if(nav_cur=='lenderSendMessages'){ %> class="active"<% } %>><% if(!userName){ %><a href="#" data-toggle="modal" data-target="#myModal"><% }else{ %><a href="/lenderSendMessages"><%}%>送出之欲借出訊息</a></li>
+							</ul>
+						</li>
 					</ul>
-					<form class="navbar-form navbar-left" role="search">
+					<div class="navbar-form navbar-left" role="search">
 						<div class="input-group">
-							<input type="text" style="height:32px;" class="form-control" id="keywordIpt" placeholder="搜尋借入者的故事" value="<%=keywordDefault%>">
+							<input type="text" style="height:32px;" class="form-control" id="keywordIpt" placeholder="搜尋借入者的故事" value="<%=keywordDefault%>" onkeypress="if(event.keyCode==13){ window.open('/search?keyword='+$('#keywordIpt').val()+'&action='+$('#searchAction0').text()+'&page=1','_self');}">
 							<span class="input-group-btn">
 								<button type="button" style="height:32px;" class="btn btn-default" id="searchActionSelected" data-toggle="dropdown" aria-expanded="false"><%=actionDefault%> <span class='caret'></span></button>
 								<button type="button" style="height:32px;" class="btn btn-default" onclick="window.open('/search?keyword='+$('#keywordIpt').val()+'&action='+$('#searchAction0').text()+'&page=1','_self');"><span class="glyphicon glyphicon-search"></span></button>
@@ -57,9 +62,9 @@
 								</ul>
 							</span>
 						</div> 
-					</form>
+					</div>
 					<ul class="nav navbar-nav navbar-right">
-						<% if(userName=='none'){ %>
+						<% if(!userName){ %>
 							<li><a href="#" data-toggle="modal" data-target="#myModal">登入</a></li>
 							<li
 								<% if(nav_cur=='signup'){ %>
