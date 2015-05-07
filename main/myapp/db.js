@@ -3,6 +3,7 @@ var Schema   = mongoose.Schema;
 
 var Borrows = new Schema({
 	MoneyToBorrow: { type: Number, default: 0 },
+	MoneyToBorrowCumulated: { type: Number, default: 0 },
 	MaxInterestRateAccepted: { type: Number, default: 0 },
 	MonthPeriodAccepted: { type: Number, default: 1 },
 	TimeLimit: { type: Date, default: Date.now },
@@ -31,8 +32,8 @@ var Messages = new Schema({
 	MoneyToLend: { type: Number, default: 0 },
 	InterestRate: { type: Number, default: 0 },
 	MonthPeriod: { type: Number, default: 1 },
-	IfComfirmed: { type: Boolean, default: false },
-	Type: {type: String, default:''},
+	Status: { type: String, default:'NotConfirmed' },// 'NotConfirmed' or 'Confirmed' or 'Rejected'
+	Type: {type: String, default:'NoType'},// 'toLend' or 'toBorrow'
 	SendTo:{ type: Schema.Types.ObjectId, ref: 'Users' },
 	CreatedBy: { type: Schema.Types.ObjectId, ref: 'Users' },
 	Updated: { type: Date, default: Date.now },
@@ -53,6 +54,8 @@ var Users = new Schema({
 	Address: { type: String},
 	Level: { type: Number, default: 0 },
 	MaxTotalMoneyCanBorrow: { type: Number, default: 0 },
+	AutoComfirmToLendMsgPeriod: { type: Number, default: -1 },
+	AutoComfirmToBorrowMsgPeriod: { type: Number, default: -1 },
 	Updated: { type: Date, default: Date.now },
 	Created: { type: Date, default: Date.now }
 });
@@ -68,8 +71,12 @@ var BankAccounts = new Schema({
 
 var Transactions = new Schema({
 	Principal: { type: Number, default: 0 },
+	PrincipalReturnedCumulated: { type: Number, default: 0 },
+	InterestCumulated: { type: Number, default: 0 },
 	InterestRate: { type: Number, default: 0 },
 	MonthPeriod: { type: Number, default: 1 },
+	MonthPeriodHasPast: { type: Number, default: 0 },
+	CreatedFrom: { type: Schema.Types.ObjectId, ref: 'Messages' },
 	Borrower: { type: Schema.Types.ObjectId, ref: 'Users' },
 	Lender: { type: Schema.Types.ObjectId, ref: 'Users' },
 	Updated: { type: Date, default: Date.now },

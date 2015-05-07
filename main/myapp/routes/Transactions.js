@@ -10,6 +10,7 @@ router.post('/create', function(req, res, next) {
 	toCreate.Principal=sanitizer.sanitize(req.body.Principal);
 	toCreate.InterestRate=sanitizer.sanitize(req.body.InterestRate);
 	toCreate.MonthPeriod=sanitizer.sanitize(req.body.MonthPeriod);
+	toCreate.CreatedFrom=sanitizer.sanitize(req.body.CreatedFrom);
 	toCreate.Borrower=sanitizer.sanitize(req.body.Borrower);
 	toCreate.Lender=sanitizer.sanitize(req.body.Lender);
 	

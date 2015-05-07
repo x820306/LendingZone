@@ -194,48 +194,54 @@ app.get('/story/:id?', function (req, res) {
 						console.log(err);
 						res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
 					}else{
+						var ifSelfValue=false;
 						var ifLikedValue=false;
 						if(!auRst){
-							res.render('story',{userName:auRst,ifLiked:ifLikedValue,json:borrow,jsonComment:discussions,jsonMessage:null,MoneyInBankAccountValue:0,MoneyLended:0});
+							res.render('story',{userName:auRst,ifSelf:ifSelfValue,ifLiked:ifLikedValue,json:borrow,jsonComment:discussions,jsonMessage:null,MoneyInBankAccountValue:0,MoneyLended:0});
 						}else{
-							var j = 0;
-							for (j = 0; j < borrow.Likes.length; j++) {
-								if (borrow.Likes[j].toString() === req.user._id.toString()) {
-									ifLikedValue = true;
-								}
-							}
-							BankAccounts.findOne({"OwnedBy": req.user._id}).exec(function (err, bankaccount){
-								if (err) {
-									console.log(err);
-									res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
-								}else{
-									if(!bankaccount){
-										res.redirect('/message?content='+chineseEncodeToURI('無銀行帳戶!'));
-									}else{
-										var moneyLendedCumulated=0
-										Transactions.find({"Lender": req.user._id}).exec(function (err, transactions){
-											if (err) {
-												console.log(err);
-												res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
-											}else{
-												if(transactions.length>0){
-													for(i=0;i<transactions.length;i++){
-														moneyLendedCumulated+=transactions[i].Principal;
-													}
-												}
-												Messages.findOne({$and:[{"CreatedBy": req.user._id},{"FromBorrowRequest": req.query.id},{"Type": "toLend"}]}).exec(function (err, message){
-													if (err) {
-														console.log(err);
-														res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
-													}else{
-														res.render('story',{userName:auRst,ifLiked:ifLikedValue,json:borrow,jsonComment:discussions,jsonMessage:message,MoneyInBankAccountValue:bankaccount.MoneyInBankAccount,MoneyLended:moneyLendedCumulated});
-													}
-												});
-											}
-										});
+							if(req.user._id==borrow.CreatedBy._id){
+								ifSelfValue=true;
+								res.render('story',{userName:auRst,ifSelf:ifSelfValue,ifLiked:ifLikedValue,json:borrow,jsonComment:discussions,jsonMessage:null,MoneyInBankAccountValue:0,MoneyLended:0});
+							}else{
+								var j = 0;
+								for (j = 0; j < borrow.Likes.length; j++) {
+									if (borrow.Likes[j].toString() == req.user._id.toString()) {
+										ifLikedValue = true;
 									}
 								}
-							});
+								BankAccounts.findOne({"OwnedBy": req.user._id}).exec(function (err, bankaccount){
+									if (err) {
+										console.log(err);
+										res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+									}else{
+										if(!bankaccount){
+											res.redirect('/message?content='+chineseEncodeToURI('無銀行帳戶!'));
+										}else{
+											var moneyLendedCumulated=0
+											Transactions.find({"Lender": req.user._id}).exec(function (err, transactions){
+												if (err) {
+													console.log(err);
+													res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+												}else{
+													if(transactions.length>0){
+														for(i=0;i<transactions.length;i++){
+															moneyLendedCumulated+=transactions[i].Principal;
+														}
+													}
+													Messages.findOne({$and:[{"CreatedBy": req.user._id},{"FromBorrowRequest": req.query.id},{"Type": "toLend"}]}).exec(function (err, message){
+														if (err) {
+															console.log(err);
+															res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+														}else{
+															res.render('story',{userName:auRst,ifSelf:ifSelfValue,ifLiked:ifLikedValue,json:borrow,jsonComment:discussions,jsonMessage:message,MoneyInBankAccountValue:bankaccount.MoneyInBankAccount,MoneyLended:moneyLendedCumulated});
+														}
+													});
+												}
+											});
+										}
+									}
+								});
+							}
 						}
 					}
 				});

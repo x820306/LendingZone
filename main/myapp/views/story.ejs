@@ -15,13 +15,19 @@
 									<span style="color:#337ab7;" class="glyphicon glyphicon-thumbs-up"></span>
 								</button>
 							<% }else{ %>
-								<%if(!ifLiked){ %>
-									<button class="btn btn-default" onclick="like();" id="btnID">
-										<span style="color:#337ab7;" class="glyphicon glyphicon-thumbs-up"></span>
-									</button>
+								<%if(!ifSelf){ %>
+									<%if(!ifLiked){ %>
+										<button class="btn btn-default" onclick="like();" id="btnID">
+											<span style="color:#337ab7;" class="glyphicon glyphicon-thumbs-up"></span>
+										</button>
+									<% }else{ %>
+										<button class="btn btn-default" onclick="unlike();" id="btnID">
+											<span style="color:#337ab7;" class="glyphicon glyphicon-remove"></span>
+										</button>
+									<%}%>
 								<% }else{ %>
-									<button class="btn btn-default" onclick="unlike();" id="btnID">
-										<span style="color:#337ab7;" class="glyphicon glyphicon-remove"></span>
+									<button class="btn btn-default disabled">
+										<span style="color:#337ab7;" class="glyphicon glyphicon-thumbs-up"></span>
 									</button>
 								<%}%>
 							<%}%>
@@ -53,6 +59,34 @@
 							<td>
 								<div>
 									&nbsp;&nbsp;&nbsp;&nbsp;<%=json.MoneyToBorrow%>
+								</div>	
+							</td>
+						<tr>
+						<tr>
+							<td>
+								<div style="color:#337ab7;">
+									已經借到：
+								</div>
+							</td>
+						<tr>
+						<tr>
+							<td>
+								<div>
+									&nbsp;&nbsp;&nbsp;&nbsp;<%=json.MoneyToBorrowCumulated%>
+								</div>	
+							</td>
+						<tr>
+						<tr>
+							<td>
+								<div style="color:#337ab7;">
+									還需要：
+								</div>
+							</td>
+						<tr>
+						<tr>
+							<td>
+								<div>
+									&nbsp;&nbsp;&nbsp;&nbsp;<%=json.MoneyToBorrow-json.MoneyToBorrowCumulated%>
 								</div>	
 							</td>
 						<tr>
@@ -154,26 +188,36 @@
 								<span style="color:#337ab7;">我想借錢給此人</span>
 							</button>
 						<% }else{ %>
-							<%if(!json.IfReadable){ %>
-									<button class="btn btn-default disabled">
-											<span style="color:#337ab7;">現在無法出借</span>
-									</button>
-							<%}else{%>
-								<%if(!jsonMessage){ %>
-									<button class="btn btn-default" data-toggle="modal" data-target="#hendLendModal">
-										<span style="color:#337ab7;">我想借錢給此人</span>
-									</button>
-								<% }else{ %>
-									<%if(jsonMessage.IfComfirmed){ %>
+							<%if(!ifSelf){ %>
+								<%if(!json.IfReadable){ %>
 										<button class="btn btn-default disabled">
-											<span style="color:#337ab7;">已經出借</span>
+												<span style="color:#337ab7;">現在無法出借</span>
+										</button>
+								<%}else{%>
+									<%if(!jsonMessage){ %>
+										<button class="btn btn-default" data-toggle="modal" data-target="#hendLendModal">
+											<span style="color:#337ab7;">我想借錢給此人</span>
 										</button>
 									<% }else{ %>
-										<button class="btn btn-default" data-toggle="modal" data-target="#hendLendModal">
-											<span style="color:#337ab7;">我想更新出借訊息</span>
-										</button>
+										<%if(jsonMessage.Status=='Confirmed'){ %>
+											<button class="btn btn-default disabled">
+												<span style="color:#337ab7;">已經出借</span>
+											</button>
+										<% }else if(jsonMessage.Status=='Rejected'){ %>
+											<button class="btn btn-default disabled">
+												<span style="color:#337ab7;">已被婉拒</span>
+											</button>
+										<% }else if(jsonMessage.Status=='NotConfirmed'){ %>
+											<button class="btn btn-default" data-toggle="modal" data-target="#hendLendModal">
+												<span style="color:#337ab7;">我想更新出借訊息</span>
+											</button>
+										<%}%>
 									<%}%>
 								<%}%>
+							<%}else{%>
+								<button class="btn btn-default disabled">
+										<span style="color:#337ab7;">此故事為您所有</span>
+								</button>
 							<%}%>
 						<%}%>
 					</td>
@@ -190,55 +234,15 @@
 	</div>
 </div>
 <%if(userName){ %>
-	<%if(json.IfReadable){ %>
-		<%if(!jsonMessage){ %>
-			<div class="modal fade" id="hendLendModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-				<div class="modal-dialog modal-md">
-					<div class="modal-content">
-						<div class="modal-header">
-							<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-							<h4 class="modal-title" id="myModalLabel">欲借出訊息 - 新建</h4>
-						</div>
-						<div class="modal-body">
-							<h4>銀行帳戶內餘額：</h4>
-							<input type="text" class="form-control" readonly="readonly" value="<%=MoneyInBankAccountValue%>">
-							<br>
-							<h4>已借出金額：</h4>
-							<input type="text" class="form-control" readonly="readonly" value="<%=MoneyLended%>">
-							<br>
-						<form action="/Messages/toLendCreate" method="post">
-							<h4>本次欲借出金額：</h4>
-							<input type="number" class="form-control" name="MoneyToLend">
-							<br>
-							<h4>本次欲借出利率：</h4>
-							<input type="text" class="form-control" name="InterestRate">
-							<br>
-							<h4>本次欲借出期數（單位/月）：</h4>
-							<input type="number" class="form-control" name="MonthPeriod">
-							<br>
-							<h4>訊息：</h4>
-							<textarea class="form-control" name="Message" rows="3"></textarea>
-							</div>
-							<input type="hidden" name="FromBorrowRequest" value="<%=json._id%>">
-							<div class="modal-footer">
-								<div class="btn-toolbar" role="toolbar">
-									<div class="btn-group" role="group">
-										<button type="submit" class="btn btn-info">新建</button>
-									</div>
-								</div>
-							</div>
-						</form>
-					</div>
-				</div>
-			</div>
-		<%}else{%>
-			<%if(!jsonMessage.IfComfirmed){ %>
+	<%if(!ifSelf){ %>
+		<%if(json.IfReadable){ %>
+			<%if(!jsonMessage){ %>
 				<div class="modal fade" id="hendLendModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 					<div class="modal-dialog modal-md">
 						<div class="modal-content">
 							<div class="modal-header">
 								<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-								<h4 class="modal-title" id="myModalLabel">欲借出訊息 - 更新/刪除</h4>
+								<h4 class="modal-title" id="myModalLabel">欲借出訊息 - 新建</h4>
 							</div>
 							<div class="modal-body">
 								<h4>銀行帳戶內餘額：</h4>
@@ -247,35 +251,77 @@
 								<h4>已借出金額：</h4>
 								<input type="text" class="form-control" readonly="readonly" value="<%=MoneyLended%>">
 								<br>
-							<form action="/Messages/toLendUpdate" method="post" id="formID">
+							<form action="/Messages/toLendCreate" method="post">
 								<h4>本次欲借出金額：</h4>
-								<input type="number" class="form-control" name="MoneyToLend" value="<%=jsonMessage.MoneyToLend%>">
+								<input type="number" class="form-control" name="MoneyToLend">
 								<br>
 								<h4>本次欲借出利率：</h4>
-								<input type="text" class="form-control" name="InterestRate" value="<%=jsonMessage.InterestRate%>">
+								<input type="text" class="form-control" name="InterestRate">
 								<br>
 								<h4>本次欲借出期數（單位/月）：</h4>
-								<input type="number" class="form-control" name="MonthPeriod" value="<%=jsonMessage.MonthPeriod%>">
+								<input type="number" class="form-control" name="MonthPeriod">
 								<br>
 								<h4>訊息：</h4>
-								<textarea class="form-control" name="Message" rows="3"><%=jsonMessage.Message%></textarea>
+								<textarea class="form-control" name="Message" rows="3"></textarea>
 								</div>
 								<input type="hidden" name="FromBorrowRequest" value="<%=json._id%>">
-								<input type="hidden" name="_id" value="<%=jsonMessage._id%>">
 								<div class="modal-footer">
 									<div class="btn-toolbar" role="toolbar">
 										<div class="btn-group" role="group">
-											<button type="submit" class="btn btn-info">更新</button>
-										</div>
-										<div class="btn-group" role="group">
-											<button type="button" class="btn btn-danger" onclick="destroy();">刪除</button>
+											<button type="submit" class="btn btn-info">新建</button>
 										</div>
 									</div>
 								</div>
 							</form>
 						</div>
 					</div>
-				</div>	
+				</div>
+			<%}else{%>
+				<%if(jsonMessage.Status=='NotConfirmed'){ %>
+					<div class="modal fade" id="hendLendModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+						<div class="modal-dialog modal-md">
+							<div class="modal-content">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+									<h4 class="modal-title" id="myModalLabel">欲借出訊息 - 更新/刪除</h4>
+								</div>
+								<div class="modal-body">
+									<h4>銀行帳戶內餘額：</h4>
+									<input type="text" class="form-control" readonly="readonly" value="<%=MoneyInBankAccountValue%>">
+									<br>
+									<h4>已借出金額：</h4>
+									<input type="text" class="form-control" readonly="readonly" value="<%=MoneyLended%>">
+									<br>
+								<form action="/Messages/toLendUpdate" method="post" id="formID">
+									<h4>本次欲借出金額：</h4>
+									<input type="number" class="form-control" name="MoneyToLend" value="<%=jsonMessage.MoneyToLend%>">
+									<br>
+									<h4>本次欲借出利率：</h4>
+									<input type="text" class="form-control" name="InterestRate" value="<%=jsonMessage.InterestRate%>">
+									<br>
+									<h4>本次欲借出期數（單位/月）：</h4>
+									<input type="number" class="form-control" name="MonthPeriod" value="<%=jsonMessage.MonthPeriod%>">
+									<br>
+									<h4>訊息：</h4>
+									<textarea class="form-control" name="Message" rows="3"><%=jsonMessage.Message%></textarea>
+									</div>
+									<input type="hidden" name="FromBorrowRequest" value="<%=json._id%>">
+									<input type="hidden" name="_id" value="<%=jsonMessage._id%>">
+									<div class="modal-footer">
+										<div class="btn-toolbar" role="toolbar">
+											<div class="btn-group" role="group">
+												<button type="submit" class="btn btn-info">更新</button>
+											</div>
+											<div class="btn-group" role="group">
+												<button type="button" class="btn btn-danger" onclick="destroy();">刪除</button>
+											</div>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>	
+				<%}%>	
 			<%}%>	
 		<%}%>	
 	<%}%>	
@@ -308,6 +354,9 @@
 									var date=dateObj.getDate();
 									$('#discussionDiv').append(Jdata.result[i].CreatedBy.Username+'：<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+Jdata.result[i].Content+'<br>'+year+'/'+month+'/'+date+'<br><br>');
 								}
+								$('#discussionDiv').stop().animate({
+								  scrollTop: $("#discussionDiv")[0].scrollHeight
+								}, 800);
 								$('#iptCtr').val('');
 								$('#iptCtr').attr('onkeypress','if(event.keyCode==13){sendComment();}');
 								$('#iptCtr').removeAttr("readonly");
@@ -335,81 +384,81 @@
 			}
 		}
 
-		function like(){
-			var orig=$('#btnID').attr('class');
-			if(orig.search(' disabled')<0){
-				orig=orig+' disabled';
-				$('#btnID').attr('class',orig);
-			}
-			$.ajax({ 
-					url: '/Borrows/like',
-					type: 'POST',
-					data:{_id:"<%=json._id%>"},
-					dataType: 'json',
-					success: function(Jdata) {
-						if(Jdata.success){
-							$('#likeBtn').html('<button class="btn btn-default" onclick="unlike();" id="btnID"><span style="color:#337ab7;" class="glyphicon glyphicon-remove"></span></button>');
-							$('#likeNum').html('&nbsp;'+Jdata.result);
-						}else{
+		<%if(!ifSelf){ %>
+			function like(){
+				var orig=$('#btnID').attr('class');
+				if(orig.search(' disabled')<0){
+					orig=orig+' disabled';
+					$('#btnID').attr('class',orig);
+				}
+				$.ajax({ 
+						url: '/Borrows/like',
+						type: 'POST',
+						data:{_id:"<%=json._id%>"},
+						dataType: 'json',
+						success: function(Jdata) {
+							if(Jdata.success){
+								$('#likeBtn').html('<button class="btn btn-default" onclick="unlike();" id="btnID"><span style="color:#337ab7;" class="glyphicon glyphicon-remove"></span></button>');
+								$('#likeNum').html('&nbsp;'+Jdata.result);
+							}else{
+								alert('something wrong.');
+								var origInner=$('#btnID').attr('class');
+								origInner=origInner.replace(/ disabled/g, '');
+								$('#btnID').attr('class',origInner);
+							}
+						},
+						error: function() {
 							alert('something wrong.');
 							var origInner=$('#btnID').attr('class');
 							origInner=origInner.replace(/ disabled/g, '');
 							$('#btnID').attr('class',origInner);
 						}
-					},
-					error: function() {
-						alert('something wrong.');
-						var origInner=$('#btnID').attr('class');
-						origInner=origInner.replace(/ disabled/g, '');
-						$('#btnID').attr('class',origInner);
-					}
-			});	
-		}
-		
-		function unlike(){
-			var orig=$('#btnID').attr('class');
-			if(orig.search(' disabled')<0){
-				orig=orig+' disabled';
-				$('#btnID').attr('class',orig);
+				});	
 			}
-			$.ajax({ 
-					url: '/Borrows/unlike',
-					type: 'POST',
-					data:{_id:"<%=json._id%>"},
-					dataType: 'json',
-					success: function(Jdata) {
-						if(Jdata.success){
-							$('#likeBtn').html('<button class="btn btn-default" onclick="like();" id="btnID"><span style="color:#337ab7;" class="glyphicon glyphicon-thumbs-up"></span></button>');
-							$('#likeNum').html('&nbsp;'+Jdata.result);
-						}else{
+			
+			function unlike(){
+				var orig=$('#btnID').attr('class');
+				if(orig.search(' disabled')<0){
+					orig=orig+' disabled';
+					$('#btnID').attr('class',orig);
+				}
+				$.ajax({ 
+						url: '/Borrows/unlike',
+						type: 'POST',
+						data:{_id:"<%=json._id%>"},
+						dataType: 'json',
+						success: function(Jdata) {
+							if(Jdata.success){
+								$('#likeBtn').html('<button class="btn btn-default" onclick="like();" id="btnID"><span style="color:#337ab7;" class="glyphicon glyphicon-thumbs-up"></span></button>');
+								$('#likeNum').html('&nbsp;'+Jdata.result);
+							}else{
+								alert('something wrong.');
+								var origInner=$('#btnID').attr('class');
+								origInner=origInner.replace(/ disabled/g, '');
+								$('#btnID').attr('class',origInner);
+							}
+						},
+						error: function() {
 							alert('something wrong.');
 							var origInner=$('#btnID').attr('class');
 							origInner=origInner.replace(/ disabled/g, '');
 							$('#btnID').attr('class',origInner);
 						}
-					},
-					error: function() {
-						alert('something wrong.');
-						var origInner=$('#btnID').attr('class');
-						origInner=origInner.replace(/ disabled/g, '');
-						$('#btnID').attr('class',origInner);
-					}
-			});	
-		}
-		
-		<%if(json.IfReadable){ %>
-			<% if(jsonMessage){ %>
-				<% if(!jsonMessage.IfComfirmed){ %>
-					function destroy(){
-						var form=document.getElementById('formID');
-						form.action="/Messages/destroy";
-						form.submit();
-					}
+				});	
+			}
+			
+			<%if(json.IfReadable){ %>
+				<% if(jsonMessage){ %>
+					<% if(jsonMessage.Status=='NotConfirmed'){ %>
+						function destroy(){
+							var form=document.getElementById('formID');
+							form.action="/Messages/destroy";
+							form.submit();
+						}
+					<%}%>
 				<%}%>
 			<%}%>
 		<%}%>
 	<%}%>
-	
-	
 </script>
 <%- include('layout_footer'); -%>
