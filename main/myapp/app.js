@@ -137,7 +137,6 @@ app.get('/search/:keyword?/:action?/:page?', function (req, res) {
 	}
 	
 	var Borrows  = mongoose.model('Borrows');
-	var Users  = mongoose.model('Users');
 	Borrows.find({$or:[{"StoryTitle": new RegExp(keyword,'i')},{"Story": new RegExp(keyword,'i')}],$and:[{"StoryTitle": {'$ne': '' }},{"Story": {'$ne': '' }},{"IfReadable": true}]}).populate('CreatedBy', 'Username').sort(actionRec).exec( function (err, borrows, count){
 		if (err) {
 			console.log(err);
@@ -197,11 +196,11 @@ app.get('/story/:id?', function (req, res) {
 						var ifSelfValue=false;
 						var ifLikedValue=false;
 						if(!auRst){
-							res.render('story',{userName:auRst,ifSelf:ifSelfValue,ifLiked:ifLikedValue,json:borrow,jsonComment:discussions,jsonMessage:null,MoneyInBankAccountValue:0,MoneyLended:0});
+							res.render('story',{userName:auRst,ifSelf:ifSelfValue,ifLiked:ifLikedValue,json:borrow,jsonComment:discussions,jsonMessage:null,jsonBorrowMessage:null,MoneyInBankAccountValue:0,MoneyLended:0});
 						}else{
 							if(req.user._id==borrow.CreatedBy._id){
 								ifSelfValue=true;
-								res.render('story',{userName:auRst,ifSelf:ifSelfValue,ifLiked:ifLikedValue,json:borrow,jsonComment:discussions,jsonMessage:null,MoneyInBankAccountValue:0,MoneyLended:0});
+								res.render('story',{userName:auRst,ifSelf:ifSelfValue,ifLiked:ifLikedValue,json:borrow,jsonComment:discussions,jsonMessage:null,jsonBorrowMessage:null,MoneyInBankAccountValue:0,MoneyLended:0});
 							}else{
 								var j = 0;
 								for (j = 0; j < borrow.Likes.length; j++) {
@@ -233,7 +232,14 @@ app.get('/story/:id?', function (req, res) {
 															console.log(err);
 															res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
 														}else{
-															res.render('story',{userName:auRst,ifSelf:ifSelfValue,ifLiked:ifLikedValue,json:borrow,jsonComment:discussions,jsonMessage:message,MoneyInBankAccountValue:bankaccount.MoneyInBankAccount,MoneyLended:moneyLendedCumulated});
+															Messages.findOne({$and:[{"CreatedBy": borrow.CreatedBy._id},{"SendTo": req.user._id},{"FromBorrowRequest": req.query.id},{"Type": "toBorrow"}]}).exec(function (err, borrowMessage){
+																if (err) {
+																	console.log(err);
+																	res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+																}else{
+																	res.render('story',{userName:auRst,ifSelf:ifSelfValue,ifLiked:ifLikedValue,json:borrow,jsonComment:discussions,jsonMessage:message,jsonBorrowMessage:borrowMessage,MoneyInBankAccountValue:bankaccount.MoneyInBankAccount,MoneyLended:moneyLendedCumulated});
+																}
+															});
 														}
 													});
 												}
@@ -292,8 +298,56 @@ app.get('/income', ensureAuthenticated, function (req, res) {
 	res.render('income',{userName:req.user.Username});
 });
 
-app.get('/lenderSendMessages', ensureAuthenticated, function (req, res) {
-	res.render('lenderSendMessages',{userName:req.user.Username});
+app.get('/lenderSendMessages/:filter?/:page?', ensureAuthenticated, function (req, res) {
+	var resArrays=[];
+	var filter=decodeURIComponent(req.query.filter);
+	var targetPage=parseInt(req.query.page);
+	var pageNum=0
+	var totalResultNumber;
+	
+	var filterRec;
+	
+	if(filter=='未被確認'){
+		filterRec="NotConfirmed";
+	}else if(filter=='已被同意'){
+		filterRec="Confirmed";
+	}else if(filter=='已被婉拒'){
+		filterRec="Rejected";
+	}
+	
+	var Messages  = mongoose.model('Messages');
+	var Transactions  = mongoose.model('Transactions');
+	Messages.find({$and:[{"CreatedBy": req.user._id},{"Type": "toLend"},{"Status": filterRec}]}).populate('SendTo', 'Username').populate('FromBorrowRequest', 'StoryTitle Story').populate('Transaction').sort("-Updated").exec( function (err, messages, count){
+		if (err) {
+			console.log(err);
+			res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+		}else{
+			totalResultNumber=messages.length;
+			if(totalResultNumber==0){
+				res.render('lenderSendMessages',{userName:req.user.Username,filterDefault:filter,jsonMessage:resArrays,jsonTrans:null,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage});
+			}else{
+				var divider=2;
+				pageNum=Math.ceil(messages.length/divider);
+				
+				if(pageNum<targetPage){
+					res.redirect('/message?content='+chineseEncodeToURI('錯誤頁碼!'));
+				}else{
+					var starter=divider*(targetPage-1);
+					var ender;
+					if(targetPage==pageNum){
+						ender=messages.length;
+					}else{
+						ender=starter+divider;
+					}
+					for(i=starter;i<ender;i++){
+						resArrays.push(messages[i]);
+					}
+
+					res.render('lenderSendMessages',{userName:req.user.Username,filterDefault:filter,jsonMessage:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage});
+				}
+			}
+		}
+	});
 });
 
 app.get('/lenderReceiveMessages', ensureAuthenticated, function (req, res) {

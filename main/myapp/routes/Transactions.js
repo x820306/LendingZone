@@ -5,7 +5,7 @@ var sanitizer = require('sanitizer');
 var express = require('express');
 var router = express.Router();
 
-router.post('/create', function(req, res, next) {
+router.post('/createTest', function(req, res, next) {
 	var toCreate = new Transactions();
 	toCreate.Principal=sanitizer.sanitize(req.body.Principal);
 	toCreate.InterestRate=sanitizer.sanitize(req.body.InterestRate);
@@ -22,8 +22,6 @@ router.post('/create', function(req, res, next) {
 			res.json(newCreate);
 		}
 	});
-	
-	
 });
 
 module.exports = router;

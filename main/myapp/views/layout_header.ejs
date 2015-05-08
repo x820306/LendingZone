@@ -43,8 +43,8 @@
 								<li <% if(nav_cur=='lend'){ %> class="active"<% } %>><% if(!userName){ %><a href="#" data-toggle="modal" data-target="#myModal"><% }else{ %><a href="/lend"><%}%>自動借出設定</a></li>
 								<li <% if(nav_cur=='income'){ %> class="active"<% } %>><% if(!userName){ %><a href="#" data-toggle="modal" data-target="#myModal"><% }else{ %><a href="/income"><%}%>收入分析</a></li>
 								<li class="divider"></li>
-								<li <% if(nav_cur=='lenderReceiveMessages'){ %> class="active"<% } %>><% if(!userName){ %><a href="#" data-toggle="modal" data-target="#myModal"><% }else{ %><a href="/lenderReceiveMessages"><%}%>收到之欲借入訊息</a></li>
-								<li <% if(nav_cur=='lenderSendMessages'){ %> class="active"<% } %>><% if(!userName){ %><a href="#" data-toggle="modal" data-target="#myModal"><% }else{ %><a href="/lenderSendMessages"><%}%>送出之欲借出訊息</a></li>
+								<li <% if(nav_cur=='lenderReceiveMessages'){ %> class="active"<% } %>><% if(!userName){ %><a href="#" data-toggle="modal" data-target="#myModal"><% }else{ %><a href="/lenderReceiveMessages?filter=未確認&page=1"><%}%>收到之欲借入訊息</a></li>
+								<li <% if(nav_cur=='lenderSendMessages'){ %> class="active"<% } %>><% if(!userName){ %><a href="#" data-toggle="modal" data-target="#myModal"><% }else{ %><a href="/lenderSendMessages?filter=未被確認&page=1"><%}%>送出之欲借出訊息</a></li>
 							</ul>
 						</li>
 					</ul>
@@ -56,9 +56,9 @@
 								<button type="button" style="height:32px;" class="btn btn-default" onclick="window.open('/search?keyword='+$('#keywordIpt').val()+'&action='+$('#searchAction0').text()+'&page=1','_self');"><span class="glyphicon glyphicon-search"></span></button>
 								<ul class="dropdown-menu" role="menu">
 									<li style="display:none"><a href="#" id="searchAction0"><%=actionDefault%></a></li>
-									<li><a href="#" onclick="$('#searchActionSelected').html('');$('#searchActionSelected').html($('#searchAction1').text());$('#searchAction0').html($('#searchActionSelected').text());$('#searchActionSelected').append(' <span class=\'caret\'><\/span>');" id="searchAction1">最新</a></li>
-									<li><a href="#" onclick="$('#searchActionSelected').html('');$('#searchActionSelected').html($('#searchAction2').text());$('#searchAction0').html($('#searchActionSelected').text());$('#searchActionSelected').append(' <span class=\'caret\'><\/span>');" id="searchAction2">最緊急</a></li>
-									<li><a href="#" onclick="$('#searchActionSelected').html('');$('#searchActionSelected').html($('#searchAction3').text());$('#searchAction0').html($('#searchActionSelected').text());$('#searchActionSelected').append(' <span class=\'caret\'><\/span>');" id="searchAction3">最熱門</a></li>
+									<li><a href="#" onclick="$('#searchActionSelected').html('');$('#searchActionSelected').html($('#searchAction1').text());$('#searchAction0').html($('#searchActionSelected').text());$('#searchActionSelected').append(' <span class=\'caret\'><\/span>');return false;" id="searchAction1">最新</a></li>
+									<li><a href="#" onclick="$('#searchActionSelected').html('');$('#searchActionSelected').html($('#searchAction2').text());$('#searchAction0').html($('#searchActionSelected').text());$('#searchActionSelected').append(' <span class=\'caret\'><\/span>');return false;" id="searchAction2">最緊急</a></li>
+									<li><a href="#" onclick="$('#searchActionSelected').html('');$('#searchActionSelected').html($('#searchAction3').text());$('#searchAction0').html($('#searchActionSelected').text());$('#searchActionSelected').append(' <span class=\'caret\'><\/span>');return false;" id="searchAction3">最熱門</a></li>
 								</ul>
 							</span>
 						</div> 

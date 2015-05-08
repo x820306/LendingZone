@@ -2,6 +2,275 @@
 <div class="container">
 	<div class="row">
 		<div class="col-md-9">
+			<div style="font-size:30pt;color:#337ab7;">送出之欲借出訊息</div>
+				<div style="font-size:20pt;color:#0000D1;">&nbsp;<%=totalResultNum%> result</div>
+				<br>
+				<div class="btn-group">
+					<div class="btn-group">
+						<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" id="filterSelected">
+							<%=filterDefault%> <span class="caret"></span>
+						</button>
+						<ul class="dropdown-menu">
+							<li style="display:none"><a href="#" id="filter0"><%=filterDefault%></a></li>
+							<li><a href="#" onclick="$('#filterSelected').html('');$('#filterSelected').html($('#filter1').text());$('#filter0').html($('#filterSelected').text());$('#filterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="filter1">未被確認</a></li>
+							<li><a href="#" onclick="$('#filterSelected').html('');$('#filterSelected').html($('#filter2').text());$('#filter0').html($('#filterSelected').text());$('#filterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="filter2">已被同意</a></li>
+							<li><a href="#" onclick="$('#filterSelected').html('');$('#filterSelected').html($('#filter3').text());$('#filter0').html($('#filterSelected').text());$('#filterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="filter3">已被婉拒</a></li>
+						</ul>
+					</div>
+					<button type="button" class="btn btn-default" onclick="window.open('/lenderSendMessages?filter='+$('#filter0').text()+'&page=1','_self');">Go!</button>
+				</div>
+				<br>
+				<br>
+				<br>
+				<% for(var i=0; i<jsonMessage.length; i++) { %>
+				<ul class="nav nav-tabs">
+					<li class="active"><a href="#tab1<%=i%>" data-toggle="tab">訊息</a></li>
+					<li><a href="#tab2<%=i%>" data-toggle="tab">
+					<% if(filterDefault=='已被同意'){%>
+						交易紀錄
+					<% }else{%>
+						資訊
+					<% } %>
+					</a></li>
+				</ul>
+				<div class="tab-content my-tab-content">
+					<div class="tab-pane active" id="tab1<%=i%>">
+						<div style="font-size:25px;display:inline;">To </div>
+						<div style="font-size:25px;color:#0000D1;display:inline;"><%=jsonMessage[i].SendTo.Username%></div>
+						<br>
+						At <a style="font-size:15px;" href="/story?id=<%=jsonMessage[i].FromBorrowRequest._id%>"><%=jsonMessage[i].FromBorrowRequest.StoryTitle%></a>
+						<br>
+						<br>
+						<%=jsonMessage[i].Message%>
+					</div>
+					<div class="tab-pane" id="tab2<%=i%>">
+						<% if(filterDefault=='已被同意'){%>
+							<table width="100%" height="200px">
+								<tr>
+									<td>
+										<div style="color:#337ab7;">
+											對方未還本金：
+										</div>
+									</td>
+								<tr>
+								<tr>
+									<td>
+										<div>
+											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].Principal%>
+										</div>	
+									</td>
+								<tr>
+								<tr>
+									<td>
+										<div style="color:#337ab7;">
+											對方已還本金：
+										</div>
+									</td>
+								<tr>
+								<tr>
+									<td>
+										<div>
+											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].PrincipalReturnedCumulated%>
+										</div>	
+									</td>
+								<tr>
+								<tr>
+									<td>
+										<div style="color:#337ab7;">
+											利率：
+										</div>
+									</td>
+								<tr>
+								<tr>
+									<td>
+										<div>
+											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].InterestRate%>
+										</div>	
+									</td>
+								<tr>
+								<tr>
+									<td>
+										<div style="color:#337ab7;">
+											已得利息：
+										</div>
+									</td>
+								<tr>
+								<tr>
+									<td>
+										<div>
+											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].InterestCumulated%>
+										</div>	
+									</td>
+								<tr>
+								<tr>
+									<td>
+										<div style="color:#337ab7;">
+											剩下期數：
+										</div>
+									</td>
+								<tr>
+								<tr>
+									<td>
+										<div>
+											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].MonthPeriod%>
+										</div>	
+									</td>
+								<tr>
+								<tr>
+									<td>
+										<div style="color:#337ab7;">
+											已過期數:
+										</div>
+									</td>
+								<tr>
+								<tr>
+									<td>
+										<div>
+											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].MonthPeriodHasPast%>
+										</div>	
+									</td>
+								<tr>
+								<tr>
+									<td>
+										<div style="color:#337ab7;">
+											成交日期:
+										</div>
+									</td>
+								<tr>
+								<tr>
+									<td>
+										<div>
+											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].Created.getFullYear()%>/<%=jsonMessage[i].Transaction[0].Created.getMonth()+1%>/<%=jsonMessage[i].Transaction[0].Created.getDate()%>
+										</div>	
+									</td>
+								<tr>
+							</table>
+						<% }else{%>
+							<table width="100%" height="250px">
+								<tr>
+									<td>
+										<div style="color:#337ab7;">
+											欲借出金額：
+										</div>
+									</td>
+								<tr>
+								<tr>
+									<td>
+										<div>
+											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].MoneyToLend%>
+										</div>	
+									</td>
+								<tr>
+								<tr>
+									<td>
+										<div style="color:#337ab7;">
+											欲借出利率：
+										</div>
+									</td>
+								<tr>
+								<tr>
+									<td>
+										<div>
+											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].InterestRate%>
+										</div>	
+									</td>
+								<tr>
+								<tr>
+									<td>
+										<div style="color:#337ab7;">
+											欲借出期數：
+										</div>
+									</td>
+								<tr>
+								<tr>
+									<td>
+										<div>
+											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].MonthPeriod%>
+										</div>	
+									</td>
+								<tr>
+							</table>
+						<% } %>
+					</div>
+				</div>
+				<table width="100%">
+				<tr>
+					<td align="right">
+						<div style="color:#337ab7;">
+							Updated：<%=jsonMessage[i].Updated.getFullYear()%>/<%=jsonMessage[i].Updated.getMonth()+1%>/<%=jsonMessage[i].Updated.getDate()%>
+						</div>
+					</td>
+				<tr>
+			</table>
+			<%}%>
+			<br>
+			<table align="center">
+				<tr>
+					<td>
+						<nav>
+						  <ul class="pagination">
+							<li 
+								<% if(targetPageNumber==1){%>
+									class="disabled"
+								<%}%>
+							>
+							<% if(targetPageNumber!=1){%>
+								<a href="/lenderSendMessages?filter=<%=filterDefault%>&page=<%=targetPageNumber-1%>">
+							<%}else{%>
+								<a href="#" onclick="return false;">
+							<%}%>
+							<span>&laquo;</span></a></li>
+							<% if(pageNumber<=10){%>
+								<% for(var j=1; j<=pageNumber; j++) { %>
+									<li 
+										<% if(targetPageNumber==j){%>
+											class="active"
+										<%}%>
+									><a href="/lenderSendMessages?filter=<%=filterDefault%>&page=<%=j%>"><%=j%></a></li>
+								<%}%>
+							<% }else{%>
+								<% if(targetPageNumber>=pageNumber-3){%>
+									<% for(var j=pageNumber-9; j<=pageNumber; j++) { %>
+									<li 
+										<% if(targetPageNumber==j){%>
+											class="active"
+										<%}%>
+									><a href="/lenderSendMessages?filter=<%=filterDefault%>&page=<%=j%>"><%=j%></a></li>
+									<%}%>
+								<%}else if(targetPageNumber<=5){%>
+									<% for(var j=1; j<=10; j++) { %>
+									<li 
+										<% if(targetPageNumber==j){%>
+											class="active"
+										<%}%>
+									><a href="/lenderSendMessages?filter=<%=filterDefault%>&page=<%=j%>"><%=j%></a></li>
+									<%}%>
+								<%}else{%>
+									<% for(var j=targetPageNumber-5; j<targetPageNumber; j++) { %>
+									<li><a href="/lenderSendMessages?filter=<%=filterDefault%>&page=<%=j%>"><%=j%></a></li>
+									<%}%>
+									<li class="active"><a href="/lenderSendMessages?filter=<%=filterDefault%>&page=<%=targetPageNumber%>"><%=targetPageNumber%></a></li>
+									<% for(var j=targetPageNumber+1; j<=targetPageNumber+4; j++) { %>
+									<li><a href="/lenderSendMessages?filter=<%=filterDefault%>&page=<%=j%>"><%=j%></a></li>
+									<%}%>
+								<%}%>
+							<%}%>
+							<li 
+								<% if(targetPageNumber==pageNumber){%>
+									class="disabled"
+								<%}%>
+							>	
+							<% if(targetPageNumber!=pageNumber){%>
+								<a href="/lenderSendMessages?filter=<%=filterDefault%>&page=<%=targetPageNumber+1%>">
+							<%}else{%>
+								<a href="#" onclick="return false;">
+							<%}%>
+							<span>&raquo;</span></a></li>
+						  </ul>
+						</nav>
+					</td>
+				</tr>
+			</table>
 		</div>
 		<div class="col-md-3">
 		</div>

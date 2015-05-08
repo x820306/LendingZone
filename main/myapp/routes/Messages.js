@@ -78,116 +78,129 @@ function toLendSamePart(res,req,differentPart,outterPara){
 }
 
 function toLendCreatePart(res,req,borrow,lenderBankaccount,outterPara){
-	var toCreate = new Messages();
-	toCreate.FromBorrowRequest=sanitizer.sanitize(req.body.FromBorrowRequest);
-	toCreate.Message=sanitizer.sanitize(req.body.Message);
-	toCreate.MoneyToLend=sanitizer.sanitize(req.body.MoneyToLend);
-	toCreate.InterestRate=sanitizer.sanitize(req.body.InterestRate);
-	toCreate.MonthPeriod=sanitizer.sanitize(req.body.MonthPeriod);
-	toCreate.CreatedBy= req.user._id
-	toCreate.SendTo=borrow.CreatedBy._id;
-	toCreate.Type='toLend';
-	
-	toCreate.save(function (err,newCreate) {
-		if (err){
+	Messages.findOne({$and:[{"CreatedBy": borrow.CreatedBy._id},{"SendTo": req.user._id},{"FromBorrowRequest": req.body.FromBorrowRequest},{"Type": "toBorrow"}]}).exec(function (err, borrowMessage){
+		if (err) {
 			console.log(err);
-			res.redirect('/message?content='+chineseEncodeToURI('新建失敗!'));
+			res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
 		}else{
-			if(borrow.CreatedBy.AutoComfirmToLendMsgPeriod==0){
-				var toCreateTransaction = new Transactions();
-				toCreateTransaction.Principal=newCreate.MoneyToLend;
-				toCreateTransaction.InterestRate=newCreate.InterestRate;
-				toCreateTransaction.MonthPeriod=newCreate.MonthPeriod;
-				toCreateTransaction.CreatedFrom=newCreate._id;
-				toCreateTransaction.Borrower=newCreate.SendTo;
-				toCreateTransaction.Lender=newCreate.CreatedBy;
+			if(!borrowMessage){
+				var toCreate = new Messages();
+				toCreate.FromBorrowRequest=sanitizer.sanitize(req.body.FromBorrowRequest);
+				toCreate.Message=sanitizer.sanitize(req.body.Message);
+				toCreate.MoneyToLend=sanitizer.sanitize(req.body.MoneyToLend);
+				toCreate.InterestRate=sanitizer.sanitize(req.body.InterestRate);
+				toCreate.MonthPeriod=sanitizer.sanitize(req.body.MonthPeriod);
+				toCreate.CreatedBy= req.user._id
+				toCreate.SendTo=borrow.CreatedBy._id;
+				toCreate.Type='toLend';
 				
-				toCreateTransaction.save(function (err,newCreateTransaction) {
+				toCreate.save(function (err,newCreate) {
 					if (err){
 						console.log(err);
-						res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+						res.redirect('/message?content='+chineseEncodeToURI('新建失敗!'));
 					}else{
-						BankAccounts.findOne({"OwnedBy": newCreateTransaction.Borrower}).exec(function (err, borrowerBankaccount){
-							if (err) {
-								console.log(err);
-								res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
-							}else{
-								if(!borrowerBankaccount){
+						if(borrow.CreatedBy.AutoComfirmToLendMsgPeriod==0){
+							var toCreateTransaction = new Transactions();
+							toCreateTransaction.Principal=newCreate.MoneyToLend;
+							toCreateTransaction.InterestRate=newCreate.InterestRate;
+							toCreateTransaction.MonthPeriod=newCreate.MonthPeriod;
+							toCreateTransaction.CreatedFrom=newCreate._id;
+							toCreateTransaction.Borrower=newCreate.SendTo;
+							toCreateTransaction.Lender=newCreate.CreatedBy;
+							
+							toCreateTransaction.save(function (err,newCreateTransaction) {
+								if (err){
+									console.log(err);
 									res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
 								}else{
-									borrowerBankaccount.MoneyInBankAccount+=newCreateTransaction.Principal;
-									borrowerBankaccount.save(function (err,updatedBorrowerBankaccount) {
-										if (err){
+									BankAccounts.findOne({"OwnedBy": newCreateTransaction.Borrower}).exec(function (err, borrowerBankaccount){
+										if (err) {
 											console.log(err);
 											res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
 										}else{
-											lenderBankaccount.MoneyInBankAccount-=newCreateTransaction.Principal;
-											lenderBankaccount.save(function (err,updatedLenderBankaccount) {
-												if (err){
-													console.log(err);
-													res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
-												}else{				
-													borrow.MoneyToBorrowCumulated+=newCreateTransaction.Principal;
-													if(borrow.MoneyToBorrowCumulated>=borrow.MoneyToBorrow){
-														borrow.IfReadable=false;
-													}
-													borrow.save(function (err,updatedBorrow) {
-														if (err){
-															console.log(err);
-															res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
-														}else{				
-															Lends.findOne({"CreatedBy": req.user._id}).exec(function (err, lend){
-																if (err) {
-																	console.log(err);
-																	res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
-																}else{
-																	if(!lend){
-																		newCreate.Status='Confirmed';
-																		newCreate.save(function (err,newCreateUpdated) {
-																			if (err){
+											if(!borrowerBankaccount){
+												res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+											}else{
+												borrowerBankaccount.MoneyInBankAccount+=newCreateTransaction.Principal;
+												borrowerBankaccount.save(function (err,updatedBorrowerBankaccount) {
+													if (err){
+														console.log(err);
+														res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+													}else{
+														lenderBankaccount.MoneyInBankAccount-=newCreateTransaction.Principal;
+														lenderBankaccount.save(function (err,updatedLenderBankaccount) {
+															if (err){
+																console.log(err);
+																res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+															}else{				
+																borrow.MoneyToBorrowCumulated+=newCreateTransaction.Principal;
+																if(borrow.MoneyToBorrowCumulated>=borrow.MoneyToBorrow){
+																	borrow.IfReadable=false;
+																}
+																borrow.save(function (err,updatedBorrow) {
+																	if (err){
+																		console.log(err);
+																		res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+																	}else{				
+																		Lends.findOne({"CreatedBy": req.user._id}).exec(function (err, lend){
+																			if (err) {
 																				console.log(err);
 																				res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
 																			}else{
-																				res.redirect('/story?id='+req.body.FromBorrowRequest);
-																			}
-																		});
-																	}else{
-																		lend.MaxMoneyToLend-=newCreateTransaction.Principal;
-																		if(lend.MaxMoneyToLend<0){
-																			lend.MaxMoneyToLend=0;
-																		}
-																		lend.save(function (err,updatedLend) {
-																			if (err){
-																				console.log(err);
-																				res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
-																			}else{		
-																				newCreate.Status='Confirmed';
-																				newCreate.save(function (err,newCreateUpdated) {
-																					if (err){
-																						console.log(err);
-																						res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
-																					}else{
-																						res.redirect('/story?id='+req.body.FromBorrowRequest);
+																				if(!lend){
+																					newCreate.Status='Confirmed';
+																					newCreate.Transaction.push(newCreateTransaction._id);
+																					newCreate.save(function (err,newCreateUpdated) {
+																						if (err){
+																							console.log(err);
+																							res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+																						}else{
+																							res.redirect('/story?id='+req.body.FromBorrowRequest);
+																						}
+																					});
+																				}else{
+																					lend.MaxMoneyToLend-=newCreateTransaction.Principal;
+																					if(lend.MaxMoneyToLend<0){
+																						lend.MaxMoneyToLend=0;
 																					}
-																				});
+																					lend.save(function (err,updatedLend) {
+																						if (err){
+																							console.log(err);
+																							res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+																						}else{		
+																							newCreate.Status='Confirmed';
+																							newCreate.Transaction.push(newCreateTransaction._id);
+																							newCreate.save(function (err,newCreateUpdated) {
+																								if (err){
+																									console.log(err);
+																									res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+																								}else{
+																									res.redirect('/story?id='+req.body.FromBorrowRequest);
+																								}
+																							});
+																						}
+																					});
+																				}
 																			}
 																		});
 																	}
-																}
-															});
-														}
-													});
-												}
-											});
+																});
+															}
+														});
+													}
+												});
+											}
 										}
 									});
 								}
-							}
-						});
+							});
+						}else{
+							res.redirect('/story?id='+req.body.FromBorrowRequest);
+						}
 					}
 				});
 			}else{
-				res.redirect('/story?id='+req.body.FromBorrowRequest);
+				res.redirect('/message?content='+chineseEncodeToURI('錯誤!請回到上頁重整頁面'));
 			}
 		}
 	});
@@ -209,6 +222,398 @@ function toLendUpdatePart(res,req,innerPara,innerPara2,message){
 		}
 	});
 }
+
+function confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,returnSring,req,res){
+	var FBR;
+	if(!ifRecursive){
+		FBR=req.body.FromBorrowRequest;
+	}else{
+		FBR=req.body.array[ctr].FromBorrowRequest;
+	}
+	Borrows.findById(FBR).exec(function (err, borrow){
+		if (err) {
+			console.log(err);
+			if(ifRecursive){
+				ctr++;
+				if(ctr<ctrTarget){
+					confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res);
+				}else{
+					res.redirect('/message?content='+'有些訊息因錯誤無法被同意!');
+				}
+			}else{
+				res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+			}
+		}else{
+			if(!borrow){
+				if(ifRecursive){
+					ctr++;
+					if(ctr<ctrTarget){
+						confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res);
+					}else{
+						res.redirect('/message?content='+'有些訊息因錯誤無法被同意!');
+					}
+				}else{
+					res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+				}
+			}else{
+				var MID;
+				if(!ifRecursive){
+					MID=req.body.MessageID;
+				}else{
+					MID=req.body.array[ctr].MessageID;
+				}
+				Messages.findById(MID).exec(function (err, message){
+					if (err) {
+						console.log(err);
+						if(ifRecursive){
+							ctr++;
+							if(ctr<ctrTarget){
+								confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res);
+							}else{
+								res.redirect('/message?content='+'有些訊息因錯誤無法被同意!');
+							}
+						}else{
+							res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+						}
+					}else{
+						if(!message){
+							if(ifRecursive){
+								ctr++;
+								if(ctr<ctrTarget){
+									confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res);
+								}else{
+									res.redirect('/message?content='+'有些訊息因錯誤無法被同意!');
+								}
+							}else{
+								res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+							}
+						}else{
+							BankAccounts.findOne({"OwnedBy": req.user._id}).exec(function (err, lenderBankaccount){
+								if (err) {
+									console.log(err);
+									if(ifRecursive){
+										ctr++;
+										if(ctr<ctrTarget){
+											confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res);
+										}else{
+											res.redirect('/message?content='+'有些訊息因錯誤無法被同意!');
+										}
+									}else{
+										res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+									}
+								}else{
+									if(!lenderBankaccount){
+										if(ifRecursive){
+											ctr++;
+											if(ctr<ctrTarget){
+												confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res);
+											}else{
+												res.redirect('/message?content='+'有些訊息因錯誤無法被同意!');
+											}
+										}else{
+											res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+										}
+									}else{
+										Lends.findOne({"CreatedBy": req.user._id}).exec(function (err, lend){
+											if (err) {
+												console.log(err);
+												if(ifRecursive){
+													ctr++;
+													if(ctr<ctrTarget){
+														confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res);
+													}else{
+														res.redirect('/message?content='+'有些訊息因錯誤無法被同意!');
+													}
+												}else{
+													res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+												}
+											}else{
+												if(!lend){
+													if(ifRecursive){
+														ctr++;
+														if(ctr<ctrTarget){
+															confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res);
+														}else{
+															res.redirect('/message?content='+'有些訊息因錯誤無法被同意!');
+														}
+													}else{
+														res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+													}
+												}else{
+													var maxMoney=parseInt(lenderBankaccount.MoneyInBankAccount);
+													var maxMoney2=parseInt(borrow.MoneyToBorrow)-parseInt(borrow.MoneyToBorrowCumulated);
+													
+													var finalMoneyToLend=null;
+													var finalInterestRate=null;
+													var finalMonthPeriod=null;
+													if(!ifRecursive){
+														var minMonth=parseInt(message.MonthPeriod);
+														var maxRate=parseFloat(message.InterestRate);
+														
+														var nowMoney=parseInt(sanitizer.sanitize(req.body.MoneyToLend));
+														var rate=parseFloat(sanitizer.sanitize(req.body.InterestRate));
+														var month=parseInt(sanitizer.sanitize(req.body.MonthPeriod));
+														
+														if((req.body.MoneyToLend=='')||(req.body.InterestRate=='')||(req.body.MonthPeriod=='')){
+															returnSring='必要參數未填!';
+														}else if((month<=0)||(nowMoney<=0)||(rate<=0)||(rate>=1)){
+															returnSring='錯誤參數!';
+														}else if(nowMoney>maxMoney){
+															returnSring='超過您的銀行餘額!';
+														}else if(nowMoney>maxMoney2){
+															returnSring='超過對方所需!';
+														}else if(month<minMonth){
+															returnSring='小於該訊息希望期數!';
+														}else if(rate>maxRate){
+															returnSring='超過該訊息期望利率上限!';
+														}else{
+															finalMoneyToLend=sanitizer.sanitize(req.body.MoneyToLend);
+															finalInterestRate=sanitizer.sanitize(req.body.InterestRate);
+															finalMonthPeriod=sanitizer.sanitize(req.body.MonthPeriod);
+														}
+													}else{
+														var maxMoney3=parseInt(lend.MaxMoneyToLend);
+														var nowMoney2=parseInt(message.MoneyToLend);
+														
+														if(nowMoney2>maxMoney){
+															returnSring='借款金額超過您銀行帳戶內的餘額';
+														}else if(nowMoney2>maxMoney2){
+															if(maxMoney2==0){
+																returnSring='有些訊息因為對方已不需要借款而無法被同意，請拒絕這些訊息';
+															}else{
+																finalMoneyToLend=maxMoney2;
+																finalInterestRate=message.InterestRate;
+																finalMonthPeriod=message.MonthPeriod;
+															}
+														}else if(nowMoney2>maxMoney3){
+															returnSring='借款金額超過您所設定之自動借款額度!';
+														}else{
+															finalMoneyToLend=message.MoneyToLend;
+															finalInterestRate=message.InterestRate;
+															finalMonthPeriod=message.MonthPeriod;
+														}
+													}
+													if((returnSring)||(!finalMoneyToLend)||(!finalInterestRate)||(!finalMonthPeriod)){
+														if(returnSring!='對方已不需要借款，請拒絕此訊息'){
+															res.redirect('/message?content='+chineseEncodeToURI(returnSring));
+														}else{
+															if(ifRecursive){
+																ctr++;
+																if(ctr<ctrTarget){
+																	confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,returnSring,req,res);
+																}else{
+																	res.redirect('/message?content='+'有些訊息因錯誤無法被同意!');
+																}
+															}else{
+																res.redirect('/message?content='+chineseEncodeToURI(returnSring));
+															}
+														}
+													}else{
+														var toCreateTransaction = new Transactions();
+														toCreateTransaction.Principal=finalMoneyToLend;
+														toCreateTransaction.InterestRate=finalInterestRate;
+														toCreateTransaction.MonthPeriod=finalMonthPeriod;
+														toCreateTransaction.CreatedFrom=message._id;
+														toCreateTransaction.Borrower=message.CreatedBy;
+														toCreateTransaction.Lender=req.user._id;
+														
+														toCreateTransaction.save(function (err,newCreateTransaction) {
+															if (err){
+																console.log(err);
+																if(ifRecursive){
+																	ctr++;
+																	if(ctr<ctrTarget){
+																		confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res);
+																	}else{
+																		res.redirect('/message?content='+'有些訊息因錯誤無法被同意!');
+																	}
+																}else{
+																	res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+																}
+															}else{
+																BankAccounts.findOne({"OwnedBy": newCreateTransaction.Borrower}).exec(function (err, borrowerBankaccount){
+																	if (err) {
+																		console.log(err);
+																		if(ifRecursive){
+																			ctr++;
+																			if(ctr<ctrTarget){
+																				confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res);
+																			}else{
+																				res.redirect('/message?content='+'有些訊息因錯誤無法被同意!');
+																			}
+																		}else{
+																			res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+																		}
+																	}else{
+																		if(!borrowerBankaccount){
+																			if(ifRecursive){
+																				ctr++;
+																				if(ctr<ctrTarget){
+																					confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res);
+																				}else{
+																					res.redirect('/message?content='+'有些訊息因錯誤無法被同意!');
+																				}
+																			}else{
+																				res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+																			}
+																		}else{
+																			borrowerBankaccount.MoneyInBankAccount+=newCreateTransaction.Principal;
+																			borrowerBankaccount.save(function (err,updatedBorrowerBankaccount) {
+																				if (err){
+																					console.log(err);
+																					if(ifRecursive){
+																						ctr++;
+																						if(ctr<ctrTarget){
+																							confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res);
+																						}else{
+																							res.redirect('/message?content='+'有些訊息因錯誤無法被同意!');
+																						}
+																					}else{
+																						res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+																					}
+																				}else{
+																					lenderBankaccount.MoneyInBankAccount-=newCreateTransaction.Principal;
+																					lenderBankaccount.save(function (err,updatedLenderBankaccount) {
+																						if (err){
+																							console.log(err);
+																							if(ifRecursive){
+																								ctr++;
+																								if(ctr<ctrTarget){
+																									confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res);
+																								}else{
+																									res.redirect('/message?content='+'有些訊息因錯誤無法被同意!');
+																								}
+																							}else{
+																								res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+																							}
+																						}else{				
+																							borrow.MoneyToBorrowCumulated+=newCreateTransaction.Principal;
+																							if(borrow.MoneyToBorrowCumulated>=borrow.MoneyToBorrow){
+																								borrow.IfReadable=false;
+																							}
+																							borrow.save(function (err,updatedBorrow) {
+																								if (err){
+																									console.log(err);
+																									if(ifRecursive){
+																										ctr++;
+																										if(ctr<ctrTarget){
+																											confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res);
+																										}else{
+																											res.redirect('/message?content='+'有些訊息因錯誤無法被同意!');
+																										}
+																									}else{
+																										res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+																									}
+																								}else{				
+																									lend.MaxMoneyToLend-=newCreateTransaction.Principal;
+																									if(lend.MaxMoneyToLend<0){
+																										lend.MaxMoneyToLend=0;
+																									}
+																									lend.save(function (err,updatedLend) {
+																										if (err){
+																											console.log(err);
+																											if(ifRecursive){
+																												ctr++;
+																												if(ctr<ctrTarget){
+																													confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res);
+																												}else{
+																													res.redirect('/message?content='+'有些訊息因錯誤無法被同意!');
+																												}
+																											}else{
+																												res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+																											}
+																										}else{		
+																											message.Status='Confirmed';
+																											message.Transaction.push(newCreateTransaction._id);
+																											message.save(function (err,newCreateUpdated) {
+																												if (err){
+																													console.log(err);
+																													if(ifRecursive){
+																														ctr++;																														
+																														if(ctr<ctrTarget){
+																															confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res);
+																														}else{
+																															res.redirect('/message?content='+'有些訊息因錯誤無法被同意!');
+																														}
+																													}else{
+																														res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+																													}
+																												}else{
+																													if(ifRecursive){
+																														ctr++;
+																														if(ctr<ctrTarget){
+																															confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,returnSring,req,res);
+																														}else{
+																															if(returnSring){
+																																res.redirect('/message?content='+chineseEncodeToURI(returnSring));
+																															}else{
+																																res.redirect(req.get('referer'));
+																															}
+																														}
+																													}else{
+																														res.redirect(req.get('referer'));
+																													}
+																												}
+																											});
+																										}
+																									});
+																								}
+																							});
+																						}
+																					});
+																				}
+																			});
+																		}
+																	}
+																});
+															}
+														});
+													}
+												}
+											}
+										});	
+									}
+								}
+							});
+						}
+					}
+				});
+			}
+		}
+	});
+}
+
+router.post('/rejectToBorrowMessage', ensureAuthenticated, function(req, res, next) {
+	Messages.findById(req.body.MessageID).exec(function (err, message){
+		if (err) {
+			console.log(err);
+			res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+		}else{
+			if(!message){
+				res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+			}else{
+				if(req.user._id!=message.SendTo){
+					res.redirect('/message?content='+chineseEncodeToURI('認證錯誤!'));
+				}else{
+					message.Status="Rejected";
+					message.Updated = Date.now();
+					message.save(function (err,newUpdate) {
+						if (err){
+							console.log(err);
+							res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+						}else{
+							res.redirect('/story?id='+req.body.FromBorrowRequest);
+						}
+					});
+				}
+			}
+		}
+	});
+});
+
+router.post('/confirmToBorrowMessageInStory', ensureAuthenticated, function(req, res, next) {
+	confirmToBorrowMessage(false,0,0,null,req,res);
+});
 
 router.post('/toLendCreate', ensureAuthenticated, function(req, res, next) {
 	toLendSamePart(res,req,toLendCreatePart,null);

@@ -2,8 +2,8 @@ var mongoose = require( 'mongoose' );
 var Schema   = mongoose.Schema;
 
 var Borrows = new Schema({
-	MoneyToBorrow: { type: Number, default: 0 },
-	MoneyToBorrowCumulated: { type: Number, default: 0 },
+	MoneyToBorrow: { type: Number, default: 0 },//想借多少錢
+	MoneyToBorrowCumulated: { type: Number, default: 0 },//已經借到多少錢，以上前者減後者可得還需要多少錢
 	MaxInterestRateAccepted: { type: Number, default: 0 },
 	MonthPeriodAccepted: { type: Number, default: 1 },
 	TimeLimit: { type: Date, default: Date.now },
@@ -35,6 +35,7 @@ var Messages = new Schema({
 	Status: { type: String, default:'NotConfirmed' },// 'NotConfirmed' or 'Confirmed' or 'Rejected'
 	Type: {type: String, default:'NoType'},// 'toLend' or 'toBorrow'
 	SendTo:{ type: Schema.Types.ObjectId, ref: 'Users' },
+	Transaction: [{ type: Schema.Types.ObjectId, ref: 'Transactions' }],
 	CreatedBy: { type: Schema.Types.ObjectId, ref: 'Users' },
 	Updated: { type: Date, default: Date.now },
 	Created: { type: Date, default: Date.now }
@@ -70,12 +71,12 @@ var BankAccounts = new Schema({
 });
 
 var Transactions = new Schema({
-	Principal: { type: Number, default: 0 },
-	PrincipalReturnedCumulated: { type: Number, default: 0 },
-	InterestCumulated: { type: Number, default: 0 },
+	Principal: { type: Number, default: 0 },//未還本金
+	PrincipalReturnedCumulated: { type: Number, default: 0 },//已還本金，以上兩者相加可得原始本金
+	InterestCumulated: { type: Number, default: 0 },//已繳利息
 	InterestRate: { type: Number, default: 0 },
-	MonthPeriod: { type: Number, default: 1 },
-	MonthPeriodHasPast: { type: Number, default: 0 },
+	MonthPeriod: { type: Number, default: 1 },//剩下期數
+	MonthPeriodHasPast: { type: Number, default: 0 },//已過期數
 	CreatedFrom: { type: Schema.Types.ObjectId, ref: 'Messages' },
 	Borrower: { type: Schema.Types.ObjectId, ref: 'Users' },
 	Lender: { type: Schema.Types.ObjectId, ref: 'Users' },
