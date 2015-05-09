@@ -12,6 +12,8 @@ var Borrows = new Schema({
 	LikeNumber: { type: Number, default: 0 },
 	Likes: [{ type: Schema.Types.ObjectId, ref: 'Users' }],
 	IfReadable: { type: Boolean, default: true },
+	AutoComfirmToLendMsgPeriod: { type: Number, default: -1 },
+	AutoComfirmToLendMsgSorter: { type: String, default: 'InterestRate' },
 	CreatedBy: { type: Schema.Types.ObjectId, ref: 'Users' },
 	Updated: { type: Date, default: Date.now },
 	Created: { type: Date, default: Date.now }
@@ -21,6 +23,8 @@ var Lends = new Schema({
     MaxMoneyToLend: { type: Number, default: 0 },
 	InterestRate: { type: Number, default: 0 },
 	MonthPeriod: { type: Number, default: 1 },
+	AutoComfirmToBorrowMsgPeriod: { type: Number, default: -1 },
+	AutoComfirmToBorrowMsgSorter: { type: String, default: '-InterestRate' },
 	CreatedBy: { type: Schema.Types.ObjectId, ref: 'Users' },
 	Updated: { type: Date, default: Date.now },
 	Created: { type: Date, default: Date.now }
@@ -55,8 +59,6 @@ var Users = new Schema({
 	Address: { type: String},
 	Level: { type: Number, default: 0 },
 	MaxTotalMoneyCanBorrow: { type: Number, default: 0 },
-	AutoComfirmToLendMsgPeriod: { type: Number, default: -1 },
-	AutoComfirmToBorrowMsgPeriod: { type: Number, default: -1 },
 	Updated: { type: Date, default: Date.now },
 	Created: { type: Date, default: Date.now }
 });

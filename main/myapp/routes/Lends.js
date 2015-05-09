@@ -1,6 +1,8 @@
+var library=require( './library.js' );
 var mongoose = require('mongoose');
 var Lends  = mongoose.model('Lends');
 var BankAccounts  = mongoose.model('BankAccounts');
+var Messages = mongoose.model('Messages');
 var sanitizer = require('sanitizer');
 
 var express = require('express');
@@ -57,12 +59,23 @@ function createPart(res,req,outterPara){
 	toCreate.MaxMoneyToLend=sanitizer.sanitize(req.body.MaxMoneyToLend);
 	toCreate.InterestRate=sanitizer.sanitize(req.body.InterestRate);
 	toCreate.MonthPeriod=sanitizer.sanitize(req.body.MonthPeriod);
+	toCreate.AutoComfirmToBorrowMsgPeriod=sanitizer.sanitize(req.body.AutoComfirmToBorrowMsgPeriod);
+	if(!req.body.AutoComfirmToBorrowMsgSorter){
+		toCreate.AutoComfirmToBorrowMsgSorter="invalid";
+	}else{
+		toCreate.AutoComfirmToBorrowMsgSorter=sanitizer.sanitize(req.body.AutoComfirmToBorrowMsgSorter);
+	}
 	toCreate.CreatedBy=req.user._id;
 	
 	toCreate.save(function (err,newCreate) {
 		if (err){
 			res.redirect('/message?content='+chineseEncodeToURI('新建失敗!'));
 		}else{
+			if(newCreate.AutoComfirmToBorrowMsgPeriod>0){
+				var toSaveID=setInterval( function() { autoConfirm(req,res,newCreate.AutoComfirmToBorrowMsgSorter,newCreate._id); }, 86400000*newCreate.AutoComfirmToBorrowMsgPeriod);
+				var toSaveJSON={CreatedBy:req.user._id,CommandID:toSaveID,LendID:newCreate._id};
+				library.autoComfirmToBorrowMsgArray.push(toSaveJSON);
+			}
 			res.redirect('/lend');
 		}
 	});
@@ -72,14 +85,60 @@ function updatePart(res,req,lend){
 	lend.MaxMoneyToLend=sanitizer.sanitize(req.body.MaxMoneyToLend);
 	lend.InterestRate=sanitizer.sanitize(req.body.InterestRate);
 	lend.MonthPeriod=sanitizer.sanitize(req.body.MonthPeriod);
+	lend.AutoComfirmToBorrowMsgPeriod=sanitizer.sanitize(req.body.AutoComfirmToBorrowMsgPeriod);
+	if(!req.body.AutoComfirmToBorrowMsgSorter){
+		lend.AutoComfirmToBorrowMsgSorter="invalid";
+	}else{
+		lend.AutoComfirmToBorrowMsgSorter=sanitizer.sanitize(req.body.AutoComfirmToBorrowMsgSorter);
+	}
 	lend.Updated = Date.now();
-
+	
 	lend.save(function (err,newUpdate) {
 		if (err){
 			console.log(err);
 			res.redirect('/message?content='+chineseEncodeToURI('更新失敗!'));
 		}else{
+			for(i=0;i<library.autoComfirmToBorrowMsgArray.length;i++){
+				if((req.user._id==library.autoComfirmToBorrowMsgArray[i].CreatedBy)&&(library.autoComfirmToBorrowMsgArray[i].LendID.equals(newUpdate._id))){
+					clearInterval(library.autoComfirmToBorrowMsgArray[i].CommandID);
+					library.autoComfirmToBorrowMsgArray.splice(i,1);
+				}
+			}
+			if(newUpdate.AutoComfirmToBorrowMsgPeriod>0){
+				var toSaveID=setInterval( function() { autoConfirm(req,res,newUpdate.AutoComfirmToBorrowMsgSorter,newUpdate._id); }, 86400000*newUpdate.AutoComfirmToBorrowMsgPeriod);
+				var toSaveJSON={CreatedBy:req.user._id,CommandID:toSaveID,LendID:newUpdate._id};
+				library.autoComfirmToBorrowMsgArray.push(toSaveJSON);
+			}
 			res.redirect('/lend');
+		}
+	});
+}
+
+function autoConfirm(req,res,sorter,lendID){
+	Lends.findById(lendID).exec(function (err, lend){
+		if (err) {
+			console.log(err);
+		}else{
+			if(lend){
+				if(lend.MaxMoneyToLend>0){
+					Messages.find({$and:[{"SendTo": req.user._id},{"Type": "toBorrow"},{"Status": "NotConfirmed"}]}).sort(sorter).exec(function (err, messages){
+						if (err) {
+							console.log(err);
+						}else{
+							if(messages.length>0){
+								var arrayOp=[];
+								for(i=0;i<messages.length;i++){
+									var temp={FromBorrowRequest:messages[i].FromBorrowRequest,MessageID:messages[i]._id};
+									arrayOp.push(temp);
+								}
+								delete req.body.array;
+								req.body.array=arrayOp;
+								library.confirmToBorrowMessage(true,0,req.body.array.length,null,req,res,true);
+							}
+						}
+					});
+				}
+			}
 		}
 	});
 }
@@ -124,6 +183,12 @@ router.post('/destroy', ensureAuthenticated, function(req, res, next) {
 							console.log(err);
 							res.redirect('/message?content='+chineseEncodeToURI('刪除失敗!'));
 						}else{
+							for(i=0;i<library.autoComfirmToBorrowMsgArray.length;i++){
+								if((req.user._id==library.autoComfirmToBorrowMsgArray[i].CreatedBy)&&(library.autoComfirmToBorrowMsgArray[i].LendID.equals(removedItem._id))){
+									clearInterval(library.autoComfirmToBorrowMsgArray[i].CommandID);
+									library.autoComfirmToBorrowMsgArray.splice(i,1);
+								}
+							}
 							res.redirect('/lend');
 						}
 					});

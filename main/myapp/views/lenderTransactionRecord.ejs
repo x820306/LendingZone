@@ -1,0 +1,225 @@
+<%- include('layout_header',{nav_cur:'lenderTransactionRecord',actionDefault:'最新',keywordDefault:''}); -%>
+<div class="container">
+	<div class="row">
+		<div class="col-md-9">
+			<div style="font-size:30pt;color:#337ab7;">借出紀錄</div>
+				<div style="font-size:20pt;color:#0000D1;">&nbsp;<%=totalResultNum%> result</div>
+				<br>
+				<div class="btn-group">
+					<div class="btn-group">
+						<button type="button" style="height:40px;" class="btn btn-default dropdown-toggle" data-toggle="dropdown" id="sorterSelected">
+							<%=sorterDefault%> <span class="caret"></span>
+						</button>
+						<ul class="dropdown-menu">
+							<li style="display:none"><a href="#" id="sorter0"><%=sorterDefault%></a></li>
+							<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter1').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter1">最新</a></li>
+							<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter2').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter2">獲利最多</a></li>
+							<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter3').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter3">利率最高</a></li>
+							<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter4').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter4">金額最大</a></li>
+							<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter5').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter5">期數最少</a></li>
+						</ul>
+					</div>
+					<button type="button" style="height:40px;" class="btn btn-default" onclick="window.open('/lenderTransactionRecord?sorter='+encodeURIComponent($('#sorter0').text())+'&page=1','_self');">Go!</button>
+				</div>
+				<br>
+				<br>
+				<br>
+				<% if(totalResultNum!=0){ %>
+					<% for(var i=0; i<jsonTransaction.length; i++) { %>
+						<div style="height: 380px;margin-bottom:0px;" class="panel panel-default pd">
+							<div class="panel-body">
+								<div style="font-size:25px;display:inline;">借給 </div>
+								<div style="font-size:25px;color:#0000D1;display:inline;"><%=jsonTransaction[i].Borrower.Username%></div>
+								<br>
+								<br>
+								<div>
+									<table width="100%" height="250px">
+										<tr>
+											<td>
+												<div style="color:#337ab7;">
+													&nbsp;&nbsp;&nbsp;&nbsp;對方未還本金：
+												</div>
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonTransaction[i].Principal%>
+												</div>	
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div style="color:#337ab7;">
+													&nbsp;&nbsp;&nbsp;&nbsp;對方已還本金：
+												</div>
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonTransaction[i].PrincipalReturnedCumulated%>
+												</div>	
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div style="color:#337ab7;&nbsp;&nbsp;&nbsp;&nbsp;">
+													&nbsp;&nbsp;&nbsp;&nbsp;利率：
+												</div>
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonTransaction[i].InterestRate%>
+												</div>	
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div style="color:#337ab7;">
+													&nbsp;&nbsp;&nbsp;&nbsp;已得利息：
+												</div>
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonTransaction[i].InterestCumulated%>
+												</div>	
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div style="color:#337ab7;">
+													&nbsp;&nbsp;&nbsp;&nbsp;剩下期數：
+												</div>
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonTransaction[i].MonthPeriod%>
+												</div>	
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div style="color:#337ab7;">
+													&nbsp;&nbsp;&nbsp;&nbsp;已過期數:
+												</div>
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonTransaction[i].MonthPeriodHasPast%>
+												</div>	
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div style="color:#337ab7;">
+													&nbsp;&nbsp;&nbsp;&nbsp;成交日期:
+												</div>
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonTransaction[i].Created.getFullYear()%>/<%=jsonTransaction[i].Created.getMonth()+1%>/<%=jsonTransaction[i].Created.getDate()%>
+												</div>	
+											</td>
+										<tr>
+									</table>
+								</div>
+							</div>
+						</div>
+					<table width="100%">
+					<tr>
+						<td align="right">
+							<div style="color:#337ab7;">
+								Updated：<%=jsonTransaction[i].Updated.getFullYear()%>/<%=jsonTransaction[i].Updated.getMonth()+1%>/<%=jsonTransaction[i].Updated.getDate()%>
+							</div>
+						</td>
+					<tr>
+					</table>
+					<br>
+					<br>
+				<%}%>
+				<br>
+				<table align="center">
+					<tr>
+						<td>
+							<nav>
+							  <ul class="pagination">
+								<li 
+									<% if(targetPageNumber==1){%>
+										class="disabled"
+									<%}%>
+								>
+								<% if(targetPageNumber!=1){%>
+									<a href="/lenderTransactionRecord?sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=targetPageNumber-1%>">
+								<%}else{%>
+									<a href="#" onclick="return false;">
+								<%}%>
+								<span>&laquo;</span></a></li>
+								<% if(pageNumber<=10){%>
+									<% for(var j=1; j<=pageNumber; j++) { %>
+										<li 
+											<% if(targetPageNumber==j){%>
+												class="active"
+											<%}%>
+										><a href="/lenderTransactionRecord?sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=j%>"><%=j%></a></li>
+									<%}%>
+								<% }else{%>
+									<% if(targetPageNumber>=pageNumber-3){%>
+										<% for(var j=pageNumber-9; j<=pageNumber; j++) { %>
+										<li 
+											<% if(targetPageNumber==j){%>
+												class="active"
+											<%}%>
+										><a href="/lenderTransactionRecord?sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=j%>"><%=j%></a></li>
+										<%}%>
+									<%}else if(targetPageNumber<=5){%>
+										<% for(var j=1; j<=10; j++) { %>
+										<li 
+											<% if(targetPageNumber==j){%>
+												class="active"
+											<%}%>
+										><a href="/lenderTransactionRecord?sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=j%>"><%=j%></a></li>
+										<%}%>
+									<%}else{%>
+										<% for(var j=targetPageNumber-5; j<targetPageNumber; j++) { %>
+										<li><a href="/lenderTransactionRecord?sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=j%>"><%=j%></a></li>
+										<%}%>
+										<li class="active"><a href="/lenderTransactionRecord?sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=targetPageNumber%>"><%=targetPageNumber%></a></li>
+										<% for(var j=targetPageNumber+1; j<=targetPageNumber+4; j++) { %>
+										<li><a href="/lenderTransactionRecord?sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=j%>"><%=j%></a></li>
+										<%}%>
+									<%}%>
+								<%}%>
+								<li 
+									<% if(targetPageNumber==pageNumber){%>
+										class="disabled"
+									<%}%>
+								>	
+								<% if(targetPageNumber!=pageNumber){%>
+									<a href="/lenderTransactionRecord?sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=targetPageNumber+1%>">
+								<%}else{%>
+									<a href="#" onclick="return false;">
+								<%}%>
+								<span>&raquo;</span></a></li>
+							  </ul>
+							</nav>
+						</td>
+					</tr>
+				</table>
+			<% }%>
+		</div>
+		<div class="col-md-3">
+		</div>
+	</div>
+</div>
+<%- include('layout_footer'); -%>

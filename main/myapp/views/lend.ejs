@@ -66,6 +66,54 @@
 					</div>
 				</div>
 				</br>
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title">自動同意借款請求</h3>
+					</div>
+					<div class="panel-body">
+						<% if(!jsonLend){ %>
+							 <select class="textForm" class="textForm" name="AutoComfirmToBorrowMsgPeriod" id="periodSel" onchange="if($('#periodSel').val()>0){$('#sorterSel').prop('disabled', false);$('#sorterPnl').attr('style','');}else{$('#sorterSel').prop('disabled', true);$('#sorterSel').val('-InterestRate');$('#sorterPnl').attr('style','display:none;');}">
+								<option value=-1>永不自動同意</option>
+								<option value=0>立即自動同意</option>
+								<option value=1>每天自動同意一次</option>
+								<option value=2>每兩天自動同意一次</option>
+								<option value=3>每三天自動同意一次</option>
+							  </select>
+						<% }else{ %>
+							<select class="textForm" class="textForm" name="AutoComfirmToBorrowMsgPeriod"  id="periodSel" onchange="if($('#periodSel').val()>0){$('#sorterSel').prop('disabled', false);$('#sorterPnl').attr('style','');}else{$('#sorterSel').prop('disabled', true);$('#sorterSel').val('-InterestRate');$('#sorterPnl').attr('style','display:none;');}">
+								<option value=-1<%if(jsonLend.AutoComfirmToBorrowMsgPeriod==-1){%> selected<%}%>>永不自動同意</option>
+								<option value=0<%if(jsonLend.AutoComfirmToBorrowMsgPeriod==0){%> selected<%}%>>立即自動同意</option>
+								<option value=1<%if(jsonLend.AutoComfirmToBorrowMsgPeriod==1){%> selected<%}%>>每天自動同意一次</option>
+								<option value=2<%if(jsonLend.AutoComfirmToBorrowMsgPeriod==2){%> selected<%}%>>每兩天自動同意一次</option>
+								<option value=3<%if(jsonLend.AutoComfirmToBorrowMsgPeriod==3){%> selected<%}%>>每三天自動同意一次</option>
+							  </select>
+						<% } %>
+					</div>
+				</div>
+				</br>
+				<div class="panel panel-default" id="sorterPnl"<% if(!jsonLend){%> style="display:none;"<%}else{%><% if(jsonLend.AutoComfirmToBorrowMsgPeriod<=0){ %> style="display:none;"<%}%><%}%>>
+					<div class="panel-heading">
+						<h3 class="panel-title">自動同意優先順序</h3>
+					</div>
+					<div class="panel-body">
+						<% if(!jsonLend){ %>
+							 <select class="textForm" class="textForm" name="AutoComfirmToBorrowMsgSorter" id="sorterSel" disabled="disabled">
+								<option value="-InterestRate">利率最高</option>
+								<option value="-MoneyToLend">金額最高</option>
+								<option value="MonthPeriod">期數最少</option>
+								<option value="-Updated">最新</option>
+							  </select>
+						<% }else{ %>
+							<select class="textForm" class="textForm" name="AutoComfirmToBorrowMsgSorter" id="sorterSel"<% if(jsonLend.AutoComfirmToBorrowMsgPeriod==-1){ %> disabled="disabled"<%}%>>
+								<option value="-InterestRate"<%if(jsonLend.AutoComfirmToBorrowMsgSorter=="-InterestRate"){%> selected<%}%>>利率最高</option>
+								<option value="-MoneyToLend"<%if(jsonLend.AutoComfirmToBorrowMsgSorter=="-MoneyToLend"){%> selected<%}%>>金額最高</option>
+								<option value="MonthPeriod"<%if(jsonLend.AutoComfirmToBorrowMsgSorter=="MonthPeriod"){%> selected<%}%>>期數最少</option>
+								<option value="-Updated"<%if(jsonLend.AutoComfirmToBorrowMsgSorter=="-Updated"){%> selected<%}%>>最新</option>
+							  </select>
+						<% } %>
+					</div>
+				</div>
+				</br>
 				<% if(!jsonLend){ %>
 					<div class="btn-toolbar" role="toolbar">
 						<div class="btn-group" role="group">

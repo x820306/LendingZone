@@ -1,5 +1,5 @@
 require( './db' );
-
+var library=require( './routes/library.js' );
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
@@ -144,7 +144,11 @@ app.get('/search/:keyword?/:action?/:page?', function (req, res) {
 		}else{
 			totalResultNumber=borrows.length;
 			if(totalResultNumber==0){
-				res.render('search',{userName:auRst,keywordDefault:keyword,actionDefault:action,jsonArray:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage});
+				if(targetPage>1){
+					res.redirect('/message?content='+chineseEncodeToURI('錯誤頁碼!'));
+				}else{
+					res.render('search',{userName:auRst,keywordDefault:keyword,actionDefault:action,jsonArray:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage});
+				}
 			}else{
 				var divider=2;
 				pageNum=Math.ceil(borrows.length/divider);
@@ -294,13 +298,69 @@ app.get('/lend', ensureAuthenticated, function (req, res) {
 	});
 });
 
-app.get('/income', ensureAuthenticated, function (req, res) {
-	res.render('income',{userName:req.user.Username});
+app.get('/lenderTransactionRecord/:sorter?/:page?', ensureAuthenticated, function (req, res) {
+	var resArrays=[];
+	var sorter=decodeURIComponent(req.query.sorter);
+	var targetPage=parseInt(req.query.page);
+	var pageNum=0
+	var totalResultNumber;
+	
+	var sorterRec;
+	
+	if(sorter=='最新'){
+		sorterRec="-Updated";
+	}else if(sorter=='獲利最多'){
+		sorterRec="-InterestCumulated";
+	}else if(sorter=='利率最高'){
+		sorterRec="-InterestRate";
+	}else if(sorter=='金額最大'){
+		sorterRec="-Principal";
+	}else if(sorter=='期數最少'){
+		sorterRec="MonthPeriod";
+	}
+	
+	var Transactions  = mongoose.model('Transactions');
+	Transactions.find({"Lender": req.user._id}).populate('Borrower', 'Username').sort(sorterRec).exec( function (err, transactions, count){
+		if (err) {
+			console.log(err);
+			res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+		}else{
+			totalResultNumber=transactions.length;
+			if(totalResultNumber==0){
+				if(targetPage>1){
+					res.redirect('/message?content='+chineseEncodeToURI('錯誤頁碼!'));
+				}else{
+					res.render('lenderTransactionRecord',{userName:req.user.Username,sorterDefault:sorter,jsonTransaction:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage});
+				}
+			}else{
+				var divider=2;
+				pageNum=Math.ceil(transactions.length/divider);
+				
+				if(pageNum<targetPage){
+					res.redirect('/message?content='+chineseEncodeToURI('錯誤頁碼!'));
+				}else{
+					var starter=divider*(targetPage-1);
+					var ender;
+					if(targetPage==pageNum){
+						ender=transactions.length;
+					}else{
+						ender=starter+divider;
+					}
+					for(i=starter;i<ender;i++){
+						resArrays.push(transactions[i]);
+					}
+					res.render('lenderTransactionRecord',{userName:req.user.Username,sorterDefault:sorter,jsonTransaction:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage});
+				}
+			}
+		}
+	});
 });
 
-app.get('/lenderSendMessages/:filter?/:page?', ensureAuthenticated, function (req, res) {
+app.get('/lenderSendMessages/:msgKeyword?/:filter?/:sorter?/:page?', ensureAuthenticated, function (req, res) {
 	var resArrays=[];
+	var msgKeyword=decodeURIComponent(req.query.msgKeyword);
 	var filter=decodeURIComponent(req.query.filter);
+	var sorter=decodeURIComponent(req.query.sorter);
 	var targetPage=parseInt(req.query.page);
 	var pageNum=0
 	var totalResultNumber;
@@ -315,16 +375,32 @@ app.get('/lenderSendMessages/:filter?/:page?', ensureAuthenticated, function (re
 		filterRec="Rejected";
 	}
 	
+	var sorterRec;
+	
+	if(sorter=='最新'){
+		sorterRec="-Updated";
+	}else if(sorter=='利率最高'){
+		sorterRec="-InterestRate";
+	}else if(sorter=='金額最高'){
+		sorterRec="-MoneyToLend";
+	}else if(sorter=='期數最少'){
+		sorterRec="MonthPeriod";
+	}
+	
 	var Messages  = mongoose.model('Messages');
 	var Transactions  = mongoose.model('Transactions');
-	Messages.find({$and:[{"CreatedBy": req.user._id},{"Type": "toLend"},{"Status": filterRec}]}).populate('SendTo', 'Username').populate('FromBorrowRequest', 'StoryTitle Story').populate('Transaction').sort("-Updated").exec( function (err, messages, count){
+	Messages.find({$and:[{"CreatedBy": req.user._id},{"Type": "toLend"},{"Status": filterRec},{"Message": new RegExp(msgKeyword,'i')}]}).populate('SendTo', 'Username').populate('FromBorrowRequest', 'StoryTitle Story').populate('Transaction').sort(sorterRec).exec( function (err, messages, count){
 		if (err) {
 			console.log(err);
 			res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
 		}else{
 			totalResultNumber=messages.length;
 			if(totalResultNumber==0){
-				res.render('lenderSendMessages',{userName:req.user.Username,filterDefault:filter,jsonMessage:resArrays,jsonTrans:null,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage});
+				if(targetPage>1){
+					res.redirect('/message?content='+chineseEncodeToURI('錯誤頁碼!'));
+				}else{
+					res.render('lenderSendMessages',{userName:req.user.Username,msgKeywordDefault:msgKeyword,filterDefault:filter,sorterDefault:sorter,jsonMessage:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage});
+				}
 			}else{
 				var divider=2;
 				pageNum=Math.ceil(messages.length/divider);
@@ -343,19 +419,94 @@ app.get('/lenderSendMessages/:filter?/:page?', ensureAuthenticated, function (re
 						resArrays.push(messages[i]);
 					}
 
-					res.render('lenderSendMessages',{userName:req.user.Username,filterDefault:filter,jsonMessage:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage});
+					res.render('lenderSendMessages',{userName:req.user.Username,msgKeywordDefault:msgKeyword,filterDefault:filter,sorterDefault:sorter,jsonMessage:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage});
 				}
 			}
 		}
 	});
 });
 
-app.get('/lenderReceiveMessages', ensureAuthenticated, function (req, res) {
-	res.render('lenderReceiveMessages',{userName:req.user.Username});
+app.get('/lenderReceiveMessages/:msgKeyword?/:filter?/:sorter?/:page?', ensureAuthenticated, function (req, res) {
+	var resArrays=[];
+	var msgKeyword=decodeURIComponent(req.query.msgKeyword);
+	var filter=decodeURIComponent(req.query.filter);
+	var sorter=decodeURIComponent(req.query.sorter);
+	var targetPage=parseInt(req.query.page);
+	var pageNum=0
+	var totalResultNumber;
+	
+	var filterRec;
+	
+	if(filter=='未確認'){
+		filterRec="NotConfirmed";
+	}else if(filter=='已同意'){
+		filterRec="Confirmed";
+	}else if(filter=='已婉拒'){
+		filterRec="Rejected";
+	}
+	
+	var sorterRec;
+	
+	if(sorter=='最新'){
+		sorterRec="-Updated";
+	}else if(sorter=='利率最高'){
+		sorterRec="-InterestRate";
+	}else if(sorter=='金額最高'){
+		sorterRec="-MoneyToLend";
+	}else if(sorter=='期數最少'){
+		sorterRec="MonthPeriod";
+	}
+	
+	var Messages  = mongoose.model('Messages');
+	var Transactions  = mongoose.model('Transactions');
+	Messages.find({$and:[{"SendTo": req.user._id},{"Type": "toBorrow"},{"Status": filterRec},{"Message": new RegExp(msgKeyword,'i')}]}).populate('CreatedBy', 'Username Level').populate('FromBorrowRequest', 'StoryTitle Story').populate('Transaction').sort(sorterRec).exec( function (err, messages, count){
+		if (err) {
+			console.log(err);
+			res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+		}else{
+			totalResultNumber=messages.length;
+			if(totalResultNumber==0){
+				if(targetPage>1){
+					res.redirect('/message?content='+chineseEncodeToURI('錯誤頁碼!'));
+				}else{
+					res.render('lenderReceiveMessages',{userName:req.user.Username,msgKeywordDefault:msgKeyword,filterDefault:filter,sorterDefault:sorter,jsonMessage:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage});
+				}
+			}else{
+				var divider=3;
+				pageNum=Math.ceil(messages.length/divider);
+				
+				if(pageNum<targetPage){
+					res.redirect('/message?content='+chineseEncodeToURI('錯誤頁碼!'));
+				}else{
+					var starter=divider*(targetPage-1);
+					var ender;
+					if(targetPage==pageNum){
+						ender=messages.length;
+					}else{
+						ender=starter+divider;
+					}
+					for(i=starter;i<ender;i++){
+						resArrays.push(messages[i]);
+					}
+
+					res.render('lenderReceiveMessages',{userName:req.user.Username,msgKeywordDefault:msgKeyword,filterDefault:filter,sorterDefault:sorter,jsonMessage:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage});
+				}
+			}
+		}
+	});
+});
+
+app.get('/income', ensureAuthenticated, function (req, res) {
+	res.render('income',{userName:req.user.Username});
 });
 
 app.get('/profile', ensureAuthenticated, function (req, res) {
 	res.render('profile',{userName:req.user.Username});
+});
+
+app.get('/test', ensureAuthenticated, function (req, res) {
+	console.log(library.autoComfirmToBorrowMsgArray);
+	res.end('aaa');
 });
 
 app.post('/login', passport.authenticate('local', { failureRedirect: '/message?content='+chineseEncodeToURI('登入失敗')}),function (req, res) {

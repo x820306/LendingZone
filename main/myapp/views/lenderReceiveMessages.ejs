@@ -1,154 +1,105 @@
 <%- include('layout_header',{nav_cur:'lenderReceiveMessages',actionDefault:'最新',keywordDefault:''}); -%>
-<div class="container">
+<div class="container"><div class="container">
 	<div class="row">
 		<div class="col-md-9">
-			<div style="font-size:30pt;color:#337ab7;">收到之欲借入訊息</div>
+			<div style="font-size:30pt;color:#337ab7;">收到之欲借入訊息 - <%=filterDefault%></div>
 				<div style="font-size:20pt;color:#0000D1;">&nbsp;<%=totalResultNum%> result</div>
 				<br>
-				<div class="btn-group">
-					<div class="btn-group">
-						<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" id="filterSelected">
-							<%=filterDefault%> <span class="caret"></span>
-						</button>
-						<ul class="dropdown-menu">
-							<li style="display:none"><a href="#" id="filter0"><%=filterDefault%></a></li>
-							<li><a href="#" onclick="$('#filterSelected').html('');$('#filterSelected').html($('#filter1').text());$('#filter0').html($('#filterSelected').text());$('#filterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="filter1">未確認</a></li>
-							<li><a href="#" onclick="$('#filterSelected').html('');$('#filterSelected').html($('#filter2').text());$('#filter0').html($('#filterSelected').text());$('#filterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="filter2">已同意</a></li>
-							<li><a href="#" onclick="$('#filterSelected').html('');$('#filterSelected').html($('#filter3').text());$('#filter0').html($('#filterSelected').text());$('#filterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="filter3">已婉拒</a></li>
-						</ul>
-					</div>
-					<button type="button" class="btn btn-default" onclick="window.open('/lenderSendMessages?filter='+$('#filter0').text()+'&page=1','_self');">Go!</button>
-				</div>
-				<br>
-				<br>
-				<br>
-				<% for(var i=0; i<jsonMessage.length; i++) { %>
-				<ul class="nav nav-tabs">
-					<li class="active"><a href="#tab1<%=i%>" data-toggle="tab">訊息</a></li>
-					<li><a href="#tab2<%=i%>" data-toggle="tab">
-					<% if(filterDefault=='已被同意'){%>
-						交易紀錄
+				<div class="input-group">
+					<input type="text" style="height:40px;" class="form-control" id="msgKeywordIpt" placeholder="搜尋訊息內容" value="<%=msgKeywordDefault%>" onkeypress="if(event.keyCode==13){ window.open('/lenderReceiveMessages?msgKeyword='+encodeURIComponent($('#msgKeywordIpt').val())+'&filter='+encodeURIComponent($('#filter0').text())+'&sorter='+encodeURIComponent($('#sorter0').text())+'&page=1','_self');}">
+					<span class="input-group-btn">
+						<div class="btn-group">
+							<button type="button" style="height:40px;" class="btn btn-default dropdown-toggle" data-toggle="dropdown" id="filterSelected">
+								<%=filterDefault%> <span class="caret"></span>
+							</button>
+							<ul class="dropdown-menu">
+								<li style="display:none"><a href="#" id="filter0"><%=filterDefault%></a></li>
+								<li><a href="#" onclick="$('#filterSelected').html('');$('#filterSelected').html($('#filter1').text());$('#filter0').html($('#filterSelected').text());$('#filterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="filter1">未確認</a></li>
+								<li><a href="#" onclick="$('#filterSelected').html('');$('#filterSelected').html($('#filter2').text());$('#filter0').html($('#filterSelected').text());$('#filterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="filter2">已同意</a></li>
+								<li><a href="#" onclick="$('#filterSelected').html('');$('#filterSelected').html($('#filter3').text());$('#filter0').html($('#filterSelected').text());$('#filterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="filter3">已婉拒</a></li>
+							</ul>
+						</div>
+						<div class="btn-group">
+							<button type="button" style="height:40px;" class="btn btn-default" id="sorterSelected" data-toggle="dropdown" aria-expanded="false"><%=sorterDefault%> <span class='caret'></span></button>
+							<ul class="dropdown-menu" role="menu">
+								<% if(filterDefault=='未確認'){%>
+								<li style="display:none"><a href="#" id="sorter0"><%=sorterDefault%></a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter1').text());$('#cAll').attr('href','/Messages/confirmToBorrowMessageInLRMall?sorter='+encodeURIComponent($('#sorterSelected').text()));$('#rAll').attr('href','/Messages/rejectToBorrowMessageInLRMall?sorter='+encodeURIComponent($('#sorterSelected').text()));$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter1">最新</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter2').text());$('#cAll').attr('href','/Messages/confirmToBorrowMessageInLRMall?sorter='+encodeURIComponent($('#sorterSelected').text()));$('#rAll').attr('href','/Messages/rejectToBorrowMessageInLRMall?sorter='+encodeURIComponent($('#sorterSelected').text()));$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter2">利率最高</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter3').text());$('#cAll').attr('href','/Messages/confirmToBorrowMessageInLRMall?sorter='+encodeURIComponent($('#sorterSelected').text()));$('#rAll').attr('href','/Messages/rejectToBorrowMessageInLRMall?sorter='+encodeURIComponent($('#sorterSelected').text()));$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter3">金額最高</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter4').text());$('#cAll').attr('href','/Messages/confirmToBorrowMessageInLRMall?sorter='+encodeURIComponent($('#sorterSelected').text()));$('#rAll').attr('href','/Messages/rejectToBorrowMessageInLRMall?sorter='+encodeURIComponent($('#sorterSelected').text()));$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter4">期數最少</a></li>
+								<%}else{%>
+								<li style="display:none"><a href="#" id="sorter0"><%=sorterDefault%></a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter1').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter1">最新</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter2').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter2">利率最高</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter3').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter3">金額最高</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter4').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter4">期數最少</a></li>
+								<%}%>
+							</ul>
+						</div>
+						<button type="button" style="height:40px;" class="btn btn-default" onclick="window.open('/lenderReceiveMessages?msgKeyword='+encodeURIComponent($('#msgKeywordIpt').val())+'&filter='+encodeURIComponent($('#filter0').text())+'&sorter='+encodeURIComponent($('#sorter0').text())+'&page=1','_self');">Go!</button>
+					</span>
+				</div> 
+				<% if(totalResultNum!=0){ %>
+					<% if(filterDefault=='未確認'){%>
+						<br>
+						<br>
+						<table width="100%">
+							<tr>
+								<td>
+									<input type="checkbox" id="selectAll" onclick="selectAllFun();"> 全選&nbsp;&nbsp;&nbsp;&nbsp;
+									<button class="btn btn-default" onclick="confirm();">
+										<span style="color:#337ab7;">同意</span>
+									</button>
+									<button class="btn btn-default" onclick="reject();">
+										<span style="color:#337ab7;">婉拒</span>
+									</button>
+								</td>
+								<td align="right">
+									<a href="/Messages/confirmToBorrowMessageInLRMall?sorter=<%=encodeURIComponent(sorterDefault)%>" id="cAll">
+										<button class="btn btn-default">
+											<span style="color:#337ab7;">同意所有收到請求</span>
+										</button>
+									</a>
+									<a href="/Messages/rejectToBorrowMessageInLRMall?sorter=<%=encodeURIComponent(sorterDefault)%>" id="rAll">
+										<button class="btn btn-default">
+											<span style="color:#337ab7;">婉拒所有收到請求</span>
+										</button>
+									</a>
+								</td>
+							<tr>
+						</table>
+						<br>
+						<br>
 					<% }else{%>
-						資訊
-					<% } %>
-					</a></li>
-				</ul>
-				<div class="tab-content my-tab-content">
-					<div class="tab-pane active" id="tab1<%=i%>">
-						<div style="font-size:25px;display:inline;">From </div>
-						<div style="font-size:25px;color:#0000D1;display:inline;"><%=jsonMessage[i].CreatedBy.Username%></div>
-						<br>
-						<%if((jsonMessage[i].FromBorrowRequest.StoryTitle!='')&&(jsonMessage[i].FromBorrowRequest.Story!='')){%>
-						At <a style="font-size:15px;" href="/story?id=<%=jsonMessage[i].FromBorrowRequest._id%>"><%=jsonMessage[i].FromBorrowRequest.StoryTitle%></a>
-						<%}%>
 						<br>
 						<br>
-						<%=jsonMessage[i].Message%>
-					</div>
-					<div class="tab-pane" id="tab2<%=i%>">
-						<% if(filterDefault=='已被同意'){%>
-							<table width="100%" height="200px">
-								<tr>
-									<td>
-										<div style="color:#337ab7;">
-											對方未還本金：
-										</div>
-									</td>
-								<tr>
-								<tr>
-									<td>
-										<div>
-											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].Principal%>
-										</div>	
-									</td>
-								<tr>
-								<tr>
-									<td>
-										<div style="color:#337ab7;">
-											對方已還本金：
-										</div>
-									</td>
-								<tr>
-								<tr>
-									<td>
-										<div>
-											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].PrincipalReturnedCumulated%>
-										</div>	
-									</td>
-								<tr>
-								<tr>
-									<td>
-										<div style="color:#337ab7;">
-											利率：
-										</div>
-									</td>
-								<tr>
-								<tr>
-									<td>
-										<div>
-											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].InterestRate%>
-										</div>	
-									</td>
-								<tr>
-								<tr>
-									<td>
-										<div style="color:#337ab7;">
-											已得利息：
-										</div>
-									</td>
-								<tr>
-								<tr>
-									<td>
-										<div>
-											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].InterestCumulated%>
-										</div>	
-									</td>
-								<tr>
-								<tr>
-									<td>
-										<div style="color:#337ab7;">
-											剩下期數：
-										</div>
-									</td>
-								<tr>
-								<tr>
-									<td>
-										<div>
-											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].MonthPeriod%>
-										</div>	
-									</td>
-								<tr>
-								<tr>
-									<td>
-										<div style="color:#337ab7;">
-											已過期數:
-										</div>
-									</td>
-								<tr>
-								<tr>
-									<td>
-										<div>
-											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].MonthPeriodHasPast%>
-										</div>	
-									</td>
-								<tr>
-								<tr>
-									<td>
-										<div style="color:#337ab7;">
-											成交日期:
-										</div>
-									</td>
-								<tr>
-								<tr>
-									<td>
-										<div>
-											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].Created.getFullYear()%>/<%=jsonMessage[i].Transaction[0].Created.getMonth()+1%>/<%=jsonMessage[i].Transaction[0].Created.getDate()%>
-										</div>	
-									</td>
-								<tr>
-							</table>
-						<% }else{%>
-							<table width="100%" height="250px">
+						<br>
+					<%}%>
+					<% for(var i=0; i<jsonMessage.length; i++) { %>
+					<ul class="nav nav-tabs">
+						<li class="active"><a href="#tab1<%=i%>" data-toggle="tab">訊息</a></li>
+						<li><a href="#tab2<%=i%>" data-toggle="tab">資訊</a></li>
+						<% if(filterDefault=='已同意'){%>
+						<li><a href="#tab3<%=i%>" data-toggle="tab">交易紀錄</a></li>
+						<% }%>
+					</ul>
+					<div class="tab-content my-tab-content">
+						<div class="tab-pane active" id="tab1<%=i%>">
+							<div style="font-size:25px;display:inline;">來自 </div>
+							<div style="font-size:25px;color:#0000D1;display:inline;"><%=jsonMessage[i].CreatedBy.Username%></div>
+							<br>
+							<%if((jsonMessage[i].FromBorrowRequest.StoryTitle!='')&&(jsonMessage[i].FromBorrowRequest.Story!='')){%>
+								在 <a style="font-size:15px;" href="/story?id=<%=jsonMessage[i].FromBorrowRequest._id%>"><%=jsonMessage[i].FromBorrowRequest.StoryTitle%></a>
+							<%}%>
+							<br>
+							<br>
+							<div>	
+								<%=jsonMessage[i].Message%>
+							</div>
+						</div>
+						<div class="tab-pane" id="tab2<%=i%>">
+							<table width="100%" height="270px">
 								<tr>
 									<td>
 										<div style="color:#337ab7;">
@@ -191,91 +142,273 @@
 										</div>	
 									</td>
 								<tr>
+								<tr>
+									<td>
+										<div style="color:#337ab7;">
+											信用等級：
+										</div>
+									</td>
+								<tr>
+								<tr>
+									<td>
+										<div>
+											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].CreatedBy.Level%>
+										</div>	
+									</td>
+								<tr>
 							</table>
-						<% } %>
-					</div>
-				</div>
-				<table width="100%">
-				<tr>
-					<td align="right">
-						<div style="color:#337ab7;">
-							Updated：<%=jsonMessage[i].Updated.getFullYear()%>/<%=jsonMessage[i].Updated.getMonth()+1%>/<%=jsonMessage[i].Updated.getDate()%>
 						</div>
-					</td>
-				<tr>
-			</table>
-			<%}%>
-			<br>
-			<table align="center">
-				<tr>
-					<td>
-						<nav>
-						  <ul class="pagination">
-							<li 
-								<% if(targetPageNumber==1){%>
-									class="disabled"
-								<%}%>
-							>
-							<% if(targetPageNumber!=1){%>
-								<a href="/lenderSendMessages?filter=<%=filterDefault%>&page=<%=targetPageNumber-1%>">
-							<%}else{%>
-								<a href="#" onclick="return false;">
+						<% if(filterDefault=='已同意'){%>
+							<div class="tab-pane" id="tab3<%=i%>">
+								<table width="100%" height="200px">
+									<tr>
+										<td>
+											<div style="color:#337ab7;">
+												對方未還本金：
+											</div>
+										</td>
+									<tr>
+									<tr>
+										<td>
+											<div>
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].Principal%>
+											</div>	
+										</td>
+									<tr>
+									<tr>
+										<td>
+											<div style="color:#337ab7;">
+												對方已還本金：
+											</div>
+										</td>
+									<tr>
+									<tr>
+										<td>
+											<div>
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].PrincipalReturnedCumulated%>
+											</div>	
+										</td>
+									<tr>
+									<tr>
+										<td>
+											<div style="color:#337ab7;">
+												利率：
+											</div>
+										</td>
+									<tr>
+									<tr>
+										<td>
+											<div>
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].InterestRate%>
+											</div>	
+										</td>
+									<tr>
+									<tr>
+										<td>
+											<div style="color:#337ab7;">
+												已得利息：
+											</div>
+										</td>
+									<tr>
+									<tr>
+										<td>
+											<div>
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].InterestCumulated%>
+											</div>	
+										</td>
+									<tr>
+									<tr>
+										<td>
+											<div style="color:#337ab7;">
+												剩下期數：
+											</div>
+										</td>
+									<tr>
+									<tr>
+										<td>
+											<div>
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].MonthPeriod%>
+											</div>	
+										</td>
+									<tr>
+									<tr>
+										<td>
+											<div style="color:#337ab7;">
+												已過期數:
+											</div>
+										</td>
+									<tr>
+									<tr>
+										<td>
+											<div>
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].MonthPeriodHasPast%>
+											</div>	
+										</td>
+									<tr>
+									<tr>
+										<td>
+											<div style="color:#337ab7;">
+												成交日期:
+											</div>
+										</td>
+									<tr>
+									<tr>
+										<td>
+											<div>
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].Created.getFullYear()%>/<%=jsonMessage[i].Transaction[0].Created.getMonth()+1%>/<%=jsonMessage[i].Transaction[0].Created.getDate()%>
+											</div>	
+										</td>
+									<tr>
+								</table>
+							</div>
+						<%}%>
+					</div>
+					<table width="100%">
+						<tr>
+							<%if(filterDefault=='未確認'){%>
+								<td>
+									<input type="checkbox" name="selectCheckBox" value='{"FromBorrowRequest":"<%=jsonMessage[i].FromBorrowRequest._id%>","MessageID":"<%=jsonMessage[i]._id%>"}'> 選擇
+								</td>
 							<%}%>
-							<span>&laquo;</span></a></li>
-							<% if(pageNumber<=10){%>
-								<% for(var j=1; j<=pageNumber; j++) { %>
-									<li 
-										<% if(targetPageNumber==j){%>
-											class="active"
-										<%}%>
-									><a href="/lenderSendMessages?filter=<%=filterDefault%>&page=<%=j%>"><%=j%></a></li>
-								<%}%>
-							<% }else{%>
-								<% if(targetPageNumber>=pageNumber-3){%>
-									<% for(var j=pageNumber-9; j<=pageNumber; j++) { %>
-									<li 
-										<% if(targetPageNumber==j){%>
-											class="active"
-										<%}%>
-									><a href="/lenderSendMessages?filter=<%=filterDefault%>&page=<%=j%>"><%=j%></a></li>
+							<td align="right">
+								<div style="color:#337ab7;">
+									Updated：<%=jsonMessage[i].Updated.getFullYear()%>/<%=jsonMessage[i].Updated.getMonth()+1%>/<%=jsonMessage[i].Updated.getDate()%>
+								</div>
+							</td>
+						<tr>
+					</table>
+					<br>
+				<%}%>
+				<%if(filterDefault=='未確認'){%>
+					<form action="/Messages/confirmToBorrowMessageInLRM" method="post" id="formID">
+						<input type="hidden" name="JsonArrayString" id="hdnIpt">
+					</form>
+				<%}%>
+				<br>
+				<table align="center">
+					<tr>
+						<td>
+							<nav>
+							  <ul class="pagination">
+								<li 
+									<% if(targetPageNumber==1){%>
+										class="disabled"
 									<%}%>
-								<%}else if(targetPageNumber<=5){%>
-									<% for(var j=1; j<=10; j++) { %>
-									<li 
-										<% if(targetPageNumber==j){%>
-											class="active"
-										<%}%>
-									><a href="/lenderSendMessages?filter=<%=filterDefault%>&page=<%=j%>"><%=j%></a></li>
-									<%}%>
+								>
+								<% if(targetPageNumber!=1){%>
+									<a href="/lenderReceiveMessages?msgKeyword=<%=encodeURIComponent(msgKeywordDefault)%>&filter=<%=encodeURIComponent(filterDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=targetPageNumber-1%>">
 								<%}else{%>
-									<% for(var j=targetPageNumber-5; j<targetPageNumber; j++) { %>
-									<li><a href="/lenderSendMessages?filter=<%=filterDefault%>&page=<%=j%>"><%=j%></a></li>
+									<a href="#" onclick="return false;">
+								<%}%>
+								<span>&laquo;</span></a></li>
+								<% if(pageNumber<=10){%>
+									<% for(var j=1; j<=pageNumber; j++) { %>
+										<li 
+											<% if(targetPageNumber==j){%>
+												class="active"
+											<%}%>
+										><a href="/lenderReceiveMessages?msgKeyword=<%=encodeURIComponent(msgKeywordDefault)%>&filter=<%=encodeURIComponent(filterDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=j%>"><%=j%></a></li>
 									<%}%>
-									<li class="active"><a href="/lenderSendMessages?filter=<%=filterDefault%>&page=<%=targetPageNumber%>"><%=targetPageNumber%></a></li>
-									<% for(var j=targetPageNumber+1; j<=targetPageNumber+4; j++) { %>
-									<li><a href="/lenderSendMessages?filter=<%=filterDefault%>&page=<%=j%>"><%=j%></a></li>
+								<% }else{%>
+									<% if(targetPageNumber>=pageNumber-3){%>
+										<% for(var j=pageNumber-9; j<=pageNumber; j++) { %>
+										<li 
+											<% if(targetPageNumber==j){%>
+												class="active"
+											<%}%>
+										><a href="/lenderReceiveMessages?msgKeyword=<%=encodeURIComponent(msgKeywordDefault)%>&filter=<%=encodeURIComponent(filterDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=j%>"><%=j%></a></li>
+										<%}%>
+									<%}else if(targetPageNumber<=5){%>
+										<% for(var j=1; j<=10; j++) { %>
+										<li 
+											<% if(targetPageNumber==j){%>
+												class="active"
+											<%}%>
+										><a href="/lenderReceiveMessages?msgKeyword=<%=encodeURIComponent(msgKeywordDefault)%>&filter=<%=encodeURIComponent(filterDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=j%>"><%=j%></a></li>
+										<%}%>
+									<%}else{%>
+										<% for(var j=targetPageNumber-5; j<targetPageNumber; j++) { %>
+										<li><a href="/lenderReceiveMessages?msgKeyword=<%=encodeURIComponent(msgKeywordDefault)%>&filter=<%=encodeURIComponent(filterDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=j%>"><%=j%></a></li>
+										<%}%>
+										<li class="active"><a href="/lenderReceiveMessages?msgKeyword=<%=encodeURIComponent(msgKeywordDefault)%>&filter=<%=encodeURIComponent(filterDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=targetPageNumber%>"><%=targetPageNumber%></a></li>
+										<% for(var j=targetPageNumber+1; j<=targetPageNumber+4; j++) { %>
+										<li><a href="/lenderReceiveMessages?msgKeyword=<%=encodeURIComponent(msgKeywordDefault)%>&filter=<%=encodeURIComponent(filterDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=j%>"><%=j%></a></li>
+										<%}%>
 									<%}%>
 								<%}%>
-							<%}%>
-							<li 
-								<% if(targetPageNumber==pageNumber){%>
-									class="disabled"
+								<li 
+									<% if(targetPageNumber==pageNumber){%>
+										class="disabled"
+									<%}%>
+								>	
+								<% if(targetPageNumber!=pageNumber){%>
+									<a href="/lenderReceiveMessages?msgKeyword=<%=encodeURIComponent(msgKeywordDefault)%>&filter=<%=encodeURIComponent(filterDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=targetPageNumber+1%>">
+								<%}else{%>
+									<a href="#" onclick="return false;">
 								<%}%>
-							>	
-							<% if(targetPageNumber!=pageNumber){%>
-								<a href="/lenderSendMessages?filter=<%=filterDefault%>&page=<%=targetPageNumber+1%>">
-							<%}else{%>
-								<a href="#" onclick="return false;">
-							<%}%>
-							<span>&raquo;</span></a></li>
-						  </ul>
-						</nav>
-					</td>
-				</tr>
-			</table>
+								<span>&raquo;</span></a></li>
+							  </ul>
+							</nav>
+						</td>
+					</tr>
+				</table>
+			<% }%>
 		</div>
 		<div class="col-md-3">
 		</div>
 	</div>
 </div>
+<script>
+<% if(filterDefault=='未確認'){%>
+function selectAllFun(){
+	if($("#selectAll").prop("checked"))
+	{
+		$("input[name='selectCheckBox']").each(function() {
+			$(this).prop("checked", true);
+		});
+	}else{
+		$("input[name='selectCheckBox']").each(function() {
+			$(this).prop("checked", false);
+		});           
+	}
+}
+
+function confirm(){
+	samepart(confirmInner);
+}
+
+function reject(){
+	samepart(rejectInner);
+}
+
+function confirmInner(){
+	var form=document.getElementById('formID');
+	form.submit();
+}
+
+function rejectInner(){
+	var form=document.getElementById('formID');
+	form.action="/Messages/rejectToBorrowMessageInLRM";
+	form.submit();
+}
+
+function samepart(toDO){
+	var JSONarrayString='{"array":['
+	$("input[name='selectCheckBox']").each(function() {
+			if($(this).prop("checked")){
+				JSONarrayString+=$(this).val();
+				JSONarrayString+=',';
+			}
+	});
+	if(JSONarrayString!='{"array":['){
+		JSONarrayString=JSONarrayString.substr(0,JSONarrayString.length-1);
+		JSONarrayString+=']}';
+		$("#hdnIpt").val(JSONarrayString);
+		toDO();
+	}else{
+		alert("未選擇欲同意訊息!");
+	}
+}
+<%}%>
+</script>
 <%- include('layout_footer'); -%>

@@ -527,7 +527,7 @@
 				<%if(jsonBorrowMessage.Status=='NotConfirmed'){ %>
 					function refuse(){
 						var form=document.getElementById('confirmFormID');
-						form.action="/Messages/rejectToBorrowMessage";
+						form.action="/Messages/rejectToBorrowMessageInStory";
 						form.submit();
 					}
 				<%}%>

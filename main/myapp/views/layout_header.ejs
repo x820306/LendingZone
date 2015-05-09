@@ -3,12 +3,13 @@
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>First</title>
+	<title>Lending Zone</title>
 	
 	<!-- jquery js-->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 	<!-- bootstrap js-->
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+	<script src="/javascripts/jquery.cookie.js"></script>
 	<!-- bootstrap css-->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
 	<!-- local css-->
@@ -42,18 +43,19 @@
 							<ul class="dropdown-menu" role="menu">
 								<li <% if(nav_cur=='lend'){ %> class="active"<% } %>><% if(!userName){ %><a href="#" data-toggle="modal" data-target="#myModal"><% }else{ %><a href="/lend"><%}%>自動借出設定</a></li>
 								<li <% if(nav_cur=='income'){ %> class="active"<% } %>><% if(!userName){ %><a href="#" data-toggle="modal" data-target="#myModal"><% }else{ %><a href="/income"><%}%>收入分析</a></li>
+								<li <% if(nav_cur=='lenderTransactionRecord'){ %> class="active"<% } %>><% if(!userName){ %><a href="#" data-toggle="modal" data-target="#myModal"><% }else{ %><a href="/lenderTransactionRecord?sorter=<%=encodeURIComponent("最新")%>&page=1"><%}%>借出紀錄</a></li>
 								<li class="divider"></li>
-								<li <% if(nav_cur=='lenderReceiveMessages'){ %> class="active"<% } %>><% if(!userName){ %><a href="#" data-toggle="modal" data-target="#myModal"><% }else{ %><a href="/lenderReceiveMessages?filter=未確認&page=1"><%}%>收到之欲借入訊息</a></li>
-								<li <% if(nav_cur=='lenderSendMessages'){ %> class="active"<% } %>><% if(!userName){ %><a href="#" data-toggle="modal" data-target="#myModal"><% }else{ %><a href="/lenderSendMessages?filter=未被確認&page=1"><%}%>送出之欲借出訊息</a></li>
+								<li <% if(nav_cur=='lenderReceiveMessages'){ %> class="active"<% } %>><% if(!userName){ %><a href="#" data-toggle="modal" data-target="#myModal"><% }else{ %><a href="/lenderReceiveMessages?msgKeyword=&filter=<%=encodeURIComponent("未確認")%>&sorter=<%=encodeURIComponent("利率最高")%>&page=1"><%}%>收到之欲借入訊息</a></li>
+								<li <% if(nav_cur=='lenderSendMessages'){ %> class="active"<% } %>><% if(!userName){ %><a href="#" data-toggle="modal" data-target="#myModal"><% }else{ %><a href="/lenderSendMessages?msgKeyword=&filter=<%=encodeURIComponent("未被確認")%>&sorter=<%=encodeURIComponent("最新")%>&page=1"><%}%>送出之欲借出訊息</a></li>
 							</ul>
 						</li>
 					</ul>
 					<div class="navbar-form navbar-left" role="search">
 						<div class="input-group">
-							<input type="text" style="height:32px;" class="form-control" id="keywordIpt" placeholder="搜尋借入者的故事" value="<%=keywordDefault%>" onkeypress="if(event.keyCode==13){ window.open('/search?keyword='+$('#keywordIpt').val()+'&action='+$('#searchAction0').text()+'&page=1','_self');}">
+							<input type="text" style="height:32px;" class="form-control" id="keywordIpt" placeholder="搜尋借入者的故事" value="<%=keywordDefault%>" onkeypress="if(event.keyCode==13){ window.open('/search?keyword='+encodeURIComponent($('#keywordIpt').val())+'&action='+encodeURIComponent($('#searchAction0').text())+'&page=1','_self');}">
 							<span class="input-group-btn">
 								<button type="button" style="height:32px;" class="btn btn-default" id="searchActionSelected" data-toggle="dropdown" aria-expanded="false"><%=actionDefault%> <span class='caret'></span></button>
-								<button type="button" style="height:32px;" class="btn btn-default" onclick="window.open('/search?keyword='+$('#keywordIpt').val()+'&action='+$('#searchAction0').text()+'&page=1','_self');"><span class="glyphicon glyphicon-search"></span></button>
+								<button type="button" style="height:32px;" class="btn btn-default" onclick="window.open('/search?keyword='+encodeURIComponent($('#keywordIpt').val())+'&action='+encodeURIComponent($('#searchAction0').text())+'&page=1','_self');"><span class="glyphicon glyphicon-search"></span></button>
 								<ul class="dropdown-menu" role="menu">
 									<li style="display:none"><a href="#" id="searchAction0"><%=actionDefault%></a></li>
 									<li><a href="#" onclick="$('#searchActionSelected').html('');$('#searchActionSelected').html($('#searchAction1').text());$('#searchAction0').html($('#searchActionSelected').text());$('#searchActionSelected').append(' <span class=\'caret\'><\/span>');return false;" id="searchAction1">最新</a></li>
