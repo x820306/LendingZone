@@ -48,7 +48,7 @@
 <script>
 	$(document).ready(function () {
 		if ($.cookie("rmbUser") == "true") {
-			$("#rememberID").attr("checked", true);
+			$("#rememberID").prop("checked", true);
 			$("#usernameID").val($.cookie("username"));
 			$("#passwordID").val($.cookie("password"));
 		}
