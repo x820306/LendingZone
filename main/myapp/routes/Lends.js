@@ -133,7 +133,7 @@ function autoConfirm(req,res,sorter,lendID){
 								}
 								delete req.body.array;
 								req.body.array=arrayOp;
-								library.confirmToBorrowMessage(true,0,req.body.array.length,null,req,res,true);
+								library.confirmToBorrowMessage(true,0,req.body.array.length,null,req,res,true,'/',true);
 							}
 						}
 					});

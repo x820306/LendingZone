@@ -117,17 +117,17 @@
 				<% if(!jsonLend){ %>
 					<div class="btn-toolbar" role="toolbar">
 						<div class="btn-group" role="group">
-							<button type="submit" class="btn btn-info">新建</button>
+							<button type="submit" class="btn btn-info" id="createBtnID" onclick="create()">新建</button>
 						</div>
 					</div>
 				<% }else{ %>
 					<input type="hidden" name="_id" value="<%=jsonLend._id%>">
 					<div class="btn-toolbar" role="toolbar">
 						<div class="btn-group" role="group">
-							<button type="submit" class="btn btn-info">更新</button>
+							<button type="submit" class="btn btn-info" id="updateBtnID" onclick="update()">更新</button>
 						</div>
 						<div class="btn-group" role="group">
-							<button type="button" class="btn btn-danger" onclick="destroy();">刪除</button>
+							<button type="button" class="btn btn-danger" id="destroyBtnID" onclick="destroy();">刪除</button>
 						</div>
 					</div>
 				<% } %>
@@ -137,13 +137,47 @@
 		</div>
 	</div>
 </div>
-<% if(jsonLend){ %>
 <script>
+<% if(!jsonLend){ %>
+	function create(){
+		var orig=$('#createBtnID').attr('class');
+		if(orig.search(' disabled')<0){
+			orig=orig+' disabled';
+			$('#createBtnID').attr('class',orig);
+		}
+	}
+<% }else{%>
+	function update(){
+		var orig=$('#destroyBtnID').attr('class');
+		if(orig.search(' disabled')<0){
+			orig=orig+' disabled';
+			$('#destroyBtnID').attr('class',orig);
+		}
+		
+		var orig=$('#updateBtnID').attr('class');
+		if(orig.search(' disabled')<0){
+			orig=orig+' disabled';
+			$('#updateBtnID').attr('class',orig);
+		}
+	}
+	
 	function destroy(){
+		var orig=$('#destroyBtnID').attr('class');
+		if(orig.search(' disabled')<0){
+			orig=orig+' disabled';
+			$('#destroyBtnID').attr('class',orig);
+		}
+		
+		var orig=$('#updateBtnID').attr('class');
+		if(orig.search(' disabled')<0){
+			orig=orig+' disabled';
+			$('#updateBtnID').attr('class',orig);
+		}
+		
 		var form=document.getElementById('formID');
 		form.action="/Lends/destroy";
 		form.submit();
 	}
+<% }%>
 </script>
-<% } %>
 <%- include('layout_footer'); -%>

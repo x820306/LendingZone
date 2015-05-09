@@ -285,7 +285,7 @@
 									<div class="modal-footer">
 										<div class="btn-toolbar" role="toolbar">
 											<div class="btn-group" role="group">
-												<button type="submit" class="btn btn-info">新建</button>
+												<button type="submit" class="btn btn-info" id="createBtnID" onclick="create()">新建</button>
 											</div>
 										</div>
 									</div>
@@ -327,10 +327,10 @@
 										<div class="modal-footer">
 											<div class="btn-toolbar" role="toolbar">
 												<div class="btn-group" role="group">
-													<button type="submit" class="btn btn-info">更新</button>
+													<button type="submit" class="btn btn-info" id="updateBtnID" onclick="update()">更新</button>
 												</div>
 												<div class="btn-group" role="group">
-													<button type="button" class="btn btn-danger" onclick="destroy();">刪除</button>
+													<button type="button" class="btn btn-danger" id="destroyBtnID" onclick="destroy();">刪除</button>
 												</div>
 											</div>
 										</div>
@@ -375,10 +375,10 @@
 								<div class="modal-footer">
 									<div class="btn-toolbar" role="toolbar">
 										<div class="btn-group" role="group">
-											<button type="submit" class="btn btn-info">同意</button>
+											<button type="submit" class="btn btn-info"  onclick="agree();" id="argBtnID">同意</button>
 										</div>
 										<div class="btn-group" role="group">
-											<button type="button" class="btn btn-danger" onclick="refuse();">拒絕</button>
+											<button type="button" class="btn btn-danger" onclick="refuse();" id="rfsBtnID">拒絕</button>
 										</div>
 									</div>
 								</div>
@@ -516,16 +516,76 @@
 					<% if(jsonMessage){ %>
 						<% if(jsonMessage.Status=='NotConfirmed'){ %>
 							function destroy(){
+								var orig=$('#destroyBtnID').attr('class');
+								if(orig.search(' disabled')<0){
+									orig=orig+' disabled';
+									$('#destroyBtnID').attr('class',orig);
+								}
+								
+								var orig=$('#updateBtnID').attr('class');
+								if(orig.search(' disabled')<0){
+									orig=orig+' disabled';
+									$('#updateBtnID').attr('class',orig);
+								}
+								
 								var form=document.getElementById('formID');
 								form.action="/Messages/destroy";
 								form.submit();
 							}
+							
+							function update(){
+								var orig=$('#destroyBtnID').attr('class');
+								if(orig.search(' disabled')<0){
+									orig=orig+' disabled';
+									$('#destroyBtnID').attr('class',orig);
+								}
+								
+								var orig=$('#updateBtnID').attr('class');
+								if(orig.search(' disabled')<0){
+									orig=orig+' disabled';
+									$('#updateBtnID').attr('class',orig);
+								}
+							}
 						<%}%>
+					<%}else{%>
+						function create(){
+							var orig=$('#createBtnID').attr('class');
+							if(orig.search(' disabled')<0){
+								orig=orig+' disabled';
+								$('#createBtnID').attr('class',orig);
+							}
+						}
 					<%}%>
 				<%}%>
 			<%}else{%>
 				<%if(jsonBorrowMessage.Status=='NotConfirmed'){ %>
+					function agree(){
+						var orig=$('#argBtnID').attr('class');
+						if(orig.search(' disabled')<0){
+							orig=orig+' disabled';
+							$('#argBtnID').attr('class',orig);
+						}
+						
+						var orig=$('#rfsBtnID').attr('class');
+						if(orig.search(' disabled')<0){
+							orig=orig+' disabled';
+							$('#rfsBtnID').attr('class',orig);
+						}
+					}
+					
 					function refuse(){
+						var orig=$('#argBtnID').attr('class');
+						if(orig.search(' disabled')<0){
+							orig=orig+' disabled';
+							$('#argBtnID').attr('class',orig);
+						}
+						
+						var orig=$('#rfsBtnID').attr('class');
+						if(orig.search(' disabled')<0){
+							orig=orig+' disabled';
+							$('#rfsBtnID').attr('class',orig);
+						}
+						
 						var form=document.getElementById('confirmFormID');
 						form.action="/Messages/rejectToBorrowMessageInStory";
 						form.submit();

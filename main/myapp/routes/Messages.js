@@ -145,7 +145,7 @@ function toLendCreatePart(res,req,borrow,lenderBankaccount,outterPara){
 																		console.log(err);
 																		res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
 																	}else{				
-																		Lends.findOne({"CreatedBy": req.user._id}).exec(function (err, lend){
+																		Lends.findOne({"CreatedBy": newCreate.CreatedBy}).exec(function (err, lend){
 																			if (err) {
 																				console.log(err);
 																				res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
@@ -227,18 +227,18 @@ function toLendUpdatePart(res,req,innerPara,innerPara2,message){
 }
 
 router.post('/rejectToBorrowMessageInStory', ensureAuthenticated, function(req, res, next) {
-	library.rejectToBorrowMessage(false,0,0,null,req,res,false);
+	library.rejectMessage(false,0,0,null,req,res,false,'/story?id='+req.body.FromBorrowRequest);
 });
 
 router.post('/confirmToBorrowMessageInStory', ensureAuthenticated, function(req, res, next) {
-	library.confirmToBorrowMessage(false,0,0,null,req,res,false);
+	library.confirmToBorrowMessage(false,0,0,null,req,res,false,'/story?id='+req.body.FromBorrowRequest,true);
 });
 
 router.post('/rejectToBorrowMessageInLRM', ensureAuthenticated, function(req, res, next) {
 	var JSONobj=JSON.parse(req.body.JsonArrayString);
 	req.body.array=JSONobj.array;
 	if(req.body.array.length>0){
-		library.rejectToBorrowMessage(true,0,req.body.array.length,null,req,res,false);
+		library.rejectMessage(true,0,req.body.array.length,null,req,res,false,'/lenderReceiveMessages?msgKeyword=&filter='+chineseEncodeToURI('已婉拒')+'&sorter='+chineseEncodeToURI('最新')+'&page=1');
 	}
 });
 
@@ -246,7 +246,7 @@ router.post('/confirmToBorrowMessageInLRM', ensureAuthenticated, function(req, r
 	var JSONobj=JSON.parse(req.body.JsonArrayString);
 	req.body.array=JSONobj.array;
 	if(req.body.array.length>0){
-		library.confirmToBorrowMessage(true,0,req.body.array.length,null,req,res,false);
+		library.confirmToBorrowMessage(true,0,req.body.array.length,null,req,res,false,'/lenderReceiveMessages?msgKeyword=&filter='+chineseEncodeToURI('已同意')+'&sorter='+chineseEncodeToURI('最新')+'&page=1',true);
 	}
 });
 
@@ -272,11 +272,11 @@ router.get('/rejectToBorrowMessageInLRMall/:sorter?', ensureAuthenticated, funct
 			}else{
 				var arrayOp=[];
 				for(i=0;i<messages.length;i++){
-					var temp={FromBorrowRequest:messages[i].FromBorrowRequest,MessageID:messages[i]._id};
+					var temp={MessageID:messages[i]._id};
 					arrayOp.push(temp);
 				}
 				req.body.array=arrayOp;
-				library.rejectToBorrowMessage(true,0,req.body.array.length,null,req,res,false);
+				library.rejectMessage(true,0,req.body.array.length,null,req,res,false,'/lenderReceiveMessages?msgKeyword=&filter='+chineseEncodeToURI('已婉拒')+'&sorter='+chineseEncodeToURI('最新')+'&page=1');
 			}
 		}
 	});
@@ -308,7 +308,7 @@ router.get('/confirmToBorrowMessageInLRMall/:sorter?', ensureAuthenticated, func
 					arrayOp.push(temp);
 				}
 				req.body.array=arrayOp;
-				library.confirmToBorrowMessage(true,0,req.body.array.length,null,req,res,false);
+				library.confirmToBorrowMessage(true,0,req.body.array.length,null,req,res,false,'/lenderReceiveMessages?msgKeyword=&filter='+chineseEncodeToURI('已同意')+'&sorter='+chineseEncodeToURI('最新')+'&page=1',true);
 			}
 		}
 	});

@@ -40,7 +40,7 @@
 						<button type="button" style="height:40px;" class="btn btn-default" onclick="window.open('/lenderReceiveMessages?msgKeyword='+encodeURIComponent($('#msgKeywordIpt').val())+'&filter='+encodeURIComponent($('#filter0').text())+'&sorter='+encodeURIComponent($('#sorter0').text())+'&page=1','_self');">Go!</button>
 					</span>
 				</div> 
-				<% if(totalResultNum!=0){ %>
+				<% if(totalResultNum>0){ %>
 					<% if(filterDefault=='未確認'){%>
 						<br>
 						<br>
@@ -48,21 +48,21 @@
 							<tr>
 								<td>
 									<input type="checkbox" id="selectAll" onclick="selectAllFun();"> 全選&nbsp;&nbsp;&nbsp;&nbsp;
-									<button class="btn btn-default" onclick="confirm();">
+									<button class="btn btn-default" id="confirmBtn" onclick="confirm();">
 										<span style="color:#337ab7;">同意</span>
 									</button>
-									<button class="btn btn-default" onclick="reject();">
+									<button class="btn btn-default" id="rejectBtn" onclick="reject();">
 										<span style="color:#337ab7;">婉拒</span>
 									</button>
 								</td>
 								<td align="right">
 									<a href="/Messages/confirmToBorrowMessageInLRMall?sorter=<%=encodeURIComponent(sorterDefault)%>" id="cAll">
-										<button class="btn btn-default">
+										<button class="btn btn-default" id="confirmAllBtn" onclick="confirmAll();">
 											<span style="color:#337ab7;">同意所有收到請求</span>
 										</button>
 									</a>
 									<a href="/Messages/rejectToBorrowMessageInLRMall?sorter=<%=encodeURIComponent(sorterDefault)%>" id="rAll">
-										<button class="btn btn-default">
+										<button class="btn btn-default" id="rejectAllBtn" onclick="rejectAll();">
 											<span style="color:#337ab7;">婉拒所有收到請求</span>
 										</button>
 									</a>
@@ -359,7 +359,7 @@
 	</div>
 </div>
 <script>
-<% if(filterDefault=='未確認'){%>
+<% if((filterDefault=='未確認')&&(totalResultNum>0)){%>
 function selectAllFun(){
 	if($("#selectAll").prop("checked"))
 	{
@@ -373,6 +373,14 @@ function selectAllFun(){
 	}
 }
 
+function confirmAll(){
+	disableButton();
+}
+
+function rejectAll(){
+	disableButton();
+}
+
 function confirm(){
 	samepart(confirmInner);
 }
@@ -381,12 +389,40 @@ function reject(){
 	samepart(rejectInner);
 }
 
+function disableButton(){
+	var orig=$('#confirmBtn').attr('class');
+	if(orig.search(' disabled')<0){
+		orig=orig+' disabled';
+		$('#confirmBtn').attr('class',orig);
+	}
+	
+	var orig=$('#rejectBtn').attr('class');
+	if(orig.search(' disabled')<0){
+		orig=orig+' disabled';
+		$(rejectBtn).attr('class',orig);
+	}
+	
+	var orig=$('#confirmAllBtn').attr('class');
+	if(orig.search(' disabled')<0){
+		orig=orig+' disabled';
+		$('#confirmAllBtn').attr('class',orig);
+	}
+
+	var orig=$('#rejectAllBtn').attr('class');
+	if(orig.search(' disabled')<0){
+		orig=orig+' disabled';
+		$('#rejectAllBtn').attr('class',orig);
+	}
+}
+
 function confirmInner(){
+	disableButton();
 	var form=document.getElementById('formID');
 	form.submit();
 }
 
 function rejectInner(){
+	disableButton();
 	var form=document.getElementById('formID');
 	form.action="/Messages/rejectToBorrowMessageInLRM";
 	form.submit();
