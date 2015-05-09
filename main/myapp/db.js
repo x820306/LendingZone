@@ -23,6 +23,7 @@ var Lends = new Schema({
     MaxMoneyToLend: { type: Number, default: 0 },
 	InterestRate: { type: Number, default: 0 },
 	MonthPeriod: { type: Number, default: 1 },
+	MinLevelAccepted: { type: Number, default: 0 },
 	AutoComfirmToBorrowMsgPeriod: { type: Number, default: -1 },
 	AutoComfirmToBorrowMsgSorter: { type: String, default: '-InterestRate' },
 	CreatedBy: { type: Schema.Types.ObjectId, ref: 'Users' },

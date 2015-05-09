@@ -16,7 +16,7 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 	}else{
 		FBR=req.body.array[ctr].FromBorrowRequest;
 	}
-	Borrows.findById(FBR).exec(function (err, borrow){
+	Borrows.findById(FBR).populate('CreatedBy', 'Level').exec(function (err, borrow){
 		if (err) {
 			console.log(err);
 			if(ifRecursive){
@@ -233,10 +233,12 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 															}else{
 																var minRate=parseFloat(lend.InterestRate);
 																var maxMonth=parseInt(lend.MonthPeriod);
+																var minLevel=parseInt(lend.MinLevelAccepted);
 																
 																var nowMoney2=parseInt(message.MoneyToLend);
 																var rate2=parseFloat(message.InterestRate);
 																var month2=parseInt(message.MonthPeriod);
+																var level=parseInt(borrow.CreatedBy.Level);
 																
 																if(nowMoney2>maxMoney){
 																	returnSring='有訊息因借款金額超過借出方銀行帳戶內的餘額而無法被同意';
@@ -259,6 +261,8 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																}else if(rate2<minRate){
 																	returnSring='有些訊息因借入方已不需要借款或其條件不合您現在的自動出借設定而無法被同意，它們已被自動婉拒';
 																}else if(month2>maxMonth){
+																	returnSring='有些訊息因借入方已不需要借款或其條件不合您現在的自動出借設定而無法被同意，它們已被自動婉拒';
+																}else if(level<minLevel){
 																	returnSring='有些訊息因借入方已不需要借款或其條件不合您現在的自動出借設定而無法被同意，它們已被自動婉拒';
 																}else{
 																	finalMoneyToLend=message.MoneyToLend;

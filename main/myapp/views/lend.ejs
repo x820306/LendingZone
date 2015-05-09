@@ -68,6 +68,19 @@
 				</br>
 				<div class="panel panel-default">
 					<div class="panel-heading">
+						<h3 class="panel-title">最低可接受信用等級</h3>
+					</div>
+					<div class="panel-body">
+						<% if(!jsonLend){ %>
+							<input type="number" class="textForm" name="MinLevelAccepted">
+						<% }else{ %>
+							<input type="number" class="textForm" name="MinLevelAccepted" value="<%=jsonLend.MinLevelAccepted%>">
+						<% } %>
+					</div>
+				</div>
+				</br>
+				<div class="panel panel-default">
+					<div class="panel-heading">
 						<h3 class="panel-title">自動同意借款請求</h3>
 					</div>
 					<div class="panel-body">

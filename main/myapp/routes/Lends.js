@@ -39,10 +39,11 @@ function samePart(res,req,differentPart,outterPara){
 				var nowMoney=parseInt(sanitizer.sanitize(req.body.MaxMoneyToLend));
 				var rate=parseFloat(sanitizer.sanitize(req.body.InterestRate));
 				var month=parseInt(sanitizer.sanitize(req.body.MonthPeriod));
+				var level=parseInt(sanitizer.sanitize(req.body.MinLevelAccepted));
 				
-				if((req.body.MaxMoneyToLend=='')||(req.body.InterestRate=='')||(req.body.MonthPeriod=='')){
+				if((req.body.MaxMoneyToLend=='')||(req.body.InterestRate=='')||(req.body.MonthPeriod=='')||(req.body.MinLevelAccepted=='')){
 					res.redirect('/message?content='+chineseEncodeToURI('必要參數未填!'));
-				}else if((month<=0)||(nowMoney<=0)||(rate<=0)||(rate>=1)){
+				}else if((month<=0)||(nowMoney<=0)||(level<0)||(rate<=0)||(rate>=1)){
 					res.redirect('/message?content='+chineseEncodeToURI('錯誤參數!'));
 				}else if(nowMoney>maxMoney){
 					res.redirect('/message?content='+chineseEncodeToURI('超過金額上限!'));
@@ -59,6 +60,7 @@ function createPart(res,req,outterPara){
 	toCreate.MaxMoneyToLend=sanitizer.sanitize(req.body.MaxMoneyToLend);
 	toCreate.InterestRate=sanitizer.sanitize(req.body.InterestRate);
 	toCreate.MonthPeriod=sanitizer.sanitize(req.body.MonthPeriod);
+	toCreate.MinLevelAccepted=sanitizer.sanitize(req.body.MinLevelAccepted);
 	toCreate.AutoComfirmToBorrowMsgPeriod=sanitizer.sanitize(req.body.AutoComfirmToBorrowMsgPeriod);
 	if(!req.body.AutoComfirmToBorrowMsgSorter){
 		toCreate.AutoComfirmToBorrowMsgSorter="invalid";
@@ -85,6 +87,7 @@ function updatePart(res,req,lend){
 	lend.MaxMoneyToLend=sanitizer.sanitize(req.body.MaxMoneyToLend);
 	lend.InterestRate=sanitizer.sanitize(req.body.InterestRate);
 	lend.MonthPeriod=sanitizer.sanitize(req.body.MonthPeriod);
+	lend.MinLevelAccepted=sanitizer.sanitize(req.body.MinLevelAccepted);
 	lend.AutoComfirmToBorrowMsgPeriod=sanitizer.sanitize(req.body.AutoComfirmToBorrowMsgPeriod);
 	if(!req.body.AutoComfirmToBorrowMsgSorter){
 		lend.AutoComfirmToBorrowMsgSorter="invalid";
