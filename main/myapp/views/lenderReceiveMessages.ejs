@@ -27,13 +27,15 @@
 								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter1').text());$('#cAll').attr('href','/Messages/confirmToBorrowMessageInLRMall?sorter='+encodeURIComponent($('#sorterSelected').text()));$('#rAll').attr('href','/Messages/rejectToBorrowMessageInLRMall?sorter='+encodeURIComponent($('#sorterSelected').text()));$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter1">最新</a></li>
 								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter2').text());$('#cAll').attr('href','/Messages/confirmToBorrowMessageInLRMall?sorter='+encodeURIComponent($('#sorterSelected').text()));$('#rAll').attr('href','/Messages/rejectToBorrowMessageInLRMall?sorter='+encodeURIComponent($('#sorterSelected').text()));$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter2">利率最高</a></li>
 								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter3').text());$('#cAll').attr('href','/Messages/confirmToBorrowMessageInLRMall?sorter='+encodeURIComponent($('#sorterSelected').text()));$('#rAll').attr('href','/Messages/rejectToBorrowMessageInLRMall?sorter='+encodeURIComponent($('#sorterSelected').text()));$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter3">金額最高</a></li>
-								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter4').text());$('#cAll').attr('href','/Messages/confirmToBorrowMessageInLRMall?sorter='+encodeURIComponent($('#sorterSelected').text()));$('#rAll').attr('href','/Messages/rejectToBorrowMessageInLRMall?sorter='+encodeURIComponent($('#sorterSelected').text()));$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter4">期數最少</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter4').text());$('#cAll').attr('href','/Messages/confirmToBorrowMessageInLRMall?sorter='+encodeURIComponent($('#sorterSelected').text()));$('#rAll').attr('href','/Messages/rejectToBorrowMessageInLRMall?sorter='+encodeURIComponent($('#sorterSelected').text()));$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter4">期數最多</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter5').text());$('#cAll').attr('href','/Messages/confirmToBorrowMessageInLRMall?sorter='+encodeURIComponent($('#sorterSelected').text()));$('#rAll').attr('href','/Messages/rejectToBorrowMessageInLRMall?sorter='+encodeURIComponent($('#sorterSelected').text()));$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter5">信用等級最高</a></li>
 								<%}else{%>
 								<li style="display:none"><a href="#" id="sorter0"><%=sorterDefault%></a></li>
 								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter1').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter1">最新</a></li>
 								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter2').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter2">利率最高</a></li>
 								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter3').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter3">金額最高</a></li>
-								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter4').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter4">期數最少</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter4').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter4">期數最多</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter5').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter5">信用等級最高</a></li>
 								<%}%>
 							</ul>
 						</div>
@@ -152,7 +154,7 @@
 								<tr>
 									<td>
 										<div>
-											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].CreatedBy.Level%>
+											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Level%>
 										</div>	
 									</td>
 								<tr>

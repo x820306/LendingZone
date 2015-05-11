@@ -12,6 +12,7 @@ var Borrows = new Schema({
 	LikeNumber: { type: Number, default: 0 },
 	Likes: [{ type: Schema.Types.ObjectId, ref: 'Users' }],
 	IfReadable: { type: Boolean, default: true },
+	Level:{ type: Number, default: 0 },//Have to be copied from User when creating, for sorting convenience
 	AutoComfirmToLendMsgPeriod: { type: Number, default: -1 },
 	AutoComfirmToLendMsgSorter: { type: String, default: 'InterestRate' },
 	CreatedBy: { type: Schema.Types.ObjectId, ref: 'Users' },
@@ -39,6 +40,7 @@ var Messages = new Schema({
 	MonthPeriod: { type: Number, default: 1 },
 	Status: { type: String, default:'NotConfirmed' },// 'NotConfirmed' or 'Confirmed' or 'Rejected'
 	Type: {type: String, default:'NoType'},// 'toLend' or 'toBorrow'
+	Level:{ type: Number, default: 0 },//Have to be copied from Borrows, for sorting convenience
 	SendTo:{ type: Schema.Types.ObjectId, ref: 'Users' },
 	Transaction: [{ type: Schema.Types.ObjectId, ref: 'Transactions' }],
 	CreatedBy: { type: Schema.Types.ObjectId, ref: 'Users' },
@@ -80,6 +82,7 @@ var Transactions = new Schema({
 	InterestRate: { type: Number, default: 0 },
 	MonthPeriod: { type: Number, default: 1 },//剩下期數
 	MonthPeriodHasPast: { type: Number, default: 0 },//已過期數
+	Level:{ type: Number, default: 0 },//Have to be copied from Messages, for sorting convenience
 	CreatedFrom: { type: Schema.Types.ObjectId, ref: 'Messages' },
 	Borrower: { type: Schema.Types.ObjectId, ref: 'Users' },
 	Lender: { type: Schema.Types.ObjectId, ref: 'Users' },

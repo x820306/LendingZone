@@ -4,15 +4,72 @@
 	<div class="row">
 		<div class="col-md-9">
 			<div style="font-size:30pt;color:#337ab7;">搜尋結果</div>
-			<% if(totalResultNum==0){ %>
-				<div style="font-size:20pt;color:#0000D1;">&nbsp;0 result</div>
-				<br>
-			<% }else{ %>
 				<div style="font-size:20pt;color:#0000D1;">&nbsp;<%=totalResultNum%> result</div>
 				<br>
+				<div class="input-group">
+					<input type="text" style="height:40px;" class="form-control" id="subKeywordIpt" placeholder="搜尋借入者的故事" value="<%=keywordDefault%>" onkeypress="if(event.keyCode==13){ window.open('/search?keyword='+encodeURIComponent($('#subKeywordIpt').val())+'&action='+encodeURIComponent($('#sorter0').text())+'&filter='+encodeURIComponent($('#filter0').text())+'&lbound='+encodeURIComponent($('#lbound').val())+'&ubound='+encodeURIComponent($('#ubound').val())+'&page=1','_self');}">
+					<span class="input-group-btn">
+						<div class="btn-group">
+							<button type="button" style="height:40px;" class="btn btn-default" id="sorterSelected" data-toggle="dropdown" aria-expanded="false"><%=actionDefault%> <span class='caret'></span></button>
+							<ul class="dropdown-menu" role="menu">
+								<li style="display:none"><a href="#" id="sorter0"><%=actionDefault%></a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter1').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter1">最新</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter2').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter2">最緊急</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter3').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter3">最熱門</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter4').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter4">金額最高</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter5').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter5">利率最高</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter6').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter6">期數最多</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter7').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter7">信用等級最高</a></li>
+							</ul>
+						</div>
+						<button type="button" style="height:40px;" class="btn btn-default" onclick="window.open('/search?keyword='+encodeURIComponent($('#subKeywordIpt').val())+'&action='+encodeURIComponent($('#sorter0').text())+'&filter='+encodeURIComponent($('#filter0').text())+'&lbound='+encodeURIComponent($('#lbound').val())+'&ubound='+encodeURIComponent($('#ubound').val())+'&page=1','_self');"><span class="glyphicon glyphicon-search"></span></button>
+					</span>
+				</div> 
+				<br>
+				<table width="100%">
+					<tr>
+						<td>
+							<input style="height:32px;width:150px;display:inline;" type="text" placeholder="下限" class="form-control" value="<%=lboundDefault%>" id="lbound">
+							&nbsp;~&nbsp;
+							<input style="height:32px;width:150px;display:inline;" type="text" placeholder="上限" class="form-control" value="<%=uboundDefault%>" id="ubound">
+							&nbsp;&nbsp;&nbsp;&nbsp;
+							<div class="btn-group">
+								<button type="button" style="height:32px;" class="btn btn-default dropdown-toggle" data-toggle="dropdown" id="filterSelected">
+									<%=filterDefault%> <span class="caret"></span>
+								</button>
+								<ul class="dropdown-menu">
+									<li style="display:none"><a href="#" id="filter0"><%=filterDefault%></a></li>
+									<li><a href="#" onclick="$('#filterSelected').html('');$('#filterSelected').html($('#filter1').text());$('#filter0').html($('#filterSelected').text());$('#filterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="filter1">未選擇濾鏡</a></li>
+									<li><a href="#" onclick="$('#filterSelected').html('');$('#filterSelected').html($('#filter2').text());$('#filter0').html($('#filterSelected').text());$('#filterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="filter2">金額</a></li>
+									<li><a href="#" onclick="$('#filterSelected').html('');$('#filterSelected').html($('#filter3').text());$('#filter0').html($('#filterSelected').text());$('#filterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="filter3">利率</a></li>
+									<li><a href="#" onclick="$('#filterSelected').html('');$('#filterSelected').html($('#filter4').text());$('#filter0').html($('#filterSelected').text());$('#filterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="filter4">期數</a></li>
+									<li><a href="#" onclick="$('#filterSelected').html('');$('#filterSelected').html($('#filter5').text());$('#filter0').html($('#filterSelected').text());$('#filterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="filter5">信用等級</a></li>
+								</ul>
+							</div>
+						</td>
+					<tr>
+				</table>
+				<br>
+				<br>
+				<br>
+			<% if(totalResultNum>0){%>
 				<% for(var i=0; i<jsonArray.length; i++) { %>
 					<table width="100%">
 						<tr>
+							<td>
+								<div style="font-size:15px;color:#337ab7;display:inline;">
+									金額：<%=jsonArray[i].MoneyToBorrow%>
+								</div>&nbsp;&nbsp;&nbsp;&nbsp;
+								<div style="font-size:15px;color:#337ab7;display:inline;">
+									利率：<%=jsonArray[i].MaxInterestRateAccepted%>
+								</div>&nbsp;&nbsp;&nbsp;&nbsp;
+								<div style="font-size:15px;color:#337ab7;display:inline;">
+									期數：<%=jsonArray[i].MonthPeriodAccepted%>
+								</div>&nbsp;&nbsp;&nbsp;&nbsp;
+								<div style="font-size:15px;color:#337ab7;display:inline;">
+									信用：<%=jsonArray[i].Level%>
+								</div>
+							</td>
 							<td align="right">
 								<div style="font-size:15px;color:#337ab7;display:inline;">
 									Deadline：<%=jsonArray[i].TimeLimit.getFullYear()%>/<%=jsonArray[i].TimeLimit.getMonth()+1%>/<%=jsonArray[i].TimeLimit.getDate()%>
@@ -50,6 +107,7 @@
 					</div>
 					<br>
 				<% } %>
+				<br>
 				<table align="center">
 					<tr>
 						<td>
@@ -61,7 +119,7 @@
 									<%}%>
 								>
 								<% if(targetPageNumber!=1){%>
-									<a href="/search?keyword=<%=encodeURIComponent(keywordDefault)%>&action=<%=encodeURIComponent(actionDefault)%>&page=<%=targetPageNumber-1%>">
+									<a href="/search?keyword=<%=encodeURIComponent(keywordDefault)%>&action=<%=encodeURIComponent(actionDefault)%>&filter=<%=encodeURIComponent(filterDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=targetPageNumber-1%>">
 								<%}else{%>
 									<a href="#" onclick="return false;">
 								<%}%>
@@ -72,7 +130,7 @@
 											<% if(targetPageNumber==j){%>
 												class="active"
 											<%}%>
-										><a href="/search?keyword=<%=encodeURIComponent(keywordDefault)%>&action=<%=encodeURIComponent(actionDefault)%>&page=<%=j%>"><%=j%></a></li>
+										><a href="/search?keyword=<%=encodeURIComponent(keywordDefault)%>&action=<%=encodeURIComponent(actionDefault)%>&filter=<%=encodeURIComponent(filterDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=j%>"><%=j%></a></li>
 									<%}%>
 								<% }else{%>
 									<% if(targetPageNumber>=pageNumber-3){%>
@@ -81,7 +139,7 @@
 											<% if(targetPageNumber==j){%>
 												class="active"
 											<%}%>
-										><a href="/search?keyword=<%=encodeURIComponent(keywordDefault)%>&action=<%=encodeURIComponent(actionDefault)%>&page=<%=j%>"><%=j%></a></li>
+										><a href="/search?keyword=<%=encodeURIComponent(keywordDefault)%>&action=<%=encodeURIComponent(actionDefault)%>&filter=<%=encodeURIComponent(filterDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=j%>"><%=j%></a></li>
 										<%}%>
 									<%}else if(targetPageNumber<=5){%>
 										<% for(var j=1; j<=10; j++) { %>
@@ -89,15 +147,15 @@
 											<% if(targetPageNumber==j){%>
 												class="active"
 											<%}%>
-										><a href="/search?keyword=<%=encodeURIComponent(keywordDefault)%>&action=<%=encodeURIComponent(actionDefault)%>&page=<%=j%>"><%=j%></a></li>
+										><a href="/search?keyword=<%=encodeURIComponent(keywordDefault)%>&action=<%=encodeURIComponent(actionDefault)%>&filter=<%=encodeURIComponent(filterDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=j%>"><%=j%></a></li>
 										<%}%>
 									<%}else{%>
 										<% for(var j=targetPageNumber-5; j<targetPageNumber; j++) { %>
-										<li><a href="/search?keyword=<%=encodeURIComponent(keywordDefault)%>&action=<%=encodeURIComponent(actionDefault)%>&page=<%=j%>"><%=j%></a></li>
+										<li><a href="/search?keyword=<%=encodeURIComponent(keywordDefault)%>&action=<%=encodeURIComponent(actionDefault)%>&filter=<%=encodeURIComponent(filterDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=j%>"><%=j%></a></li>
 										<%}%>
-										<li class="active"><a href="/search?keyword=<%=encodeURIComponent(keywordDefault)%>&action=<%=encodeURIComponent(actionDefault)%>&page=<%=targetPageNumber%>"><%=targetPageNumber%></a></li>
+										<li class="active"><a href="/search?keyword=<%=encodeURIComponent(keywordDefault)%>&action=<%=encodeURIComponent(actionDefault)%>&filter=<%=encodeURIComponent(filterDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=targetPageNumber%>"><%=targetPageNumber%></a></li>
 										<% for(var j=targetPageNumber+1; j<=targetPageNumber+4; j++) { %>
-										<li><a href="/search?keyword=<%=encodeURIComponent(keywordDefault)%>&action=<%=encodeURIComponent(actionDefault)%>&page=<%=j%>"><%=j%></a></li>
+										<li><a href="/search?keyword=<%=encodeURIComponent(keywordDefault)%>&action=<%=encodeURIComponent(actionDefault)%>&filter=<%=encodeURIComponent(filterDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=j%>"><%=j%></a></li>
 										<%}%>
 									<%}%>
 								<%}%>
@@ -107,7 +165,7 @@
 									<%}%>
 								>
 								<% if(targetPageNumber!=pageNumber){%>
-									<a href="/search?keyword=<%=encodeURIComponent(keywordDefault)%>&action=<%=encodeURIComponent(actionDefault)%>&page=<%=targetPageNumber+1%>">
+									<a href="/search?keyword=<%=encodeURIComponent(keywordDefault)%>&action=<%=encodeURIComponent(actionDefault)%>&filter=<%=encodeURIComponent(filterDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=targetPageNumber+1%>">
 								<%}else{%>
 									<a href="#" onclick="return false;">
 								<%}%>

@@ -11,22 +11,36 @@ var express = require('express');
 var router = express.Router();
 
 router.post('/createTest', function(req, res, next) {
-	var toCreate = new Messages();
-	toCreate.FromBorrowRequest=sanitizer.sanitize(req.body.FromBorrowRequest);
-	toCreate.Message=sanitizer.sanitize(req.body.Message);
-	toCreate.MoneyToLend=sanitizer.sanitize(req.body.MoneyToLend);
-	toCreate.InterestRate=sanitizer.sanitize(req.body.InterestRate);
-	toCreate.MonthPeriod=sanitizer.sanitize(req.body.MonthPeriod);
-	toCreate.SendTo=sanitizer.sanitize(req.body.SendTo);
-	toCreate.CreatedBy=sanitizer.sanitize(req.body.CreatedBy);
-	toCreate.Type=sanitizer.sanitize(req.body.Type);
+	var id=sanitizer.sanitize(req.body.FromBorrowRequest);
 	
-	toCreate.save(function (err,newCreate) {
-		if (err){
+	Borrows.findById(id).exec(function (err, borrow){
+		if (err) {
 			console.log(err);
 			res.json({error: err.name}, 500);
 		}else{
-			res.json(newCreate);
+			if(!borrow){
+				res.json({error: 'no such borrow'}, 500);
+			}else{
+				var toCreate = new Messages();
+				toCreate.FromBorrowRequest=sanitizer.sanitize(req.body.FromBorrowRequest);
+				toCreate.Message=sanitizer.sanitize(req.body.Message);
+				toCreate.MoneyToLend=sanitizer.sanitize(req.body.MoneyToLend);
+				toCreate.InterestRate=sanitizer.sanitize(req.body.InterestRate);
+				toCreate.MonthPeriod=sanitizer.sanitize(req.body.MonthPeriod);
+				toCreate.SendTo=sanitizer.sanitize(req.body.SendTo);
+				toCreate.CreatedBy=sanitizer.sanitize(req.body.CreatedBy);
+				toCreate.Type=sanitizer.sanitize(req.body.Type);
+				toCreate.Level=borrow.Level;
+				
+				toCreate.save(function (err,newCreate) {
+					if (err){
+						console.log(err);
+						res.json({error: err.name}, 500);
+					}else{
+						res.json(newCreate);
+					}
+				});
+			}
 		}
 	});
 });
@@ -50,7 +64,7 @@ function toLendSamePart(res,req,differentPart,outterPara){
 						}else{
 							var maxMoney=parseInt(lenderBankaccount.MoneyInBankAccount);
 							var maxMoney2=parseInt(borrow.MoneyToBorrow)-parseInt(borrow.MoneyToBorrowCumulated);
-							var minMonth=parseInt(borrow.MonthPeriodAccepted);
+							var maxMonth=parseInt(borrow.MonthPeriodAccepted);
 							var maxRate=parseFloat(borrow.MaxInterestRateAccepted);
 							
 							var nowMoney=parseInt(sanitizer.sanitize(req.body.MoneyToLend));
@@ -65,8 +79,8 @@ function toLendSamePart(res,req,differentPart,outterPara){
 								res.redirect('/message?content='+chineseEncodeToURI('金額超過您的銀行餘額!'));
 							}else if(nowMoney>maxMoney2){
 								res.redirect('/message?content='+chineseEncodeToURI('金額超過對方所需!'));
-							}else if(month<minMonth){
-								res.redirect('/message?content='+chineseEncodeToURI('小於最小期數!'));
+							}else if(month>maxMonth){
+								res.redirect('/message?content='+chineseEncodeToURI('超過最大期數!'));
 							}else if(rate>maxRate){
 								res.redirect('/message?content='+chineseEncodeToURI('超過期望利率上限!'));
 							}else{
@@ -96,6 +110,7 @@ function toLendCreatePart(res,req,borrow,lenderBankaccount,outterPara){
 				toCreate.CreatedBy= req.user._id
 				toCreate.SendTo=borrow.CreatedBy;
 				toCreate.Type='toLend';
+				toCreate.Level=borrow.Level;
 				
 				toCreate.save(function (err,newCreate) {
 					if (err){
@@ -110,6 +125,7 @@ function toLendCreatePart(res,req,borrow,lenderBankaccount,outterPara){
 							toCreateTransaction.CreatedFrom=newCreate._id;
 							toCreateTransaction.Borrower=newCreate.SendTo;
 							toCreateTransaction.Lender=newCreate.CreatedBy;
+							toCreateTransaction.Level=newCreate.Level;
 							
 							toCreateTransaction.save(function (err,newCreateTransaction) {
 								if (err){
@@ -291,8 +307,8 @@ router.get('/confirmToBorrowMessageInLRMall/:sorter?', ensureAuthenticated, func
 		sorterRec="-InterestRate";
 	}else if(sorter=='金額最高'){
 		sorterRec="-MoneyToLend";
-	}else if(sorter=='期數最少'){
-		sorterRec="MonthPeriod";
+	}else if(sorter=='期數最多'){
+		sorterRec="-MonthPeriod";
 	}
 	Messages.find({$and:[{"SendTo": req.user._id},{"Type": "toBorrow"},{"Status": "NotConfirmed"}]}).sort(sorterRec).exec(function (err, messages){
 		if (err) {

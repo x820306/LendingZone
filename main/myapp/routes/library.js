@@ -202,7 +202,7 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 															var finalMonthPeriod=null;
 															if(!ifRecursive){
 																var minMoney=parseInt(message.MoneyToLend);
-																var minMonth=parseInt(message.MonthPeriod);
+																var maxMonth=parseInt(message.MonthPeriod);
 																var maxRate=parseFloat(message.InterestRate);
 																
 																var nowMoney=parseInt(sanitizer.sanitize(req.body.MoneyToLend));
@@ -221,8 +221,8 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																	returnSring='金額超過您所設定之自動借款餘額!您可調高後再嘗試';
 																}else if(nowMoney<minMoney){
 																	returnSring='金額少於對方期望!';
-																}else if(month<minMonth){
-																	returnSring='小於該訊息希望期數!';
+																}else if(month>maxMonth){
+																	returnSring='超過該訊息希望期數!';
 																}else if(rate>maxRate){
 																	returnSring='超過該訊息期望利率上限!';
 																}else{
@@ -232,7 +232,7 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																}
 															}else{
 																var minRate=parseFloat(lend.InterestRate);
-																var maxMonth=parseInt(lend.MonthPeriod);
+																var minMonth=parseInt(lend.MonthPeriod);
 																var minLevel=parseInt(lend.MinLevelAccepted);
 																
 																var nowMoney2=parseInt(message.MoneyToLend);
@@ -260,7 +260,7 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																	}
 																}else if(rate2<minRate){
 																	returnSring='有些訊息因借入方已不需要借款或其條件不合您現在的自動出借設定而無法被同意，它們已被自動婉拒';
-																}else if(month2>maxMonth){
+																}else if(month2<minMonth){
 																	returnSring='有些訊息因借入方已不需要借款或其條件不合您現在的自動出借設定而無法被同意，它們已被自動婉拒';
 																}else if(level<minLevel){
 																	returnSring='有些訊息因借入方已不需要借款或其條件不合您現在的自動出借設定而無法被同意，它們已被自動婉拒';
@@ -332,6 +332,7 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																toCreateTransaction.CreatedFrom=message._id;
 																toCreateTransaction.Borrower=message.CreatedBy;
 																toCreateTransaction.Lender=message.SendTo;
+																toCreateTransaction.Level=message.Level;
 																
 																toCreateTransaction.save(function (err,newCreateTransaction) {
 																	if (err){

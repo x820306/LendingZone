@@ -4,6 +4,9 @@
 		<div class="col-md-9">
 				<div style="font-size:30pt;color:#337ab7;">自動借出設定</div>
 				</br>
+				<a href="/lendsList?sorter=<%=encodeURIComponent("最新");%>&page=1"><button type="button" class="btn btn-default">參考他人設定</button></a>
+				</br>
+				</br>
 				<div class="panel panel-default">
 					<div class="panel-heading">
 						<h3 class="panel-title">銀行帳戶內餘額</h3>
@@ -113,14 +116,16 @@
 							 <select class="textForm" class="textForm" name="AutoComfirmToBorrowMsgSorter" id="sorterSel" disabled="disabled">
 								<option value="-InterestRate">利率最高</option>
 								<option value="-MoneyToLend">金額最高</option>
-								<option value="MonthPeriod">期數最少</option>
+								<option value="-MonthPeriod">期數最多</option>
+								<option value="-Level">信用等級最高</option>
 								<option value="-Updated">最新</option>
 							  </select>
 						<% }else{ %>
 							<select class="textForm" class="textForm" name="AutoComfirmToBorrowMsgSorter" id="sorterSel"<% if(jsonLend.AutoComfirmToBorrowMsgPeriod==-1){ %> disabled="disabled"<%}%>>
 								<option value="-InterestRate"<%if(jsonLend.AutoComfirmToBorrowMsgSorter=="-InterestRate"){%> selected<%}%>>利率最高</option>
 								<option value="-MoneyToLend"<%if(jsonLend.AutoComfirmToBorrowMsgSorter=="-MoneyToLend"){%> selected<%}%>>金額最高</option>
-								<option value="MonthPeriod"<%if(jsonLend.AutoComfirmToBorrowMsgSorter=="MonthPeriod"){%> selected<%}%>>期數最少</option>
+								<option value="MonthPeriod"<%if(jsonLend.AutoComfirmToBorrowMsgSorter=="-MonthPeriod"){%> selected<%}%>>期數最多</option>
+								<option value="-Level"<%if(jsonLend.AutoComfirmToBorrowMsgSorter=="-Level"){%> selected<%}%>>信用等級最高</option>
 								<option value="-Updated"<%if(jsonLend.AutoComfirmToBorrowMsgSorter=="-Updated"){%> selected<%}%>>最新</option>
 							  </select>
 						<% } %>

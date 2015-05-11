@@ -1,26 +1,42 @@
 var mongoose = require('mongoose');
 var Borrows  = mongoose.model('Borrows');
+var Users  = mongoose.model('Users');
 var sanitizer = require('sanitizer');
 
 var express = require('express');
 var router = express.Router();
 
+//for test, u have to write one like this to achieve what u want.
 router.post('/create', function(req, res, next) {
-	var toCreate = new Borrows();
-	toCreate.MoneyToBorrow=sanitizer.sanitize(req.body.MoneyToBorrow);
-	toCreate.MaxInterestRateAccepted=sanitizer.sanitize(req.body.MaxInterestRateAccepted);
-	toCreate.MonthPeriodAccepted=sanitizer.sanitize(req.body.MonthPeriodAccepted);
-	toCreate.TimeLimit=sanitizer.sanitize(req.body.TimeLimit);
-	toCreate.StoryTitle=sanitizer.sanitize(req.body.StoryTitle);
-	toCreate.Story=sanitizer.sanitize(req.body.Story);
-	toCreate.CreatedBy=sanitizer.sanitize(req.body.CreatedBy);
+	var id=sanitizer.sanitize(req.body.CreatedBy);
 	
-	toCreate.save(function (err,newCreate) {
-		if (err){
+	Users.findById(id).exec(function (err, user){
+		if (err) {
 			console.log(err);
 			res.json({error: err.name}, 500);
 		}else{
-			res.json(newCreate);
+			if(!user){
+				res.json({error: 'no such user'}, 500);
+			}else{
+				var toCreate = new Borrows();
+				toCreate.MoneyToBorrow=sanitizer.sanitize(req.body.MoneyToBorrow);
+				toCreate.MaxInterestRateAccepted=sanitizer.sanitize(req.body.MaxInterestRateAccepted);
+				toCreate.MonthPeriodAccepted=sanitizer.sanitize(req.body.MonthPeriodAccepted);
+				toCreate.TimeLimit=sanitizer.sanitize(req.body.TimeLimit);
+				toCreate.StoryTitle=sanitizer.sanitize(req.body.StoryTitle);
+				toCreate.Story=sanitizer.sanitize(req.body.Story);
+				toCreate.CreatedBy=sanitizer.sanitize(req.body.CreatedBy);
+				toCreate.Level=user.Level;
+				
+				toCreate.save(function (err,newCreate) {
+					if (err){
+						console.log(err);
+						res.json({error: err.name}, 500);
+					}else{
+						res.json(newCreate);
+					}
+				});
+			}
 		}
 	});
 });
