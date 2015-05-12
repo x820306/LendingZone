@@ -2,9 +2,103 @@
 <div class="container">
 	<div class="row">
 		<div class="col-md-9">
+			<div style="font-size:30pt;color:#337ab7;">收入分析</div>
+				<%if(totalResultNum<=0){%>
+					<div style="font-size:20pt;color:#FF0000;">&nbsp;找不到生效中的交易來進行分析</div>
+				<%}%>
 		</div>
 		<div class="col-md-3">
 		</div>
 	</div>
+	<%if(totalResultNum>0){%>
+		<div class="row">
+			<div class="col-md-4">
+				</br>
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title">目前借出總金額</h3>
+					</div>
+					<div class="panel-body">
+						<%=mnyLendNow%>
+					</div>
+				</div>
+				</br>
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title">本月預計收入</h3>
+					</div>
+					<div class="panel-body">
+						<%=monRevNow%>
+					</div>
+				</div>
+				</br>
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title">本月預計投資回報率</h3>
+					</div>
+					<div class="panel-body">
+						<%=monRoiNow%>%
+					</div>
+				</div>
+				</br>
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title">年度預計投資回報率</h3>
+					</div>
+					<div class="panel-body">
+						<%=yrRoiNow%>%
+					</div>
+				</div>
+			</div>
+			<div class="col-md-8">
+				</br>
+				<div class="row">
+					<div class="col-md-6">
+						<table>
+							<tr>
+								<td align="center">
+									<canvas id="myChart1" width="300" height="300"></canvas>
+									<br>
+									<br>
+									各月預計投資回報率曲線圖
+								<td>
+							<tr>
+						</table>
+					</div>
+					<div class="col-md-6">
+						<table>
+							<tr>
+								<td align="center">
+									<canvas id="myChart2" width="300" height="300"></canvas>
+									<br>
+									<br>
+									借入者信用等級圓餅比例圖
+								<td>
+							<tr>
+						</table>
+					</div>
+				</div>	
+			</div>
+			<input type="hidden" name="line" id="lineIpt" value='<%=JSON.stringify(data01);%>'>
+			<input type="hidden" name="pie" id="pieIpt" value='<%=JSON.stringify(data02);%>'>
+		</div>
+	<%}%>
 </div>
+<script>
+	$( document ).ready( function() {
+		var ctx = $("#myChart1").get(0).getContext("2d");
+		var ctx2 = $("#myChart2").get(0).getContext("2d");
+		var data1JSON=JSON.parse($("#lineIpt").val());
+		var data2JSON=JSON.parse($("#pieIpt").val());
+		
+		if(data1JSON.labels){
+			if(data1JSON.labels.length>0){
+				var myLineChart = new Chart(ctx).Line(data1JSON ,{tooltipTemplate: "<%%if (label){%><%%=label%>: <%%}%><%%= value.toFixed(4) %>%",multiTooltipTemplate: "<%%= value.toFixed(4) %>%"});
+			}
+		}
+		if(data2JSON.array){
+			var myPieChart = new Chart(ctx2).Pie(data2JSON.array ,{tooltipTemplate: "<%%if (label){%><%%=label%>: <%%}%><%%= value.toFixed(2) %>%",multiTooltipTemplate: "<%%= value.toFixed(2) %>%"});
+		}
+	});
+</script>
 <%- include('layout_footer'); -%>

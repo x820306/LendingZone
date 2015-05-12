@@ -614,7 +614,146 @@ app.get('/lenderReceiveMessages/:msgKeyword?/:filter?/:sorter?/:page?', ensureAu
 });
 
 app.get('/income', ensureAuthenticated, function (req, res) {
-	res.render('income',{userName:req.user.Username});
+	var totalResultNumber;
+	var monthRevunueNow=0;
+	var monthRoiNow=0;
+	var monthRoiArray=[];
+	var yearRoiNow=0;
+	var moneyLendedNow=0;
+	var data1={};
+	var data2={}
+	var Transactions  = mongoose.model('Transactions');
+	Transactions.find({$and:[{Lender:req.user._id},{Principal:{"$gte": 1}},{MonthPeriod:{"$gte": 1}}]}).exec( function (err, transactions, count){
+		if (err) {
+			console.log(err);
+			res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+		}else{
+			totalResultNumber=transactions.length;
+			console.log(totalResultNumber);
+			if(totalResultNumber<=0){
+				res.render('income',{userName:req.user.Username,totalResultNum:totalResultNumber,monRevNow:monthRevunueNow,monRoiNow:monthRoiNow,yrRoiNow:yearRoiNow,mnyLendNow:moneyLendedNow,data01:data1,data02:data2});
+			}else{
+				for(i=0;i<totalResultNumber;i++){
+					moneyLendedNow+=transactions[i].Principal;
+					transactions[i].tempPrincipal=transactions[i].Principal;
+					transactions[i].monthPaidPrincipal=(transactions[i].Principal+transactions[i].PrincipalReturnedCumulated)/(transactions[i].MonthPeriod+transactions[i].MonthPeriodHasPast);
+				}
+				
+				for(j=0;j<12;j++){
+					var tempMonthRevunue=0;
+					var tempMonthPrincipal=0;
+					for(i=0;i<totalResultNumber;i++){
+						if(transactions[i].tempPrincipal>0){
+							tempMonthRevunue+=transactions[i].tempPrincipal*transactions[i].InterestRate;
+							tempMonthPrincipal+=transactions[i].tempPrincipal;
+							transactions[i].tempPrincipal-=transactions[i].monthPaidPrincipal;
+							if(transactions[i].tempPrincipal<0){
+								transactions[i].tempPrincipal=0;
+							}
+						}
+					}
+					var tempMonthRoi=0;
+					if(tempMonthPrincipal>0){
+						tempMonthRoi=tempMonthRevunue/tempMonthPrincipal*100;
+						monthRoiArray.push(tempMonthRoi);
+					}
+					if(j==0){
+						monthRevunueNow=tempMonthRevunue.toFixed(2);
+						monthRoiNow=tempMonthRoi.toFixed(4);
+					}
+				}
+				
+				var data1sets=[];
+				var data1set={
+							label: "Monthly ROI",
+							fillColor: "rgba(220,220,220,0.2)",
+							strokeColor: "rgba(220,220,220,1)",
+							pointColor: "rgba(220,220,220,1)",
+							pointStrokeColor: "#fff",
+							pointHighlightFill: "#fff",
+							pointHighlightStroke: "rgba(220,220,220,1)",
+							data: []
+						};
+				data1sets.push(data1set);
+				data1.labels=[];
+				data1.datasets=data1sets;
+				
+				var date = new Date();
+				var ctrMonth=date.getMonth()+1;
+				
+				for(j=0;j<monthRoiArray.length;j++){
+					yearRoiNow+=monthRoiArray[j];
+					data1.labels.push(ctrMonth+'月');
+					ctrMonth+=1;
+					if(ctrMonth>12){
+						ctrMonth=1;
+					}
+					data1.datasets[0].data.push(monthRoiArray[j]);
+				}
+				yearRoiNow=yearRoiNow/monthRoiArray.length;
+				yearRoiNow=yearRoiNow.toFixed(4);
+				
+				var data2Array = [
+					{
+						value: 0,
+						color:"#F7464A",
+						highlight: "#FF5A5E",
+						label: "0~5級"
+					},
+					{
+						value: 0,
+						color: "#46BFBD",
+						highlight: "#5AD3D1",
+						label: "5~10級"
+					},
+					{
+						value: 0,
+						color: "#FDB45C",
+						highlight: "#FFC870",
+						label: "10~15級"
+					},
+					{
+						value: 0,
+						color: "#949FB1",
+						highlight: "#A8B3C5",
+						label: "15~20級"
+					},
+					{
+						value: 0,
+						color: "#4D5360",
+						highlight: "#616774",
+						label: "20級以上"
+					}
+				];
+				
+				for(i=0;i<totalResultNumber;i++){
+					if((transactions[i].Level>=0)&&(transactions[i].Level<5)){
+						data2Array[0].value+=1;
+					}else if((transactions[i].Level>=5)&&(transactions[i].Level<10)){
+						data2Array[1].value+=1;
+					}else if((transactions[i].Level>=10)&&(transactions[i].Level<15)){
+						data2Array[2].value+=1;
+					}else if((transactions[i].Level>=15)&&(transactions[i].Level<20)){
+						data2Array[3].value+=1;
+					}else if(transactions[i].Level>=20){
+						data2Array[4].value+=1;
+					}
+				}
+				
+				var totalTemp=0;
+				for(i=0;i<data2Array.length;i++){
+					totalTemp+=data2Array[i].value;
+				}
+
+				for(i=0;i<data2Array.length;i++){
+					data2Array[i].value=data2Array[i].value/totalTemp*100;
+				}
+				data2.array=data2Array;
+				
+				res.render('income',{userName:req.user.Username,totalResultNum:totalResultNumber,monRevNow:monthRevunueNow,monRoiNow:monthRoiNow,yrRoiNow:yearRoiNow,mnyLendNow:moneyLendedNow,data01:data1,data02:data2});
+			}
+		}
+	});
 });
 
 app.get('/profile', ensureAuthenticated, function (req, res) {
