@@ -112,7 +112,7 @@
 								<tr>
 									<td>
 										<div>
-											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].MoneyToLend%>
+											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].MoneyToLend%>元
 										</div>	
 									</td>
 								<tr>
@@ -126,7 +126,7 @@
 								<tr>
 									<td>
 										<div>
-											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].InterestRate%>
+											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].InterestRate*100%>%
 										</div>	
 									</td>
 								<tr>
@@ -140,7 +140,7 @@
 								<tr>
 									<td>
 										<div>
-											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].MonthPeriod%>
+											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].MonthPeriod%>個月
 										</div>	
 									</td>
 								<tr>
@@ -154,7 +154,7 @@
 								<tr>
 									<td>
 										<div>
-											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Level%>
+											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Level%>級
 										</div>	
 									</td>
 								<tr>
@@ -173,7 +173,7 @@
 									<tr>
 										<td>
 											<div>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].Principal%>
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].Principal%>元
 											</div>	
 										</td>
 									<tr>
@@ -187,7 +187,7 @@
 									<tr>
 										<td>
 											<div>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].PrincipalReturnedCumulated%>
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].PrincipalReturnedCumulated%>元
 											</div>	
 										</td>
 									<tr>
@@ -201,7 +201,7 @@
 									<tr>
 										<td>
 											<div>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].InterestRate%>
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].InterestRate*100%>%
 											</div>	
 										</td>
 									<tr>
@@ -215,7 +215,7 @@
 									<tr>
 										<td>
 											<div>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].InterestCumulated%>
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].InterestCumulated%>元
 											</div>	
 										</td>
 									<tr>
@@ -229,7 +229,7 @@
 									<tr>
 										<td>
 											<div>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].MonthPeriod%>
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].MonthPeriod%>個月
 											</div>	
 										</td>
 									<tr>
@@ -243,7 +243,7 @@
 									<tr>
 										<td>
 											<div>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].MonthPeriodHasPast%>
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].MonthPeriodHasPast%>個月
 											</div>	
 										</td>
 									<tr>

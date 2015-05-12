@@ -29,9 +29,9 @@
 				<table width="100%">
 					<tr>
 						<td>
-							<input style="height:32px;width:150px;display:inline;" type="text" placeholder="下限" class="form-control" value="<%=lboundDefault%>" id="lbound">
+							<input style="height:32px;width:150px;display:inline;" type="text" placeholder="下限(元/%/個月/級)" class="form-control" value="<%=lboundDefault%>" id="lbound">
 							&nbsp;~&nbsp;
-							<input style="height:32px;width:150px;display:inline;" type="text" placeholder="上限" class="form-control" value="<%=uboundDefault%>" id="ubound">
+							<input style="height:32px;width:150px;display:inline;" type="text" placeholder="上限(元/%/個月/級)" class="form-control" value="<%=uboundDefault%>" id="ubound">
 							&nbsp;&nbsp;&nbsp;&nbsp;
 							<div class="btn-group">
 								<button type="button" style="height:32px;" class="btn btn-default dropdown-toggle" data-toggle="dropdown" id="filterSelected">
@@ -58,16 +58,16 @@
 						<tr>
 							<td>
 								<div style="font-size:15px;color:#337ab7;display:inline;">
-									金額：<%=jsonArray[i].MoneyToBorrow%>
+									金額：<%=jsonArray[i].MoneyToBorrow%>元
 								</div>&nbsp;&nbsp;&nbsp;&nbsp;
 								<div style="font-size:15px;color:#337ab7;display:inline;">
-									利率：<%=jsonArray[i].MaxInterestRateAccepted%>
+									利率：<%=jsonArray[i].MaxInterestRateAccepted*100%>%
 								</div>&nbsp;&nbsp;&nbsp;&nbsp;
 								<div style="font-size:15px;color:#337ab7;display:inline;">
-									期數：<%=jsonArray[i].MonthPeriodAccepted%>
+									期數：<%=jsonArray[i].MonthPeriodAccepted%>個月
 								</div>&nbsp;&nbsp;&nbsp;&nbsp;
 								<div style="font-size:15px;color:#337ab7;display:inline;">
-									信用：<%=jsonArray[i].Level%>
+									信用：<%=jsonArray[i].Level%>級
 								</div>
 							</td>
 							<td align="right">

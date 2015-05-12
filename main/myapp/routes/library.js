@@ -206,7 +206,7 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																var maxRate=parseFloat(message.InterestRate);
 																
 																var nowMoney=parseInt(sanitizer.sanitize(req.body.MoneyToLend));
-																var rate=parseFloat(sanitizer.sanitize(req.body.InterestRate));
+																var rate=parseFloat(sanitizer.sanitize(req.body.InterestRate))/100;
 																var month=parseInt(sanitizer.sanitize(req.body.MonthPeriod));
 																
 																if((req.body.MoneyToLend=='')||(req.body.InterestRate=='')||(req.body.MonthPeriod=='')){
@@ -227,7 +227,7 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																	returnSring='超過該訊息期望利率上限!';
 																}else{
 																	finalMoneyToLend=sanitizer.sanitize(req.body.MoneyToLend);
-																	finalInterestRate=sanitizer.sanitize(req.body.InterestRate);
+																	finalInterestRate=parseFloat(sanitizer.sanitize(req.body.InterestRate))/100;
 																	finalMonthPeriod=sanitizer.sanitize(req.body.MonthPeriod);
 																}
 															}else{

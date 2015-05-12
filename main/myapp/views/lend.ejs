@@ -12,7 +12,7 @@
 						<h3 class="panel-title">銀行帳戶內餘額</h3>
 					</div>
 					<div style="color:#ccc;" class="panel-body">
-						<input type="text" class="textForm" value="<%=MoneyInBankAccountValue%>" readonly="readonly" >
+						<input type="text" style="width:95%;" class="textForm" value="<%=MoneyInBankAccountValue%>" readonly="readonly" >&nbsp;元
 					</div>					
 				</div>
 				</br>
@@ -21,7 +21,7 @@
 						<h3 class="panel-title">已借出金額</h3>
 					</div>
 					<div style="color:#ccc;" class="panel-body">
-						<input type="text" class="textForm" value="<%=MoneyLended%>" readonly="readonly" >
+						<input type="text" style="width:95%;" class="textForm" value="<%=MoneyLended%>" readonly="readonly" >&nbsp;元
 					</div>					
 				</div>
 				</br>
@@ -36,10 +36,11 @@
 					</div>
 					<div class="panel-body">
 						<% if(!jsonLend){ %>
-							<input type="number" class="textForm" name="MaxMoneyToLend">
+							<input type="number" style="width:95%;" class="textForm" name="MaxMoneyToLend">
 						<% }else{ %>
-							<input type="number" class="textForm" name="MaxMoneyToLend" value="<%=jsonLend.MaxMoneyToLend%>">
+							<input type="number" style="width:95%;" class="textForm" name="MaxMoneyToLend" value="<%=jsonLend.MaxMoneyToLend%>">
 						<% } %>
+						&nbsp;元
 					</div>					
 				</div>
 				</br>
@@ -49,10 +50,11 @@
 					</div>
 					<div class="panel-body">
 						<% if(!jsonLend){ %>
-							<input type="text" class="textForm" name="InterestRate">
+							<input type="text" style="width:95%;" class="textForm" name="InterestRate">
 						<% }else{ %>
-							<input type="text" class="textForm" name="InterestRate" value="<%=jsonLend.InterestRate%>">
+							<input type="text" style="width:95%;" class="textForm" name="InterestRate" value="<%=jsonLend.InterestRate*100%>">
 						<% } %>
+						%
 					</div>
 				</div>
 				</br>
@@ -62,10 +64,11 @@
 					</div>
 					<div class="panel-body">
 						<% if(!jsonLend){ %>
-							<input type="number" class="textForm" name="MonthPeriod">
+							<input type="number" style="width:95%;" class="textForm" name="MonthPeriod">
 						<% }else{ %>
-							<input type="number" class="textForm" name="MonthPeriod" value="<%=jsonLend.MonthPeriod%>">
+							<input type="number" style="width:95%;" class="textForm" name="MonthPeriod" value="<%=jsonLend.MonthPeriod%>">
 						<% } %>
+						&nbsp;個月
 					</div>
 				</div>
 				</br>
@@ -75,10 +78,11 @@
 					</div>
 					<div class="panel-body">
 						<% if(!jsonLend){ %>
-							<input type="number" class="textForm" name="MinLevelAccepted">
+							<input type="number" style="width:95%;" class="textForm" name="MinLevelAccepted">
 						<% }else{ %>
-							<input type="number" class="textForm" name="MinLevelAccepted" value="<%=jsonLend.MinLevelAccepted%>">
+							<input type="number" style="width:95%;" class="textForm" name="MinLevelAccepted" value="<%=jsonLend.MinLevelAccepted%>">
 						<% } %>
+						&nbsp;級
 					</div>
 				</div>
 				</br>

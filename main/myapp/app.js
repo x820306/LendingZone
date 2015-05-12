@@ -165,8 +165,8 @@ app.get('/search/:keyword?/:action?/:page?', function (req, res) {
 	var uboundRec=null;
 	if(filterRec){
 		if(filterRec=="MaxInterestRateAccepted"){
-			lboundRec=parseFloat(lbound);
-			uboundRec=parseFloat(ubound);
+			lboundRec=parseFloat(lbound)/100;
+			uboundRec=parseFloat(ubound)/100;
 		}else{
 			lboundRec=parseInt(lbound);
 			uboundRec=parseInt(ubound);
@@ -615,13 +615,15 @@ app.get('/lenderReceiveMessages/:msgKeyword?/:filter?/:sorter?/:page?', ensureAu
 
 app.get('/income', ensureAuthenticated, function (req, res) {
 	var totalResultNumber;
-	var monthRevunueNow=0;
+	var monthRevenueNow=0;
 	var monthRoiNow=0;
-	var monthRoiArray=[];
-	var yearRoiNow=0;
+	var monthArray=[];
+	var yearRoi=0;
+	var yearRevenue=0;
 	var moneyLendedNow=0;
 	var data1={};
-	var data2={}
+	var data2={};
+	var data3={};
 	var Transactions  = mongoose.model('Transactions');
 	Transactions.find({$and:[{Lender:req.user._id},{Principal:{"$gte": 1}},{MonthPeriod:{"$gte": 1}}]}).exec( function (err, transactions, count){
 		if (err) {
@@ -631,7 +633,7 @@ app.get('/income', ensureAuthenticated, function (req, res) {
 			totalResultNumber=transactions.length;
 			console.log(totalResultNumber);
 			if(totalResultNumber<=0){
-				res.render('income',{userName:req.user.Username,totalResultNum:totalResultNumber,monRevNow:monthRevunueNow,monRoiNow:monthRoiNow,yrRoiNow:yearRoiNow,mnyLendNow:moneyLendedNow,data01:data1,data02:data2});
+				res.render('income',{userName:req.user.Username,totalResultNum:totalResultNumber,monRevNow:monthRevenueNow,monRoiNow:monthRoiNow,yrRoiNow:yearRoi,yrRev:yearRevenue,mnyLendNow:moneyLendedNow,data01:data1,data02:data2,data03:data3});
 			}else{
 				for(i=0;i<totalResultNumber;i++){
 					moneyLendedNow+=transactions[i].Principal;
@@ -655,16 +657,17 @@ app.get('/income', ensureAuthenticated, function (req, res) {
 					var tempMonthRoi=0;
 					if(tempMonthPrincipal>0){
 						tempMonthRoi=tempMonthRevunue/tempMonthPrincipal*100;
-						monthRoiArray.push(tempMonthRoi);
+						var tempJson={ROI: tempMonthRoi, Revenue: tempMonthRevunue};
+						monthArray.push(tempJson);
 					}
 					if(j==0){
-						monthRevunueNow=tempMonthRevunue.toFixed(2);
+						monthRevenueNow=tempMonthRevunue.toFixed(0);
 						monthRoiNow=tempMonthRoi.toFixed(4);
 					}
 				}
 				
-				var data1sets=[];
-				var data1set={
+				var datasets=[];
+				var dataset={
 							label: "Monthly ROI",
 							fillColor: "rgba(220,220,220,0.2)",
 							strokeColor: "rgba(220,220,220,1)",
@@ -674,24 +677,42 @@ app.get('/income', ensureAuthenticated, function (req, res) {
 							pointHighlightStroke: "rgba(220,220,220,1)",
 							data: []
 						};
-				data1sets.push(data1set);
+				var datasets2=[];
+				var dataset2={
+							label: "Monthly Revenue",
+							fillColor: "rgba(151,187,205,0.2)",
+							strokeColor: "rgba(151,187,205,1)",
+							pointColor: "rgba(151,187,205,1)",
+							pointStrokeColor: "#fff",
+							pointHighlightFill: "#fff",
+							pointHighlightStroke: "rgba(151,187,205,1)",
+							data: []
+						};
+				datasets.push(dataset);
+				datasets2.push(dataset2);
 				data1.labels=[];
-				data1.datasets=data1sets;
+				data2.labels=[];
+				data1.datasets=datasets;
+				data2.datasets=datasets2;
 				
 				var date = new Date();
 				var ctrMonth=date.getMonth()+1;
 				
-				for(j=0;j<monthRoiArray.length;j++){
-					yearRoiNow+=monthRoiArray[j];
+				for(j=0;j<monthArray.length;j++){
+					yearRoi+=monthArray[j].ROI;
+					yearRevenue+=monthArray[j].Revenue
 					data1.labels.push(ctrMonth+'月');
+					data2.labels.push(ctrMonth+'月');
 					ctrMonth+=1;
 					if(ctrMonth>12){
 						ctrMonth=1;
 					}
-					data1.datasets[0].data.push(monthRoiArray[j]);
+					data1.datasets[0].data.push(monthArray[j].ROI);
+					data2.datasets[0].data.push(monthArray[j].Revenue);
 				}
-				yearRoiNow=yearRoiNow/monthRoiArray.length;
-				yearRoiNow=yearRoiNow.toFixed(4);
+				yearRoi=yearRoi/monthArray.length;
+				yearRoi=yearRoi.toFixed(4);
+				yearRevenue=yearRevenue.toFixed(0);
 				
 				var data2Array = [
 					{
@@ -748,9 +769,9 @@ app.get('/income', ensureAuthenticated, function (req, res) {
 				for(i=0;i<data2Array.length;i++){
 					data2Array[i].value=data2Array[i].value/totalTemp*100;
 				}
-				data2.array=data2Array;
+				data3.array=data2Array;
 				
-				res.render('income',{userName:req.user.Username,totalResultNum:totalResultNumber,monRevNow:monthRevunueNow,monRoiNow:monthRoiNow,yrRoiNow:yearRoiNow,mnyLendNow:moneyLendedNow,data01:data1,data02:data2});
+				res.render('income',{userName:req.user.Username,totalResultNum:totalResultNumber,monRevNow:monthRevenueNow,monRoiNow:monthRoiNow,yrRoiNow:yearRoi,yrRev:yearRevenue,mnyLendNow:moneyLendedNow,data01:data1,data02:data2,data03:data3});
 			}
 		}
 	});

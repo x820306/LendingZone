@@ -37,7 +37,7 @@ function samePart(res,req,differentPart,outterPara){
 			}else{
 				var maxMoney=parseInt(bankaccount.MoneyInBankAccount);
 				var nowMoney=parseInt(sanitizer.sanitize(req.body.MaxMoneyToLend));
-				var rate=parseFloat(sanitizer.sanitize(req.body.InterestRate));
+				var rate=parseFloat(sanitizer.sanitize(req.body.InterestRate))/100;
 				var month=parseInt(sanitizer.sanitize(req.body.MonthPeriod));
 				var level=parseInt(sanitizer.sanitize(req.body.MinLevelAccepted));
 				
@@ -58,7 +58,7 @@ function samePart(res,req,differentPart,outterPara){
 function createPart(res,req,outterPara){
 	var toCreate = new Lends();
 	toCreate.MaxMoneyToLend=sanitizer.sanitize(req.body.MaxMoneyToLend);
-	toCreate.InterestRate=sanitizer.sanitize(req.body.InterestRate);
+	toCreate.InterestRate=parseFloat(sanitizer.sanitize(req.body.InterestRate))/100;
 	toCreate.MonthPeriod=sanitizer.sanitize(req.body.MonthPeriod);
 	toCreate.MinLevelAccepted=sanitizer.sanitize(req.body.MinLevelAccepted);
 	toCreate.AutoComfirmToBorrowMsgPeriod=sanitizer.sanitize(req.body.AutoComfirmToBorrowMsgPeriod);
@@ -85,7 +85,7 @@ function createPart(res,req,outterPara){
 
 function updatePart(res,req,lend){
 	lend.MaxMoneyToLend=sanitizer.sanitize(req.body.MaxMoneyToLend);
-	lend.InterestRate=sanitizer.sanitize(req.body.InterestRate);
+	lend.InterestRate=parseFloat(sanitizer.sanitize(req.body.InterestRate))/100;
 	lend.MonthPeriod=sanitizer.sanitize(req.body.MonthPeriod);
 	lend.MinLevelAccepted=sanitizer.sanitize(req.body.MinLevelAccepted);
 	lend.AutoComfirmToBorrowMsgPeriod=sanitizer.sanitize(req.body.AutoComfirmToBorrowMsgPeriod);
