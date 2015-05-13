@@ -1,0 +1,285 @@
+<%- include('layout_header',{nav_cur:'lenderReturnRecord',actionDefault:'最新',keywordDefault:'',categoryDefault:'不分類'}); -%>
+<div class="container">
+	<div class="row">
+		<div class="col-md-9">
+			<div style="font-size:30pt;color:#337ab7;"><%if(idDefault!=''){%>單筆交易<%}%>收款紀錄</div>
+				<div style="font-size:20pt;color:#0000D1;">&nbsp;<%=totalResultNum%> result</div>
+				<br>
+				<div class="btn-group">
+					<div class="btn-group">
+						<button type="button" style="height:40px;" class="btn btn-default dropdown-toggle" data-toggle="dropdown" id="sorterSelected">
+							<%=sorterDefault%> <span class="caret"></span>
+						</button>
+						<ul class="dropdown-menu">
+							<li style="display:none"><a href="#" id="sorter0"><%=sorterDefault%></a></li>
+							<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter1').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter1">最新</a></li>
+							<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter2').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter2">實收金額最多</a></li>
+							<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter3').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter3">應收金額最多</a></li>
+							<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter4').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter4">未收金額最多</a></li>
+							<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter5').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter5">超收金額最多</a></li>
+						</ul>
+					</div>
+					<button type="button" style="height:40px;" class="btn btn-default" onclick="window.open('/lenderReturnRecord?id=<%=idDefault%>&sorter='+encodeURIComponent($('#sorter0').text())+'&page=1','_self');">Go!</button>
+				</div>
+				<br>
+				<br>
+				<br>
+				<% if(totalResultNum!=0){ %>
+					<% for(var i=0; i<jsonReturns.length; i++) { %>
+						<div style="height: 335px;" class="panel panel-default pd">
+							<div class="panel-body">
+								<div style="font-size:25px;display:inline;">來自 </div>
+								<div style="font-size:25px;color:#0000D1;display:inline;"><%=jsonReturns[i].Borrower.Username%></div>
+								<br>
+								<br>
+								<div class="col-md-6">
+									<table width="100%" height="240px">
+										<tr>
+											<td>
+												<div style="color:#337ab7;">
+													&nbsp;&nbsp;&nbsp;&nbsp;實收金額：
+												</div>
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].MoneyReallyPaid.toFixed(0)%>元
+												</div>	
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div style="color:#337ab7;">
+													&nbsp;&nbsp;&nbsp;&nbsp;應收金額：
+												</div>
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].MoneyShouldPaid.toFixed(0)%>元
+												</div>	
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div style="color:#337ab7;&nbsp;&nbsp;&nbsp;&nbsp;">
+													&nbsp;&nbsp;&nbsp;&nbsp;<%if(jsonReturns[i].MoneyNotPaid>=0){%>未收金額：<%}else{%>超收金額：<%}%>
+												</div>
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%if(jsonReturns[i].MoneyNotPaid>=0){%><%=jsonReturns[i].MoneyNotPaid.toFixed(0)%><%}else{%><%=(jsonReturns[i].MoneyNotPaid*-1).toFixed(0)%><%}%>元
+												</div>	
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div style="color:#337ab7;">
+													&nbsp;&nbsp;&nbsp;&nbsp;實收本金：
+												</div>
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=(jsonReturns[i].PrincipalShouldPaid-jsonReturns[i].PrincipalNotPaid).toFixed(0)%>元
+												</div>	
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div style="color:#337ab7;">
+													&nbsp;&nbsp;&nbsp;&nbsp;應收本金：
+												</div>
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].PrincipalShouldPaid.toFixed(0)%>元
+												</div>	
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div style="color:#337ab7;&nbsp;&nbsp;&nbsp;&nbsp;">
+													&nbsp;&nbsp;&nbsp;&nbsp;<%if(jsonReturns[i].PrincipalNotPaid>=0){%>未收本金：<%}else{%>超收本金：<%}%>
+												</div>
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%if(jsonReturns[i].PrincipalNotPaid>=0){%><%=jsonReturns[i].PrincipalNotPaid.toFixed(0)%><%}else{%><%=(jsonReturns[i].PrincipalNotPaid*-1).toFixed(0)%><%}%>元
+												</div>	
+											</td>
+										<tr>
+									</table>
+								</div>
+								<div class="col-md-6">
+									<table width="100%" height="240px">
+										<tr>
+											<td>
+												<div style="color:#337ab7;">
+													&nbsp;&nbsp;&nbsp;&nbsp;實收利息：
+												</div>
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=(jsonReturns[i].InterestShouldPaid-jsonReturns[i].InterestNotPaid).toFixed(0)%>元
+												</div>	
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div style="color:#337ab7;">
+													&nbsp;&nbsp;&nbsp;&nbsp;應收利息：
+												</div>
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].InterestShouldPaid.toFixed(0)%>元
+												</div>	
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div style="color:#337ab7;&nbsp;&nbsp;&nbsp;&nbsp;">
+													&nbsp;&nbsp;&nbsp;&nbsp;<%if(jsonReturns[i].InterestNotPaid>=0){%>未收利息：<%}else{%>超收利息：<%}%>
+												</div>
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%if(jsonReturns[i].InterestNotPaid>=0){%><%=jsonReturns[i].InterestNotPaid.toFixed(0)%><%}else{%><%=(jsonReturns[i].InterestNotPaid*-1).toFixed(0)%><%}%>元
+												</div>	
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div style="color:#337ab7;">
+													&nbsp;&nbsp;&nbsp;&nbsp;對方信用等級:
+												</div>
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].Level%>級
+												</div>	
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div style="color:#337ab7;">
+													&nbsp;&nbsp;&nbsp;&nbsp;收款日期:
+												</div>
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].Created.getFullYear()%>/<%=jsonReturns[i].Created.getMonth()+1%>/<%=jsonReturns[i].Created.getDate()%>
+												</div>	
+											</td>
+										<tr>
+									</table>
+								</div>
+							</div>
+						</div>
+					<table width="100%">
+					<tr>
+						<td align="right">
+							<div style="color:#337ab7;">
+								Updated：<%=jsonReturns[i].Updated.getFullYear()%>/<%=jsonReturns[i].Updated.getMonth()+1%>/<%=jsonReturns[i].Updated.getDate()%>
+							</div>
+						</td>
+					<tr>
+					</table>
+					<br>
+					<br>
+				<%}%>
+				<br>
+				<table align="center">
+					<tr>
+						<td>
+							<nav>
+							  <ul class="pagination">
+								<li 
+									<% if(targetPageNumber==1){%>
+										class="disabled"
+									<%}%>
+								>
+								<% if(targetPageNumber!=1){%>
+									<a href="/lenderReturnRecord?id=<%=idDefault%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=targetPageNumber-1%>">
+								<%}else{%>
+									<a href="#" onclick="return false;">
+								<%}%>
+								<span>&laquo;</span></a></li>
+								<% if(pageNumber<=10){%>
+									<% for(var j=1; j<=pageNumber; j++) { %>
+										<li 
+											<% if(targetPageNumber==j){%>
+												class="active"
+											<%}%>
+										><a href="/lenderReturnRecord?id=<%=idDefault%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=j%>"><%=j%></a></li>
+									<%}%>
+								<% }else{%>
+									<% if(targetPageNumber>=pageNumber-3){%>
+										<% for(var j=pageNumber-9; j<=pageNumber; j++) { %>
+										<li 
+											<% if(targetPageNumber==j){%>
+												class="active"
+											<%}%>
+										><a href="/lenderReturnRecord?id=<%=idDefault%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=j%>"><%=j%></a></li>
+										<%}%>
+									<%}else if(targetPageNumber<=5){%>
+										<% for(var j=1; j<=10; j++) { %>
+										<li 
+											<% if(targetPageNumber==j){%>
+												class="active"
+											<%}%>
+										><a href="/lenderReturnRecord?id=<%=idDefault%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=j%>"><%=j%></a></li>
+										<%}%>
+									<%}else{%>
+										<% for(var j=targetPageNumber-5; j<targetPageNumber; j++) { %>
+										<li><a href="/lenderReturnRecord?id=<%=idDefault%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=j%>"><%=j%></a></li>
+										<%}%>
+										<li class="active"><a href="/lenderReturnRecord?id=<%=idDefault%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=targetPageNumber%>"><%=targetPageNumber%></a></li>
+										<% for(var j=targetPageNumber+1; j<=targetPageNumber+4; j++) { %>
+										<li><a href="/lenderReturnRecord?id=<%=idDefault%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=j%>"><%=j%></a></li>
+										<%}%>
+									<%}%>
+								<%}%>
+								<li 
+									<% if(targetPageNumber==pageNumber){%>
+										class="disabled"
+									<%}%>
+								>	
+								<% if(targetPageNumber!=pageNumber){%>
+									<a href="/lenderReturnRecord?id=<%=idDefault%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=targetPageNumber+1%>">
+								<%}else{%>
+									<a href="#" onclick="return false;">
+								<%}%>
+								<span>&raquo;</span></a></li>
+							  </ul>
+							</nav>
+						</td>
+					</tr>
+				</table>
+			<% }%>
+		</div>
+		<div class="col-md-3">
+		</div>
+	</div>
+</div>
+<%- include('layout_footer'); -%>

@@ -118,6 +118,17 @@ function updatePart(res,req,lend){
 }
 
 function autoConfirm(req,res,sorter,lendID){
+	var sorterReserve=sorter;
+	if(sorter=='-SpecialA'){
+		sorter='-Updated';
+	}else if(sorter=='-SpecialB'){
+		sorter='-Updated';
+	}else if(sorter=='-SpecialC'){
+		sorter='-Updated';
+	}else if(sorter=='-SpecialD'){
+		sorter='-Updated';
+	}
+	
 	Lends.findById(lendID).exec(function (err, lend){
 		if (err) {
 			console.log(err);
@@ -129,6 +140,31 @@ function autoConfirm(req,res,sorter,lendID){
 							console.log(err);
 						}else{
 							if(messages.length>0){
+								if((sorterReserve=='-SpecialA')||(sorterReserve=='-SpecialB')||(sorterReserve=='-SpecialC')||(sorterReserve=='-SpecialD')){
+									for(i=0;i<messages.length;i++){
+										messages[i].InterestInFuture=library.interestInFutureCalculator(messages[i].MoneyToLend,messages[i].InterestRate,messages[i].MonthPeriod);
+										messages[i].InterestInFutureDivMoney=messages[i].InterestInFuture/messages[i].MoneyToLend;
+										messages[i].InterestInFutureMonth=messages[i].InterestInFuture/messages[i].MonthPeriod;
+										messages[i].InterestInFutureMoneyMonth=(messages[i].InterestInFuture+messages[i].MoneyToLend)/messages[i].MonthPeriod;
+									}
+									
+									if(sorterReserve=='-SpecialA'){
+										messages.sort(function(a,b) { return parseFloat(b.InterestInFuture) - parseFloat(a.InterestInFuture)} );
+									}
+									
+									if(sorterReserve=='-SpecialA'){
+										messages.sort(function(a,b) { return parseFloat(b.InterestInFutureMonth) - parseFloat(a.InterestInFutureMonth)} );
+									}
+									
+									if(sorterReserve=='-SpecialD'){
+										messages.sort(function(a,b) { return parseFloat(b.InterestInFutureMoneyMonth) - parseFloat(a.InterestInFutureMoneyMonth) } );
+									}
+									
+									if(sorterReserve=='-SpecialD'){
+										messages.sort(function(a,b) { return parseFloat(b.InterestInFutureDivMoney) - parseFloat(a.InterestInFutureDivMoney) } );
+									}
+								}
+								
 								var arrayOp=[];
 								for(i=0;i<messages.length;i++){
 									var temp={FromBorrowRequest:messages[i].FromBorrowRequest,MessageID:messages[i]._id};

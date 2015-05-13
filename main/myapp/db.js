@@ -9,6 +9,7 @@ var Borrows = new Schema({
 	TimeLimit: { type: Date, default: Date.now },
 	StoryTitle: { type: String, default:''},
 	Story: { type: String, default:''},
+	Category:{ type: String, default:'general'},//'general','education','wedding','tour' etc. we can add more
 	LikeNumber: { type: Number, default: 0 },
 	Likes: [{ type: Schema.Types.ObjectId, ref: 'Users' }],
 	IfReadable: { type: Boolean, default: true },
@@ -86,6 +87,7 @@ var Transactions = new Schema({
 	CreatedFrom: { type: Schema.Types.ObjectId, ref: 'Messages' },
 	Borrower: { type: Schema.Types.ObjectId, ref: 'Users' },
 	Lender: { type: Schema.Types.ObjectId, ref: 'Users' },
+	Return: [{ type: Schema.Types.ObjectId, ref: 'Returns' }],
 	Updated: { type: Date, default: Date.now },
 	Created: { type: Date, default: Date.now }
 });
@@ -98,6 +100,20 @@ var Discussions = new Schema({
 	Created: { type: Date, default: Date.now }
 });
 
+var Returns = new Schema({
+	ToTransaction: { type: Schema.Types.ObjectId, ref: 'Transactions' },
+	Borrower: { type: Schema.Types.ObjectId, ref: 'Users' },
+	Lender: { type: Schema.Types.ObjectId, ref: 'Users' },
+	InterestShouldPaid: { type: Number, default: 0 },
+	InterestNotPaid: { type: Number, default: 0 },
+	PrincipalShouldPaid: { type: Number, default: 0 },
+	PrincipalNotPaid: { type: Number, default: 0 },
+	PrincipalBeforePaid: { type: Number, default: 0 },
+	Level:{ type: Number, default: 0 },
+	Updated: { type: Date, default: Date.now },
+	Created: { type: Date, default: Date.now }
+});
+
 mongoose.model( 'Users', Users );
 mongoose.model( 'Borrows', Borrows );
 mongoose.model( 'Lends', Lends );
@@ -105,4 +121,5 @@ mongoose.model( 'Messages', Messages );
 mongoose.model( 'BankAccounts', BankAccounts );
 mongoose.model( 'Transactions', Transactions );
 mongoose.model( 'Discussions', Discussions );
+mongoose.model( 'Returns', Returns );
 mongoose.connect( 'mongodb://lendingZone:lendingZone@ds031972.mongolab.com:31972/lending' );

@@ -1,4 +1,4 @@
-<%- include('layout_header',{nav_cur:'lend',actionDefault:'最新',keywordDefault:''}); -%>
+<%- include('layout_header',{nav_cur:'lend',actionDefault:'最新',keywordDefault:'',categoryDefault:'不分類'}); -%>
 <div class="container">
 	<div class="row">
 		<div class="col-md-9">
@@ -117,19 +117,27 @@
 					</div>
 					<div class="panel-body">
 						<% if(!jsonLend){ %>
-							 <select class="textForm" class="textForm" name="AutoComfirmToBorrowMsgSorter" id="sorterSel" disabled="disabled">
+							<select class="textForm" class="textForm" name="AutoComfirmToBorrowMsgSorter" id="sorterSel" disabled="disabled">
 								<option value="-InterestRate">利率最高</option>
 								<option value="-MoneyToLend">金額最高</option>
 								<option value="-MonthPeriod">期數最多</option>
 								<option value="-Level">信用等級最高</option>
+								<option value="-SpecialA">預計總利息最高</option>
+								<option value="-SpecialB">預計平均利息最高</option>
+								<option value="-SpecialC">預計平均本利和最高</option>
+								<option value="-SpecialD">預計利本比最高</option>
 								<option value="-Updated">最新</option>
-							  </select>
+							 </select>
 						<% }else{ %>
 							<select class="textForm" class="textForm" name="AutoComfirmToBorrowMsgSorter" id="sorterSel"<% if(jsonLend.AutoComfirmToBorrowMsgPeriod==-1){ %> disabled="disabled"<%}%>>
 								<option value="-InterestRate"<%if(jsonLend.AutoComfirmToBorrowMsgSorter=="-InterestRate"){%> selected<%}%>>利率最高</option>
 								<option value="-MoneyToLend"<%if(jsonLend.AutoComfirmToBorrowMsgSorter=="-MoneyToLend"){%> selected<%}%>>金額最高</option>
-								<option value="MonthPeriod"<%if(jsonLend.AutoComfirmToBorrowMsgSorter=="-MonthPeriod"){%> selected<%}%>>期數最多</option>
+								<option value="-MonthPeriod"<%if(jsonLend.AutoComfirmToBorrowMsgSorter=="-MonthPeriod"){%> selected<%}%>>期數最多</option>
 								<option value="-Level"<%if(jsonLend.AutoComfirmToBorrowMsgSorter=="-Level"){%> selected<%}%>>信用等級最高</option>
+								<option value="-SpecialA"<%if(jsonLend.AutoComfirmToBorrowMsgSorter=="-SpecialA"){%> selected<%}%>>預計總利息最高</option>
+								<option value="-SpecialB"<%if(jsonLend.AutoComfirmToBorrowMsgSorter=="-SpecialB"){%> selected<%}%>>預計平均利息最高</option>
+								<option value="-SpecialC"<%if(jsonLend.AutoComfirmToBorrowMsgSorter=="-SpecialC"){%> selected<%}%>>預計平均本利和最高</option>
+								<option value="-SpecialD"<%if(jsonLend.AutoComfirmToBorrowMsgSorter=="-SpecialD"){%> selected<%}%>>預計利本比最高</option>
 								<option value="-Updated"<%if(jsonLend.AutoComfirmToBorrowMsgSorter=="-Updated"){%> selected<%}%>>最新</option>
 							  </select>
 						<% } %>

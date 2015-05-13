@@ -1,4 +1,4 @@
-<%- include('layout_header',{nav_cur:'lendsList',actionDefault:'最新',keywordDefault:''}); -%>
+<%- include('layout_header',{nav_cur:'lendsList',actionDefault:'最新',keywordDefault:'',categoryDefault:'不分類'}); -%>
 <div class="container">
 	<div class="row">
 		<div class="col-md-9">
@@ -26,7 +26,7 @@
 				<br>
 				<% if(totalResultNum!=0){ %>
 					<% for(var i=0; i<jsonLends.length; i++) { %>
-						<div style="height: 380px;margin-bottom:0px;" class="panel panel-default pd">
+						<div style="height: 350px;margin-bottom:0px;" class="panel panel-default pd">
 							<div class="panel-body">
 								<div style="font-size:25px;color:#0000D1;display:inline;"><%=jsonLends[i].CreatedBy.Username%></div>
 								<br>
@@ -133,6 +133,14 @@
 																										期數最多
 																									<%}else if(jsonLends[i].AutoComfirmToBorrowMsgSorter=="-Level"){%>
 																										信用等級最高
+																									<%}else if(jsonLends[i].AutoComfirmToBorrowMsgSorter=="-SpecialA"){%>
+																										預計總利息最高
+																									<%}else if(jsonLends[i].AutoComfirmToBorrowMsgSorter=="-SpecialB"){%>
+																										預計平均利息最高
+																									<%}else if(jsonLends[i].AutoComfirmToBorrowMsgSorter=="-SpecialC"){%>
+																										預計平均本利和最高
+																									<%}else if(jsonLends[i].AutoComfirmToBorrowMsgSorter=="-SpecialD"){%>
+																										預計利本比最高
 																									<%}else if(jsonLends[i].AutoComfirmToBorrowMsgSorter=="-Updated"){%>
 																										最新
 																									<%}%>

@@ -7,8 +7,21 @@
 				<div style="font-size:20pt;color:#0000D1;">&nbsp;<%=totalResultNum%> result</div>
 				<br>
 				<div class="input-group">
-					<input type="text" style="height:40px;" class="form-control" id="subKeywordIpt" placeholder="搜尋借入者的故事" value="<%=keywordDefault%>" onkeypress="if(event.keyCode==13){ window.open('/search?keyword='+encodeURIComponent($('#subKeywordIpt').val())+'&action='+encodeURIComponent($('#sorter0').text())+'&filter='+encodeURIComponent($('#filter0').text())+'&lbound='+encodeURIComponent($('#lbound').val())+'&ubound='+encodeURIComponent($('#ubound').val())+'&page=1','_self');}">
+					<input type="text" style="height:40px;" class="form-control" id="subKeywordIpt" placeholder="搜尋借入者的故事" value="<%=keywordDefault%>" onkeypress="if(event.keyCode==13){ window.open('/search?keyword='+encodeURIComponent($('#subKeywordIpt').val())+'&action='+encodeURIComponent($('#sorter0').text())+'&category='+encodeURIComponent($('#subCategory0').text())+'&filter='+encodeURIComponent($('#filter0').text())+'&lbound='+encodeURIComponent($('#lbound').val())+'&ubound='+encodeURIComponent($('#ubound').val())+'&page=1','_self');}">
 					<span class="input-group-btn">
+						<div class="btn-group">
+							<button type="button" style="height:40px;" class="btn btn-default dropdown-toggle" data-toggle="dropdown" id="subCategorySelected">
+								<%=categoryDefault%> <span class="caret"></span>
+							</button>
+							<ul class="dropdown-menu">
+								<li style="display:none"><a href="#" id="subCategory0"><%=categoryDefault%></a></li>
+								<li><a href="#" onclick="$('#subCategorySelected').html('');$('#subCategorySelected').html($('#subCategory1').text());$('#subCategory0').html($('#subCategorySelected').text());$('#subCategorySelected').append(' <span class=\'caret\'><\/span>'); return false;" id="subCategory1">不分類</a></li>
+								<li><a href="#" onclick="$('#subCategorySelected').html('');$('#subCategorySelected').html($('#subCategory2').text());$('#subCategory0').html($('#subCategorySelected').text());$('#subCategorySelected').append(' <span class=\'caret\'><\/span>'); return false;" id="subCategory2">一般</a></li>
+								<li><a href="#" onclick="$('#subCategorySelected').html('');$('#subCategorySelected').html($('#subCategory3').text());$('#subCategory0').html($('#subCategorySelected').text());$('#subCategorySelected').append(' <span class=\'caret\'><\/span>'); return false;" id="subCategory3">教育</a></li>
+								<li><a href="#" onclick="$('#subCategorySelected').html('');$('#subCategorySelected').html($('#subCategory4').text());$('#subCategory0').html($('#subCategorySelected').text());$('#subCategorySelected').append(' <span class=\'caret\'><\/span>'); return false;" id="subCategory4">婚禮</a></li>
+								<li><a href="#" onclick="$('#subCategorySelected').html('');$('#subCategorySelected').html($('#subCategory5').text());$('#subCategory0').html($('#subCategorySelected').text());$('#subCategorySelected').append(' <span class=\'caret\'><\/span>'); return false;" id="subCategory5">旅行</a></li>
+							</ul>
+						</div>
 						<div class="btn-group">
 							<button type="button" style="height:40px;" class="btn btn-default" id="sorterSelected" data-toggle="dropdown" aria-expanded="false"><%=actionDefault%> <span class='caret'></span></button>
 							<ul class="dropdown-menu" role="menu">
@@ -22,7 +35,7 @@
 								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter7').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter7">信用等級最高</a></li>
 							</ul>
 						</div>
-						<button type="button" style="height:40px;" class="btn btn-default" onclick="window.open('/search?keyword='+encodeURIComponent($('#subKeywordIpt').val())+'&action='+encodeURIComponent($('#sorter0').text())+'&filter='+encodeURIComponent($('#filter0').text())+'&lbound='+encodeURIComponent($('#lbound').val())+'&ubound='+encodeURIComponent($('#ubound').val())+'&page=1','_self');"><span class="glyphicon glyphicon-search"></span></button>
+						<button type="button" style="height:40px;" class="btn btn-default" onclick="window.open('/search?keyword='+encodeURIComponent($('#subKeywordIpt').val())+'&action='+encodeURIComponent($('#sorter0').text())+'&category='+encodeURIComponent($('#subCategory0').text())+'&filter='+encodeURIComponent($('#filter0').text())+'&lbound='+encodeURIComponent($('#lbound').val())+'&ubound='+encodeURIComponent($('#ubound').val())+'&page=1','_self');"><span class="glyphicon glyphicon-search"></span></button>
 					</span>
 				</div> 
 				<br>
@@ -130,7 +143,7 @@
 											<% if(targetPageNumber==j){%>
 												class="active"
 											<%}%>
-										><a href="/search?keyword=<%=encodeURIComponent(keywordDefault)%>&action=<%=encodeURIComponent(actionDefault)%>&filter=<%=encodeURIComponent(filterDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=j%>"><%=j%></a></li>
+										><a href="/search?keyword=<%=encodeURIComponent(keywordDefault)%>&action=<%=encodeURIComponent(actionDefault)%>&category=<%=encodeURIComponent(categoryDefault)%>&filter=<%=encodeURIComponent(filterDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=j%>"><%=j%></a></li>
 									<%}%>
 								<% }else{%>
 									<% if(targetPageNumber>=pageNumber-3){%>
@@ -139,7 +152,7 @@
 											<% if(targetPageNumber==j){%>
 												class="active"
 											<%}%>
-										><a href="/search?keyword=<%=encodeURIComponent(keywordDefault)%>&action=<%=encodeURIComponent(actionDefault)%>&filter=<%=encodeURIComponent(filterDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=j%>"><%=j%></a></li>
+										><a href="/search?keyword=<%=encodeURIComponent(keywordDefault)%>&action=<%=encodeURIComponent(actionDefault)%>&category=<%=encodeURIComponent(categoryDefault)%>&filter=<%=encodeURIComponent(filterDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=j%>"><%=j%></a></li>
 										<%}%>
 									<%}else if(targetPageNumber<=5){%>
 										<% for(var j=1; j<=10; j++) { %>
@@ -147,15 +160,15 @@
 											<% if(targetPageNumber==j){%>
 												class="active"
 											<%}%>
-										><a href="/search?keyword=<%=encodeURIComponent(keywordDefault)%>&action=<%=encodeURIComponent(actionDefault)%>&filter=<%=encodeURIComponent(filterDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=j%>"><%=j%></a></li>
+										><a href="/search?keyword=<%=encodeURIComponent(keywordDefault)%>&action=<%=encodeURIComponent(actionDefault)%>&category=<%=encodeURIComponent(categoryDefault)%>&filter=<%=encodeURIComponent(filterDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=j%>"><%=j%></a></li>
 										<%}%>
 									<%}else{%>
 										<% for(var j=targetPageNumber-5; j<targetPageNumber; j++) { %>
-										<li><a href="/search?keyword=<%=encodeURIComponent(keywordDefault)%>&action=<%=encodeURIComponent(actionDefault)%>&filter=<%=encodeURIComponent(filterDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=j%>"><%=j%></a></li>
+										<li><a href="/search?keyword=<%=encodeURIComponent(keywordDefault)%>&action=<%=encodeURIComponent(actionDefault)%>&category=<%=encodeURIComponent(categoryDefault)%>&filter=<%=encodeURIComponent(filterDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=j%>"><%=j%></a></li>
 										<%}%>
-										<li class="active"><a href="/search?keyword=<%=encodeURIComponent(keywordDefault)%>&action=<%=encodeURIComponent(actionDefault)%>&filter=<%=encodeURIComponent(filterDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=targetPageNumber%>"><%=targetPageNumber%></a></li>
+										<li class="active"><a href="/search?keyword=<%=encodeURIComponent(keywordDefault)%>&action=<%=encodeURIComponent(actionDefault)%>&category=<%=encodeURIComponent(categoryDefault)%>&filter=<%=encodeURIComponent(filterDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=targetPageNumber%>"><%=targetPageNumber%></a></li>
 										<% for(var j=targetPageNumber+1; j<=targetPageNumber+4; j++) { %>
-										<li><a href="/search?keyword=<%=encodeURIComponent(keywordDefault)%>&action=<%=encodeURIComponent(actionDefault)%>&filter=<%=encodeURIComponent(filterDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=j%>"><%=j%></a></li>
+										<li><a href="/search?keyword=<%=encodeURIComponent(keywordDefault)%>&action=<%=encodeURIComponent(actionDefault)%>&category=<%=encodeURIComponent(categoryDefault)%>&filter=<%=encodeURIComponent(filterDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=j%>"><%=j%></a></li>
 										<%}%>
 									<%}%>
 								<%}%>
@@ -165,7 +178,7 @@
 									<%}%>
 								>
 								<% if(targetPageNumber!=pageNumber){%>
-									<a href="/search?keyword=<%=encodeURIComponent(keywordDefault)%>&action=<%=encodeURIComponent(actionDefault)%>&filter=<%=encodeURIComponent(filterDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=targetPageNumber+1%>">
+									<a href="/search?keyword=<%=encodeURIComponent(keywordDefault)%>&action=<%=encodeURIComponent(actionDefault)%>&category=<%=encodeURIComponent(categoryDefault)%>&filter=<%=encodeURIComponent(filterDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=targetPageNumber+1%>">
 								<%}else{%>
 									<a href="#" onclick="return false;">
 								<%}%>

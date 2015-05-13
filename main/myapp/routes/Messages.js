@@ -275,9 +275,20 @@ router.get('/rejectToBorrowMessageInLRMall/:sorter?', ensureAuthenticated, funct
 		sorterRec="-InterestRate";
 	}else if(sorter=='金額最高'){
 		sorterRec="-MoneyToLend";
-	}else if(sorter=='期數最少'){
-		sorterRec="MonthPeriod";
+	}else if(sorter=='期數最多'){
+		sorterRec="-MonthPeriod";
+	}else if(sorter=='信用等級最高'){
+		sorterRec="-Level";
+	}else if(sorter=='預計總利息最高'){
+		sorterRec="-Updated";
+	}else if(sorter=='預計平均利息最高'){
+		sorterRec="-Updated";
+	}else if(sorter=='預計平均本利和最高'){
+		sorterRec="-Updated";
+	}else if(sorter=='預計利本比最高'){
+		sorterRec="-Updated";
 	}
+	
 	Messages.find({$and:[{"SendTo": req.user._id},{"Type": "toBorrow"},{"Status": "NotConfirmed"}]}).sort(sorterRec).exec(function (err, messages){
 		if (err) {
 			console.log(err);
@@ -286,6 +297,31 @@ router.get('/rejectToBorrowMessageInLRMall/:sorter?', ensureAuthenticated, funct
 			if(messages.length==0){
 				res.redirect('/message?content='+'錯誤!');
 			}else{
+				if((sorter=='預計總利息最高')||(sorter=='預計利本比最高')||(sorter=='預計平均利息最高')||(sorter=='預計平均本利和最高')){
+					for(i=0;i<messages.length;i++){
+						messages[i].InterestInFuture=library.interestInFutureCalculator(messages[i].MoneyToLend,messages[i].InterestRate,messages[i].MonthPeriod);
+						messages[i].InterestInFutureDivMoney=messages[i].InterestInFuture/messages[i].MoneyToLend;
+						messages[i].InterestInFutureMonth=messages[i].InterestInFuture/messages[i].MonthPeriod;
+						messages[i].InterestInFutureMoneyMonth=(messages[i].InterestInFuture+messages[i].MoneyToLend)/messages[i].MonthPeriod;
+					}
+					
+					if(sorter=='預計總利息最高'){
+						messages.sort(function(a,b) { return parseFloat(b.InterestInFuture) - parseFloat(a.InterestInFuture)} );
+					}
+					
+					if(sorter=='預計平均利息最高'){
+						messages.sort(function(a,b) { return parseFloat(b.InterestInFutureMonth) - parseFloat(a.InterestInFutureMonth)} );
+					}
+					
+					if(sorter=='預計平均本利和最高'){
+						messages.sort(function(a,b) { return parseFloat(b.InterestInFutureMoneyMonth) - parseFloat(a.InterestInFutureMoneyMonth)} );
+					}
+					
+					if(sorter=='預計利本比最高'){
+						messages.sort(function(a,b) { return parseFloat(b.InterestInFutureDivMoney) - parseFloat(a.InterestInFutureDivMoney) } );
+					}
+				}
+				
 				var arrayOp=[];
 				for(i=0;i<messages.length;i++){
 					var temp={MessageID:messages[i]._id};
@@ -309,7 +345,18 @@ router.get('/confirmToBorrowMessageInLRMall/:sorter?', ensureAuthenticated, func
 		sorterRec="-MoneyToLend";
 	}else if(sorter=='期數最多'){
 		sorterRec="-MonthPeriod";
+	}else if(sorter=='信用等級最高'){
+		sorterRec="-Level";
+	}else if(sorter=='預計總利息最高'){
+		sorterRec="-Updated";
+	}else if(sorter=='預計平均利息最高'){
+		sorterRec="-Updated";
+	}else if(sorter=='預計平均本利和最高'){
+		sorterRec="-Updated";
+	}else if(sorter=='預計利本比最高'){
+		sorterRec="-Updated";
 	}
+	
 	Messages.find({$and:[{"SendTo": req.user._id},{"Type": "toBorrow"},{"Status": "NotConfirmed"}]}).sort(sorterRec).exec(function (err, messages){
 		if (err) {
 			console.log(err);
@@ -318,6 +365,31 @@ router.get('/confirmToBorrowMessageInLRMall/:sorter?', ensureAuthenticated, func
 			if(messages.length==0){
 				res.redirect('/message?content='+'錯誤!');
 			}else{
+				if((sorter=='預計總利息最高')||(sorter=='預計利本比最高')||(sorter=='預計平均利息最高')||(sorter=='預計平均本利和最高')){
+					for(i=0;i<messages.length;i++){
+						messages[i].InterestInFuture=library.interestInFutureCalculator(messages[i].MoneyToLend,messages[i].InterestRate,messages[i].MonthPeriod);
+						messages[i].InterestInFutureDivMoney=messages[i].InterestInFuture/messages[i].MoneyToLend;
+						messages[i].InterestInFutureMonth=messages[i].InterestInFuture/messages[i].MonthPeriod;
+						messages[i].InterestInFutureMoneyMonth=(messages[i].InterestInFuture+messages[i].MoneyToLend)/messages[i].MonthPeriod;
+					}
+					
+					if(sorter=='預計總利息最高'){
+						messages.sort(function(a,b) { return parseFloat(b.InterestInFuture) - parseFloat(a.InterestInFuture)} );
+					}
+					
+					if(sorter=='預計平均利息最高'){
+						messages.sort(function(a,b) { return parseFloat(b.InterestInFutureMonth) - parseFloat(a.InterestInFutureMonth)} );
+					}
+					
+					if(sorter=='預計平均本利和最高'){
+						messages.sort(function(a,b) { return parseFloat(b.InterestInFutureMoneyMonth) - parseFloat(a.InterestInFutureMoneyMonth)} );
+					}
+					
+					if(sorter=='預計利本比最高'){
+						messages.sort(function(a,b) { return parseFloat(b.InterestInFutureDivMoney) - parseFloat(a.InterestInFutureDivMoney) } );
+					}
+				}
+				
 				var arrayOp=[];
 				for(i=0;i<messages.length;i++){
 					var temp={FromBorrowRequest:messages[i].FromBorrowRequest,MessageID:messages[i]._id};

@@ -1,5 +1,8 @@
 var mongoose = require('mongoose');
 var Users  = mongoose.model('Users');
+var Borrows  = mongoose.model('Borrows');
+var Messages  = mongoose.model('Messages');
+var Transactions  = mongoose.model('Transactions');
 var BankAccounts  = mongoose.model('BankAccounts');
 var sanitizer = require('sanitizer'); 
 
@@ -83,7 +86,52 @@ router.get('/SecondCard/:id?', function(req, res, next) {
 	});
 });
 
+router.post('/levelSetter', function(req, res, next) {
+	Uid=sanitizer.sanitize(req.body.Uid);
+	Level=sanitizer.sanitize(req.body.Level);
+	
+	//userLevelSetter(res,Uid,Level);
+	
+	Transactions.update({}, { Return:[]},{multi:true}, function(err, numberAffected){  
+		console.log(numberAffected);
+		res.end('end');
+	});
+	//for adding a new field into existed documents 
+});
+
 module.exports = router;
+
+function userLevelSetter(res,uid,newLevel){
+	Users.update({_id:uid},{$set:{Level:newLevel}},function(err){
+		if(!err){
+			Borrows.update({CreatedBy:uid},{$set:{Level:newLevel}}, { multi: true },function(err){
+				if(!err){
+					Messages.update({$or:[{$and:[{CreatedBy:uid},{Type:"toBorrow"}]},{$and:[{SendTo:uid},{Type:"toLend"}]}]},{$set:{Level:newLevel}}, { multi: true },function(err){
+						if(!err){
+							Transactions.update({Borrower:uid},{$set:{Level:newLevel}}, { multi: true },function(err){
+								if(!err){
+									res.end('success!');
+								}else{
+									console.log(err);
+									res.end('error!');
+								}
+							});
+						}else{
+							console.log(err);
+							res.end('error!');
+						}
+					});
+				}else{
+					console.log(err);
+					res.end('error!');
+				}
+			});
+		}else{
+			console.log(err);
+			res.end('error!');
+		}
+	});
+}
 
 function ensureAuthenticated(req, res, next) {
   if (req.isAuthenticated()) { return next(null); }

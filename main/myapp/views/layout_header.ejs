@@ -46,6 +46,7 @@
 								<li <% if(nav_cur=='lend'){ %> class="active"<% } %>><% if(!userName){ %><a href="#" data-toggle="modal" data-target="#myModal"><% }else{ %><a href="/lend"><%}%>自動借出設定</a></li>
 								<li <% if(nav_cur=='income'){ %> class="active"<% } %>><% if(!userName){ %><a href="#" data-toggle="modal" data-target="#myModal"><% }else{ %><a href="/income"><%}%>收入分析</a></li>
 								<li <% if(nav_cur=='lenderTransactionRecord'){ %> class="active"<% } %>><% if(!userName){ %><a href="#" data-toggle="modal" data-target="#myModal"><% }else{ %><a href="/lenderTransactionRecord?sorter=<%=encodeURIComponent("最新")%>&page=1"><%}%>借出紀錄</a></li>
+								<li <% if(nav_cur=='lenderReturnRecord'){ %> class="active"<% } %>><% if(!userName){ %><a href="#" data-toggle="modal" data-target="#myModal"><% }else{ %><a href="/lenderReturnRecord?id=&sorter=<%=encodeURIComponent("最新")%>&page=1"><%}%>收款記錄</a></li>
 								<li class="divider"></li>
 								<li <% if(nav_cur=='lenderReceiveMessages'){ %> class="active"<% } %>><% if(!userName){ %><a href="#" data-toggle="modal" data-target="#myModal"><% }else{ %><a href="/lenderReceiveMessages?msgKeyword=&filter=<%=encodeURIComponent("未確認")%>&sorter=<%=encodeURIComponent("利率最高")%>&page=1"><%}%>收到之欲借入訊息</a></li>
 								<li <% if(nav_cur=='lenderSendMessages'){ %> class="active"<% } %>><% if(!userName){ %><a href="#" data-toggle="modal" data-target="#myModal"><% }else{ %><a href="/lenderSendMessages?msgKeyword=&filter=<%=encodeURIComponent("未被確認")%>&sorter=<%=encodeURIComponent("最新")%>&page=1"><%}%>送出之欲借出訊息</a></li>
@@ -54,20 +55,35 @@
 					</ul>
 					<div class="navbar-form navbar-left" role="search">
 						<div class="input-group">
-							<input type="text" style="height:32px;" class="form-control" id="keywordIpt" placeholder="搜尋借入者的故事" value="<%=keywordDefault%>" onkeypress="if(event.keyCode==13){ window.open('/search?keyword='+encodeURIComponent($('#keywordIpt').val())+'&action='+encodeURIComponent($('#searchAction0').text())+'&filter='+encodeURIComponent('未選擇濾鏡')+'&lbound=&ubound=&page=1','_self');}">
+							<input type="text" style="height:32px;" class="form-control" id="keywordIpt" placeholder="搜尋借入者的故事" value="<%=keywordDefault%>" onkeypress="if(event.keyCode==13){ window.open('/search?keyword='+encodeURIComponent($('#keywordIpt').val())+'&action='+encodeURIComponent($('#searchAction0').text())+'&category='+encodeURIComponent($('#category0').text())+'&filter='+encodeURIComponent('未選擇濾鏡')+'&lbound=&ubound=&page=1','_self');}">
 							<span class="input-group-btn">
-								<button type="button" style="height:32px;" class="btn btn-default" id="searchActionSelected" data-toggle="dropdown" aria-expanded="false"><%=actionDefault%> <span class='caret'></span></button>
-								<button type="button" style="height:32px;" class="btn btn-default" onclick="window.open('/search?keyword='+encodeURIComponent($('#keywordIpt').val())+'&action='+encodeURIComponent($('#searchAction0').text())+'&filter='+encodeURIComponent('未選擇濾鏡')+'&lbound=&ubound=&page=1','_self');"><span class="glyphicon glyphicon-search"></span></button>
-								<ul class="dropdown-menu" role="menu">
-									<li style="display:none"><a href="#" id="searchAction0"><%=actionDefault%></a></li>
-									<li><a href="#" onclick="$('#searchActionSelected').html('');$('#searchActionSelected').html($('#searchAction1').text());$('#searchAction0').html($('#searchActionSelected').text());$('#searchActionSelected').append(' <span class=\'caret\'><\/span>');return false;" id="searchAction1">最新</a></li>
-									<li><a href="#" onclick="$('#searchActionSelected').html('');$('#searchActionSelected').html($('#searchAction2').text());$('#searchAction0').html($('#searchActionSelected').text());$('#searchActionSelected').append(' <span class=\'caret\'><\/span>');return false;" id="searchAction2">最緊急</a></li>
-									<li><a href="#" onclick="$('#searchActionSelected').html('');$('#searchActionSelected').html($('#searchAction3').text());$('#searchAction0').html($('#searchActionSelected').text());$('#searchActionSelected').append(' <span class=\'caret\'><\/span>');return false;" id="searchAction3">最熱門</a></li>
-									<li><a href="#" onclick="$('#searchActionSelected').html('');$('#searchActionSelected').html($('#searchAction4').text());$('#searchAction0').html($('#searchActionSelected').text());$('#searchActionSelected').append(' <span class=\'caret\'><\/span>');return false;" id="searchAction4">金額最高</a></li>
-									<li><a href="#" onclick="$('#searchActionSelected').html('');$('#searchActionSelected').html($('#searchAction5').text());$('#searchAction0').html($('#searchActionSelected').text());$('#searchActionSelected').append(' <span class=\'caret\'><\/span>');return false;" id="searchAction5">利率最高</a></li>
-									<li><a href="#" onclick="$('#searchActionSelected').html('');$('#searchActionSelected').html($('#searchAction6').text());$('#searchAction0').html($('#searchActionSelected').text());$('#searchActionSelected').append(' <span class=\'caret\'><\/span>');return false;" id="searchAction6">期數最多</a></li>
-									<li><a href="#" onclick="$('#searchActionSelected').html('');$('#searchActionSelected').html($('#searchAction7').text());$('#searchAction0').html($('#searchActionSelected').text());$('#searchActionSelected').append(' <span class=\'caret\'><\/span>');return false;" id="searchAction7">信用等級最高</a></li>
-								</ul>
+								<div class="btn-group">
+									<button type="button" style="height:32px;" class="btn btn-default dropdown-toggle" data-toggle="dropdown" id="categorySelected">
+										<%=categoryDefault%> <span class="caret"></span>
+									</button>
+									<ul class="dropdown-menu">
+										<li style="display:none"><a href="#" id="category0"><%=categoryDefault%></a></li>
+										<li><a href="#" onclick="$('#categorySelected').html('');$('#categorySelected').html($('#category1').text());$('#category0').html($('#categorySelected').text());$('#categorySelected').append(' <span class=\'caret\'><\/span>'); return false;" id="category1">不分類</a></li>
+										<li><a href="#" onclick="$('#categorySelected').html('');$('#categorySelected').html($('#category2').text());$('#category0').html($('#categorySelected').text());$('#categorySelected').append(' <span class=\'caret\'><\/span>'); return false;" id="category2">一般</a></li>
+										<li><a href="#" onclick="$('#categorySelected').html('');$('#categorySelected').html($('#category3').text());$('#category0').html($('#categorySelected').text());$('#categorySelected').append(' <span class=\'caret\'><\/span>'); return false;" id="category3">教育</a></li>
+										<li><a href="#" onclick="$('#categorySelected').html('');$('#categorySelected').html($('#category4').text());$('#category0').html($('#categorySelected').text());$('#categorySelected').append(' <span class=\'caret\'><\/span>'); return false;" id="category4">婚禮</a></li>
+										<li><a href="#" onclick="$('#categorySelected').html('');$('#categorySelected').html($('#category5').text());$('#category0').html($('#categorySelected').text());$('#categorySelected').append(' <span class=\'caret\'><\/span>'); return false;" id="category5">旅行</a></li>
+									</ul>
+								</div>
+								<div class="btn-group">
+									<button type="button" style="height:32px;" class="btn btn-default" id="searchActionSelected" data-toggle="dropdown" aria-expanded="false"><%=actionDefault%> <span class='caret'></span></button>
+									<ul class="dropdown-menu" role="menu">
+										<li style="display:none"><a href="#" id="searchAction0"><%=actionDefault%></a></li>
+										<li><a href="#" onclick="$('#searchActionSelected').html('');$('#searchActionSelected').html($('#searchAction1').text());$('#searchAction0').html($('#searchActionSelected').text());$('#searchActionSelected').append(' <span class=\'caret\'><\/span>');return false;" id="searchAction1">最新</a></li>
+										<li><a href="#" onclick="$('#searchActionSelected').html('');$('#searchActionSelected').html($('#searchAction2').text());$('#searchAction0').html($('#searchActionSelected').text());$('#searchActionSelected').append(' <span class=\'caret\'><\/span>');return false;" id="searchAction2">最緊急</a></li>
+										<li><a href="#" onclick="$('#searchActionSelected').html('');$('#searchActionSelected').html($('#searchAction3').text());$('#searchAction0').html($('#searchActionSelected').text());$('#searchActionSelected').append(' <span class=\'caret\'><\/span>');return false;" id="searchAction3">最熱門</a></li>
+										<li><a href="#" onclick="$('#searchActionSelected').html('');$('#searchActionSelected').html($('#searchAction4').text());$('#searchAction0').html($('#searchActionSelected').text());$('#searchActionSelected').append(' <span class=\'caret\'><\/span>');return false;" id="searchAction4">金額最高</a></li>
+										<li><a href="#" onclick="$('#searchActionSelected').html('');$('#searchActionSelected').html($('#searchAction5').text());$('#searchAction0').html($('#searchActionSelected').text());$('#searchActionSelected').append(' <span class=\'caret\'><\/span>');return false;" id="searchAction5">利率最高</a></li>
+										<li><a href="#" onclick="$('#searchActionSelected').html('');$('#searchActionSelected').html($('#searchAction6').text());$('#searchAction0').html($('#searchActionSelected').text());$('#searchActionSelected').append(' <span class=\'caret\'><\/span>');return false;" id="searchAction6">期數最多</a></li>
+										<li><a href="#" onclick="$('#searchActionSelected').html('');$('#searchActionSelected').html($('#searchAction7').text());$('#searchAction0').html($('#searchActionSelected').text());$('#searchActionSelected').append(' <span class=\'caret\'><\/span>');return false;" id="searchAction7">信用等級最高</a></li>
+									</ul>
+								</div>
+								<button type="button" style="height:32px;" class="btn btn-default" onclick="window.open('/search?keyword='+encodeURIComponent($('#keywordIpt').val())+'&action='+encodeURIComponent($('#searchAction0').text())+'&category='+encodeURIComponent($('#category0').text())+'&filter='+encodeURIComponent('未選擇濾鏡')+'&lbound=&ubound=&page=1','_self');"><span class="glyphicon glyphicon-search"></span></button>	
 							</span>
 						</div> 
 					</div>

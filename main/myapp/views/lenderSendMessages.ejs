@@ -1,4 +1,4 @@
-<%- include('layout_header',{nav_cur:'lenderSendMessages',actionDefault:'最新',keywordDefault:''}); -%>
+<%- include('layout_header',{nav_cur:'lenderSendMessages',actionDefault:'最新',keywordDefault:'',categoryDefault:'不分類'}); -%>
 <div class="container">
 	<div class="row">
 		<div class="col-md-9">
@@ -28,6 +28,10 @@
 								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter3').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter3">金額最高</a></li>
 								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter4').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter4">期數最多</a></li>
 								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter5').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter5">信用等級最高</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter6').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter6">預計總利息最高</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter7').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter7">預計平均利息最高</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter8').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter8">預計平均本利和最高</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter9').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter9">預計利本比最高</a></li>
 							</ul>
 						</div>
 						<button type="button" style="height:40px;" class="btn btn-default" onclick="window.open('/lenderSendMessages?msgKeyword='+encodeURIComponent($('#msgKeywordIpt').val())+'&filter='+encodeURIComponent($('#filter0').text())+'&sorter='+encodeURIComponent($('#sorter0').text())+'&page=1','_self');">Go!</button>
@@ -58,167 +62,291 @@
 							</div>
 						</div>
 						<div class="tab-pane" id="tab2<%=i%>">
-							<table width="100%" height="250px">
-								<tr>
-									<td>
-										<div style="color:#337ab7;">
-											欲借出金額：
-										</div>
-									</td>
-								<tr>
-								<tr>
-									<td>
-										<div>
-											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].MoneyToLend%>元
-										</div>	
-									</td>
-								<tr>
-								<tr>
-									<td>
-										<div style="color:#337ab7;">
-											欲借出利率：
-										</div>
-									</td>
-								<tr>
-								<tr>
-									<td>
-										<div>
-											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].InterestRate*100%>%
-										</div>	
-									</td>
-								<tr>
-								<tr>
-									<td>
-										<div style="color:#337ab7;">
-											欲借出期數：
-										</div>
-									</td>
-								<tr>
-								<tr>
-									<td>
-										<div>
-											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].MonthPeriod%>個月
-										</div>	
-									</td>
-								<tr>
-								<tr>
-									<td>
-										<div style="color:#337ab7;">
-											對方信用等級：
-										</div>
-									</td>
-								<tr>
-								<tr>
-									<td>
-										<div>
-											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Level%>級
-										</div>	
-									</td>
-								<tr>
-							</table>
-						</div>
-						<% if(filterDefault=='已被同意'){%>
-							<div class="tab-pane" id="tab3<%=i%>">
-								<table width="100%" height="200px">
+							<div class="col-md-6">
+								<table width="100%" height="270px">
 									<tr>
 										<td>
 											<div style="color:#337ab7;">
-												對方未還本金：
+												欲借出金額：
 											</div>
 										</td>
 									<tr>
 									<tr>
 										<td>
 											<div>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].Principal%>元
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].MoneyToLend%>元
 											</div>	
 										</td>
 									<tr>
 									<tr>
 										<td>
 											<div style="color:#337ab7;">
-												對方已還本金：
+												欲借出利率：
 											</div>
 										</td>
 									<tr>
 									<tr>
 										<td>
 											<div>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].PrincipalReturnedCumulated%>元
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].InterestRate*100%>%
 											</div>	
 										</td>
 									<tr>
 									<tr>
 										<td>
 											<div style="color:#337ab7;">
-												利率：
+												欲借出期數：
 											</div>
 										</td>
 									<tr>
 									<tr>
 										<td>
 											<div>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].InterestRate*100%>%
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].MonthPeriod%>個月
 											</div>	
 										</td>
 									<tr>
 									<tr>
 										<td>
 											<div style="color:#337ab7;">
-												已得利息：
+												對方信用等級：
 											</div>
 										</td>
 									<tr>
 									<tr>
 										<td>
 											<div>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].InterestCumulated%>元
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Level%>級
+											</div>	
+										</td>
+									<tr>
+								</table>	
+							</div>
+							<div class="col-md-6">
+								<table width="100%" height="270px">	
+									<tr>
+										<td>
+											<div style="color:#337ab7;">
+												預計總利息：
+											</div>
+										</td>
+									<tr>
+									<tr>
+										<td>
+											<div>
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].InterestInFuture.toFixed(0)%>元
 											</div>	
 										</td>
 									<tr>
 									<tr>
 										<td>
 											<div style="color:#337ab7;">
-												剩下期數：
+												預計每期平均利息：
 											</div>
 										</td>
 									<tr>
 									<tr>
 										<td>
 											<div>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].MonthPeriod%>個月
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].InterestInFutureMonth.toFixed(0)%>元
 											</div>	
 										</td>
 									<tr>
 									<tr>
 										<td>
 											<div style="color:#337ab7;">
-												已過期數:
+												預計每期平均本利和：
 											</div>
 										</td>
 									<tr>
 									<tr>
 										<td>
 											<div>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].MonthPeriodHasPast%>個月
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].InterestInFutureMoneyMonth.toFixed(0)%>元
 											</div>	
 										</td>
 									<tr>
 									<tr>
 										<td>
 											<div style="color:#337ab7;">
-												成交日期:
+												預計總利息/最初本金比：
 											</div>
 										</td>
 									<tr>
 									<tr>
 										<td>
 											<div>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].Created.getFullYear()%>/<%=jsonMessage[i].Transaction[0].Created.getMonth()+1%>/<%=jsonMessage[i].Transaction[0].Created.getDate()%>
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].InterestInFutureDivMoney.toFixed(2)%>%
 											</div>	
 										</td>
 									<tr>
 								</table>
+							</div>
+						</div>
+						<% if(filterDefault=='已被同意'){%>
+							<div class="tab-pane" id="tab3<%=i%>">
+								<div class="col-md-6">
+									<table width="100%" height="270px">
+										<tr>
+											<td>
+												<div style="color:#337ab7;">
+													對方未還本金：
+												</div>
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].Principal%>元
+												</div>	
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div style="color:#337ab7;">
+													對方已還本金：
+												</div>
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].PrincipalReturnedCumulated%>元
+												</div>	
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div style="color:#337ab7;">
+													利率：
+												</div>
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].InterestRate*100%>%
+												</div>	
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div style="color:#337ab7;">
+													已得利息：
+												</div>
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].InterestCumulated%>元
+												</div>	
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div style="color:#337ab7;">
+													剩下期數：
+												</div>
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].MonthPeriod%>個月
+												</div>	
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div style="color:#337ab7;">
+													已過期數:
+												</div>
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].MonthPeriodHasPast%>個月
+												</div>	
+											</td>
+										<tr>
+									</table>
+								</div>
+								<div class="col-md-6">
+									<table width="100%" height="275px">
+										<tr>
+											<td>
+												<div style="color:#337ab7;">
+													成交日期:
+												</div>
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].Created.getFullYear()%>/<%=jsonMessage[i].Transaction[0].Created.getMonth()+1%>/<%=jsonMessage[i].Transaction[0].Created.getDate()%>
+												</div>	
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div style="color:#337ab7;">
+													預計尚可收取利息：
+												</div>
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].InterestInFuture.toFixed(0)%>元
+												</div>	
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div style="color:#337ab7;">
+													預計剩餘每期平均利息：
+												</div>
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].InterestInFutureMonth.toFixed(0)%>元
+												</div>	
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div style="color:#337ab7;">
+													預計剩餘每期平均本利和：
+												</div>
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].InterestInFutureMoneyMonth.toFixed(0)%>元
+												</div>	
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div style="color:#337ab7;">
+													預計尚可收取利息/目前本金比：
+												</div>
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].InterestInFutureDivMoney.toFixed(2)%>%
+												</div>	
+											</td>
+										<tr>
+									</table>
+								</div>
 							</div>
 						<%}%>
 					</div>

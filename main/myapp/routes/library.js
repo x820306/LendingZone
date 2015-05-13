@@ -652,6 +652,21 @@ exports.rejectMessage=function (ifRecursive,ctr,ctrTarget,returnSring,req,res,if
 	});
 }
 
+exports.interestInFutureCalculator=function (money,rate,month){
+	var interestInFuture=0;
+	var monthlyPaid=money/month;
+	for(k=0;k<month;k++){
+		if(money>0){
+			interestInFuture+=money*rate;
+			money-=monthlyPaid;
+			if(money<0){
+				money=0;
+			}
+		}
+	}
+	return interestInFuture;
+}
+
 function ensureAuthenticated(req, res, next) {
   if (req.isAuthenticated()) { return next(null); }
 	res.redirect('/message?content='+chineseEncodeToURI('請登入'));

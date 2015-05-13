@@ -1,4 +1,4 @@
-<%- include('layout_header',{nav_cur:'lenderTransactionRecord',actionDefault:'最新',keywordDefault:''}); -%>
+<%- include('layout_header',{nav_cur:'lenderTransactionRecord',actionDefault:'最新',keywordDefault:'',categoryDefault:'不分類'}); -%>
 <div class="container">
 	<div class="row">
 		<div class="col-md-9">
@@ -13,11 +13,15 @@
 						<ul class="dropdown-menu">
 							<li style="display:none"><a href="#" id="sorter0"><%=sorterDefault%></a></li>
 							<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter1').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter1">最新</a></li>
-							<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter2').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter2">獲利最多</a></li>
+							<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter2').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter2">已獲利最多</a></li>
 							<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter3').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter3">利率最高</a></li>
 							<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter4').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter4">金額最大</a></li>
 							<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter5').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter5">期數最多</a></li>
 							<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter6').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter6">信用等級最高</a></li>
+							<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter7').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter7">預計總利息最高</a></li>
+							<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter8').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter8">預計平均利息最高</a></li>
+							<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter9').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter9">預計平均本利和最高</a></li>
+							<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter10').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter10">預計利本比最高</a></li>
 						</ul>
 					</div>
 					<button type="button" style="height:40px;" class="btn btn-default" onclick="window.open('/lenderTransactionRecord?sorter='+encodeURIComponent($('#sorter0').text())+'&page=1','_self');">Go!</button>
@@ -27,14 +31,14 @@
 				<br>
 				<% if(totalResultNum!=0){ %>
 					<% for(var i=0; i<jsonTransaction.length; i++) { %>
-						<div style="height: 400px;" class="panel panel-default pd">
+						<div style="height: 335px;" class="panel panel-default pd">
 							<div class="panel-body">
 								<div style="font-size:25px;display:inline;">借給 </div>
 								<div style="font-size:25px;color:#0000D1;display:inline;"><%=jsonTransaction[i].Borrower.Username%></div>
 								<br>
 								<br>
-								<div>
-									<table width="100%" height="250px">
+								<div class="col-md-6">
+									<table width="100%" height="240px">
 										<tr>
 											<td>
 												<div style="color:#337ab7;">
@@ -119,10 +123,14 @@
 												</div>	
 											</td>
 										<tr>
+									</table>
+								</div>	
+								<div class="col-md-6">	
+									<table width="100%" height="240px">
 										<tr>
 											<td>
 												<div style="color:#337ab7;">
-													&nbsp;&nbsp;&nbsp;&nbsp;信用等級:
+													&nbsp;&nbsp;&nbsp;&nbsp;對方信用等級:
 												</div>
 											</td>
 										<tr>
@@ -147,12 +155,73 @@
 												</div>	
 											</td>
 										<tr>
+										<tr>
+											<td>
+												<div style="color:#337ab7;">
+													&nbsp;&nbsp;&nbsp;&nbsp;預計尚可收取利息：
+												</div>
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonTransaction[i].InterestInFuture.toFixed(0)%>元
+												</div>	
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div style="color:#337ab7;">
+													&nbsp;&nbsp;&nbsp;&nbsp;預計剩餘每期平均利息：
+												</div>
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonTransaction[i].InterestInFutureMonth.toFixed(0)%>元
+												</div>	
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div style="color:#337ab7;">
+													&nbsp;&nbsp;&nbsp;&nbsp;預計剩餘每期平均本利和：
+												</div>
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonTransaction[i].InterestInFutureMoneyMonth.toFixed(0)%>元
+												</div>	
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div style="color:#337ab7;">
+													&nbsp;&nbsp;&nbsp;&nbsp;預計尚可收取利息/目前本金比：
+												</div>
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonTransaction[i].InterestInFutureDivMoney.toFixed(2)%>%
+												</div>	
+											</td>
+										<tr>
 									</table>
 								</div>
 							</div>
 						</div>
 					<table width="100%">
 					<tr>
+						<td>
+							<div style="color:#337ab7;">
+								&nbsp;&nbsp;<a href="/lenderReturnRecord?id=<%=jsonTransaction[i]._id%>&sorter=<%=encodeURIComponent("最新")%>&page=1">該筆交易收款記錄<a>
+							</div>
+						</td>
 						<td align="right">
 							<div style="color:#337ab7;">
 								Updated：<%=jsonTransaction[i].Updated.getFullYear()%>/<%=jsonTransaction[i].Updated.getMonth()+1%>/<%=jsonTransaction[i].Updated.getDate()%>
