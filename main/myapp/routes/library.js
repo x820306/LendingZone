@@ -213,7 +213,7 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																var rate=(parseFloat(sanitizer.sanitize(req.body.InterestRate))/100)+exports.serviceChargeRate;//scr
 																var month=parseInt(sanitizer.sanitize(req.body.MonthPeriod));
 																
-																if((req.body.MoneyToLend=='')||(req.body.InterestRate=='')||(req.body.MonthPeriod=='')){
+																if((sanitizer.sanitize(req.body.MoneyToLend)=='')||(sanitizer.sanitize(req.body.InterestRate)=='')||(sanitizer.sanitize(req.body.MonthPeriod)=='')){
 																	returnSring='必要參數未填!';
 																}else if((month<=0)||(nowMoney<=0)||(rate<=(0+exports.serviceChargeRate))||(rate>=(1+exports.serviceChargeRate))){
 																	returnSring='錯誤參數!';

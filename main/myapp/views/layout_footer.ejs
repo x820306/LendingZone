@@ -13,7 +13,7 @@
 						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 						<h4 class="modal-title" id="myModalLabel">登入面板</h4>
 					</div>
-					<form action="/login" method="post">
+					<form action="/login" method="post" id="loginForm">
 						<div class="modal-body">
 							<div class="input-group">
 									<input type="text" class="form-control" name="Username" id="usernameID" placeholder="帳號">
@@ -27,6 +27,8 @@
 							<div class="checkbox" align = "left">
 								<label>
 									<input type="checkbox" name="remember" id="rememberID"> 記住我
+									&nbsp;&nbsp;
+									<a href="#" onclick="forget();return false;">忘記密碼</a>
 								</label>
 							</div>
 							<div class="btn-toolbar" role="toolbar">
@@ -101,6 +103,33 @@
 	}
 	
 	<% if(!userName){ %>
+		var forgettingFlag=false;
+		function forget(){
+			if(forgettingFlag){
+				alert('正在處理中，請稍候');
+			}else{
+				if($("#usernameID").val()==''){
+					alert('請輸入帳號供查詢');
+				}else{
+					forgettingFlag=true;
+					$.ajax({ 
+							url: '/Users/forgetPW',
+							type: 'POST',
+							data:{Username:$('#usernameID').val()},
+							dataType: 'json',
+							success: function(Jdata) {
+								forgettingFlag=false;
+								alert(Jdata.response);
+							},
+							error: function() {
+								forgettingFlag=false;
+								alert('發生錯誤');
+							}
+					});	
+				}
+			}
+		}
+		
 		function save() {
 			if($("#rememberID").prop("checked")) {
 				var str_username = $("#usernameID").val();

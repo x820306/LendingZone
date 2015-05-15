@@ -1205,10 +1205,10 @@ function ensureAuthenticated(req, res, next) {
 	res.redirect('/message?content='+chineseEncodeToURI('請登入'));
 }
 
+//add after ensureAuthenticated to confirm ifAdmin
 function ensureAdmin(req, res, next) {
-  var admimID="admimID";
-  
-  if(req.user._id==admimID){ return next(null); }
+  var objID=mongoose.Types.ObjectId('5555251bb08002f0068fd00f');//管理員ID
+  if(req.user._id==objID){ return next(null); }
 	res.redirect('/message?content='+chineseEncodeToURI('請以管理員身分登入'));
 }
 

@@ -71,7 +71,7 @@ function toLendSamePart(res,req,differentPart,outterPara){
 							var rate=(parseFloat(sanitizer.sanitize(req.body.InterestRate))/100)+library.serviceChargeRate;//scr
 							var month=parseInt(sanitizer.sanitize(req.body.MonthPeriod));
 							
-							if((req.body.MoneyToLend=='')||(req.body.InterestRate=='')||(req.body.MonthPeriod=='')){
+							if((sanitizer.sanitize(req.body.MoneyToLend)=='')||(sanitizer.sanitize(req.body.InterestRate)=='')||(sanitizer.sanitize(req.body.MonthPeriod)=='')){
 								res.redirect('/message?content='+chineseEncodeToURI('必要參數未填!'));
 							}else if((month<=0)||(nowMoney<=0)||(rate<=(0+library.serviceChargeRate))||(rate>=(1+library.serviceChargeRate))){
 								res.redirect('/message?content='+chineseEncodeToURI('錯誤參數!'));//scr
