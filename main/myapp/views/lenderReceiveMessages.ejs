@@ -54,31 +54,96 @@
 					<% if(filterDefault=='未確認'){%>
 						<br>
 						<br>
-						<table width="100%">
-							<tr>
-								<td>
-									<input type="checkbox" id="selectAll" onclick="selectAllFun();"> 全選&nbsp;&nbsp;&nbsp;&nbsp;
-									<button class="btn btn-default" id="confirmBtn" onclick="confirm();">
-										<span style="color:#337ab7;">同意</span>
-									</button>
-									<button class="btn btn-default" id="rejectBtn" onclick="reject();">
-										<span style="color:#337ab7;">婉拒</span>
-									</button>
-								</td>
-								<td align="right">
-									<a href="/Messages/confirmToBorrowMessageInLRMall?sorter=<%=encodeURIComponent(sorterDefault)%>" id="cAll">
-										<button class="btn btn-default" id="confirmAllBtn" onclick="confirmAll();">
-											<span style="color:#337ab7;">同意所有收到請求</span>
-										</button>
-									</a>
-									<a href="/Messages/rejectToBorrowMessageInLRMall?sorter=<%=encodeURIComponent(sorterDefault)%>" id="rAll">
-										<button class="btn btn-default" id="rejectAllBtn" onclick="rejectAll();">
-											<span style="color:#337ab7;">婉拒所有收到請求</span>
-										</button>
-									</a>
-								</td>
-							<tr>
+						<table style="display:inline;" class="table">
+							<thead>
+								<tr>
+									<th>
+									全部合計借出金額
+									</th>
+									<th>
+									全部合計總利息
+									</th>
+									<th>
+									全部合計平均利息
+									</th>
+									<th>
+									全部合計平均本利和
+									</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>
+									<div style="display:inline;" id="value1All"><%=value1AllDefault.toFixed(0)%></div><div style="display:inline;">元</div>
+									</td>
+									<td>
+									<div style="display:inline;" id="value2All"><%=value2AllDefault.toFixed(0)%></div><div style="display:inline;">元</div>
+									</td>
+									<td>
+									<div style="display:inline;" id="value3All"><%=value3AllDefault.toFixed(0)%></div><div style="display:inline;">元</div>
+									</td>
+									<td>
+									<div style="display:inline;" id="value4All"><%=value4AllDefault.toFixed(0)%></div><div style="display:inline;">元</div>
+									</td>
+								</tr>
+							</body>
 						</table>
+						<br>
+						<a href="/Messages/confirmToBorrowMessageInLRMall?sorter=<%=encodeURIComponent(sorterDefault)%>" id="cAll">
+							<button class="btn btn-default" id="confirmAllBtn" onclick="confirmAll();">
+								<span style="color:#337ab7;">同意全部收到之請求</span>
+							</button>
+						</a>
+						<a href="/Messages/rejectToBorrowMessageInLRMall?sorter=<%=encodeURIComponent(sorterDefault)%>" id="rAll">
+							<button class="btn btn-default" id="rejectAllBtn" onclick="rejectAll();">
+								<span style="color:#337ab7;">婉拒全部收到之請求</span>
+							</button>
+						</a>
+						<br>
+						<br>
+						<table style="display:inline;" class="table">
+							<thead>
+								<tr>
+									<th>
+									已選合計借出金額
+									</th>
+									<th>
+									已選合計總利息
+									</th>
+									<th>
+									已選合計平均利息
+									</th>
+									<th>
+									已選合計平均本利和
+									</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>
+										<div style="display:inline;" id="value1">0</div><div style="display:inline;">元</div>
+									</td>
+									<td>
+										<div style="display:inline;" id="value2">0</div><div style="display:inline;">元</div>
+									</td>
+									<td>
+										<div style="display:inline;" id="value3">0</div><div style="display:inline;">元</div>
+									</td>
+									<td>
+										<div style="display:inline;" id="value4">0</div><div style="display:inline;">元</div>
+									</td>
+								</tr>
+							</body>
+						</table>
+						<br>
+						<input type="checkbox" id="selectAll" onclick="selectAllFun();"> 全選&nbsp;&nbsp;&nbsp;&nbsp;
+						<button class="btn btn-default" id="confirmBtn" onclick="confirm();">
+							<span style="color:#337ab7;">同意</span>
+						</button>
+						<button class="btn btn-default" id="rejectBtn" onclick="reject();">
+							<span style="color:#337ab7;">婉拒</span>
+						</button>
+						<br>
 						<br>
 						<br>
 					<% }else{%>
@@ -121,7 +186,7 @@
 									<tr>
 										<td>
 											<div>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].MoneyToLend%>元
+												&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;" id="value1<%=i%>"><%=jsonMessage[i].MoneyToLend.toFixed(0)%></div>元
 											</div>	
 										</td>
 									<tr>
@@ -135,7 +200,7 @@
 									<tr>
 										<td>
 											<div>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].InterestRate*100%>%
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=(jsonMessage[i].InterestRate*100).toFixed(2)%>%
 											</div>	
 										</td>
 									<tr>
@@ -149,7 +214,7 @@
 									<tr>
 										<td>
 											<div>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].MonthPeriod%>個月
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].MonthPeriod.toFixed(0)%>個月
 											</div>	
 										</td>
 									<tr>
@@ -163,7 +228,7 @@
 									<tr>
 										<td>
 											<div>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Level%>級
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Level.toFixed(0)%>級
 											</div>	
 										</td>
 									<tr>
@@ -181,7 +246,7 @@
 									<tr>
 										<td>
 											<div>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].InterestInFuture.toFixed(0)%>元
+												&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;" id="value2<%=i%>"><%=jsonMessage[i].InterestInFuture.toFixed(0)%></div>元
 											</div>	
 										</td>
 									<tr>
@@ -195,7 +260,7 @@
 									<tr>
 										<td>
 											<div>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].InterestInFutureMonth.toFixed(0)%>元
+												&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;" id="value3<%=i%>"><%=jsonMessage[i].InterestInFutureMonth.toFixed(0)%></div>元
 											</div>	
 										</td>
 									<tr>
@@ -209,7 +274,7 @@
 									<tr>
 										<td>
 											<div>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].InterestInFutureMoneyMonth.toFixed(0)%>元
+												&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;" id="value4<%=i%>"><%=jsonMessage[i].InterestInFutureMoneyMonth.toFixed(0)%></div>元
 											</div>	
 										</td>
 									<tr>
@@ -244,7 +309,7 @@
 										<tr>
 											<td>
 												<div>
-													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].Principal%>元
+													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].Principal.toFixed(0)%>元
 												</div>	
 											</td>
 										<tr>
@@ -258,7 +323,7 @@
 										<tr>
 											<td>
 												<div>
-													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].PrincipalReturnedCumulated%>元
+													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].PrincipalReturnedCumulated.toFixed(0)%>元
 												</div>	
 											</td>
 										<tr>
@@ -272,7 +337,7 @@
 										<tr>
 											<td>
 												<div>
-													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].InterestRate*100%>%
+													&nbsp;&nbsp;&nbsp;&nbsp;<%=(jsonMessage[i].Transaction[0].InterestRate*100).toFixed(2)%>%
 												</div>	
 											</td>
 										<tr>
@@ -286,7 +351,7 @@
 										<tr>
 											<td>
 												<div>
-													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].InterestCumulated%>元
+													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].InterestCumulated.toFixed(0)%>元
 												</div>	
 											</td>
 										<tr>
@@ -300,7 +365,7 @@
 										<tr>
 											<td>
 												<div>
-													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].MonthPeriod%>個月
+													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].MonthPeriod.toFixed(0)%>個月
 												</div>	
 											</td>
 										<tr>
@@ -314,7 +379,7 @@
 										<tr>
 											<td>
 												<div>
-													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].MonthPeriodHasPast%>個月
+													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].MonthPeriodHasPast.toFixed(0)%>個月
 												</div>	
 											</td>
 										<tr>
@@ -392,6 +457,34 @@
 												</div>	
 											</td>
 										<tr>
+										<tr>
+											<td>
+												<div style="color:#337ab7;">
+													保險所需費用：
+												</div>
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;<%=(jsonMessage[i].Transaction[0].Principal*insuranceRate).toFixed(0)%>元
+												</div>	
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div style="color:#337ab7;">
+													已付保險費用：
+												</div>
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].InsuranceFeePaid.toFixed(0)%>元
+												</div>	
+											</td>
+										<tr>
 									</table>
 								</div>	
 							</div>
@@ -401,7 +494,7 @@
 						<tr>
 							<%if(filterDefault=='未確認'){%>
 								<td>
-									<input type="checkbox" name="selectCheckBox" value='{"FromBorrowRequest":"<%=jsonMessage[i].FromBorrowRequest._id%>","MessageID":"<%=jsonMessage[i]._id%>"}'> 選擇
+									<input type="checkbox" name="selectCheckBox" id="selectCheckBoxId<%=i%>" onclick="selectFun(<%=i%>);" value='{"FromBorrowRequest":"<%=jsonMessage[i].FromBorrowRequest._id%>","MessageID":"<%=jsonMessage[i]._id%>"}'> 選擇
 								</td>
 							<%}%>
 							<td align="right">
@@ -500,10 +593,60 @@ function selectAllFun(){
 		$("input[name='selectCheckBox']").each(function() {
 			$(this).prop("checked", true);
 		});
+		var value1=0;
+		var value2=0;
+		var value3=0;
+		var value4=0;
+		for(i=0;i<<%=jsonMessage.length%>;i++){
+			value1+=parseInt($("#value1"+i).text());
+			value2+=parseInt($("#value2"+i).text());
+			value3+=parseInt($("#value3"+i).text());
+			value4+=parseInt($("#value4"+i).text());
+		}
+		$("#value1").text(value1.toFixed(0));
+		$("#value2").text(value2.toFixed(0));
+		$("#value3").text(value3.toFixed(0));
+		$("#value4").text(value4.toFixed(0));
 	}else{
 		$("input[name='selectCheckBox']").each(function() {
 			$(this).prop("checked", false);
-		});           
+		});
+		$("#value1").text(0);
+		$("#value2").text(0);
+		$("#value3").text(0);
+		$("#value4").text(0);		
+	}
+}
+
+function selectFun(index){
+	var value1=parseInt($("#value1").text());
+	var fee1=parseInt($("#value1"+index).text());
+	var value2=parseInt($("#value2").text());
+	var fee2=parseInt($("#value2"+index).text());
+	var value3=parseInt($("#value3").text());
+	var fee3=parseInt($("#value3"+index).text());
+	var value4=parseInt($("#value4").text());
+	var fee4=parseInt($("#value4"+index).text());
+	
+	if($("#selectCheckBoxId"+index).prop("checked"))
+	{
+		value1+=fee1;
+		value2+=fee2;
+		value3+=fee3;
+		value4+=fee4;
+		$("#value1").text(value1.toFixed(0));
+		$("#value2").text(value1.toFixed(0));
+		$("#value3").text(value1.toFixed(0));
+		$("#value4").text(value1.toFixed(0));
+	}else{
+		value1-=fee1;
+		value2-=fee2;
+		value3-=fee3;
+		value4-=fee4;
+		$("#value1").text(value1.toFixed(0));
+		$("#value2").text(value1.toFixed(0));
+		$("#value3").text(value1.toFixed(0));
+		$("#value4").text(value1.toFixed(0));		
 	}
 }
 
@@ -530,19 +673,19 @@ function disableButton(){
 		$('#confirmBtn').attr('class',orig);
 	}
 	
-	var orig=$('#rejectBtn').attr('class');
+	orig=$('#rejectBtn').attr('class');
 	if(orig.search(' disabled')<0){
 		orig=orig+' disabled';
 		$(rejectBtn).attr('class',orig);
 	}
 	
-	var orig=$('#confirmAllBtn').attr('class');
+	orig=$('#confirmAllBtn').attr('class');
 	if(orig.search(' disabled')<0){
 		orig=orig+' disabled';
 		$('#confirmAllBtn').attr('class',orig);
 	}
 
-	var orig=$('#rejectAllBtn').attr('class');
+	orig=$('#rejectAllBtn').attr('class');
 	if(orig.search(' disabled')<0){
 		orig=orig+' disabled';
 		$('#rejectAllBtn').attr('class',orig);
@@ -581,4 +724,4 @@ function samepart(toDO){
 }
 <%}%>
 </script>
-<%- include('layout_footer'); -%>
+<%- include('layout_footer',{imgSettingCode:"var ifLoadedCount=0;",imgDrawingCode:""}); -%>

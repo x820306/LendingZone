@@ -23,7 +23,7 @@
 			<div class="container-fluid">
 				<!-- Brand and toggle get grouped for better mobile display -->
 				<div class="navbar-header">
-					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" onclick="setTimeout(doneResizing, 500);">
 						<span class="sr-only">Toggle navigation</span>
 						<span class="icon-bar"></span>
 						<span class="icon-bar"></span>
@@ -45,7 +45,7 @@
 							<ul class="dropdown-menu" role="menu">
 								<li <% if(nav_cur=='lend'){ %> class="active"<% } %>><% if(!userName){ %><a href="#" data-toggle="modal" data-target="#myModal"><% }else{ %><a href="/lend"><%}%>自動借出設定</a></li>
 								<li <% if(nav_cur=='income'){ %> class="active"<% } %>><% if(!userName){ %><a href="#" data-toggle="modal" data-target="#myModal"><% }else{ %><a href="/income"><%}%>收入分析</a></li>
-								<li <% if(nav_cur=='lenderTransactionRecord'){ %> class="active"<% } %>><% if(!userName){ %><a href="#" data-toggle="modal" data-target="#myModal"><% }else{ %><a href="/lenderTransactionRecord?sorter=<%=encodeURIComponent("最新")%>&page=1"><%}%>借出紀錄</a></li>
+								<li <% if(nav_cur=='lenderTransactionRecord'){ %> class="active"<% } %>><% if(!userName){ %><a href="#" data-toggle="modal" data-target="#myModal"><% }else{ %><a href="/lenderTransactionRecord?filter=<%=encodeURIComponent("未保險")%>&sorter=<%=encodeURIComponent("最新")%>&page=1"><%}%>借出紀錄</a></li>
 								<li <% if(nav_cur=='lenderReturnRecord'){ %> class="active"<% } %>><% if(!userName){ %><a href="#" data-toggle="modal" data-target="#myModal"><% }else{ %><a href="/lenderReturnRecord?id=&sorter=<%=encodeURIComponent("最新")%>&page=1"><%}%>收款記錄</a></li>
 								<li class="divider"></li>
 								<li <% if(nav_cur=='lenderReceiveMessages'){ %> class="active"<% } %>><% if(!userName){ %><a href="#" data-toggle="modal" data-target="#myModal"><% }else{ %><a href="/lenderReceiveMessages?msgKeyword=&filter=<%=encodeURIComponent("未確認")%>&sorter=<%=encodeURIComponent("利率最高")%>&page=1"><%}%>收到之欲借入訊息</a></li>
@@ -88,6 +88,7 @@
 						</div> 
 					</div>
 					<ul class="nav navbar-nav navbar-right">
+						<li><a href="#" onclick="if(ifLoadedCount<=0){if(!ifDrawed){doneResizing();}$('#introCanvas').attr('style',$('#introCanvas').attr('style').replace(/display:none;/g, ''));}else{alert('請等候圖片載入完畢');}return false;">引導</a></li>
 						<% if(!userName){ %>
 							<li><a href="#" data-toggle="modal" data-target="#myModal">登入</a></li>
 							<li

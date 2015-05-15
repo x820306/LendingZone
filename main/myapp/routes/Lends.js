@@ -37,14 +37,18 @@ function samePart(res,req,differentPart,outterPara){
 			}else{
 				var maxMoney=parseInt(bankaccount.MoneyInBankAccount);
 				var nowMoney=parseInt(sanitizer.sanitize(req.body.MaxMoneyToLend));
-				var rate=parseFloat(sanitizer.sanitize(req.body.InterestRate))/100;
+				var rate=(parseFloat(sanitizer.sanitize(req.body.InterestRate))/100)+library.serviceChargeRate;//scr;
 				var month=parseInt(sanitizer.sanitize(req.body.MonthPeriod));
 				var level=parseInt(sanitizer.sanitize(req.body.MinLevelAccepted));
+				var MinInterestInFuture=parseFloat(sanitizer.sanitize(req.body.MinInterestInFuture));
+				var MinInterestInFutureMonth=parseFloat(sanitizer.sanitize(req.body.MinInterestInFutureMonth));
+				var MinInterestInFutureMoneyMonth=parseFloat(sanitizer.sanitize(req.body.MinInterestInFutureMoneyMonth));
+				var MinInterestInFutureDivMoney=parseFloat(sanitizer.sanitize(req.body.MinInterestInFutureDivMoney))/100;
 				
-				if((req.body.MaxMoneyToLend=='')||(req.body.InterestRate=='')||(req.body.MonthPeriod=='')||(req.body.MinLevelAccepted=='')){
+				if((req.body.MaxMoneyToLend=='')||(req.body.InterestRate=='')||(req.body.MonthPeriod=='')){
 					res.redirect('/message?content='+chineseEncodeToURI('必要參數未填!'));
-				}else if((month<=0)||(nowMoney<=0)||(level<0)||(rate<=0)||(rate>=1)){
-					res.redirect('/message?content='+chineseEncodeToURI('錯誤參數!'));
+				}else if((month<=0)||(nowMoney<=0)||(level<0)||(MinInterestInFuture<0)||(MinInterestInFutureMonth<0)||(MinInterestInFutureMoneyMonth<0)||(rate<=(0+library.serviceChargeRate))||(rate>=(1+library.serviceChargeRate))||(MinInterestInFutureDivMoney<=0)||(MinInterestInFutureDivMoney>=1)){
+					res.redirect('/message?content='+chineseEncodeToURI('錯誤參數!'));//scr
 				}else if(nowMoney>maxMoney){
 					res.redirect('/message?content='+chineseEncodeToURI('超過金額上限!'));
 				}else{
@@ -57,10 +61,25 @@ function samePart(res,req,differentPart,outterPara){
 
 function createPart(res,req,outterPara){
 	var toCreate = new Lends();
-	toCreate.MaxMoneyToLend=sanitizer.sanitize(req.body.MaxMoneyToLend);
-	toCreate.InterestRate=parseFloat(sanitizer.sanitize(req.body.InterestRate))/100;
-	toCreate.MonthPeriod=sanitizer.sanitize(req.body.MonthPeriod);
-	toCreate.MinLevelAccepted=sanitizer.sanitize(req.body.MinLevelAccepted);
+	toCreate.MaxMoneyToLend=parseInt(sanitizer.sanitize(req.body.MaxMoneyToLend));
+	toCreate.InterestRate=(parseFloat(sanitizer.sanitize(req.body.InterestRate))/100)+library.serviceChargeRate;//scr
+	toCreate.MonthPeriod=parseInt(sanitizer.sanitize(req.body.MonthPeriod));
+	if(req.body.MinLevelAccepted!=''){
+		toCreate.MinLevelAccepted=parseInt(sanitizer.sanitize(req.body.MinLevelAccepted));
+	}
+	if(req.body.MinInterestInFuture!=''){
+		toCreate.MinInterestInFuture=parseFloat(sanitizer.sanitize(req.body.MinInterestInFuture));
+	}
+	if(req.body.MinInterestInFutureMonth!=''){
+		toCreate.MinInterestInFutureMonth=parseFloat(sanitizer.sanitize(req.body.MinInterestInFutureMonth));
+	}
+	if(req.body.MinInterestInFutureMoneyMonth!=''){
+		toCreate.MinInterestInFutureMoneyMonth=parseFloat(sanitizer.sanitize(req.body.MinInterestInFutureMoneyMonth));
+	}
+	if(req.body.MinInterestInFutureDivMoney!=''){
+		toCreate.MinInterestInFutureDivMoney=parseFloat(sanitizer.sanitize(req.body.MinInterestInFutureDivMoney))/100;
+	}
+	
 	toCreate.AutoComfirmToBorrowMsgPeriod=sanitizer.sanitize(req.body.AutoComfirmToBorrowMsgPeriod);
 	if(!req.body.AutoComfirmToBorrowMsgSorter){
 		toCreate.AutoComfirmToBorrowMsgSorter="invalid";
@@ -84,10 +103,25 @@ function createPart(res,req,outterPara){
 }
 
 function updatePart(res,req,lend){
-	lend.MaxMoneyToLend=sanitizer.sanitize(req.body.MaxMoneyToLend);
-	lend.InterestRate=parseFloat(sanitizer.sanitize(req.body.InterestRate))/100;
-	lend.MonthPeriod=sanitizer.sanitize(req.body.MonthPeriod);
-	lend.MinLevelAccepted=sanitizer.sanitize(req.body.MinLevelAccepted);
+	lend.MaxMoneyToLend=parseInt(sanitizer.sanitize(req.body.MaxMoneyToLend));
+	lend.InterestRate=(parseFloat(sanitizer.sanitize(req.body.InterestRate))/100)+library.serviceChargeRate;//scr
+	lend.MonthPeriod=parseInt(sanitizer.sanitize(req.body.MonthPeriod));
+	if(req.body.MinLevelAccepted!=''){
+		lend.MinLevelAccepted=parseInt(sanitizer.sanitize(req.body.MinLevelAccepted));
+	}
+	if(req.body.MinInterestInFuture!=''){
+		lend.MinInterestInFuture=parseFloat(sanitizer.sanitize(req.body.MinInterestInFuture));
+	}
+	if(req.body.MinInterestInFutureMonth!=''){
+		lend.MinInterestInFutureMonth=parseFloat(sanitizer.sanitize(req.body.MinInterestInFutureMonth));
+	}
+	if(req.body.MinInterestInFutureMoneyMonth!=''){
+		lend.MinInterestInFutureMoneyMonth=parseFloat(sanitizer.sanitize(req.body.MinInterestInFutureMoneyMonth));
+	}
+	if(req.body.MinInterestInFutureDivMoney!=''){
+		lend.MinInterestInFutureDivMoney=parseFloat(sanitizer.sanitize(req.body.MinInterestInFutureDivMoney))/100;
+	}
+	
 	lend.AutoComfirmToBorrowMsgPeriod=sanitizer.sanitize(req.body.AutoComfirmToBorrowMsgPeriod);
 	if(!req.body.AutoComfirmToBorrowMsgSorter){
 		lend.AutoComfirmToBorrowMsgSorter="invalid";
@@ -142,6 +176,7 @@ function autoConfirm(req,res,sorter,lendID){
 							if(messages.length>0){
 								if((sorterReserve=='-SpecialA')||(sorterReserve=='-SpecialB')||(sorterReserve=='-SpecialC')||(sorterReserve=='-SpecialD')){
 									for(i=0;i<messages.length;i++){
+										messages[i].InterestRate-=library.serviceChargeRate;//scr
 										messages[i].InterestInFuture=library.interestInFutureCalculator(messages[i].MoneyToLend,messages[i].InterestRate,messages[i].MonthPeriod);
 										messages[i].InterestInFutureDivMoney=messages[i].InterestInFuture/messages[i].MoneyToLend;
 										messages[i].InterestInFutureMonth=messages[i].InterestInFuture/messages[i].MonthPeriod;

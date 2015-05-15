@@ -2,19 +2,27 @@
 <div class="jumbotron" style="background: #b9c8cd;text-align:center;">
     <div class="container">
 		<br>
-        <div style="font-size: 60px;font-family: 'Arvo', serif;">LENDING ZONE</div>
+        <div id="intro1" style="font-size: 60px;font-family: 'Arvo', serif;">LENDING ZONE</div>
         <br>
         <br>
-        <div style="font-size: 30px;">
+        <div id="intro2" style="font-size: 30px;">
             We Are An Entrance Leading You <br>
             Into The P2P Lending and Borrowing World!<br>
         </div>
         <br>
-        <div style="font-size: 30px;">
+        <div id="intro3" style="font-size: 30px;">
             Fast, Covenient, and Safe!<br>  
          </div>
 		 <br>
 		 <br>
     </div><!-- /.container -->
 </div><!-- /.jumbotron -->
-<%- include('layout_footer'); -%>
+<%- include('layout_footer',{imgSettingCode:"var ifLoadedCount=2;img1 = new Image;img1.onload = function(){ifLoadedCount-=1;};img1.src='/images/camera.png';img2 = new Image;img2.onload = function(){ifLoadedCount-=1;};img2.src='/images/like.png';",imgDrawingCode:"var offset1 = $('#intro1').offset();ctx.drawImage(img1,offset1.left,offset1.top,100,100);var offset2 = $('#intro3').offset();ctx.drawImage(img2,offset2.left,offset2.top,100,100);"}); -%>
+
+
+
+
+
+
+
+

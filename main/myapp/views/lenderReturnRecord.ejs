@@ -174,7 +174,7 @@
 										<tr>
 											<td>
 												<div>
-													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].Level%>級
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].Level.toFixed(0)%>級
 												</div>	
 											</td>
 										<tr>
@@ -282,4 +282,4 @@
 		</div>
 	</div>
 </div>
-<%- include('layout_footer'); -%>
+<%- include('layout_footer',{imgSettingCode:"var ifLoadedCount=0;",imgDrawingCode:""}); -%>

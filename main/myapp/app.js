@@ -179,8 +179,8 @@ app.get('/search/:keyword?/:action?/:page?', function (req, res) {
 	var uboundRec=null;
 	if(filterRec){
 		if(filterRec=="MaxInterestRateAccepted"){
-			lboundRec=parseFloat(lbound)/100;
-			uboundRec=parseFloat(ubound)/100;
+			lboundRec=(parseFloat(lbound)/100)+library.serviceChargeRate;//scr
+			uboundRec=(parseFloat(ubound)/100)+library.serviceChargeRate;//scr
 		}else{
 			lboundRec=parseInt(lbound);
 			uboundRec=parseInt(ubound);
@@ -213,13 +213,17 @@ app.get('/search/:keyword?/:action?/:page?', function (req, res) {
 			res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
 		}else{
 			totalResultNumber=borrows.length;
-			if(totalResultNumber==0){
+			if(totalResultNumber<=0){
 				if(targetPage>1){
 					res.redirect('/message?content='+chineseEncodeToURI('錯誤頁碼!'));
 				}else{
 					res.render('search',{userName:auRst,keywordDefault:keyword,actionDefault:action,categoryDefault:category,filterDefault:filter,lboundDefault:lbound,uboundDefault:ubound,jsonArray:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage});
 				}
 			}else{
+				for(i=0;i<totalResultNumber;i++){
+					borrows[i].MaxInterestRateAccepted-=library.serviceChargeRate;//scr
+				}
+				
 				var divider=2;
 				pageNum=Math.ceil(borrows.length/divider);
 				
@@ -262,6 +266,7 @@ app.get('/story/:id?', function (req, res) {
 			if(!borrow){
 				res.redirect('/message?content='+chineseEncodeToURI('錯誤ID!'));
 			}else{
+				borrow.MaxInterestRateAccepted-=library.serviceChargeRate;//scr
 				Discussions.find({"BelongTo": req.query.id}).populate('CreatedBy', 'Username').exec(function (err, discussions){
 					if (err) {
 						console.log(err);
@@ -307,6 +312,7 @@ app.get('/story/:id?', function (req, res) {
 															res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
 														}else{
 															if(message){
+																message.InterestRate-=library.serviceChargeRate;//scr
 																message.InterestInFuture=library.interestInFutureCalculator(message.MoneyToLend,message.InterestRate,message.MonthPeriod);
 																message.InterestInFutureDivMoney=message.InterestInFuture/message.MoneyToLend*100;
 																message.InterestInFutureMonth=message.InterestInFuture/message.MonthPeriod;
@@ -318,6 +324,7 @@ app.get('/story/:id?', function (req, res) {
 																	res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
 																}else{
 																	if(borrowMessage){
+																		borrowMessage.InterestRate-=library.serviceChargeRate;//scr
 																		borrowMessage.InterestInFuture=library.interestInFutureCalculator(borrowMessage.MoneyToLend,borrowMessage.InterestRate,borrowMessage.MonthPeriod);
 																		borrowMessage.InterestInFutureDivMoney=borrowMessage.InterestInFuture/borrowMessage.MoneyToLend*100;
 																		borrowMessage.InterestInFutureMonth=borrowMessage.InterestInFuture/borrowMessage.MonthPeriod;
@@ -370,6 +377,9 @@ app.get('/lend', ensureAuthenticated, function (req, res) {
 								console.log(err);
 								res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
 							}else{
+								if(lend){
+									lend.InterestRate-=library.serviceChargeRate;//scr
+								}
 								res.render('lend',{userName:req.user.Username,MoneyInBankAccountValue:bankaccount.MoneyInBankAccount,MoneyLended:moneyLendedCumulated,jsonLend:lend});
 							}
 						});
@@ -380,12 +390,14 @@ app.get('/lend', ensureAuthenticated, function (req, res) {
 	});
 });
 
-app.get('/lenderTransactionRecord/:sorter?/:page?', ensureAuthenticated, function (req, res) {
+app.get('/lenderTransactionRecord/:filter?/:sorter?/:page?', ensureAuthenticated, function (req, res) {
 	var resArrays=[];
 	var sorter=decodeURIComponent(req.query.sorter);
+	var filter=decodeURIComponent(req.query.filter);
 	var targetPage=parseInt(req.query.page);
 	var pageNum=0
 	var totalResultNumber;
+	var selectedFeeAllIpt=0;
 	
 	var sorterRec;
 	
@@ -409,10 +421,23 @@ app.get('/lenderTransactionRecord/:sorter?/:page?', ensureAuthenticated, functio
 		sorterRec="-Updated";
 	}else if(sorter=='預計利本比最高'){
 		sorterRec="-Updated";
+	}else if(sorter=='已付保險費最高'){
+		sorterRec="-InsuranceFeePaid";
+	}
+	
+	var andFindCmdAry=[];
+	andFindCmdAry.push({"Lender": req.user._id});
+	var jsonTemp={};
+	if(filter=='未保險'){
+		jsonTemp['InsuranceFeePaid']={"$lt": 1};
+		andFindCmdAry.push(jsonTemp);
+	}else if(filter=='已保險'){
+		jsonTemp['InsuranceFeePaid']={"$gte": 1};
+		andFindCmdAry.push(jsonTemp);
 	}
 	
 	var Transactions  = mongoose.model('Transactions');
-	Transactions.find({"Lender": req.user._id}).populate('Borrower', 'Username').sort(sorterRec).exec( function (err, transactions, count){
+	Transactions.find({$and:andFindCmdAry}).populate('Borrower', 'Username').sort(sorterRec).exec( function (err, transactions, count){
 		if (err) {
 			console.log(err);
 			res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
@@ -422,14 +447,16 @@ app.get('/lenderTransactionRecord/:sorter?/:page?', ensureAuthenticated, functio
 				if(targetPage>1){
 					res.redirect('/message?content='+chineseEncodeToURI('錯誤頁碼!'));
 				}else{
-					res.render('lenderTransactionRecord',{userName:req.user.Username,sorterDefault:sorter,jsonTransaction:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage});
+					res.render('lenderTransactionRecord',{userName:req.user.Username,filterDefault:filter,sorterDefault:sorter,jsonTransaction:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,insuranceRate:library.insuranceRate,selectedFeeAll:selectedFeeAllIpt});
 				}
 			}else{
 				for(i=0;i<totalResultNumber;i++){
+					transactions[i].InterestRate-=library.serviceChargeRate;//scr
 					transactions[i].InterestInFuture=library.interestInFutureCalculator(transactions[i].Principal,transactions[i].InterestRate,transactions[i].MonthPeriod);
 					transactions[i].InterestInFutureDivMoney=transactions[i].InterestInFuture/transactions[i].Principal*100;
 					transactions[i].InterestInFutureMonth=transactions[i].InterestInFuture/transactions[i].MonthPeriod;
 					transactions[i].InterestInFutureMoneyMonth=(transactions[i].InterestInFuture+transactions[i].Principal)/transactions[i].MonthPeriod;
+					selectedFeeAllIpt+=transactions[i].Principal*library.insuranceRate;
 				}
 				
 				if(sorter=='預計總利息最高'){
@@ -464,7 +491,7 @@ app.get('/lenderTransactionRecord/:sorter?/:page?', ensureAuthenticated, functio
 					for(i=starter;i<ender;i++){
 						resArrays.push(transactions[i]);
 					}
-					res.render('lenderTransactionRecord',{userName:req.user.Username,sorterDefault:sorter,jsonTransaction:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage});
+					res.render('lenderTransactionRecord',{userName:req.user.Username,filterDefault:filter,sorterDefault:sorter,jsonTransaction:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,insuranceRate:library.insuranceRate,selectedFeeAll:selectedFeeAllIpt});
 				}
 			}
 		}
@@ -572,6 +599,14 @@ app.get('/lendsList/:sorter?/:page?', ensureAuthenticated, function (req, res) {
 		sorterRec="-MonthPeriod";
 	}else if(sorter=='可接受信用等級最高'){
 		sorterRec="-MinLevelAccepted";
+	}else if(sorter=='可接受總利息最高'){
+		sorterRec="-MinInterestInFuture";
+	}else if(sorter=='可接受平均利息最高'){
+		sorterRec="-MinInterestInFutureMonth";
+	}else if(sorter=='可接受平均本利和最高'){
+		sorterRec="-MinInterestInFutureMoneyMonth";
+	}else if(sorter=='可接受利本比最高'){
+		sorterRec="-MinInterestInFutureDivMoney";
 	}
 	
 	var Lends  = mongoose.model('Lends');
@@ -588,6 +623,10 @@ app.get('/lendsList/:sorter?/:page?', ensureAuthenticated, function (req, res) {
 					res.render('lendsList',{userName:req.user.Username,sorterDefault:sorter,jsonLends:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage});
 				}
 			}else{
+				for(i=0;i<totalResultNumber;i++){
+					lends[i].InterestRate-=library.serviceChargeRate;//scr
+				}
+				
 				var divider=2;
 				pageNum=Math.ceil(lends.length/divider);
 				
@@ -664,15 +703,17 @@ app.get('/lenderSendMessages/:msgKeyword?/:filter?/:sorter?/:page?', ensureAuthe
 				if(targetPage>1){
 					res.redirect('/message?content='+chineseEncodeToURI('錯誤頁碼!'));
 				}else{
-					res.render('lenderSendMessages',{userName:req.user.Username,msgKeywordDefault:msgKeyword,filterDefault:filter,sorterDefault:sorter,jsonMessage:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage});
+					res.render('lenderSendMessages',{userName:req.user.Username,msgKeywordDefault:msgKeyword,filterDefault:filter,sorterDefault:sorter,jsonMessage:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,insuranceRate:library.insuranceRate});
 				}
 			}else{
 				for(i=0;i<totalResultNumber;i++){
+					messages[i].InterestRate-=library.serviceChargeRate;//scr
 					messages[i].InterestInFuture=library.interestInFutureCalculator(messages[i].MoneyToLend,messages[i].InterestRate,messages[i].MonthPeriod);
 					messages[i].InterestInFutureDivMoney=messages[i].InterestInFuture/messages[i].MoneyToLend*100;
 					messages[i].InterestInFutureMonth=messages[i].InterestInFuture/messages[i].MonthPeriod;
 					messages[i].InterestInFutureMoneyMonth=(messages[i].InterestInFuture+messages[i].MoneyToLend)/messages[i].MonthPeriod;
 					if(messages[i].Transaction.length>0){
+						messages[i].Transaction[0].InterestRate-=library.serviceChargeRate;//scr
 						messages[i].Transaction[0].InterestInFuture=library.interestInFutureCalculator(messages[i].Transaction[0].Principal,messages[i].Transaction[0].InterestRate,messages[i].Transaction[0].MonthPeriod);
 						messages[i].Transaction[0].InterestInFutureDivMoney=messages[i].Transaction[0].InterestInFuture/messages[i].Transaction[0].Principal*100;
 						messages[i].Transaction[0].InterestInFutureMonth=messages[i].Transaction[0].InterestInFuture/messages[i].Transaction[0].MonthPeriod;
@@ -713,7 +754,7 @@ app.get('/lenderSendMessages/:msgKeyword?/:filter?/:sorter?/:page?', ensureAuthe
 						resArrays.push(messages[i]);
 					}
 
-					res.render('lenderSendMessages',{userName:req.user.Username,msgKeywordDefault:msgKeyword,filterDefault:filter,sorterDefault:sorter,jsonMessage:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage});
+					res.render('lenderSendMessages',{userName:req.user.Username,msgKeywordDefault:msgKeyword,filterDefault:filter,sorterDefault:sorter,jsonMessage:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,insuranceRate:library.insuranceRate});
 				}
 			}
 		}
@@ -728,6 +769,10 @@ app.get('/lenderReceiveMessages/:msgKeyword?/:filter?/:sorter?/:page?', ensureAu
 	var targetPage=parseInt(req.query.page);
 	var pageNum=0
 	var totalResultNumber;
+	var value1ALL=0;
+	var value2ALL=0;
+	var value3ALL=0;
+	var value4ALL=0;
 	
 	var filterRec;
 	
@@ -773,20 +818,26 @@ app.get('/lenderReceiveMessages/:msgKeyword?/:filter?/:sorter?/:page?', ensureAu
 				if(targetPage>1){
 					res.redirect('/message?content='+chineseEncodeToURI('錯誤頁碼!'));
 				}else{
-					res.render('lenderReceiveMessages',{userName:req.user.Username,msgKeywordDefault:msgKeyword,filterDefault:filter,sorterDefault:sorter,jsonMessage:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage});
+					res.render('lenderReceiveMessages',{userName:req.user.Username,msgKeywordDefault:msgKeyword,filterDefault:filter,sorterDefault:sorter,jsonMessage:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,value1AllDefault:value1ALL,value2AllDefault:value2ALL,value3AllDefault:value3ALL,value4AllDefault:value4ALL,insuranceRate:library.insuranceRate});
 				}
 			}else{
 				for(i=0;i<totalResultNumber;i++){
+					messages[i].InterestRate-=library.serviceChargeRate;//scr
 					messages[i].InterestInFuture=library.interestInFutureCalculator(messages[i].MoneyToLend,messages[i].InterestRate,messages[i].MonthPeriod);
 					messages[i].InterestInFutureDivMoney=messages[i].InterestInFuture/messages[i].MoneyToLend*100;
 					messages[i].InterestInFutureMonth=messages[i].InterestInFuture/messages[i].MonthPeriod;
 					messages[i].InterestInFutureMoneyMonth=(messages[i].InterestInFuture+messages[i].MoneyToLend)/messages[i].MonthPeriod;
 					if(messages[i].Transaction.length>0){
+						messages[i].Transaction[0].InterestRate-=library.serviceChargeRate;//scr
 						messages[i].Transaction[0].InterestInFuture=library.interestInFutureCalculator(messages[i].Transaction[0].Principal,messages[i].Transaction[0].InterestRate,messages[i].Transaction[0].MonthPeriod);
 						messages[i].Transaction[0].InterestInFutureDivMoney=messages[i].Transaction[0].InterestInFuture/messages[i].Transaction[0].Principal*100;
 						messages[i].Transaction[0].InterestInFutureMonth=messages[i].Transaction[0].InterestInFuture/messages[i].Transaction[0].MonthPeriod;
 						messages[i].Transaction[0].InterestInFutureMoneyMonth=(messages[i].Transaction[0].InterestInFuture+messages[i].Transaction[0].Principal)/messages[i].Transaction[0].MonthPeriod;
 					}
+					value1ALL+=messages[i].MoneyToLend;
+					value2ALL+=messages[i].InterestInFuture;
+					value3ALL+=messages[i].InterestInFutureMonth;
+					value4ALL+=messages[i].InterestInFutureMoneyMonth;
 				}
 				
 				if(sorter=='預計總利息最高'){
@@ -822,7 +873,7 @@ app.get('/lenderReceiveMessages/:msgKeyword?/:filter?/:sorter?/:page?', ensureAu
 						resArrays.push(messages[i]);
 					}
 
-					res.render('lenderReceiveMessages',{userName:req.user.Username,msgKeywordDefault:msgKeyword,filterDefault:filter,sorterDefault:sorter,jsonMessage:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage});
+					res.render('lenderReceiveMessages',{userName:req.user.Username,msgKeywordDefault:msgKeyword,filterDefault:filter,sorterDefault:sorter,jsonMessage:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,value1AllDefault:value1ALL,value2AllDefault:value2ALL,value3AllDefault:value3ALL,value4AllDefault:value4ALL,insuranceRate:library.insuranceRate});
 				}
 			}
 		}
@@ -857,6 +908,7 @@ app.get('/income', ensureAuthenticated, function (req, res) {
 				res.render('income',{userName:req.user.Username,totalResultNum:totalResultNumber,monRevNow:monthRevenueNow,monRoiNow:monthRoiNow,yrRoi:yearRoi,yrRev:yearRevenue,yrHistoryRoi:yearHistoryRoi,yrHistoryRev:yearHistoryRevenue,mnyLendNow:moneyLendedNow,data01:data1,data02:data2,data03:data3,data04:data4,data05:data5});
 			}else{
 				for(i=0;i<totalResultNumber;i++){
+					transactions[i].InterestRate-=library.serviceChargeRate;//scr
 					moneyLendedNow+=transactions[i].Principal;
 					transactions[i].tempPrincipal=transactions[i].Principal;
 					transactions[i].monthPaidPrincipal=transactions[i].Principal/transactions[i].MonthPeriod;

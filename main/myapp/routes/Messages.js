@@ -68,13 +68,13 @@ function toLendSamePart(res,req,differentPart,outterPara){
 							var maxRate=parseFloat(borrow.MaxInterestRateAccepted);
 							
 							var nowMoney=parseInt(sanitizer.sanitize(req.body.MoneyToLend));
-							var rate=parseFloat(sanitizer.sanitize(req.body.InterestRate))/100;
+							var rate=(parseFloat(sanitizer.sanitize(req.body.InterestRate))/100)+library.serviceChargeRate;//scr
 							var month=parseInt(sanitizer.sanitize(req.body.MonthPeriod));
 							
 							if((req.body.MoneyToLend=='')||(req.body.InterestRate=='')||(req.body.MonthPeriod=='')){
 								res.redirect('/message?content='+chineseEncodeToURI('必要參數未填!'));
-							}else if((month<=0)||(nowMoney<=0)||(rate<=0)||(rate>=1)){
-								res.redirect('/message?content='+chineseEncodeToURI('錯誤參數!'));
+							}else if((month<=0)||(nowMoney<=0)||(rate<=(0+library.serviceChargeRate))||(rate>=(1+library.serviceChargeRate))){
+								res.redirect('/message?content='+chineseEncodeToURI('錯誤參數!'));//scr
 							}else if(nowMoney>maxMoney){
 								res.redirect('/message?content='+chineseEncodeToURI('金額超過您的銀行餘額!'));
 							}else if(nowMoney>maxMoney2){
@@ -104,9 +104,9 @@ function toLendCreatePart(res,req,borrow,lenderBankaccount,outterPara){
 				var toCreate = new Messages();
 				toCreate.FromBorrowRequest=sanitizer.sanitize(req.body.FromBorrowRequest);
 				toCreate.Message=sanitizer.sanitize(req.body.Message);
-				toCreate.MoneyToLend=sanitizer.sanitize(req.body.MoneyToLend);
-				toCreate.InterestRate=parseFloat(sanitizer.sanitize(req.body.InterestRate))/100;
-				toCreate.MonthPeriod=sanitizer.sanitize(req.body.MonthPeriod);
+				toCreate.MoneyToLend=parseInt(sanitizer.sanitize(req.body.MoneyToLend));
+				toCreate.InterestRate=(parseFloat(sanitizer.sanitize(req.body.InterestRate))/100)+library.serviceChargeRate;//scr
+				toCreate.MonthPeriod=parseInt(sanitizer.sanitize(req.body.MonthPeriod));
 				toCreate.CreatedBy= req.user._id
 				toCreate.SendTo=borrow.CreatedBy;
 				toCreate.Type='toLend';
@@ -227,9 +227,9 @@ function toLendCreatePart(res,req,borrow,lenderBankaccount,outterPara){
 
 function toLendUpdatePart(res,req,innerPara,innerPara2,message){
 	message.Message=sanitizer.sanitize(req.body.Message);
-	message.MoneyToLend=sanitizer.sanitize(req.body.MoneyToLend);
-	message.InterestRate=parseFloat(sanitizer.sanitize(req.body.InterestRate))/100;
-	message.MonthPeriod=sanitizer.sanitize(req.body.MonthPeriod);
+	message.MoneyToLend=parseInt(sanitizer.sanitize(req.body.MoneyToLend));
+	message.InterestRate=(parseFloat(sanitizer.sanitize(req.body.InterestRate))/100)+library.serviceChargeRate;//scr
+	message.MonthPeriod=parseInt(sanitizer.sanitize(req.body.MonthPeriod));
 	message.Updated = Date.now();
 	
 	message.save(function (err,newUpdate) {
@@ -299,6 +299,7 @@ router.get('/rejectToBorrowMessageInLRMall/:sorter?', ensureAuthenticated, funct
 			}else{
 				if((sorter=='預計總利息最高')||(sorter=='預計利本比最高')||(sorter=='預計平均利息最高')||(sorter=='預計平均本利和最高')){
 					for(i=0;i<messages.length;i++){
+						messages[i].InterestRate-=library.serviceChargeRate;//scr
 						messages[i].InterestInFuture=library.interestInFutureCalculator(messages[i].MoneyToLend,messages[i].InterestRate,messages[i].MonthPeriod);
 						messages[i].InterestInFutureDivMoney=messages[i].InterestInFuture/messages[i].MoneyToLend;
 						messages[i].InterestInFutureMonth=messages[i].InterestInFuture/messages[i].MonthPeriod;
@@ -367,6 +368,7 @@ router.get('/confirmToBorrowMessageInLRMall/:sorter?', ensureAuthenticated, func
 			}else{
 				if((sorter=='預計總利息最高')||(sorter=='預計利本比最高')||(sorter=='預計平均利息最高')||(sorter=='預計平均本利和最高')){
 					for(i=0;i<messages.length;i++){
+						messages[i].InterestRate-=library.serviceChargeRate;//scr
 						messages[i].InterestInFuture=library.interestInFutureCalculator(messages[i].MoneyToLend,messages[i].InterestRate,messages[i].MonthPeriod);
 						messages[i].InterestInFutureDivMoney=messages[i].InterestInFuture/messages[i].MoneyToLend;
 						messages[i].InterestInFutureMonth=messages[i].InterestInFuture/messages[i].MonthPeriod;

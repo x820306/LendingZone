@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 var Users  = mongoose.model('Users');
 var Borrows  = mongoose.model('Borrows');
+var Returns  = mongoose.model('Returns');
 var Messages  = mongoose.model('Messages');
 var Transactions  = mongoose.model('Transactions');
 var BankAccounts  = mongoose.model('BankAccounts');
@@ -92,7 +93,7 @@ router.post('/levelSetter', function(req, res, next) {
 	
 	//userLevelSetter(res,Uid,Level);
 	
-	Transactions.update({}, { Return:[]},{multi:true}, function(err, numberAffected){  
+	Returns.update({}, { ServiceChargeNotPaid:0},{multi:true}, function(err, numberAffected){  
 		console.log(numberAffected);
 		res.end('end');
 	});

@@ -6,8 +6,12 @@ var BankAccounts  = mongoose.model('BankAccounts');
 var Transactions  = mongoose.model('Transactions');
 var sanitizer = require('sanitizer');
 var autoComfirmToBorrowMsgArray=[];
+var insuranceRate=0.01;
+var serviceChargeRate=0.01;
 
 exports.autoComfirmToBorrowMsgArray=autoComfirmToBorrowMsgArray;
+exports.insuranceRate=insuranceRate;
+exports.serviceChargeRate=serviceChargeRate;
 
 exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,req,res,ifAuto,resAddress,ifLenderSide){
 	var FBR;
@@ -206,12 +210,12 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																var maxRate=parseFloat(message.InterestRate);
 																
 																var nowMoney=parseInt(sanitizer.sanitize(req.body.MoneyToLend));
-																var rate=parseFloat(sanitizer.sanitize(req.body.InterestRate))/100;
+																var rate=(parseFloat(sanitizer.sanitize(req.body.InterestRate))/100)+exports.serviceChargeRate;//scr
 																var month=parseInt(sanitizer.sanitize(req.body.MonthPeriod));
 																
 																if((req.body.MoneyToLend=='')||(req.body.InterestRate=='')||(req.body.MonthPeriod=='')){
 																	returnSring='必要參數未填!';
-																}else if((month<=0)||(nowMoney<=0)||(rate<=0)||(rate>=1)){
+																}else if((month<=0)||(nowMoney<=0)||(rate<=(0+exports.serviceChargeRate))||(rate>=(1+exports.serviceChargeRate))){
 																	returnSring='錯誤參數!';
 																}else if(nowMoney>maxMoney){
 																	returnSring='金額超過您的銀行餘額!';
@@ -226,19 +230,27 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																}else if(rate>maxRate){
 																	returnSring='超過該訊息期望利率上限!';
 																}else{
-																	finalMoneyToLend=sanitizer.sanitize(req.body.MoneyToLend);
-																	finalInterestRate=parseFloat(sanitizer.sanitize(req.body.InterestRate))/100;
-																	finalMonthPeriod=sanitizer.sanitize(req.body.MonthPeriod);
+																	finalMoneyToLend=parseInt(sanitizer.sanitize(req.body.MoneyToLend));
+																	finalInterestRate=(parseFloat(sanitizer.sanitize(req.body.InterestRate))/100)+exports.serviceChargeRate;//scr
+																	finalMonthPeriod=parseInt(sanitizer.sanitize(req.body.MonthPeriod));
 																}
 															}else{
 																var minRate=parseFloat(lend.InterestRate);
 																var minMonth=parseInt(lend.MonthPeriod);
 																var minLevel=parseInt(lend.MinLevelAccepted);
+																var minInterestInFuture=parseFloat(lend.MinInterestInFuture);
+																var minInterestInFutureMonth=parseFloat(lend.MinInterestInFutureMonth);
+																var minInterestInFutureMoneyMonth=parseFloat(lend.MinInterestInFutureMoneyMonth);
+																var minInterestInFutureDivMoney=parseFloat(lend.MinInterestInFutureDivMoney);
 																
 																var nowMoney2=parseInt(message.MoneyToLend);
 																var rate2=parseFloat(message.InterestRate);
 																var month2=parseInt(message.MonthPeriod);
-																var level=parseInt(borrow.CreatedBy.Level);
+																var level2=parseInt(borrow.CreatedBy.Level);
+																var interestInFuture2=exports.interestInFutureCalculator(nowMoney2,rate2,month2);
+																var interestInFutureMonth2=interestInFuture2/month2;
+																var interestInFutureMoneyMonth2=(nowMoney2+interestInFuture2)/month2;
+																var interestInFutureDivMoney2=interestInFuture2/nowMoney2;
 																
 																if(nowMoney2>maxMoney){
 																	returnSring='有訊息因借款金額超過借出方銀行帳戶內的餘額而無法被同意';
@@ -262,7 +274,15 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																	returnSring='有些訊息因借入方已不需要借款或其條件不合您現在的自動出借設定而無法被同意，它們已被自動婉拒';
 																}else if(month2<minMonth){
 																	returnSring='有些訊息因借入方已不需要借款或其條件不合您現在的自動出借設定而無法被同意，它們已被自動婉拒';
-																}else if(level<minLevel){
+																}else if(level2<minLevel){
+																	returnSring='有些訊息因借入方已不需要借款或其條件不合您現在的自動出借設定而無法被同意，它們已被自動婉拒';
+																}else if(interestInFuture2<minInterestInFuture){
+																	returnSring='有些訊息因借入方已不需要借款或其條件不合您現在的自動出借設定而無法被同意，它們已被自動婉拒';
+																}else if(interestInFutureMonth2<minInterestInFutureMonth){
+																	returnSring='有些訊息因借入方已不需要借款或其條件不合您現在的自動出借設定而無法被同意，它們已被自動婉拒';
+																}else if(interestInFutureMoneyMonth2<minInterestInFutureMoneyMonth){
+																	returnSring='有些訊息因借入方已不需要借款或其條件不合您現在的自動出借設定而無法被同意，它們已被自動婉拒';
+																}else if(interestInFutureDivMoney2<minInterestInFutureDivMoney){
 																	returnSring='有些訊息因借入方已不需要借款或其條件不合您現在的自動出借設定而無法被同意，它們已被自動婉拒';
 																}else{
 																	finalMoneyToLend=message.MoneyToLend;
@@ -387,6 +407,7 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																					}
 																				}else{
 																					borrowerBankaccount.MoneyInBankAccount+=newCreateTransaction.Principal;
+																					borrowerBankaccount.Updated=Date.now();
 																					borrowerBankaccount.save(function (err,updatedBorrowerBankaccount) {
 																						if (err){
 																							console.log(err);
@@ -406,6 +427,7 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																							}
 																						}else{
 																							lenderBankaccount.MoneyInBankAccount-=newCreateTransaction.Principal;
+																							lenderBankaccount.Updated=Date.now();
 																							lenderBankaccount.save(function (err,updatedLenderBankaccount) {
 																								if (err){
 																									console.log(err);
@@ -428,6 +450,7 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																									if(borrow.MoneyToBorrowCumulated>=borrow.MoneyToBorrow){
 																										borrow.IfReadable=false;
 																									}
+																									borrow.Updated=Date.now();
 																									borrow.save(function (err,updatedBorrow) {
 																										if (err){
 																											console.log(err);
@@ -450,6 +473,7 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																											if(lend.MaxMoneyToLend<0){
 																												lend.MaxMoneyToLend=0;
 																											}
+																											lend.Updated=Date.now();
 																											lend.save(function (err,updatedLend) {
 																												if (err){
 																													console.log(err);

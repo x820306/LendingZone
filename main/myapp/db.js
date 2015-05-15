@@ -23,9 +23,13 @@ var Borrows = new Schema({
 
 var Lends = new Schema({
     MaxMoneyToLend: { type: Number, default: 0 },
-	InterestRate: { type: Number, default: 0 },
+	InterestRate: { type: Number, default: 0.01 },
 	MonthPeriod: { type: Number, default: 1 },
 	MinLevelAccepted: { type: Number, default: 0 },
+	MinInterestInFuture: { type: Number, default: 0 },
+	MinInterestInFutureMonth: { type: Number, default: 0 },
+	MinInterestInFutureMoneyMonth: { type: Number, default: 0 },
+	MinInterestInFutureDivMoney:{ type: Number, default: 0.01 },
 	AutoComfirmToBorrowMsgPeriod: { type: Number, default: -1 },
 	AutoComfirmToBorrowMsgSorter: { type: String, default: '-InterestRate' },
 	CreatedBy: { type: Schema.Types.ObjectId, ref: 'Users' },
@@ -88,6 +92,7 @@ var Transactions = new Schema({
 	Borrower: { type: Schema.Types.ObjectId, ref: 'Users' },
 	Lender: { type: Schema.Types.ObjectId, ref: 'Users' },
 	Return: [{ type: Schema.Types.ObjectId, ref: 'Returns' }],
+	InsuranceFeePaid: { type: Number, default: 0 },
 	Updated: { type: Date, default: Date.now },
 	Created: { type: Date, default: Date.now }
 });
@@ -104,6 +109,8 @@ var Returns = new Schema({
 	ToTransaction: { type: Schema.Types.ObjectId, ref: 'Transactions' },
 	Borrower: { type: Schema.Types.ObjectId, ref: 'Users' },
 	Lender: { type: Schema.Types.ObjectId, ref: 'Users' },
+	ServiceChargeShouldPaid: { type: Number, default: 0 },
+	ServiceChargeNotPaid: { type: Number, default: 0 },
 	InterestShouldPaid: { type: Number, default: 0 },
 	InterestNotPaid: { type: Number, default: 0 },
 	PrincipalShouldPaid: { type: Number, default: 0 },

@@ -74,7 +74,7 @@
 									<tr>
 										<td>
 											<div>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].MoneyToLend%>元
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].MoneyToLend.toFixed(0)%>元
 											</div>	
 										</td>
 									<tr>
@@ -88,7 +88,7 @@
 									<tr>
 										<td>
 											<div>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].InterestRate*100%>%
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=(jsonMessage[i].InterestRate*100).toFixed(2)%>%
 											</div>	
 										</td>
 									<tr>
@@ -102,7 +102,7 @@
 									<tr>
 										<td>
 											<div>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].MonthPeriod%>個月
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].MonthPeriod.toFixed(0)%>個月
 											</div>	
 										</td>
 									<tr>
@@ -116,7 +116,7 @@
 									<tr>
 										<td>
 											<div>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Level%>級
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Level.toFixed(0)%>級
 											</div>	
 										</td>
 									<tr>
@@ -197,7 +197,7 @@
 										<tr>
 											<td>
 												<div>
-													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].Principal%>元
+													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].Principal.toFixed(0)%>元
 												</div>	
 											</td>
 										<tr>
@@ -211,7 +211,7 @@
 										<tr>
 											<td>
 												<div>
-													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].PrincipalReturnedCumulated%>元
+													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].PrincipalReturnedCumulated.toFixed(0)%>元
 												</div>	
 											</td>
 										<tr>
@@ -225,7 +225,7 @@
 										<tr>
 											<td>
 												<div>
-													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].InterestRate*100%>%
+													&nbsp;&nbsp;&nbsp;&nbsp;<%=(jsonMessage[i].Transaction[0].InterestRate*100).toFixed(2)%>%
 												</div>	
 											</td>
 										<tr>
@@ -239,7 +239,7 @@
 										<tr>
 											<td>
 												<div>
-													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].InterestCumulated%>元
+													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].InterestCumulated.toFixed(0)%>元
 												</div>	
 											</td>
 										<tr>
@@ -253,7 +253,7 @@
 										<tr>
 											<td>
 												<div>
-													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].MonthPeriod%>個月
+													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].MonthPeriod.toFixed(0)%>個月
 												</div>	
 											</td>
 										<tr>
@@ -267,7 +267,7 @@
 										<tr>
 											<td>
 												<div>
-													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].MonthPeriodHasPast%>個月
+													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].MonthPeriodHasPast.toFixed(0)%>個月
 												</div>	
 											</td>
 										<tr>
@@ -342,6 +342,34 @@
 											<td>
 												<div>
 													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].InterestInFutureDivMoney.toFixed(2)%>%
+												</div>	
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div style="color:#337ab7;">
+													保險所需費用：
+												</div>
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;<%=(jsonMessage[i].Transaction[0].Principal*insuranceRate).toFixed(0)%>元
+												</div>	
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div style="color:#337ab7;">
+													已付保險費用：
+												</div>
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].InsuranceFeePaid.toFixed(0)%>元
 												</div>	
 											</td>
 										<tr>
@@ -434,4 +462,4 @@
 		</div>
 	</div>
 </div>
-<%- include('layout_footer'); -%>
+<%- include('layout_footer',{imgSettingCode:"var ifLoadedCount=0;",imgDrawingCode:""}); -%>

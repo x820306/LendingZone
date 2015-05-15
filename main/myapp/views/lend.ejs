@@ -12,7 +12,7 @@
 						<h3 class="panel-title">銀行帳戶內餘額</h3>
 					</div>
 					<div style="color:#ccc;" class="panel-body">
-						<input type="text" style="width:95%;" class="textForm" value="<%=MoneyInBankAccountValue%>" readonly="readonly" >&nbsp;元
+						<input type="text" style="width:95%;" class="textForm" value="<%=MoneyInBankAccountValue.toFixed(0)%>" readonly="readonly" >&nbsp;元
 					</div>					
 				</div>
 				</br>
@@ -21,7 +21,7 @@
 						<h3 class="panel-title">已借出金額</h3>
 					</div>
 					<div style="color:#ccc;" class="panel-body">
-						<input type="text" style="width:95%;" class="textForm" value="<%=MoneyLended%>" readonly="readonly" >&nbsp;元
+						<input type="text" style="width:95%;" class="textForm" value="<%=MoneyLended.toFixed(0)%>" readonly="readonly" >&nbsp;元
 					</div>					
 				</div>
 				</br>
@@ -38,7 +38,7 @@
 						<% if(!jsonLend){ %>
 							<input type="number" style="width:95%;" class="textForm" name="MaxMoneyToLend">
 						<% }else{ %>
-							<input type="number" style="width:95%;" class="textForm" name="MaxMoneyToLend" value="<%=jsonLend.MaxMoneyToLend%>">
+							<input type="number" style="width:95%;" class="textForm" name="MaxMoneyToLend" value="<%=jsonLend.MaxMoneyToLend.toFixed(0)%>">
 						<% } %>
 						&nbsp;元
 					</div>					
@@ -46,13 +46,13 @@
 				</br>
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						<h3 class="panel-title">欲借出利率</h3>
+						<h3 class="panel-title">最低欲借出利率</h3>
 					</div>
 					<div class="panel-body">
 						<% if(!jsonLend){ %>
 							<input type="text" style="width:95%;" class="textForm" name="InterestRate">
 						<% }else{ %>
-							<input type="text" style="width:95%;" class="textForm" name="InterestRate" value="<%=jsonLend.InterestRate*100%>">
+							<input type="text" style="width:95%;" class="textForm" name="InterestRate" value="<%=(jsonLend.InterestRate*100).toFixed(2)%>">
 						<% } %>
 						%
 					</div>
@@ -60,13 +60,13 @@
 				</br>
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						<h3 class="panel-title">期數（單位/月）</h3>
+						<h3 class="panel-title">最低欲借出期數（單位/月）</h3>
 					</div>
 					<div class="panel-body">
 						<% if(!jsonLend){ %>
 							<input type="number" style="width:95%;" class="textForm" name="MonthPeriod">
 						<% }else{ %>
-							<input type="number" style="width:95%;" class="textForm" name="MonthPeriod" value="<%=jsonLend.MonthPeriod%>">
+							<input type="number" style="width:95%;" class="textForm" name="MonthPeriod" value="<%=jsonLend.MonthPeriod.toFixed(0)%>">
 						<% } %>
 						&nbsp;個月
 					</div>
@@ -80,9 +80,65 @@
 						<% if(!jsonLend){ %>
 							<input type="number" style="width:95%;" class="textForm" name="MinLevelAccepted">
 						<% }else{ %>
-							<input type="number" style="width:95%;" class="textForm" name="MinLevelAccepted" value="<%=jsonLend.MinLevelAccepted%>">
+							<input type="number" style="width:95%;" class="textForm" name="MinLevelAccepted" value="<%=jsonLend.MinLevelAccepted.toFixed(0)%>">
 						<% } %>
 						&nbsp;級
+					</div>
+				</div>
+				</br>
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title">最低可接受總利息</h3>
+					</div>
+					<div class="panel-body">
+						<% if(!jsonLend){ %>
+							<input type="number" style="width:95%;" class="textForm" name="MinInterestInFuture">
+						<% }else{ %>
+							<input type="number" style="width:95%;" class="textForm" name="MinInterestInFuture" value="<%=jsonLend.MinInterestInFuture.toFixed(0)%>">
+						<% } %>
+						&nbsp;元
+					</div>
+				</div>
+				</br>
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title">最低可接受每期平均利息</h3>
+					</div>
+					<div class="panel-body">
+						<% if(!jsonLend){ %>
+							<input type="number" style="width:95%;" class="textForm" name="MinInterestInFutureMonth">
+						<% }else{ %>
+							<input type="number" style="width:95%;" class="textForm" name="MinInterestInFutureMonth" value="<%=jsonLend.MinInterestInFutureMonth.toFixed(0)%>">
+						<% } %>
+						&nbsp;元
+					</div>
+				</div>
+				</br>
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title">最低可接受每期平均本利和</h3>
+					</div>
+					<div class="panel-body">
+						<% if(!jsonLend){ %>
+							<input type="number" style="width:95%;" class="textForm" name="MinInterestInFutureMoneyMonth">
+						<% }else{ %>
+							<input type="number" style="width:95%;" class="textForm" name="MinInterestInFutureMoneyMonth" value="<%=jsonLend.MinInterestInFutureMoneyMonth.toFixed(0)%>">
+						<% } %>
+						&nbsp;元
+					</div>
+				</div>
+				</br>
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title">最低可接受總利息/最初本金比</h3>
+					</div>
+					<div class="panel-body">
+						<% if(!jsonLend){ %>
+							<input type="number" style="width:95%;" class="textForm" name="MinInterestInFutureDivMoney">
+						<% }else{ %>
+							<input type="number" style="width:95%;" class="textForm" name="MinInterestInFutureDivMoney" value="<%=(jsonLend.MinInterestInFutureDivMoney*100).toFixed(2)%>">
+						<% } %>
+						&nbsp;%
 					</div>
 				</div>
 				</br>
@@ -210,4 +266,4 @@
 	}
 <% }%>
 </script>
-<%- include('layout_footer'); -%>
+<%- include('layout_footer',{imgSettingCode:"var ifLoadedCount=0;",imgDrawingCode:""}); -%>

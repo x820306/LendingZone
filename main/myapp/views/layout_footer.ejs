@@ -43,30 +43,77 @@
 			</div>
 		</div>
 	<%}%>
+<canvas width="640" height="360" onclick="canvasOnClick();" style="position:absolute;left:0px;top:0px;z-index:2000;display:none;" id="introCanvas"></canvas>
 </body>
-<% if(!userName){ %>
 <script>
+	var ifDrawed=false;
+	<%-imgSettingCode%>
+	
 	$(document).ready(function () {
-		if ($.cookie("rmbUser") == "true") {
-			$("#rememberID").prop("checked", true);
-			$("#usernameID").val($.cookie("username"));
-			$("#passwordID").val($.cookie("password"));
-		}
+		var id;
+		doneResizing();
+		$(window).resize(function(){
+			clearTimeout(id);
+			id = setTimeout(doneResizing, 500);
+		}); 
+		
+		<% if(!userName){ %>
+			if ($.cookie("rmbUser") == "true") {
+				$("#rememberID").prop("checked", true);
+				$("#usernameID").val($.cookie("username"));
+				$("#passwordID").val($.cookie("password"));
+			}
+		<%}%>
 	});
 
-	function save() {
-		if($("#rememberID").prop("checked")) {
-			var str_username = $("#usernameID").val();
-			var str_password = $("#passwordID").val();
-			$.cookie("rmbUser", "true", { expires: 7 }); 
-			$.cookie("username", str_username, { expires: 7 });
-			$.cookie("password", str_password, { expires: 7 });
-		}else{
-			$.cookie("rmbUser", "false", { expire: -1 });
-			$.cookie("username", "", { expires: -1 });
-			$.cookie("password", "", { expires: -1 });
+	function canvasOnClick(){
+		var orig=$('#introCanvas').attr('style');
+		if(orig.search('display:none;')<0){
+			orig = orig + 'display:none;';
+			$('#introCanvas').attr('style',orig);
 		}
-	};
+	}
+	
+	function doneResizing(){
+		if(ifLoadedCount==0){
+			var x=$('body').width();
+			var y1=$('body').height();
+			var y2=$(window).height();
+			var y;
+			if(y1>=y2){
+				y=y1;
+			}else{
+				y=y2;
+			}
+			$('#introCanvas').attr('width',x);
+			$('#introCanvas').attr('height',y);
+			var cvs = document.getElementById("introCanvas");
+			var ctx = cvs.getContext('2d'); 
+			ctx.clearRect(0, 0, cvs.width, cvs.height);
+			ctx.beginPath();
+			ctx.fillStyle="rgba(0,0,0,0.4)";
+			ctx.fillRect(0,0,cvs.width,cvs.height);
+			
+			<%-imgDrawingCode%>
+			
+			ifDrawed=true;
+		}
+	}
+	
+	<% if(!userName){ %>
+		function save() {
+			if($("#rememberID").prop("checked")) {
+				var str_username = $("#usernameID").val();
+				var str_password = $("#passwordID").val();
+				$.cookie("rmbUser", "true", { expires: 7 }); 
+				$.cookie("username", str_username, { expires: 7 });
+				$.cookie("password", str_password, { expires: 7 });
+			}else{
+				$.cookie("rmbUser", "false", { expire: -1 });
+				$.cookie("username", "", { expires: -1 });
+				$.cookie("password", "", { expires: -1 });
+			}
+		};
+	<%}%>
 </script>
-<%}%>
 </html>

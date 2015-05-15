@@ -7,10 +7,33 @@
 				<br>
 				<div class="btn-group">
 					<div class="btn-group">
+						<button type="button" style="height:40px;" class="btn btn-default dropdown-toggle" data-toggle="dropdown" id="filterSelected">
+							<%=filterDefault%> <span class="caret"></span>
+						</button>
+						<ul class="dropdown-menu">
+							<li style="display:none"><a href="#" id="filter0"><%=filterDefault%></a></li>
+							<li><a href="#" onclick="$('#filterSelected').html('');$('#filterSelected').html($('#filter1').text());$('#filter0').html($('#filterSelected').text());$('#filterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="filter1">未保險</a></li>
+							<li><a href="#" onclick="$('#filterSelected').html('');$('#filterSelected').html($('#filter2').text());$('#filter0').html($('#filterSelected').text());$('#filterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="filter2">已保險</a></li>
+						</ul>
+					</div>
+					<div class="btn-group">
 						<button type="button" style="height:40px;" class="btn btn-default dropdown-toggle" data-toggle="dropdown" id="sorterSelected">
 							<%=sorterDefault%> <span class="caret"></span>
 						</button>
 						<ul class="dropdown-menu">
+							<% if(filterDefault=='未保險'){%>
+							<li style="display:none"><a href="#" id="sorter0"><%=sorterDefault%></a></li>
+							<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter1').text());$('#bAll').attr('href','/Transactions/buyInsuranceAll?sorter='+encodeURIComponent($('#sorterSelected').text()));$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter1">最新</a></li>
+							<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter2').text());$('#bAll').attr('href','/Transactions/buyInsuranceAll?sorter='+encodeURIComponent($('#sorterSelected').text()));$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter2">已獲利最多</a></li>
+							<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter3').text());$('#bAll').attr('href','/Transactions/buyInsuranceAll?sorter='+encodeURIComponent($('#sorterSelected').text()));$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter3">利率最高</a></li>
+							<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter4').text());$('#bAll').attr('href','/Transactions/buyInsuranceAll?sorter='+encodeURIComponent($('#sorterSelected').text()));$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter4">金額最大</a></li>
+							<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter5').text());$('#bAll').attr('href','/Transactions/buyInsuranceAll?sorter='+encodeURIComponent($('#sorterSelected').text()));$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter5">期數最多</a></li>
+							<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter6').text());$('#bAll').attr('href','/Transactions/buyInsuranceAll?sorter='+encodeURIComponent($('#sorterSelected').text()));$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter6">信用等級最高</a></li>
+							<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter7').text());$('#bAll').attr('href','/Transactions/buyInsuranceAll?sorter='+encodeURIComponent($('#sorterSelected').text()));$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter7">預計總利息最高</a></li>
+							<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter8').text());$('#bAll').attr('href','/Transactions/buyInsuranceAll?sorter='+encodeURIComponent($('#sorterSelected').text()));$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter8">預計平均利息最高</a></li>
+							<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter9').text());$('#bAll').attr('href','/Transactions/buyInsuranceAll?sorter='+encodeURIComponent($('#sorterSelected').text()));$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter9">預計平均本利和最高</a></li>
+							<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter10').text());$('#bAll').attr('href','/Transactions/buyInsuranceAll?sorter='+encodeURIComponent($('#sorterSelected').text()));$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter10">預計利本比最高</a></li>
+							<%}else{%>
 							<li style="display:none"><a href="#" id="sorter0"><%=sorterDefault%></a></li>
 							<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter1').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter1">最新</a></li>
 							<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter2').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter2">已獲利最多</a></li>
@@ -22,16 +45,71 @@
 							<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter8').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter8">預計平均利息最高</a></li>
 							<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter9').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter9">預計平均本利和最高</a></li>
 							<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter10').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter10">預計利本比最高</a></li>
+							<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter11').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter11">已付保險費最高</a></li>
+							<%}%>
 						</ul>
 					</div>
-					<button type="button" style="height:40px;" class="btn btn-default" onclick="window.open('/lenderTransactionRecord?sorter='+encodeURIComponent($('#sorter0').text())+'&page=1','_self');">Go!</button>
+					<button type="button" style="height:40px;" class="btn btn-default" onclick="window.open('/lenderTransactionRecord?filter='+encodeURIComponent($('#filter0').text())+'&sorter='+encodeURIComponent($('#sorter0').text())+'&page=1','_self');">Go!</button>
 				</div>
-				<br>
-				<br>
-				<br>
 				<% if(totalResultNum!=0){ %>
+					<% if(filterDefault=='未保險'){%>
+						<br>
+						<br>
+						<table style="display:inline;" class="table">
+							<thead>
+								<tr>
+									<th>
+									全部合計費用
+									</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>
+										<div style="display:inline;" id="selectedFeeAll"><%=selectedFeeAll.toFixed(0)%></div><div style="display:inline;">元</div>
+									</td>
+								</tr>
+							</body>
+						</table>
+						<br>
+						<a href="/Transactions/buyInsuranceAll?sorter=<%=encodeURIComponent(sorterDefault)%>" id="bAll">
+							<button class="btn btn-default" id="buyBtnAll" onclick="buyAll();">
+								<span style="color:#337ab7;">為所有交易購買保險</span>
+							</button>
+						</a>
+						<br>
+						<br>
+						<table style="display:inline;" class="table">
+							<thead>
+								<tr>
+									<th>
+									已選合計費用
+									</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>
+										<div style="display:inline;" id="selectedFee">0</div><div style="display:inline;">元</div>
+									</td>
+								</tr>
+							</body>
+						</table>
+						<br>
+						<input type="checkbox" id="selectAll" onclick="selectAllFun();"> 全選&nbsp;&nbsp;&nbsp;&nbsp;
+						<button class="btn btn-default" id="buyBtn" onclick="buy();">
+							<span style="color:#337ab7;">購買保險</span>
+						</button>
+						<br>
+						<br>
+						<br>
+					<% }else{%>
+						<br>
+						<br>
+						<br>
+					<%}%>
 					<% for(var i=0; i<jsonTransaction.length; i++) { %>
-						<div style="height: 335px;" class="panel panel-default pd">
+						<div style="height: 370px;" class="panel panel-default pd">
 							<div class="panel-body">
 								<div style="font-size:25px;display:inline;">借給 </div>
 								<div style="font-size:25px;color:#0000D1;display:inline;"><%=jsonTransaction[i].Borrower.Username%></div>
@@ -49,7 +127,7 @@
 										<tr>
 											<td>
 												<div>
-													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonTransaction[i].Principal%>元
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonTransaction[i].Principal.toFixed(0)%>元
 												</div>	
 											</td>
 										<tr>
@@ -63,7 +141,7 @@
 										<tr>
 											<td>
 												<div>
-													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonTransaction[i].PrincipalReturnedCumulated%>元
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonTransaction[i].PrincipalReturnedCumulated.toFixed(0)%>元
 												</div>	
 											</td>
 										<tr>
@@ -77,7 +155,7 @@
 										<tr>
 											<td>
 												<div>
-													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonTransaction[i].InterestRate*100%>%
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=(jsonTransaction[i].InterestRate*100).toFixed(2)%>%
 												</div>	
 											</td>
 										<tr>
@@ -91,7 +169,7 @@
 										<tr>
 											<td>
 												<div>
-													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonTransaction[i].InterestCumulated%>元
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonTransaction[i].InterestCumulated.toFixed(0)%>元
 												</div>	
 											</td>
 										<tr>
@@ -105,7 +183,7 @@
 										<tr>
 											<td>
 												<div>
-													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonTransaction[i].MonthPeriod%>個月
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonTransaction[i].MonthPeriod.toFixed(0)%>個月
 												</div>	
 											</td>
 										<tr>
@@ -119,14 +197,10 @@
 										<tr>
 											<td>
 												<div>
-													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonTransaction[i].MonthPeriodHasPast%>個月
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonTransaction[i].MonthPeriodHasPast.toFixed(0)%>個月
 												</div>	
 											</td>
 										<tr>
-									</table>
-								</div>	
-								<div class="col-md-6">	
-									<table width="100%" height="240px">
 										<tr>
 											<td>
 												<div style="color:#337ab7;">
@@ -137,10 +211,14 @@
 										<tr>
 											<td>
 												<div>
-													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonTransaction[i].Level%>級
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonTransaction[i].Level.toFixed(0)%>級
 												</div>	
 											</td>
 										<tr>
+									</table>
+								</div>	
+								<div class="col-md-6">	
+									<table width="100%" height="240px">
 										<tr>
 											<td>
 												<div style="color:#337ab7;">
@@ -211,26 +289,61 @@
 												</div>	
 											</td>
 										<tr>
+										<tr>
+											<td>
+												<div style="color:#337ab7;">
+													&nbsp;&nbsp;&nbsp;&nbsp;保險所需費用：
+												</div>
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;" id="value1<%=i%>"><%=(jsonTransaction[i].Principal*insuranceRate).toFixed(0)%></div>元
+												</div>	
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div style="color:#337ab7;">
+													&nbsp;&nbsp;&nbsp;&nbsp;已付保險費用：
+												</div>
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonTransaction[i].InsuranceFeePaid.toFixed(0)%>元
+												</div>	
+											</td>
+										<tr>
 									</table>
 								</div>
 							</div>
 						</div>
 					<table width="100%">
 					<tr>
+						<%if(filterDefault=='未保險'){%>
 						<td>
-							<div style="color:#337ab7;">
-								&nbsp;&nbsp;<a href="/lenderReturnRecord?id=<%=jsonTransaction[i]._id%>&sorter=<%=encodeURIComponent("最新")%>&page=1">該筆交易收款記錄<a>
+							<div>
+								<input type="checkbox" name="selectCheckBox" id="selectCheckBoxId<%=i%>" onclick="selectFun(<%=i%>);" value='{"TransactionID":"<%=jsonTransaction[i]._id%>"}'> 選擇
 							</div>
 						</td>
+						<%}%>
 						<td align="right">
 							<div style="color:#337ab7;">
-								Updated：<%=jsonTransaction[i].Updated.getFullYear()%>/<%=jsonTransaction[i].Updated.getMonth()+1%>/<%=jsonTransaction[i].Updated.getDate()%>
+								<a href="/lenderReturnRecord?id=<%=jsonTransaction[i]._id%>&sorter=<%=encodeURIComponent("最新")%>&page=1">該筆交易收款記錄</a>&nbsp;&nbsp;&nbsp;&nbsp;Updated：<%=jsonTransaction[i].Updated.getFullYear()%>/<%=jsonTransaction[i].Updated.getMonth()+1%>/<%=jsonTransaction[i].Updated.getDate()%>
 							</div>
 						</td>
 					<tr>
 					</table>
 					<br>
 					<br>
+				<%}%>
+				<%if(filterDefault=='未保險'){%>
+					<form action="/Transactions/buyInsurance" method="post" id="formID">
+						<input type="hidden" name="JsonArrayString" id="hdnIpt">
+					</form>
 				<%}%>
 				<br>
 				<table align="center">
@@ -244,7 +357,7 @@
 									<%}%>
 								>
 								<% if(targetPageNumber!=1){%>
-									<a href="/lenderTransactionRecord?sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=targetPageNumber-1%>">
+									<a href="/lenderTransactionRecord?filter=<%=encodeURIComponent(filterDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=targetPageNumber-1%>">
 								<%}else{%>
 									<a href="#" onclick="return false;">
 								<%}%>
@@ -255,7 +368,7 @@
 											<% if(targetPageNumber==j){%>
 												class="active"
 											<%}%>
-										><a href="/lenderTransactionRecord?sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=j%>"><%=j%></a></li>
+										><a href="/lenderTransactionRecord?filter=<%=encodeURIComponent(filterDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=j%>"><%=j%></a></li>
 									<%}%>
 								<% }else{%>
 									<% if(targetPageNumber>=pageNumber-3){%>
@@ -264,7 +377,7 @@
 											<% if(targetPageNumber==j){%>
 												class="active"
 											<%}%>
-										><a href="/lenderTransactionRecord?sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=j%>"><%=j%></a></li>
+										><a href="/lenderTransactionRecord?filter=<%=encodeURIComponent(filterDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=j%>"><%=j%></a></li>
 										<%}%>
 									<%}else if(targetPageNumber<=5){%>
 										<% for(var j=1; j<=10; j++) { %>
@@ -272,15 +385,15 @@
 											<% if(targetPageNumber==j){%>
 												class="active"
 											<%}%>
-										><a href="/lenderTransactionRecord?sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=j%>"><%=j%></a></li>
+										><a href="/lenderTransactionRecord?filter=<%=encodeURIComponent(filterDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=j%>"><%=j%></a></li>
 										<%}%>
 									<%}else{%>
 										<% for(var j=targetPageNumber-5; j<targetPageNumber; j++) { %>
-										<li><a href="/lenderTransactionRecord?sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=j%>"><%=j%></a></li>
+										<li><a href="/lenderTransactionRecord?filter=<%=encodeURIComponent(filterDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=j%>"><%=j%></a></li>
 										<%}%>
-										<li class="active"><a href="/lenderTransactionRecord?sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=targetPageNumber%>"><%=targetPageNumber%></a></li>
+										<li class="active"><a href="/lenderTransactionRecord?filter=<%=encodeURIComponent(filterDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=targetPageNumber%>"><%=targetPageNumber%></a></li>
 										<% for(var j=targetPageNumber+1; j<=targetPageNumber+4; j++) { %>
-										<li><a href="/lenderTransactionRecord?sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=j%>"><%=j%></a></li>
+										<li><a href="/lenderTransactionRecord?filter=<%=encodeURIComponent(filterDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=j%>"><%=j%></a></li>
 										<%}%>
 									<%}%>
 								<%}%>
@@ -290,7 +403,7 @@
 									<%}%>
 								>	
 								<% if(targetPageNumber!=pageNumber){%>
-									<a href="/lenderTransactionRecord?sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=targetPageNumber+1%>">
+									<a href="/lenderTransactionRecord?filter=<%=encodeURIComponent(filterDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=targetPageNumber+1%>">
 								<%}else{%>
 									<a href="#" onclick="return false;">
 								<%}%>
@@ -306,4 +419,86 @@
 		</div>
 	</div>
 </div>
-<%- include('layout_footer'); -%>
+<script>
+<% if((filterDefault=='未保險')&&(totalResultNum>0)){%>
+function selectAllFun(){
+	if($("#selectAll").prop("checked"))
+	{
+		$("input[name='selectCheckBox']").each(function() {
+			$(this).prop("checked", true);
+		});
+		var value=0;
+		for(i=0;i<<%=jsonTransaction.length%>;i++){
+			value+=parseInt($("#value1"+i).text());
+		}
+		$("#selectedFee").text(value.toFixed(0));
+	}else{
+		$("input[name='selectCheckBox']").each(function() {
+			$(this).prop("checked", false);
+		});
+		$("#selectedFee").text(0);		
+	}
+}
+
+function selectFun(index){
+	var value=parseInt($("#selectedFee").text());
+	var fee=parseInt($("#value1"+index).text());
+	
+	if($("#selectCheckBoxId"+index).prop("checked"))
+	{
+		value+=fee;
+		$("#selectedFee").text(value.toFixed(0));
+	}else{
+		value-=fee;
+		$("#selectedFee").text(value.toFixed(0));		
+	}
+}
+
+function buyAll(){
+	disableButton();
+}
+
+function buy(){
+	samepart(buyInner);
+}
+
+function disableButton(){
+	var orig=$('#buyBtn').attr('class');
+	if(orig.search(' disabled')<0){
+		orig=orig+' disabled';
+		$('#buyBtn').attr('class',orig);
+	}
+	
+	orig=$('#buyBtnAll').attr('class');
+	if(orig.search(' disabled')<0){
+		orig=orig+' disabled';
+		$(buyBtnAll).attr('class',orig);
+	}
+}
+
+function buyInner(){
+	disableButton();
+	var form=document.getElementById('formID');
+	form.submit();
+}
+
+function samepart(toDO){
+	var JSONarrayString='{"array":['
+	$("input[name='selectCheckBox']").each(function() {
+			if($(this).prop("checked")){
+				JSONarrayString+=$(this).val();
+				JSONarrayString+=',';
+			}
+	});
+	if(JSONarrayString!='{"array":['){
+		JSONarrayString=JSONarrayString.substr(0,JSONarrayString.length-1);
+		JSONarrayString+=']}';
+		$("#hdnIpt").val(JSONarrayString);
+		toDO();
+	}else{
+		alert("未選擇欲同意訊息!");
+	}
+}
+<%}%>
+</script>
+<%- include('layout_footer',{imgSettingCode:"var ifLoadedCount=0;",imgDrawingCode:""}); -%>

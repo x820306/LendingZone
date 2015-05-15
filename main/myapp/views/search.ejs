@@ -42,9 +42,9 @@
 				<table width="100%">
 					<tr>
 						<td>
-							<input style="height:32px;width:150px;display:inline;" type="text" placeholder="下限(元/%/個月/級)" class="form-control" value="<%=lboundDefault%>" id="lbound">
+							<input style="height:32px;width:150px;display:inline;" type="text" placeholder="下限(元/%/個月/級)" class="form-control" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode==13){ window.open('/search?keyword='+encodeURIComponent($('#subKeywordIpt').val())+'&action='+encodeURIComponent($('#sorter0').text())+'&category='+encodeURIComponent($('#subCategory0').text())+'&filter='+encodeURIComponent($('#filter0').text())+'&lbound='+encodeURIComponent($('#lbound').val())+'&ubound='+encodeURIComponent($('#ubound').val())+'&page=1','_self');}">
 							&nbsp;~&nbsp;
-							<input style="height:32px;width:150px;display:inline;" type="text" placeholder="上限(元/%/個月/級)" class="form-control" value="<%=uboundDefault%>" id="ubound">
+							<input style="height:32px;width:150px;display:inline;" type="text" placeholder="上限(元/%/個月/級)" class="form-control" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode==13){ window.open('/search?keyword='+encodeURIComponent($('#subKeywordIpt').val())+'&action='+encodeURIComponent($('#sorter0').text())+'&category='+encodeURIComponent($('#subCategory0').text())+'&filter='+encodeURIComponent($('#filter0').text())+'&lbound='+encodeURIComponent($('#lbound').val())+'&ubound='+encodeURIComponent($('#ubound').val())+'&page=1','_self');}">
 							&nbsp;&nbsp;&nbsp;&nbsp;
 							<div class="btn-group">
 								<button type="button" style="height:32px;" class="btn btn-default dropdown-toggle" data-toggle="dropdown" id="filterSelected">
@@ -64,26 +64,26 @@
 				</table>
 				<br>
 				<br>
-				<br>
 			<% if(totalResultNum>0){%>
 				<% for(var i=0; i<jsonArray.length; i++) { %>
-					<table width="100%">
+					<div style="border-top-style: none;border-right-style: none;border-bottom-style: none;border-left-style: none;margin-bottom: 0px;" class="table-responsive">
+					<table style="margin-bottom: 0px;" class="table" width="100%">
 						<tr>
-							<td>
+							<td style="border-top-style: none;">
 								<div style="font-size:15px;color:#337ab7;display:inline;">
-									金額：<%=jsonArray[i].MoneyToBorrow%>元
+									金額：<%=jsonArray[i].MoneyToBorrow.toFixed(0)%>元
 								</div>&nbsp;&nbsp;&nbsp;&nbsp;
 								<div style="font-size:15px;color:#337ab7;display:inline;">
-									利率：<%=jsonArray[i].MaxInterestRateAccepted*100%>%
+									利率：<%=(jsonArray[i].MaxInterestRateAccepted*100).toFixed(2)%>%
 								</div>&nbsp;&nbsp;&nbsp;&nbsp;
 								<div style="font-size:15px;color:#337ab7;display:inline;">
-									期數：<%=jsonArray[i].MonthPeriodAccepted%>個月
+									期數：<%=jsonArray[i].MonthPeriodAccepted.toFixed(0)%>個月
 								</div>&nbsp;&nbsp;&nbsp;&nbsp;
 								<div style="font-size:15px;color:#337ab7;display:inline;">
-									信用：<%=jsonArray[i].Level%>級
+									信用：<%=jsonArray[i].Level.toFixed(0)%>級
 								</div>
 							</td>
-							<td align="right">
+							<td style="border-top-style: none;" align="right">
 								<div style="font-size:15px;color:#337ab7;display:inline;">
 									Deadline：<%=jsonArray[i].TimeLimit.getFullYear()%>/<%=jsonArray[i].TimeLimit.getMonth()+1%>/<%=jsonArray[i].TimeLimit.getDate()%>
 								</div>
@@ -94,6 +94,7 @@
 							</td>
 						<tr>
 					</table>
+					</div>
 					<div class="panel panel-default pd">
 						<div class="panel-body">
 							<table width="100%">
@@ -194,4 +195,4 @@
 		</div>
 	</div>
 </div>
-<%- include('layout_footer'); -%>
+<%- include('layout_footer',{imgSettingCode:"var ifLoadedCount=0;",imgDrawingCode:""}); -%>

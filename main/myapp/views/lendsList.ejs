@@ -17,6 +17,10 @@
 							<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter3').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter3">利率最高</a></li>
 							<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter4').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter4">期數最多</a></li>
 							<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter5').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter5">可接受信用等級最高</a></li>
+							<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter6').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter6">可接受總利息最高</a></li>
+							<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter7').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter7">可接受平均利息最高</a></li>
+							<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter8').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter8">可接受平均本利和最高</a></li>
+							<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter9').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter9">可接受利本比最高</a></li>
 						</ul>
 					</div>
 					<button type="button" style="height:40px;" class="btn btn-default" onclick="window.open('/lendsList?sorter='+encodeURIComponent($('#sorter0').text())+'&page=1','_self');">Go!</button>
@@ -31,7 +35,7 @@
 								<div style="font-size:25px;color:#0000D1;display:inline;"><%=jsonLends[i].CreatedBy.Username%></div>
 								<br>
 								<br>
-								<div>
+								<div class="col-md-6">
 									<table width="100%" height="250px">
 										<tr>
 											<td>
@@ -43,35 +47,35 @@
 										<tr>
 											<td>
 												<div>
-													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonLends[i].MaxMoneyToLend%>元
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonLends[i].MaxMoneyToLend.toFixed(0)%>元
 												</div>	
 											</td>
 										<tr>
 										<tr>
 											<td>
 												<div style="color:#337ab7;">
-													&nbsp;&nbsp;&nbsp;&nbsp;欲借出利率：
+													&nbsp;&nbsp;&nbsp;&nbsp;最低欲借出利率：
 												</div>
 											</td>
 										<tr>
 										<tr>
 											<td>
 												<div>
-													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonLends[i].InterestRate*100%>%
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=(jsonLends[i].InterestRate*100).toFixed(2)%>%
 												</div>	
 											</td>
 										<tr>
 										<tr>
 											<td>
 												<div style="color:#337ab7;&nbsp;&nbsp;&nbsp;&nbsp;">
-													&nbsp;&nbsp;&nbsp;&nbsp;期數：
+													&nbsp;&nbsp;&nbsp;&nbsp;最低欲借出期數：
 												</div>
 											</td>
 										<tr>
 										<tr>
 											<td>
 												<div>
-													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonLends[i].MonthPeriod%>個月
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonLends[i].MonthPeriod.toFixed(0)%>個月
 												</div>	
 											</td>
 										<tr>
@@ -85,7 +89,67 @@
 										<tr>
 											<td>
 												<div>
-													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonLends[i].MinLevelAccepted%>級
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonLends[i].MinLevelAccepted.toFixed(0)%>級
+												</div>	
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div style="color:#337ab7;">
+													&nbsp;&nbsp;&nbsp;&nbsp;最低可接受總利息
+												</div>
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonLends[i].MinInterestInFuture.toFixed(0)%>元
+												</div>	
+											</td>
+										<tr>
+									</table>	
+								</div>	
+								<div class="col-md-6">
+									<table width="100%" height="250px">		
+										<tr>
+											<td>
+												<div style="color:#337ab7;">
+													&nbsp;&nbsp;&nbsp;&nbsp;最低可接受每期平均利息
+												</div>
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonLends[i].MinInterestInFutureMonth.toFixed(0)%>元
+												</div>	
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div style="color:#337ab7;">
+													&nbsp;&nbsp;&nbsp;&nbsp;最低可接受每期平均本利和
+												</div>
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonLends[i].MinInterestInFutureMoneyMonth.toFixed(0)%>元
+												</div>	
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div style="color:#337ab7;">
+													&nbsp;&nbsp;&nbsp;&nbsp;最低可接受總利息/最初本金比
+												</div>
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=(jsonLends[i].MinInterestInFutureDivMoney*100).toFixed(2)%>%
 												</div>	
 											</td>
 										<tr>
@@ -237,4 +301,4 @@
 		</div>
 	</div>
 </div>
-<%- include('layout_footer'); -%>
+<%- include('layout_footer',{imgSettingCode:"var ifLoadedCount=0;",imgDrawingCode:""}); -%>
