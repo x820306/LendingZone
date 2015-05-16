@@ -42,7 +42,7 @@ router.post('/createTest', function(req, res, next) {
 	});
 });
 
-router.post('/buyInsurance', function(req, res, next) {
+router.post('/buyInsurance',ensureAuthenticated, function(req, res, next) {
 	var JSONobj=JSON.parse(req.body.JsonArrayString);
 	req.body.array=JSONobj.array;
 	if(req.body.array.length>0){
@@ -50,7 +50,7 @@ router.post('/buyInsurance', function(req, res, next) {
 	}
 });
 
-router.get('/buyInsuranceAll/:sorter?', function(req, res, next) {
+router.get('/buyInsuranceAll/:sorter?',ensureAuthenticated, function(req, res, next) {
 	var sorter=decodeURIComponent(req.query.sorter);
 	
 	var sorterRec;
@@ -220,7 +220,7 @@ function buyInsurance(ctr,ctrTarget,returnSring,req,res){
 																	if(ctr<ctrTarget){
 																		buyInsurance(ctr,ctrTarget,returnSring,req,res)
 																	}else{
-																		res.redirect('/lenderTransactionRecord?filter='+chineseEncodeToURI('已保險')+'&sorter='+chineseEncodeToURI('最新')+'&page=1');
+																		res.redirect('/lender/lenderTransactionRecord?filter='+chineseEncodeToURI('已保險')+'&sorter='+chineseEncodeToURI('最新')+'&page=1');
 																	}
 																}else{
 																	if(lend.MaxMoneyToLend>updatedLenderBankaccount.MoneyInBankAccount){
@@ -240,7 +240,7 @@ function buyInsurance(ctr,ctrTarget,returnSring,req,res){
 																				if(ctr<ctrTarget){
 																					buyInsurance(ctr,ctrTarget,returnSring,req,res)
 																				}else{
-																					res.redirect('/lenderTransactionRecord?filter='+chineseEncodeToURI('已保險')+'&sorter='+chineseEncodeToURI('最新')+'&page=1');
+																					res.redirect('/lender/lenderTransactionRecord?filter='+chineseEncodeToURI('已保險')+'&sorter='+chineseEncodeToURI('最新')+'&page=1');
 																				}
 																			}
 																		});
@@ -249,7 +249,7 @@ function buyInsurance(ctr,ctrTarget,returnSring,req,res){
 																		if(ctr<ctrTarget){
 																			buyInsurance(ctr,ctrTarget,returnSring,req,res)
 																		}else{
-																			res.redirect('/lenderTransactionRecord?filter='+chineseEncodeToURI('已保險')+'&sorter='+chineseEncodeToURI('最新')+'&page=1');
+																			res.redirect('/lender/lenderTransactionRecord?filter='+chineseEncodeToURI('已保險')+'&sorter='+chineseEncodeToURI('最新')+'&page=1');
 																		}
 																	}
 																}
@@ -278,10 +278,9 @@ function ensureAuthenticated(req, res, next) {
 }
 
 function ensureAdmin(req, res, next) {
-  var admimID="admimID";
-  
-  if(req.user._id==admimID){ return next(null); }
-	res.redirect('/message?content='+chineseEncodeToURI('請以管理員身分登入'))
+  var objID=mongoose.Types.ObjectId('5555251bb08002f0068fd00f');//管理員ID
+  if(req.user._id==objID){ return next(null); }
+	res.redirect('/message?content='+chineseEncodeToURI('請以管理員身分登入'));
 }
 
 function chineseEncodeToURI(string){

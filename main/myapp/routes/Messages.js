@@ -174,7 +174,7 @@ function toLendCreatePart(res,req,borrow,lenderBankaccount,outterPara){
 																							console.log(err);
 																							res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
 																						}else{
-																							res.redirect('/story?id='+req.body.FromBorrowRequest);
+																							res.redirect('/lender/story?id='+req.body.FromBorrowRequest);
 																						}
 																					});
 																				}else{
@@ -194,7 +194,7 @@ function toLendCreatePart(res,req,borrow,lenderBankaccount,outterPara){
 																									console.log(err);
 																									res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
 																								}else{
-																									res.redirect('/story?id='+req.body.FromBorrowRequest);
+																									res.redirect('/lender/story?id='+req.body.FromBorrowRequest);
 																								}
 																							});
 																						}
@@ -214,7 +214,7 @@ function toLendCreatePart(res,req,borrow,lenderBankaccount,outterPara){
 								}
 							});
 						}else{
-							res.redirect('/story?id='+req.body.FromBorrowRequest);
+							res.redirect('/lender/story?id='+req.body.FromBorrowRequest);
 						}
 					}
 				});
@@ -237,24 +237,24 @@ function toLendUpdatePart(res,req,innerPara,innerPara2,message){
 			console.log(err);
 			res.redirect('/message?content='+chineseEncodeToURI('更新失敗!'));
 		}else{
-			res.redirect('/story?id='+req.body.FromBorrowRequest);
+			res.redirect('/lender/story?id='+req.body.FromBorrowRequest);
 		}
 	});
 }
 
 router.post('/rejectToBorrowMessageInStory', ensureAuthenticated, function(req, res, next) {
-	library.rejectMessage(false,0,0,null,req,res,false,'/story?id='+req.body.FromBorrowRequest);
+	library.rejectMessage(false,0,0,null,req,res,false,'/lender/story?id='+req.body.FromBorrowRequest);
 });
 
 router.post('/confirmToBorrowMessageInStory', ensureAuthenticated, function(req, res, next) {
-	library.confirmToBorrowMessage(false,0,0,null,req,res,false,'/story?id='+req.body.FromBorrowRequest,true);
+	library.confirmToBorrowMessage(false,0,0,null,req,res,false,'/lender/story?id='+req.body.FromBorrowRequest,true);
 });
 
 router.post('/rejectToBorrowMessageInLRM', ensureAuthenticated, function(req, res, next) {
 	var JSONobj=JSON.parse(req.body.JsonArrayString);
 	req.body.array=JSONobj.array;
 	if(req.body.array.length>0){
-		library.rejectMessage(true,0,req.body.array.length,null,req,res,false,'/lenderReceiveMessages?msgKeyword=&filter='+chineseEncodeToURI('已婉拒')+'&sorter='+chineseEncodeToURI('最新')+'&page=1');
+		library.rejectMessage(true,0,req.body.array.length,null,req,res,false,'/lender/lenderReceiveMessages?msgKeyword=&filter='+chineseEncodeToURI('已婉拒')+'&sorter='+chineseEncodeToURI('最新')+'&page=1');
 	}
 });
 
@@ -262,7 +262,7 @@ router.post('/confirmToBorrowMessageInLRM', ensureAuthenticated, function(req, r
 	var JSONobj=JSON.parse(req.body.JsonArrayString);
 	req.body.array=JSONobj.array;
 	if(req.body.array.length>0){
-		library.confirmToBorrowMessage(true,0,req.body.array.length,null,req,res,false,'/lenderReceiveMessages?msgKeyword=&filter='+chineseEncodeToURI('已同意')+'&sorter='+chineseEncodeToURI('最新')+'&page=1',true);
+		library.confirmToBorrowMessage(true,0,req.body.array.length,null,req,res,false,'/lender/lenderReceiveMessages?msgKeyword=&filter='+chineseEncodeToURI('已同意')+'&sorter='+chineseEncodeToURI('最新')+'&page=1',true);
 	}
 });
 
@@ -329,7 +329,7 @@ router.get('/rejectToBorrowMessageInLRMall/:sorter?', ensureAuthenticated, funct
 					arrayOp.push(temp);
 				}
 				req.body.array=arrayOp;
-				library.rejectMessage(true,0,req.body.array.length,null,req,res,false,'/lenderReceiveMessages?msgKeyword=&filter='+chineseEncodeToURI('已婉拒')+'&sorter='+chineseEncodeToURI('最新')+'&page=1');
+				library.rejectMessage(true,0,req.body.array.length,null,req,res,false,'/lender/lenderReceiveMessages?msgKeyword=&filter='+chineseEncodeToURI('已婉拒')+'&sorter='+chineseEncodeToURI('最新')+'&page=1');
 			}
 		}
 	});
@@ -398,7 +398,7 @@ router.get('/confirmToBorrowMessageInLRMall/:sorter?', ensureAuthenticated, func
 					arrayOp.push(temp);
 				}
 				req.body.array=arrayOp;
-				library.confirmToBorrowMessage(true,0,req.body.array.length,null,req,res,false,'/lenderReceiveMessages?msgKeyword=&filter='+chineseEncodeToURI('已同意')+'&sorter='+chineseEncodeToURI('最新')+'&page=1',true);
+				library.confirmToBorrowMessage(true,0,req.body.array.length,null,req,res,false,'/lender/lenderReceiveMessages?msgKeyword=&filter='+chineseEncodeToURI('已同意')+'&sorter='+chineseEncodeToURI('最新')+'&page=1',true);
 			}
 		}
 	});
@@ -445,7 +445,7 @@ router.post('/destroy', ensureAuthenticated, function(req, res, next) {
 							res.redirect('/message?content='+chineseEncodeToURI('刪除失敗!'));
 						}else{
 							if(removedItem.Type=='toLend'){
-								res.redirect('/story?id='+req.body.FromBorrowRequest);
+								res.redirect('/lender/story?id='+req.body.FromBorrowRequest);
 							}else if(removedItem.Type=='toBorrow'){
 								res.redirect('/');
 							}
@@ -465,10 +465,9 @@ function ensureAuthenticated(req, res, next) {
 }
 
 function ensureAdmin(req, res, next) {
-  var admimID="admimID";
-  
-  if(req.user._id==admimID){ return next(null); }
-	res.redirect('/message?content='+chineseEncodeToURI('請以管理員身分登入'))
+  var objID=mongoose.Types.ObjectId('5555251bb08002f0068fd00f');//管理員ID
+  if(req.user._id==objID){ return next(null); }
+	res.redirect('/message?content='+chineseEncodeToURI('請以管理員身分登入'));
 }
 
 function chineseEncodeToURI(string){

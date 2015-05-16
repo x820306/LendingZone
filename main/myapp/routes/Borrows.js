@@ -41,7 +41,7 @@ router.post('/create', function(req, res, next) {
 	});
 });
 
-router.post('/like', function(req, res, next) {
+router.post('/like', ensureAuthenticated, function(req, res, next) {
 	Borrows.findById(req.body._id).exec(function (err, borrow){
 		if (err) {
 			console.log(err);
@@ -75,7 +75,7 @@ router.post('/like', function(req, res, next) {
 	});
 });
 
-router.post('/unlike', function(req, res, next) {
+router.post('/unlike', ensureAuthenticated, function(req, res, next) {
 	Borrows.findById(req.body._id).exec(function (err, borrow){
 		if (err) {
 			console.log(err);
@@ -118,10 +118,9 @@ function ensureAuthenticated(req, res, next) {
 }
 
 function ensureAdmin(req, res, next) {
-  var admimID="admimID";
-  
-  if(req.user._id==admimID){ return next(null); }
-	res.redirect('/message?content='+chineseEncodeToURI('請以管理員身分登入'))
+  var objID=mongoose.Types.ObjectId('5555251bb08002f0068fd00f');//管理員ID
+  if(req.user._id==objID){ return next(null); }
+	res.redirect('/message?content='+chineseEncodeToURI('請以管理員身分登入'));
 }
 
 function chineseEncodeToURI(string){

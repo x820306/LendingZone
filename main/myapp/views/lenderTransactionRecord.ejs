@@ -49,7 +49,7 @@
 							<%}%>
 						</ul>
 					</div>
-					<button type="button" style="height:40px;" class="btn btn-default" onclick="window.open('/lenderTransactionRecord?filter='+encodeURIComponent($('#filter0').text())+'&sorter='+encodeURIComponent($('#sorter0').text())+'&page=1','_self');">Go!</button>
+					<button type="button" style="height:40px;" class="btn btn-default" onclick="window.open('/lender/lenderTransactionRecord?filter='+encodeURIComponent($('#filter0').text())+'&sorter='+encodeURIComponent($('#sorter0').text())+'&page=1','_self');">Go!</button>
 				</div>
 				<% if(totalResultNum!=0){ %>
 					<% if(filterDefault=='未保險'){%>
@@ -332,7 +332,7 @@
 						<%}%>
 						<td align="right">
 							<div style="color:#337ab7;">
-								<a href="/lenderReturnRecord?id=<%=jsonTransaction[i]._id%>&sorter=<%=encodeURIComponent("最新")%>&page=1">該筆交易收款記錄</a>&nbsp;&nbsp;&nbsp;&nbsp;Updated：<%=jsonTransaction[i].Updated.getFullYear()%>/<%=jsonTransaction[i].Updated.getMonth()+1%>/<%=jsonTransaction[i].Updated.getDate()%>
+								<a href="/lender/lenderReturnRecord?id=<%=jsonTransaction[i]._id%>&sorter=<%=encodeURIComponent("最新")%>&page=1">該筆交易收款記錄</a>&nbsp;&nbsp;&nbsp;&nbsp;Updated：<%=jsonTransaction[i].Updated.getFullYear()%>/<%=jsonTransaction[i].Updated.getMonth()+1%>/<%=jsonTransaction[i].Updated.getDate()%>
 							</div>
 						</td>
 					<tr>
@@ -357,7 +357,7 @@
 									<%}%>
 								>
 								<% if(targetPageNumber!=1){%>
-									<a href="/lenderTransactionRecord?filter=<%=encodeURIComponent(filterDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=targetPageNumber-1%>">
+									<a href="/lender/lenderTransactionRecord?filter=<%=encodeURIComponent(filterDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=targetPageNumber-1%>">
 								<%}else{%>
 									<a href="#" onclick="return false;">
 								<%}%>
@@ -368,7 +368,7 @@
 											<% if(targetPageNumber==j){%>
 												class="active"
 											<%}%>
-										><a href="/lenderTransactionRecord?filter=<%=encodeURIComponent(filterDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=j%>"><%=j%></a></li>
+										><a href="/lender/lenderTransactionRecord?filter=<%=encodeURIComponent(filterDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=j%>"><%=j%></a></li>
 									<%}%>
 								<% }else{%>
 									<% if(targetPageNumber>=pageNumber-3){%>
@@ -377,7 +377,7 @@
 											<% if(targetPageNumber==j){%>
 												class="active"
 											<%}%>
-										><a href="/lenderTransactionRecord?filter=<%=encodeURIComponent(filterDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=j%>"><%=j%></a></li>
+										><a href="/lender/lenderTransactionRecord?filter=<%=encodeURIComponent(filterDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=j%>"><%=j%></a></li>
 										<%}%>
 									<%}else if(targetPageNumber<=5){%>
 										<% for(var j=1; j<=10; j++) { %>
@@ -385,15 +385,15 @@
 											<% if(targetPageNumber==j){%>
 												class="active"
 											<%}%>
-										><a href="/lenderTransactionRecord?filter=<%=encodeURIComponent(filterDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=j%>"><%=j%></a></li>
+										><a href="/lender/lenderTransactionRecord?filter=<%=encodeURIComponent(filterDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=j%>"><%=j%></a></li>
 										<%}%>
 									<%}else{%>
 										<% for(var j=targetPageNumber-5; j<targetPageNumber; j++) { %>
-										<li><a href="/lenderTransactionRecord?filter=<%=encodeURIComponent(filterDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=j%>"><%=j%></a></li>
+										<li><a href="/lender/lenderTransactionRecord?filter=<%=encodeURIComponent(filterDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=j%>"><%=j%></a></li>
 										<%}%>
-										<li class="active"><a href="/lenderTransactionRecord?filter=<%=encodeURIComponent(filterDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=targetPageNumber%>"><%=targetPageNumber%></a></li>
+										<li class="active"><a href="/lender/lenderTransactionRecord?filter=<%=encodeURIComponent(filterDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=targetPageNumber%>"><%=targetPageNumber%></a></li>
 										<% for(var j=targetPageNumber+1; j<=targetPageNumber+4; j++) { %>
-										<li><a href="/lenderTransactionRecord?filter=<%=encodeURIComponent(filterDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=j%>"><%=j%></a></li>
+										<li><a href="/lender/lenderTransactionRecord?filter=<%=encodeURIComponent(filterDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=j%>"><%=j%></a></li>
 										<%}%>
 									<%}%>
 								<%}%>
@@ -403,7 +403,7 @@
 									<%}%>
 								>	
 								<% if(targetPageNumber!=pageNumber){%>
-									<a href="/lenderTransactionRecord?filter=<%=encodeURIComponent(filterDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=targetPageNumber+1%>">
+									<a href="/lender/lenderTransactionRecord?filter=<%=encodeURIComponent(filterDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=targetPageNumber+1%>">
 								<%}else{%>
 									<a href="#" onclick="return false;">
 								<%}%>
@@ -448,9 +448,29 @@ function selectFun(index){
 	{
 		value+=fee;
 		$("#selectedFee").text(value.toFixed(0));
+		
+		var ctr=0;
+		$("input[name='selectCheckBox']").each(function() {
+			if($(this).prop("checked")){
+				ctr+=1;
+			}
+		});
+		if(ctr==$("input[name='selectCheckBox']").length){
+			$("#selectAll").prop("checked", true);
+		}
 	}else{
 		value-=fee;
-		$("#selectedFee").text(value.toFixed(0));		
+		$("#selectedFee").text(value.toFixed(0));
+
+		var ctr=0;
+		$("input[name='selectCheckBox']").each(function() {
+			if($(this).prop("checked")){
+				ctr+=1;
+			}
+		});
+		if(ctr<$("input[name='selectCheckBox']").length){
+			$("#selectAll").prop("checked", false);
+		}
 	}
 }
 

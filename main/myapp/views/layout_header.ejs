@@ -31,31 +31,30 @@
 					</button>
 					<a class="navbar-brand" href="/">Lending Zone</a>
 				</div>
-
 				<!-- Collect the nav links, forms, and other content for toggling -->
 				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 					<ul class="nav navbar-nav navbar-left">
-						<li
-							<% if(nav_cur=='borrow'){ %>
-								class="active"
-							<% } %>
-						><a href="/borrow">借入</a></li>
+						<li class="dropdown">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">借入 <span class="caret"></span></a>
+							<ul class="dropdown-menu" role="menu">
+							</ul>
+						</li>
 						<li class="dropdown<% if((nav_cur=='lend')||(nav_cur=='lenderSendMessages')||(nav_cur=='lenderReceiveMessages')||(nav_cur=='lenderTransactions')){ %> active<% } %>">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">借出 <span class="caret"></span></a>
 							<ul class="dropdown-menu" role="menu">
-								<li <% if(nav_cur=='lend'){ %> class="active"<% } %>><% if(!userName){ %><a href="#" data-toggle="modal" data-target="#myModal"><% }else{ %><a href="/lend"><%}%>自動借出設定</a></li>
-								<li <% if(nav_cur=='income'){ %> class="active"<% } %>><% if(!userName){ %><a href="#" data-toggle="modal" data-target="#myModal"><% }else{ %><a href="/income"><%}%>收入分析</a></li>
-								<li <% if(nav_cur=='lenderTransactionRecord'){ %> class="active"<% } %>><% if(!userName){ %><a href="#" data-toggle="modal" data-target="#myModal"><% }else{ %><a href="/lenderTransactionRecord?filter=<%=encodeURIComponent("未保險")%>&sorter=<%=encodeURIComponent("最新")%>&page=1"><%}%>借出紀錄</a></li>
-								<li <% if(nav_cur=='lenderReturnRecord'){ %> class="active"<% } %>><% if(!userName){ %><a href="#" data-toggle="modal" data-target="#myModal"><% }else{ %><a href="/lenderReturnRecord?id=&sorter=<%=encodeURIComponent("最新")%>&page=1"><%}%>收款記錄</a></li>
+								<li <% if(nav_cur=='lend'){ %> class="active"<% } %>><% if(!userName){ %><a href="#" data-toggle="modal" data-target="#myModal"><% }else{ %><a href="/lender/lend"><%}%>自動借出設定</a></li>
+								<li <% if(nav_cur=='income'){ %> class="active"<% } %>><% if(!userName){ %><a href="#" data-toggle="modal" data-target="#myModal"><% }else{ %><a href="/lender/income"><%}%>收入分析</a></li>
+								<li <% if(nav_cur=='lenderTransactionRecord'){ %> class="active"<% } %>><% if(!userName){ %><a href="#" data-toggle="modal" data-target="#myModal"><% }else{ %><a href="/lender/lenderTransactionRecord?filter=<%=encodeURIComponent("未保險")%>&sorter=<%=encodeURIComponent("最新")%>&page=1"><%}%>借出紀錄</a></li>
+								<li <% if(nav_cur=='lenderReturnRecord'){ %> class="active"<% } %>><% if(!userName){ %><a href="#" data-toggle="modal" data-target="#myModal"><% }else{ %><a href="/lender/lenderReturnRecord?id=&sorter=<%=encodeURIComponent("最新")%>&page=1"><%}%>收款記錄</a></li>
 								<li class="divider"></li>
-								<li <% if(nav_cur=='lenderReceiveMessages'){ %> class="active"<% } %>><% if(!userName){ %><a href="#" data-toggle="modal" data-target="#myModal"><% }else{ %><a href="/lenderReceiveMessages?msgKeyword=&filter=<%=encodeURIComponent("未確認")%>&sorter=<%=encodeURIComponent("利率最高")%>&page=1"><%}%>收到之欲借入訊息</a></li>
-								<li <% if(nav_cur=='lenderSendMessages'){ %> class="active"<% } %>><% if(!userName){ %><a href="#" data-toggle="modal" data-target="#myModal"><% }else{ %><a href="/lenderSendMessages?msgKeyword=&filter=<%=encodeURIComponent("未被確認")%>&sorter=<%=encodeURIComponent("最新")%>&page=1"><%}%>送出之欲借出訊息</a></li>
+								<li <% if(nav_cur=='lenderReceiveMessages'){ %> class="active"<% } %>><% if(!userName){ %><a href="#" data-toggle="modal" data-target="#myModal"><% }else{ %><a href="/lender/lenderReceiveMessages?msgKeyword=&filter=<%=encodeURIComponent("未確認")%>&sorter=<%=encodeURIComponent("利率最高")%>&page=1"><%}%>收到之欲借入訊息</a></li>
+								<li <% if(nav_cur=='lenderSendMessages'){ %> class="active"<% } %>><% if(!userName){ %><a href="#" data-toggle="modal" data-target="#myModal"><% }else{ %><a href="/lender/lenderSendMessages?msgKeyword=&filter=<%=encodeURIComponent("未被確認")%>&sorter=<%=encodeURIComponent("最新")%>&page=1"><%}%>送出之欲借出訊息</a></li>
 							</ul>
 						</li>
 					</ul>
 					<div class="navbar-form navbar-left" role="search">
 						<div class="input-group">
-							<input type="text" style="height:32px;" class="form-control" id="keywordIpt" placeholder="搜尋借入者的故事" value="<%=keywordDefault%>" onkeypress="if(event.keyCode==13){ window.open('/search?keyword='+encodeURIComponent($('#keywordIpt').val())+'&action='+encodeURIComponent($('#searchAction0').text())+'&category='+encodeURIComponent($('#category0').text())+'&filter='+encodeURIComponent('未選擇濾鏡')+'&lbound=&ubound=&page=1','_self');}">
+							<input type="text" style="height:32px;" class="form-control" id="keywordIpt" placeholder="搜尋借入者的故事" value="<%=keywordDefault%>" onkeypress="if(event.keyCode==13){ window.open('/lender/search?keyword='+encodeURIComponent($('#keywordIpt').val())+'&action='+encodeURIComponent($('#searchAction0').text())+'&category='+encodeURIComponent($('#category0').text())+'&filter='+encodeURIComponent('未選擇濾鏡')+'&lbound=&ubound=&page=1','_self');}">
 							<span class="input-group-btn">
 								<div class="btn-group">
 									<button type="button" style="height:32px;" class="btn btn-default dropdown-toggle" data-toggle="dropdown" id="categorySelected">
@@ -83,7 +82,7 @@
 										<li><a href="#" onclick="$('#searchActionSelected').html('');$('#searchActionSelected').html($('#searchAction7').text());$('#searchAction0').html($('#searchActionSelected').text());$('#searchActionSelected').append(' <span class=\'caret\'><\/span>');return false;" id="searchAction7">信用等級最高</a></li>
 									</ul>
 								</div>
-								<button type="button" style="height:32px;" class="btn btn-default" onclick="window.open('/search?keyword='+encodeURIComponent($('#keywordIpt').val())+'&action='+encodeURIComponent($('#searchAction0').text())+'&category='+encodeURIComponent($('#category0').text())+'&filter='+encodeURIComponent('未選擇濾鏡')+'&lbound=&ubound=&page=1','_self');"><span class="glyphicon glyphicon-search"></span></button>	
+								<button type="button" style="height:32px;" class="btn btn-default" onclick="window.open('/lender/search?keyword='+encodeURIComponent($('#keywordIpt').val())+'&action='+encodeURIComponent($('#searchAction0').text())+'&category='+encodeURIComponent($('#category0').text())+'&filter='+encodeURIComponent('未選擇濾鏡')+'&lbound=&ubound=&page=1','_self');"><span class="glyphicon glyphicon-search"></span></button>	
 							</span>
 						</div> 
 					</div>
@@ -95,7 +94,7 @@
 								<% if(nav_cur=='signup'){ %>
 									class="active"
 								<% } %>
-							><a href="/signup">註冊</a></li>
+							><a href="/signupTest">註冊</a></li>
 						<% }else{ %>
 							<li class="dropdown">
 								<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><%=userName%> <span class="caret"></span></a>

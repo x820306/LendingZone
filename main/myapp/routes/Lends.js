@@ -97,7 +97,7 @@ function createPart(res,req,outterPara){
 				var toSaveJSON={CreatedBy:req.user._id,CommandID:toSaveID,LendID:newCreate._id};
 				library.autoComfirmToBorrowMsgArray.push(toSaveJSON);
 			}
-			res.redirect('/lend');
+			res.redirect('/lender/lend');
 		}
 	});
 }
@@ -146,7 +146,7 @@ function updatePart(res,req,lend){
 				var toSaveJSON={CreatedBy:req.user._id,CommandID:toSaveID,LendID:newUpdate._id};
 				library.autoComfirmToBorrowMsgArray.push(toSaveJSON);
 			}
-			res.redirect('/lend');
+			res.redirect('/lender/lend');
 		}
 	});
 }
@@ -263,7 +263,7 @@ router.post('/destroy', ensureAuthenticated, function(req, res, next) {
 									library.autoComfirmToBorrowMsgArray.splice(i,1);
 								}
 							}
-							res.redirect('/lend');
+							res.redirect('/lender/lend');
 						}
 					});
 				}
@@ -282,10 +282,9 @@ function ensureAuthenticated(req, res, next) {
 }
 
 function ensureAdmin(req, res, next) {
-  var admimID="admimID";
-  
-  if(req.user._id==admimID){ return next(null); }
-	res.redirect('/message?content='+chineseEncodeToURI('請以管理員身分登入'))
+  var objID=mongoose.Types.ObjectId('5555251bb08002f0068fd00f');//管理員ID
+  if(req.user._id==objID){ return next(null); }
+	res.redirect('/message?content='+chineseEncodeToURI('請以管理員身分登入'));
 }
 
 function chineseEncodeToURI(string){
