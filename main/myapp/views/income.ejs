@@ -90,16 +90,20 @@
 									<canvas id="myChart1" width="300" height="300"></canvas>
 									<br>
 									各月預計投資回報率曲線圖
+									<div id="line3Pic">
 									<br>
 									<br>
 									<canvas id="myChart4" width="300" height="300"></canvas>
 									<br>
 									各月歷史收入曲線圖
+									</div>
+									<div id="line4Pic">
 									<br>
 									<br>
 									<canvas id="myChart3" width="300" height="300"></canvas>
 									<br>
 									各月歷史投資回報率曲線圖
+									</div>
 								<td>
 							<tr>
 						</table>
@@ -153,19 +157,29 @@
 		}
 		if(data2JSON.labels){
 			if(data2JSON.labels.length>0){
-				var myLineChart2 = new Chart(ctx2).Line(data2JSON ,{tooltipTemplate: "<%%if (label){%><%%=label%>: <%%}%><%%= value.toFixed(0) %>元",multiTooltipTemplate: "<%%= value.toFixed(0) %>元"});
+				var myLineChart2 = new Chart(ctx2).Line(data2JSON ,{tooltipTemplate: "<%%if (label){%><%%=label%>: <%%}%><%%= value.toFixed(2) %>元",multiTooltipTemplate: "<%%= value.toFixed(2) %>元"});
 			}
 		}
 		if(data3JSON.labels){
 			if(data3JSON.labels.length>0){
 				var myLineChart3 = new Chart(ctx3).Line(data3JSON ,{tooltipTemplate: "<%%if (label){%><%%=label%>: <%%}%><%%= value.toFixed(4) %>%",multiTooltipTemplate: "<%%= value.toFixed(4) %>%"});
+			}else{
+				$("#line3Pic").html('');
 			}
+		}else{
+			$("#line3Pic").html('');
 		}
+		
 		if(data4JSON.labels){
 			if(data4JSON.labels.length>0){
-				var myLineChart4 = new Chart(ctx4).Line(data4JSON ,{tooltipTemplate: "<%%if (label){%><%%=label%>: <%%}%><%%= value.toFixed(0) %>元",multiTooltipTemplate: "<%%= value.toFixed(0) %>元"});
+				var myLineChart4 = new Chart(ctx4).Line(data4JSON ,{tooltipTemplate: "<%%if (label){%><%%=label%>: <%%}%><%%= value.toFixed(2) %>元",multiTooltipTemplate: "<%%= value.toFixed(2) %>元"});
+			}else{
+				$("#line4Pic").html('');
 			}
+		}else{
+			$("#line4Pic").html('');
 		}
+		
 		if(data5JSON.array){
 			var myPieChart = new Chart(ctx5).Pie(data5JSON.array ,{tooltipTemplate: "<%%if (label){%><%%=label%>: <%%}%><%%= value.toFixed(2) %>%",multiTooltipTemplate: "<%%= value.toFixed(2) %>%"});
 		}

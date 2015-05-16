@@ -104,7 +104,6 @@ app.get('/', function (req, res) {
 	if(req.isAuthenticated()){
 		auRst=req.user.Username;
 	}
-	
 	res.render('index',{userName:auRst});
 });
 
@@ -138,7 +137,7 @@ app.get('/signupTest', function (req, res) {
 		auRst=req.user.Username;
 	}
 	
-	res.render('signup',{userName:auRst});
+	res.render('signupTest',{userName:auRst});
 });
 
 //database models routers

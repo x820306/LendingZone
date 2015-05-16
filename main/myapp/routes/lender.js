@@ -823,7 +823,7 @@ router.get('/income', ensureAuthenticated, function (req, res) {
 					var tempMonthRoi=0;
 					if(tempMonthPrincipal>0){
 						tempMonthRoi=tempMonthRevunue/tempMonthPrincipal*100;
-						var tempJson={ROI: tempMonthRoi, Revenue: tempMonthRevunue};
+						var tempJson={ROI: Math.round(tempMonthRoi*10000)/10000, Revenue: Math.round(tempMonthRevunue*100)/100};
 						monthArray.push(tempJson);
 					}
 					if(j==0){
@@ -845,7 +845,7 @@ router.get('/income', ensureAuthenticated, function (req, res) {
 					var tempMonthRoi=0;
 					if(tempMonthPrincipal>0){
 						tempMonthRoi=tempMonthRevunue/tempMonthPrincipal*100;
-						var tempJson={ROI: tempMonthRoi, Revenue: tempMonthRevunue};
+						var tempJson={ROI: Math.round(tempMonthRoi*10000)/10000, Revenue: Math.round(tempMonthRevunue*100)/100};
 						monthArray2.push(tempJson);
 					}
 				}
@@ -922,7 +922,9 @@ router.get('/income', ensureAuthenticated, function (req, res) {
 					data1.datasets[0].data.push(monthArray[j].ROI);
 					data2.datasets[0].data.push(monthArray[j].Revenue);
 				}
-				yearRoi=yearRoi/monthArray.length;
+				if(monthArray.length>0){
+					yearRoi=yearRoi/monthArray.length;
+				}
 				yearRoi=yearRoi.toFixed(4);
 				yearRevenue=yearRevenue.toFixed(0);
 				
@@ -944,7 +946,9 @@ router.get('/income', ensureAuthenticated, function (req, res) {
 				data3.datasets[0].data.reverse();
 				data4.labels.reverse();
 				data4.datasets[0].data.reverse();
-				yearHistoryRoi=yearHistoryRoi/monthArray2.length;
+				if(monthArray2.length>0){
+					yearHistoryRoi=yearHistoryRoi/monthArray2.length;
+				}
 				yearHistoryRoi=yearHistoryRoi.toFixed(4);
 				yearHistoryRevenue=yearHistoryRevenue.toFixed(0);
 				
@@ -1004,7 +1008,6 @@ router.get('/income', ensureAuthenticated, function (req, res) {
 					data5Array[i].value=data5Array[i].value/totalTemp*100;
 				}
 				data5.array=data5Array;
-				
 				res.render('income',{userName:req.user.Username,totalResultNum:totalResultNumber,monRevNow:monthRevenueNow,monRoiNow:monthRoiNow,yrRoi:yearRoi,yrRev:yearRevenue,yrHistoryRoi:yearHistoryRoi,yrHistoryRev:yearHistoryRevenue,mnyLendNow:moneyLendedNow,data01:data1,data02:data2,data03:data3,data04:data4,data05:data5});
 			}
 		}
