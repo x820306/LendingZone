@@ -69,6 +69,9 @@
 									<th>
 									全部合計平均本利和
 									</th>
+									<th>
+									全部合計利本比
+									</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -84,6 +87,9 @@
 									</td>
 									<td>
 									<div style="display:inline;" id="value4All"><%=value4AllDefault.toFixed(0)%></div><div style="display:inline;">元</div>
+									</td>
+									<td>
+									<div style="display:inline;" id="value5All"><%=(value2AllDefault/value1AllDefault*100).toFixed(2)%></div><div style="display:inline;">%</div>
 									</td>
 								</tr>
 							</body>
@@ -116,6 +122,9 @@
 									<th>
 									已選合計平均本利和
 									</th>
+									<th>
+									已選合計利本比
+									</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -131,6 +140,9 @@
 									</td>
 									<td>
 										<div style="display:inline;" id="value4">0</div><div style="display:inline;">元</div>
+									</td>
+									<td>
+										<div style="display:inline;" id="value5">0.00</div><div style="display:inline;">%</div>
 									</td>
 								</tr>
 							</body>
@@ -597,16 +609,24 @@ function selectAllFun(){
 		var value2=0;
 		var value3=0;
 		var value4=0;
+		var value5;
 		for(i=0;i<<%=jsonMessage.length%>;i++){
 			value1+=parseInt($("#value1"+i).text());
 			value2+=parseInt($("#value2"+i).text());
 			value3+=parseInt($("#value3"+i).text());
 			value4+=parseInt($("#value4"+i).text());
 		}
+		
+		if(value1>0){
+			value5=value2/value1*100;
+		}else{
+			value5=0;
+		}
 		$("#value1").text(value1.toFixed(0));
 		$("#value2").text(value2.toFixed(0));
 		$("#value3").text(value3.toFixed(0));
 		$("#value4").text(value4.toFixed(0));
+		$("#value5").text(value5.toFixed(2));
 	}else{
 		$("input[name='selectCheckBox']").each(function() {
 			$(this).prop("checked", false);
@@ -614,7 +634,8 @@ function selectAllFun(){
 		$("#value1").text(0);
 		$("#value2").text(0);
 		$("#value3").text(0);
-		$("#value4").text(0);		
+		$("#value4").text(0);	
+		$("#value5").text('0.00');		
 	}
 }
 
@@ -627,6 +648,7 @@ function selectFun(index){
 	var fee3=parseInt($("#value3"+index).text());
 	var value4=parseInt($("#value4").text());
 	var fee4=parseInt($("#value4"+index).text());
+	var value5;
 	
 	if($("#selectCheckBoxId"+index).prop("checked"))
 	{
@@ -634,10 +656,16 @@ function selectFun(index){
 		value2+=fee2;
 		value3+=fee3;
 		value4+=fee4;
+		if(value1>0){
+			value5=value2/value1*100;
+		}else{
+			value5=0;
+		}
 		$("#value1").text(value1.toFixed(0));
 		$("#value2").text(value2.toFixed(0));
 		$("#value3").text(value3.toFixed(0));
 		$("#value4").text(value4.toFixed(0));
+		$("#value5").text(value5.toFixed(2));
 		
 		var ctr=0;
 		$("input[name='selectCheckBox']").each(function() {
@@ -653,10 +681,16 @@ function selectFun(index){
 		value2-=fee2;
 		value3-=fee3;
 		value4-=fee4;
+		if(value1>0){
+			value5=value2/value1*100;
+		}else{
+			value5=0;
+		}
 		$("#value1").text(value1.toFixed(0));
 		$("#value2").text(value2.toFixed(0));
 		$("#value3").text(value3.toFixed(0));
 		$("#value4").text(value4.toFixed(0));
+		$("#value5").text(value5.toFixed(2));
 
 		var ctr=0;
 		$("input[name='selectCheckBox']").each(function() {
