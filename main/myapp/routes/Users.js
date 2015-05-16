@@ -112,12 +112,13 @@ router.post('/levelSetter', function(req, res, next) {
 	Uid=sanitizer.sanitize(req.body.Uid);
 	Level=sanitizer.sanitize(req.body.Level);
 	
-	//userLevelSetter(res,Uid,Level);
+	userLevelSetter(res,Uid,Level);
+	//for setting user's level
 	
-	Returns.update({}, { ServiceChargeNotPaid:0},{multi:true}, function(err, numberAffected){  
+	/*Returns.update({}, { ServiceChargeNotPaid:0},{multi:true}, function(err, numberAffected){  
 		console.log(numberAffected);
 		res.end('end');
-	});
+	});*/
 	//for adding a new field into existed documents 
 });
 
