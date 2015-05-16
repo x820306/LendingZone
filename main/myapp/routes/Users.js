@@ -35,6 +35,7 @@ router.post('/createTest', function(req, res, next) {
 				toCreate.Email=sanitizer.sanitize(req.body.Email);
 				toCreate.Gender=sanitizer.sanitize(req.body.Gender);
 				toCreate.BirthDay=sanitizer.sanitize(req.body.BirthDay);
+				toCreate.IdCardNumber=sanitizer.sanitize(req.body.IdCardNumber);
 				toCreate.Phone=sanitizer.sanitize(req.body.Phone);
 				toCreate.Address=sanitizer.sanitize(req.body.Address);
 				

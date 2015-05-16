@@ -60,6 +60,7 @@ var Users = new Schema({
 	Email: { type: String},
 	Gender: { type: String},
 	BirthDay: { type: Date},
+	IdCardNumber: { type: String},
 	IdCard: { type: Buffer},
 	IdCardType: { type: String},
 	SecondCard: { type: Buffer},
