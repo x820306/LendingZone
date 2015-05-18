@@ -126,46 +126,54 @@ router.post('/pay', function(req, res, next) {
 																		console.log(err);
 																		res.end("error");
 																	}else{
-																		var objID=mongoose.Types.ObjectId('5555251bb08002f0068fd00f');//admin account
-																		BankAccounts.findOne({"OwnedBy": objID}).exec(function (err, adminAccount){
-																			if (err) {
+																		newCreate.BorrowerBankAccountNumber=newUpdate3.BankAccountNumber;
+																		newCreate.save(function (err,newCreate2){
+																			if (err){
 																				console.log(err);
-																				res.end("error");
+																				res.end("update Return error");
 																			}else{
-																				if(!adminAccount){
-																					res.end("error");
-																				}else{
-																					adminAccount.MoneyInBankAccount+=(ServiceChargeShouldPaid-ServiceChargeNotPaid);
-																					adminAccount.Updated = Date.now();
-																					adminAccount.save(function (err,newUpdate4) {
-																						if (err){
-																							console.log(err);
+																				var objID=mongoose.Types.ObjectId('5555251bb08002f0068fd00f');//admin account
+																				BankAccounts.findOne({"OwnedBy": objID}).exec(function (err, adminAccount){
+																					if (err) {
+																						console.log(err);
+																						res.end("error");
+																					}else{
+																						if(!adminAccount){
 																							res.end("error");
 																						}else{
-																							Lends.findOne({"CreatedBy": newUpdate.Lender}).exec(function (err, lend){
-																								if (err) {
+																							adminAccount.MoneyInBankAccount+=(ServiceChargeShouldPaid-ServiceChargeNotPaid);
+																							adminAccount.Updated = Date.now();
+																							adminAccount.save(function (err,newUpdate4) {
+																								if (err){
 																									console.log(err);
 																									res.end("error");
 																								}else{
-																									if(!lend){
-																										res.end('success');
-																									}else{
-																										lend.MaxMoneyToLend+=(PrincipalShouldPaid-PrincipalNotPaid);
-																										lend.Updated = Date.now();
-																										lend.save(function (err,newUpdate5) {
-																											if (err){
-																												console.log(err);
-																												res.end("error");
-																											}else{
+																									Lends.findOne({"CreatedBy": newUpdate.Lender}).exec(function (err, lend){
+																										if (err) {
+																											console.log(err);
+																											res.end("error");
+																										}else{
+																											if(!lend){
 																												res.end('success');
+																											}else{
+																												lend.MaxMoneyToLend+=(PrincipalShouldPaid-PrincipalNotPaid);
+																												lend.Updated = Date.now();
+																												lend.save(function (err,newUpdate5) {
+																													if (err){
+																														console.log(err);
+																														res.end("error");
+																													}else{
+																														res.end('success');
+																													}
+																												});	
 																											}
-																										});	
-																									}
+																										}
+																									});
 																								}
 																							});
 																						}
-																					});
-																				}
+																					}
+																				});
 																			}
 																		});
 																	}
@@ -186,6 +194,8 @@ router.post('/pay', function(req, res, next) {
 		}
 	});
 });
+
+																		
 
 module.exports = router;
 

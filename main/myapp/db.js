@@ -120,6 +120,7 @@ var Returns = new Schema({
 	PrincipalNotPaid: { type: Number, default: 0 },
 	PrincipalBeforePaid: { type: Number, default: 0 },
 	Level:{ type: Number, default: 0 },
+	BorrowerBankAccountNumber: {type: String, default:''},
 	Updated: { type: Date, default: Date.now },
 	Created: { type: Date, default: Date.now }
 });
