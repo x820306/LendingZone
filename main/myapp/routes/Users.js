@@ -116,7 +116,7 @@ router.post('/levelSetter', function(req, res, next) {
 	userLevelSetter(res,Uid,Level);
 	//for setting user's level
 	
-	/*Returns.update({}, { ServiceChargeNotPaid:0},{multi:true}, function(err, numberAffected){  
+	/*Borrows.update({}, { Discussion:[]},{multi:true}, function(err, numberAffected){  
 		console.log(numberAffected);
 		res.end('end');
 	});*/
@@ -201,13 +201,14 @@ function userLevelSetter(res,uid,newLevel){
 
 function ensureAuthenticated(req, res, next) {
   if (req.isAuthenticated()) { return next(null); }
-	res.redirect('/message?content='+chineseEncodeToURI('請登入'));
+	res.render('login',{userName:null,msg:'請登入'});
 }
 
+//add after ensureAuthenticated to confirm ifAdmin
 function ensureAdmin(req, res, next) {
   var objID=mongoose.Types.ObjectId('5555251bb08002f0068fd00f');//管理員ID
   if(req.user._id==objID){ return next(null); }
-	res.redirect('/message?content='+chineseEncodeToURI('請以管理員身分登入'));
+	res.render('login',{userName:null,msg:'請以管理員身分登入'});
 }
 
 function chineseEncodeToURI(string){

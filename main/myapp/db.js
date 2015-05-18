@@ -17,6 +17,7 @@ var Borrows = new Schema({
 	AutoComfirmToLendMsgPeriod: { type: Number, default: -1 },
 	AutoComfirmToLendMsgSorter: { type: String, default: 'InterestRate' },
 	CreatedBy: { type: Schema.Types.ObjectId, ref: 'Users' },
+	Discussion: [{ type: Schema.Types.ObjectId, ref: 'Discussions' }],
 	Updated: { type: Date, default: Date.now },
 	Created: { type: Date, default: Date.now }
 });

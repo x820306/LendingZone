@@ -62,6 +62,7 @@ router.post('/like', ensureAuthenticated, function(req, res, next) {
 				}else{
 					borrow.Likes.push(req.user._id);
 					borrow.LikeNumber ++ ;
+					borrow.Updated=Date.now();
 					borrow.save(function (err, newborrow){
 						if (err) {
 							console.log(err);
@@ -97,6 +98,7 @@ router.post('/unlike', ensureAuthenticated, function(req, res, next) {
 				}else{
 					borrow.Likes.splice(i, 1);;
 					borrow.LikeNumber -- ;
+					borrow.Updated=Date.now();
 					borrow.save(function (err, newborrow){
 						if (err) {
 							console.log(err);
@@ -114,13 +116,14 @@ module.exports = router;
 
 function ensureAuthenticated(req, res, next) {
   if (req.isAuthenticated()) { return next(null); }
-	res.redirect('/message?content='+chineseEncodeToURI('請登入'));
+	res.render('login',{userName:null,msg:'請登入'});
 }
 
+//add after ensureAuthenticated to confirm ifAdmin
 function ensureAdmin(req, res, next) {
   var objID=mongoose.Types.ObjectId('5555251bb08002f0068fd00f');//管理員ID
   if(req.user._id==objID){ return next(null); }
-	res.redirect('/message?content='+chineseEncodeToURI('請以管理員身分登入'));
+	res.render('login',{userName:null,msg:'請以管理員身分登入'});
 }
 
 function chineseEncodeToURI(string){

@@ -89,7 +89,7 @@
 								</div>
 								&nbsp;&nbsp;&nbsp;&nbsp;
 								<div style="font-size:15px;color:#337ab7;display:inline;">
-									Updated：<%=jsonArray[i].Updated.getFullYear()%>/<%=jsonArray[i].Updated.getMonth()+1%>/<%=jsonArray[i].Updated.getDate()%>
+									Created：<%=jsonArray[i].Created.getFullYear()%>/<%=jsonArray[i].Created.getMonth()+1%>/<%=jsonArray[i].Created.getDate()%>
 								</div>
 							</td>
 						<tr>
@@ -133,7 +133,7 @@
 									<%}%>
 								>
 								<% if(targetPageNumber!=1){%>
-									<a href="/lender/search?keyword=<%=encodeURIComponent(keywordDefault)%>&action=<%=encodeURIComponent(actionDefault)%>&filter=<%=encodeURIComponent(filterDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=targetPageNumber-1%>">
+									<a href="/lender/search?keyword=<%=encodeURIComponent(keywordDefault)%>&action=<%=encodeURIComponent(actionDefault)%>&category=<%=encodeURIComponent(categoryDefault)%>&filter=<%=encodeURIComponent(filterDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=targetPageNumber-1%>">
 								<%}else{%>
 									<a href="#" onclick="return false;">
 								<%}%>

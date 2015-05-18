@@ -140,6 +140,11 @@ app.get('/signupTest', function (req, res) {
 	res.render('signupTest',{userName:auRst});
 });
 
+app.get('/test', function (req, res) {
+	console.log(library.autoComfirmToBorrowMsgArray);
+	res.json(library.autoComfirmToBorrowMsgArray);
+});
+
 //database models routers
 app.use('/Users', Users);
 app.use('/Borrows', Borrows);
@@ -191,14 +196,14 @@ module.exports = app;
 
 function ensureAuthenticated(req, res, next) {
   if (req.isAuthenticated()) { return next(null); }
-	res.redirect('/message?content='+chineseEncodeToURI('請登入'));
+	res.render('login',{userName:null,msg:'請登入'});
 }
 
 //add after ensureAuthenticated to confirm ifAdmin
 function ensureAdmin(req, res, next) {
   var objID=mongoose.Types.ObjectId('5555251bb08002f0068fd00f');//管理員ID
   if(req.user._id==objID){ return next(null); }
-	res.redirect('/message?content='+chineseEncodeToURI('請以管理員身分登入'));
+	res.render('login',{userName:null,msg:'請以管理員身分登入'});
 }
 
 function chineseEncodeToURI(string){

@@ -5,7 +5,7 @@
 			<table width="100%">
 				<tr>
 					<td>
-						<div style="font-size:30px;color:#337ab7;"><%=json.StoryTitle%></div>
+						<div style="font-size:30px;color:#337ab7;"><%if(json.StoryTitle!=''){%><%=json.StoryTitle%><%}else{%>無標題<%}%></div>
 						<div style="font-size:20px;color:#0000D1;"> by <%=json.CreatedBy.Username%></div>
 					</td>
 					<td align="right">
@@ -44,7 +44,11 @@
             </ul>
             <div class="tab-content my-tab-content">
 				<div class="tab-pane active" id="tab1">
-					<%=json.Story%>
+					<%if(json.Story!=''){%>
+						<%=json.Story%>
+					<%}else{%>
+						無內容
+					<%}%>
 				</div>
 				<div class="tab-pane" id="tab2">
 					<table width="100%" height="275px">
@@ -150,12 +154,12 @@
 				</div>
 				<div class="tab-pane" id="tab3">
 					<div class="my_discussion" id="discussionDiv">
-						<%for(i=0;i<jsonComment.length;i++){%>
-							<%=jsonComment[i].CreatedBy.Username%>：
+						<%for(i=0;i<json.Discussion.length;i++){%>
+							<%=json.Discussion[i].CreatedBy.Username%>：
 							<br>
-							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonComment[i].Content%>
+							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=json.Discussion[i].Content%>
 							<br>
-							<%=jsonComment[i].Updated.getFullYear()%>/<%=jsonComment[i].Updated.getMonth()+1%>/<%=jsonComment[i].Updated.getDate()%>
+							<%=json.Discussion[i].Updated.getFullYear()%>/<%=json.Discussion[i].Updated.getMonth()+1%>/<%=json.Discussion[i].Updated.getDate()%>
 							<br>
 							<br>
 						<%}%>
@@ -190,22 +194,28 @@
 						<% }else{ %>
 							<%if(!ifSelf){ %>
 								<%if(!jsonBorrowMessage){%>
-									<%if(!json.IfReadable){ %>
+									<%if(!jsonMessage){ %>
+										<%if(!json.IfReadable){ %>
 											<button class="btn btn-default disabled">
-													<span style="color:#337ab7;">現在無法出借</span>
+												<span style="color:#337ab7;">該故事已封存</span>
 											</button>
-									<%}else{%>
-										<%if(!jsonMessage){ %>
+										<%}else{%>
 											<button class="btn btn-default" data-toggle="modal" data-target="#hendLendModal">
 												<span style="color:#337ab7;">我想借錢給此人</span>
 											</button>
-										<% }else{ %>
+										<%}%>
+									<% }else{ %>
+										<%if(!json.IfReadable){ %>
+											<button class="btn btn-default" data-toggle="modal" data-target="#hendLendModal">
+												<span style="color:#337ab7;">該故事已封存，但您仍可查看訊息</span>
+											</button>
+										<%}else{%>
 											<%if(jsonMessage.Status=='Confirmed'){ %>
-												<button class="btn btn-default disabled">
+												<button class="btn btn-default" data-toggle="modal" data-target="#hendLendModal">
 													<span style="color:#337ab7;">您的出借訊息已被同意</span>
 												</button>
 											<% }else if(jsonMessage.Status=='Rejected'){ %>
-												<button class="btn btn-default disabled">
+												<button class="btn btn-default" data-toggle="modal" data-target="#hendLendModal">
 													<span style="color:#337ab7;">您的出借訊息已被婉拒</span>
 												</button>
 											<% }else if(jsonMessage.Status=='NotConfirmed'){ %>
@@ -216,18 +226,24 @@
 										<%}%>
 									<%}%>
 								<%}else{%>
-									<%if(jsonBorrowMessage.Status=='Confirmed'){ %>
-										<button class="btn btn-default disabled">
-											<span style="color:#337ab7;">您已同意來自此人的借款請求</span>
+									<%if(!json.IfReadable){ %>
+										<button class="btn btn-default"  data-toggle="modal" data-target="#confirmModal">
+											<span style="color:#337ab7;">該故事已封存，但您仍可查看訊息</span>
 										</button>
-									<% }else if(jsonBorrowMessage.Status=='Rejected'){ %>
-										<button class="btn btn-default disabled">
-											<span style="color:#337ab7;">您已拒絕來自此人的借款請求</span>
-										</button>
-									<% }else if(jsonBorrowMessage.Status=='NotConfirmed'){ %>
-										<button class="btn btn-default" data-toggle="modal" data-target="#confirmModal">
-											<span style="color:#337ab7;">查看來自此人的訊息</span>
-										</button>
+									<%}else{%>
+										<%if(jsonBorrowMessage.Status=='Confirmed'){ %>
+											<button class="btn btn-default" data-toggle="modal" data-target="#confirmModal">
+												<span style="color:#337ab7;">您已同意來自此人的借款請求</span>
+											</button>
+										<% }else if(jsonBorrowMessage.Status=='Rejected'){ %>
+											<button class="btn btn-default" data-toggle="modal" data-target="#confirmModal">
+												<span style="color:#337ab7;">您已拒絕來自此人的借款請求</span>
+											</button>
+										<% }else if(jsonBorrowMessage.Status=='NotConfirmed'){ %>
+											<button class="btn btn-default" data-toggle="modal" data-target="#confirmModal">
+												<span style="color:#337ab7;">查看來自此人的訊息</span>
+											</button>
+										<%}%>
 									<%}%>
 								<%}%>
 							<%}else{%>
@@ -239,7 +255,7 @@
 					</td>
 					<td align="right">
 						<div style="color:#337ab7;">
-							Updated：<%=json.Updated.getFullYear()%>/<%=json.Updated.getMonth()+1%>/<%=json.Updated.getDate()%>
+							Created:<%=json.Created.getFullYear()%>/<%=json.Created.getMonth()+1%>/<%=json.Created.getDate()%>&nbsp;&nbsp;&nbsp;&nbsp;Updated：<div style="display:inline;" id="updatedDate"><%=json.Updated.getFullYear()%>/<%=json.Updated.getMonth()+1%>/<%=json.Updated.getDate()%></div>
 						</div>
 					</td>
 				<tr>
@@ -252,8 +268,8 @@
 <%if(userName){ %>
 	<%if(!ifSelf){ %>
 		<%if(!jsonBorrowMessage){%>
-			<%if(json.IfReadable){ %>
-				<%if(!jsonMessage){ %>
+			<%if(!jsonMessage){ %>
+				<%if(json.IfReadable){ %>
 					<div class="modal fade" id="hendLendModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 						<div class="modal-dialog modal-md">
 							<div class="modal-content">
@@ -321,7 +337,7 @@
 									<br>
 									<h4>訊息：</h4>
 									<textarea class="form-control" name="Message" rows="3"></textarea>
-									</div>
+								</div>
 									<input type="hidden" name="FromBorrowRequest" value="<%=json._id%>">
 									<div class="modal-footer">
 										<div class="btn-toolbar" role="toolbar">
@@ -334,97 +350,213 @@
 							</div>
 						</div>
 					</div>
-				<%}else{%>
-					<%if(jsonMessage.Status=='NotConfirmed'){ %>
-						<div class="modal fade" id="hendLendModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-							<div class="modal-dialog modal-md">
-								<div class="modal-content">
-									<div class="modal-header">
-										<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-										<h4 class="modal-title" id="myModalLabel">欲借出訊息 - 更新/刪除</h4>
+				<%}%>
+			<%}else{%>
+				<%if((!json.IfReadable)||(jsonMessage.Status=='Confirmed')||(jsonMessage.Status=='Rejected')){ %>
+					<div class="modal fade" id="hendLendModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+						<div class="modal-dialog modal-md">
+							<div class="modal-content">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+									<h4 class="modal-title" id="myModalLabel">欲借出訊息 - <%if(jsonMessage.Status=='Confirmed'){ %>已被同意<%}else if(jsonMessage.Status=='NotConfirmed'){%>未被確認<%}else if(jsonMessage.Status=='Rejected'){%>已被婉拒<%}%></h4>
+								</div>
+								<div class="modal-body">
+									<h4>預計總利息：</h4>
+									<div class="input-group">
+										<input type="text" class="form-control" id="interestFuture" readonly="readonly" value="<%=jsonMessage.InterestInFuture.toFixed(0)%>">
+										<span class="input-group-addon">元</span>
 									</div>
-									<div class="modal-body">
-										<h4>您銀行帳戶內的餘額：</h4>
-										<div class="input-group">
-											<input type="text" class="form-control" readonly="readonly" value="<%=MoneyInBankAccountValue.toFixed(0)%>">
-											<span class="input-group-addon">元</span>
-										</div>
-										<br>
-										<h4>您已借出的金額：</h4>
-										<div class="input-group">
-											<input type="text" class="form-control" readonly="readonly" value="<%=MoneyLended.toFixed(0)%>">
-											<span class="input-group-addon">元</span>
-										</div>
-										<br>
-										<h4>預計總利息：</h4>
-										<div class="input-group">
-											<input type="text" class="form-control" id="interestFuture" readonly="readonly" value="<%=jsonMessage.InterestInFuture.toFixed(0)%>">
-											<span class="input-group-addon">元</span>
-										</div>
-										<br>
-										<h4>預計每期平均利息：</h4>
-										<div class="input-group">
-											<input type="text" class="form-control" id="interestFutureMonth" readonly="readonly" value="<%=jsonMessage.InterestInFutureMonth.toFixed(0)%>">
-											<span class="input-group-addon">元</span>
-										</div>
-										<br>
-										<h4>預計每期平均本利和：</h4>
-										<div class="input-group">
-											<input type="text" class="form-control" id="interestFutureMoneyMonth" readonly="readonly" value="<%=jsonMessage.InterestInFutureMoneyMonth.toFixed(0)%>">
-											<span class="input-group-addon">元</span>
-										</div>
-										<br>
-										<h4>預計總利息/最初本金比：</h4>
-										<div class="input-group">
-											<input type="text" class="form-control" id="interestFutureDivMoney" readonly="readonly" value="<%=jsonMessage.InterestInFutureDivMoney.toFixed(2)%>">
-											<span class="input-group-addon">%</span>
-										</div>
-										<br>
-										<button type="button" class="btn btn-default" onclick="interestInFutureCalculator();">重新試算</button>
-										<br>
-									<form action="/Messages/toLendUpdate" method="post" id="formID">
-										<h4>本次欲借出金額：</h4>
-										<div class="input-group">
-											<input type="number" class="form-control" name="MoneyToLend" value="<%=jsonMessage.MoneyToLend.toFixed(0)%>">
-											<span class="input-group-addon">元</span>
-										</div>
-										<br>
-										<h4>本次欲借出利率：</h4>
-										<div class="input-group">
-											<input type="text" class="form-control" name="InterestRate" value="<%=(jsonMessage.InterestRate*100).toFixed(2)%>">
-											<span class="input-group-addon">%</span>
-										</div>
-										<br>
-										<h4>本次欲借出期數（單位/月）：</h4>
-										<div class="input-group">
-											<input type="number" class="form-control" name="MonthPeriod" value="<%=jsonMessage.MonthPeriod.toFixed(0)%>">
-											<span class="input-group-addon">個月</span>
-										</div>
-										<br>
-										<h4>訊息：</h4>
-										<textarea class="form-control" name="Message" rows="3"><%=jsonMessage.Message%></textarea>
-										</div>
-										<input type="hidden" name="FromBorrowRequest" value="<%=json._id%>">
-										<input type="hidden" name="_id" value="<%=jsonMessage._id%>">
-										<div class="modal-footer">
-											<div class="btn-toolbar" role="toolbar">
-												<div class="btn-group" role="group">
-													<button type="submit" class="btn btn-info" id="updateBtnID" onclick="update()">更新</button>
-												</div>
-												<div class="btn-group" role="group">
-													<button type="button" class="btn btn-danger" id="destroyBtnID" onclick="destroy();">刪除</button>
-												</div>
-											</div>
-										</div>
-									</form>
+									<br>
+									<h4>預計每期平均利息：</h4>
+									<div class="input-group">
+										<input type="text" class="form-control" id="interestFutureMonth" readonly="readonly" value="<%=jsonMessage.InterestInFutureMonth.toFixed(0)%>">
+										<span class="input-group-addon">元</span>
+									</div>
+									<br>
+									<h4>預計每期平均本利和：</h4>
+									<div class="input-group">
+										<input type="text" class="form-control" id="interestFutureMoneyMonth" readonly="readonly" value="<%=jsonMessage.InterestInFutureMoneyMonth.toFixed(0)%>">
+										<span class="input-group-addon">元</span>
+									</div>
+									<br>
+									<h4>預計總利息/最初本金比：</h4>
+									<div class="input-group">
+										<input type="text" class="form-control" id="interestFutureDivMoney" readonly="readonly" value="<%=jsonMessage.InterestInFutureDivMoney.toFixed(2)%>">
+										<span class="input-group-addon">%</span>
+									</div>
+									<br>
+									<h4>本次欲借出金額：</h4>
+									<div class="input-group">
+										<input type="number" class="form-control" name="MoneyToLend" readonly="readonly" value="<%=jsonMessage.MoneyToLend.toFixed(0)%>">
+										<span class="input-group-addon">元</span>
+									</div>
+									<br>
+									<h4>本次欲借出利率：</h4>
+									<div class="input-group">
+										<input type="text" class="form-control" name="InterestRate" readonly="readonly" value="<%=(jsonMessage.InterestRate*100).toFixed(2)%>">
+										<span class="input-group-addon">%</span>
+									</div>
+									<br>
+									<h4>本次欲借出期數（單位/月）：</h4>
+									<div class="input-group">
+										<input type="number" class="form-control" name="MonthPeriod" readonly="readonly" value="<%=jsonMessage.MonthPeriod.toFixed(0)%>">
+										<span class="input-group-addon">個月</span>
+									</div>
+									<br>
+									<h4>訊息：</h4>
+									<textarea class="form-control" name="Message" rows="3" readonly="readonly"><%=jsonMessage.Message%></textarea>
+									<br>
 								</div>
 							</div>
-						</div>	
-					<%}%>	
-				<%}%>	
-			<%}%>	
+						</div>
+					</div>
+				<%}else{%>
+					<div class="modal fade" id="hendLendModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+						<div class="modal-dialog modal-md">
+							<div class="modal-content">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+									<h4 class="modal-title" id="myModalLabel">欲借出訊息 - 更新/刪除</h4>
+								</div>
+								<div class="modal-body">
+									<h4>您銀行帳戶內的餘額：</h4>
+									<div class="input-group">
+										<input type="text" class="form-control" readonly="readonly" value="<%=MoneyInBankAccountValue.toFixed(0)%>">
+										<span class="input-group-addon">元</span>
+									</div>
+									<br>
+									<h4>您已借出的金額：</h4>
+									<div class="input-group">
+										<input type="text" class="form-control" readonly="readonly" value="<%=MoneyLended.toFixed(0)%>">
+										<span class="input-group-addon">元</span>
+									</div>
+									<br>
+									<h4>預計總利息：</h4>
+									<div class="input-group">
+										<input type="text" class="form-control" id="interestFuture" readonly="readonly" value="<%=jsonMessage.InterestInFuture.toFixed(0)%>">
+										<span class="input-group-addon">元</span>
+									</div>
+									<br>
+									<h4>預計每期平均利息：</h4>
+									<div class="input-group">
+										<input type="text" class="form-control" id="interestFutureMonth" readonly="readonly" value="<%=jsonMessage.InterestInFutureMonth.toFixed(0)%>">
+										<span class="input-group-addon">元</span>
+									</div>
+									<br>
+									<h4>預計每期平均本利和：</h4>
+									<div class="input-group">
+										<input type="text" class="form-control" id="interestFutureMoneyMonth" readonly="readonly" value="<%=jsonMessage.InterestInFutureMoneyMonth.toFixed(0)%>">
+										<span class="input-group-addon">元</span>
+									</div>
+									<br>
+									<h4>預計總利息/最初本金比：</h4>
+									<div class="input-group">
+										<input type="text" class="form-control" id="interestFutureDivMoney" readonly="readonly" value="<%=jsonMessage.InterestInFutureDivMoney.toFixed(2)%>">
+										<span class="input-group-addon">%</span>
+									</div>
+									<br>
+									<button type="button" class="btn btn-default" onclick="interestInFutureCalculator();">重新試算</button>
+									<br>
+								<form action="/Messages/toLendUpdate" method="post" id="formID">
+									<h4>本次欲借出金額：</h4>
+									<div class="input-group">
+										<input type="number" class="form-control" name="MoneyToLend" value="<%=jsonMessage.MoneyToLend.toFixed(0)%>">
+										<span class="input-group-addon">元</span>
+									</div>
+									<br>
+									<h4>本次欲借出利率：</h4>
+									<div class="input-group">
+										<input type="text" class="form-control" name="InterestRate" value="<%=(jsonMessage.InterestRate*100).toFixed(2)%>">
+										<span class="input-group-addon">%</span>
+									</div>
+									<br>
+									<h4>本次欲借出期數（單位/月）：</h4>
+									<div class="input-group">
+										<input type="number" class="form-control" name="MonthPeriod" value="<%=jsonMessage.MonthPeriod.toFixed(0)%>">
+										<span class="input-group-addon">個月</span>
+									</div>
+									<br>
+									<h4>訊息：</h4>
+									<textarea class="form-control" name="Message" rows="3"><%=jsonMessage.Message%></textarea>
+								</div>
+									<input type="hidden" name="FromBorrowRequest" value="<%=json._id%>">
+									<input type="hidden" name="_id" value="<%=jsonMessage._id%>">
+									<div class="modal-footer">
+										<div class="btn-toolbar" role="toolbar">
+											<div class="btn-group" role="group">
+												<button type="submit" class="btn btn-info" id="updateBtnID" onclick="update()">更新</button>
+											</div>
+											<div class="btn-group" role="group">
+												<button type="button" class="btn btn-danger" id="destroyBtnID" onclick="destroy();">刪除</button>
+											</div>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>	
+				<%}%>
+			<%}%>
 		<%}else{%>
-			<%if(jsonBorrowMessage.Status=='NotConfirmed'){ %>
+			<%if((!json.IfReadable)||(jsonBorrowMessage.Status=='Confirmed')||(jsonBorrowMessage.Status=='Rejected')){ %>
+				<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+					<div class="modal-dialog modal-md">
+						<div class="modal-content">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+								<h4 class="modal-title" id="myModalLabel">借款請求 - <%if(jsonBorrowMessage.Status=='Confirmed'){ %>已同意<%}else if(jsonBorrowMessage.Status=='NotConfirmed'){%>未確認<%}else if(jsonBorrowMessage.Status=='Rejected'){%>已婉拒<%}%></h4>
+							</div>
+							<div class="modal-body">
+								<h4>預計總利息：</h4>
+								<div class="input-group">
+									<input type="text" class="form-control" id="interestFuture" readonly="readonly" value="<%=jsonBorrowMessage.InterestInFuture.toFixed(0)%>">
+									<span class="input-group-addon">元</span>
+								</div>
+								<br>
+								<h4>預計每期平均利息：</h4>
+								<div class="input-group">
+									<input type="text" class="form-control" id="interestFutureMonth" readonly="readonly" value="<%=jsonBorrowMessage.InterestInFutureMonth.toFixed(0)%>">
+									<span class="input-group-addon">元</span>
+								</div>
+								<br>
+								<h4>預計每期平均本利和：</h4>
+								<div class="input-group">
+									<input type="text" class="form-control" id="interestFutureMoneyMonth" readonly="readonly" value="<%=jsonBorrowMessage.InterestInFutureMoneyMonth.toFixed(0)%>">
+									<span class="input-group-addon">元</span>
+								</div>
+								<br>
+								<h4>預計總利息/最初本金比：</h4>
+								<div class="input-group">
+									<input type="text" class="form-control" id="interestFutureDivMoney" readonly="readonly" value="<%=jsonBorrowMessage.InterestInFutureDivMoney.toFixed(2)%>">
+									<span class="input-group-addon">%</span>
+								</div>
+								<br>
+								<h4>金額：</h4>
+								<div class="input-group">
+									<input type="number" class="form-control" name="MoneyToLend" readonly="readonly" value="<%=jsonBorrowMessage.MoneyToLend.toFixed(0)%>">
+									<span class="input-group-addon">元</span>
+								</div>
+								<br>
+								<h4>利率：</h4>
+								<div class="input-group">
+									<input type="text" class="form-control" name="InterestRate" readonly="readonly" value="<%=(jsonBorrowMessage.InterestRate*100).toFixed(2)%>">
+									<span class="input-group-addon">%</span>
+								</div>
+								<br>
+								<h4>期數（單位/月）：</h4>
+								<div class="input-group">
+									<input type="number" class="form-control" name="MonthPeriod" readonly="readonly" value="<%=jsonBorrowMessage.MonthPeriod.toFixed(0)%>">
+									<span class="input-group-addon">個月</span>
+								</div>
+								<br>
+								<h4>訊息：</h4>
+								<textarea class="form-control" name="Message" rows="3" readonly="readonly"><%=jsonBorrowMessage.Message%></textarea>
+								<br>
+							</div>
+						</div>
+					</div>
+				</div>
+			<%}else{%>
 				<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 					<div class="modal-dialog modal-md">
 						<div class="modal-content">
@@ -492,7 +624,7 @@
 								<br>
 								<h4>訊息：</h4>
 								<textarea class="form-control" name="Message" rows="3" readonly="readonly"><%=jsonBorrowMessage.Message%></textarea>
-								</div>
+							</div>
 								<input type="hidden" name="FromBorrowRequest" value="<%=json._id%>">
 								<input type="hidden" name="MessageID" value="<%=jsonBorrowMessage._id%>">
 								<div class="modal-footer">
@@ -511,8 +643,8 @@
 				</div>
 			<%}%>
 		<%}%>
-	<%}%>	
-<%}%>
+	<%}%>		
+<%}%>			
 <script>
 	<%if(userName){%>
 		function sendComment(){
@@ -533,6 +665,8 @@
 						success: function(Jdata) {
 							var origInner;
 							if(Jdata.success){
+								var td=new Date();
+								$('#updatedDate').html(td.getFullYear()+'/'+(td.getMonth()+1)+'/'+td.getDate());
 								$('#discussionDiv').html('');
 								for(i=0;i<Jdata.result.length;i++){
 									var dateObj=new Date(Jdata.result[i].Updated);
@@ -551,7 +685,7 @@
 								origInner=origInner.replace(/ disabled/g, '');
 								$('#sendButton').attr('class',origInner);
 							}else{
-								alert('something wrong.');
+								alert(Jdata.error);
 								$('#iptCtr').attr('onkeypress','if(event.keyCode==13){sendComment();}');
 								$('#iptCtr').removeAttr("readonly");
 								origInner=$('#sendButton').attr('class');
@@ -585,6 +719,8 @@
 						dataType: 'json',
 						success: function(Jdata) {
 							if(Jdata.success){
+								var td=new Date();
+								$('#updatedDate').html(td.getFullYear()+'/'+(td.getMonth()+1)+'/'+td.getDate());
 								$('#likeBtn').html('<button class="btn btn-default" onclick="unlike();" id="btnID"><span style="color:#337ab7;" class="glyphicon glyphicon-remove"></span></button>');
 								$('#likeNum').html('&nbsp;'+Jdata.result);
 							}else{
@@ -616,6 +752,8 @@
 						dataType: 'json',
 						success: function(Jdata) {
 							if(Jdata.success){
+								var td=new Date();
+								$('#updatedDate').html(td.getFullYear()+'/'+(td.getMonth()+1)+'/'+td.getDate());
 								$('#likeBtn').html('<button class="btn btn-default" onclick="like();" id="btnID"><span style="color:#337ab7;" class="glyphicon glyphicon-thumbs-up"></span></button>');
 								$('#likeNum').html('&nbsp;'+Jdata.result);
 							}else{
@@ -668,42 +806,8 @@
 			}
 			
 			<%if(!jsonBorrowMessage){%>
-				<%if(json.IfReadable){ %>
-					<% if(jsonMessage){ %>
-						<% if(jsonMessage.Status=='NotConfirmed'){ %>
-							function destroy(){
-								var orig=$('#destroyBtnID').attr('class');
-								if(orig.search(' disabled')<0){
-									orig=orig+' disabled';
-									$('#destroyBtnID').attr('class',orig);
-								}
-								
-								var orig=$('#updateBtnID').attr('class');
-								if(orig.search(' disabled')<0){
-									orig=orig+' disabled';
-									$('#updateBtnID').attr('class',orig);
-								}
-								
-								var form=document.getElementById('formID');
-								form.action="/Messages/destroy";
-								form.submit();
-							}
-							
-							function update(){
-								var orig=$('#destroyBtnID').attr('class');
-								if(orig.search(' disabled')<0){
-									orig=orig+' disabled';
-									$('#destroyBtnID').attr('class',orig);
-								}
-								
-								var orig=$('#updateBtnID').attr('class');
-								if(orig.search(' disabled')<0){
-									orig=orig+' disabled';
-									$('#updateBtnID').attr('class',orig);
-								}
-							}
-						<%}%>
-					<%}else{%>
+				<% if(!jsonMessage){ %>
+					<%if(json.IfReadable){ %>
 						function create(){
 							var orig=$('#createBtnID').attr('class');
 							if(orig.search(' disabled')<0){
@@ -712,9 +816,43 @@
 							}
 						}
 					<%}%>
+				<%}else{%>
+					<%if((json.IfReadable)&&(jsonMessage.Status=='NotConfirmed')){ %>
+						function destroy(){
+							var orig=$('#destroyBtnID').attr('class');
+							if(orig.search(' disabled')<0){
+								orig=orig+' disabled';
+								$('#destroyBtnID').attr('class',orig);
+							}
+							
+							var orig=$('#updateBtnID').attr('class');
+							if(orig.search(' disabled')<0){
+								orig=orig+' disabled';
+								$('#updateBtnID').attr('class',orig);
+							}
+							
+							var form=document.getElementById('formID');
+							form.action="/Messages/destroy";
+							form.submit();
+						}
+						
+						function update(){
+							var orig=$('#destroyBtnID').attr('class');
+							if(orig.search(' disabled')<0){
+								orig=orig+' disabled';
+								$('#destroyBtnID').attr('class',orig);
+							}
+							
+							var orig=$('#updateBtnID').attr('class');
+							if(orig.search(' disabled')<0){
+								orig=orig+' disabled';
+								$('#updateBtnID').attr('class',orig);
+							}
+						}
+					<%}%>
 				<%}%>
 			<%}else{%>
-				<%if(jsonBorrowMessage.Status=='NotConfirmed'){ %>
+				<%if((json.IfReadable)&&(jsonBorrowMessage.Status=='NotConfirmed')){ %>
 					function agree(){
 						var orig=$('#argBtnID').attr('class');
 						if(orig.search(' disabled')<0){
@@ -747,7 +885,7 @@
 						form.submit();
 					}
 				<%}%>
-			<%}%>
+			<%}%>	
 		<%}%>
 	<%}%>
 </script>

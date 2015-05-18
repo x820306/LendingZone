@@ -49,7 +49,7 @@
 							<%}%>
 						</ul>
 					</div>
-					<button type="button" style="height:40px;" class="btn btn-default" onclick="window.open('/lender/lenderTransactionRecord?filter='+encodeURIComponent($('#filter0').text())+'&sorter='+encodeURIComponent($('#sorter0').text())+'&page=1','_self');">Go!</button>
+					<button type="button" style="height:40px;" class="btn btn-default" onclick="window.open('/lender/lenderTransactionRecord?oneid=<%=oneidDefault%>&filter='+encodeURIComponent($('#filter0').text())+'&sorter='+encodeURIComponent($('#sorter0').text())+'&page=1','_self');">Go!</button>
 				</div>
 				<% if(totalResultNum!=0){ %>
 					<% if(filterDefault=='未保險'){%>
@@ -109,10 +109,16 @@
 						<br>
 					<%}%>
 					<% for(var i=0; i<jsonTransaction.length; i++) { %>
-						<div style="height: 370px;" class="panel panel-default pd">
+						<div style="height: 390px;" class="panel panel-default pd">
 							<div class="panel-body">
 								<div style="font-size:25px;display:inline;">借給 </div>
 								<div style="font-size:25px;color:#0000D1;display:inline;"><%=jsonTransaction[i].Borrower.Username%></div>
+								<br>
+								<%if(jsonTransaction[i].CreatedFrom.FromBorrowRequest.StoryTitle!=''){%>
+									在 <a style="font-size:15px;" href="/lender/story?id=<%=jsonTransaction[i].CreatedFrom.FromBorrowRequest._id%>"><%=jsonTransaction[i].CreatedFrom.FromBorrowRequest.StoryTitle%></a>
+								<%}else{%>
+									在 <a style="font-size:15px;" href="/lender/story?id=<%=jsonTransaction[i].CreatedFrom.FromBorrowRequest._id%>">無故事標題</a>
+								<%}%>
 								<br>
 								<br>
 								<div class="col-md-6">
@@ -332,7 +338,7 @@
 						<%}%>
 						<td align="right">
 							<div style="color:#337ab7;">
-								<a href="/lender/lenderReturnRecord?id=<%=jsonTransaction[i]._id%>&sorter=<%=encodeURIComponent("最新")%>&page=1">該筆交易收款記錄</a>&nbsp;&nbsp;&nbsp;&nbsp;Updated：<%=jsonTransaction[i].Updated.getFullYear()%>/<%=jsonTransaction[i].Updated.getMonth()+1%>/<%=jsonTransaction[i].Updated.getDate()%>
+								<a href="/lender/lenderReturnRecord?oneid=&id=<%=jsonTransaction[i]._id%>&sorter=<%=encodeURIComponent("最新")%>&page=1">該筆交易收款記錄</a>&nbsp;&nbsp;&nbsp;&nbsp;Updated：<%=jsonTransaction[i].Updated.getFullYear()%>/<%=jsonTransaction[i].Updated.getMonth()+1%>/<%=jsonTransaction[i].Updated.getDate()%>
 							</div>
 						</td>
 					<tr>
@@ -357,7 +363,7 @@
 									<%}%>
 								>
 								<% if(targetPageNumber!=1){%>
-									<a href="/lender/lenderTransactionRecord?filter=<%=encodeURIComponent(filterDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=targetPageNumber-1%>">
+									<a href="/lender/lenderTransactionRecord?oneid=<%=oneidDefault%>&filter=<%=encodeURIComponent(filterDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=targetPageNumber-1%>">
 								<%}else{%>
 									<a href="#" onclick="return false;">
 								<%}%>
@@ -368,7 +374,7 @@
 											<% if(targetPageNumber==j){%>
 												class="active"
 											<%}%>
-										><a href="/lender/lenderTransactionRecord?filter=<%=encodeURIComponent(filterDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=j%>"><%=j%></a></li>
+										><a href="/lender/lenderTransactionRecord?oneid=<%=oneidDefault%>&filter=<%=encodeURIComponent(filterDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=j%>"><%=j%></a></li>
 									<%}%>
 								<% }else{%>
 									<% if(targetPageNumber>=pageNumber-3){%>
@@ -377,7 +383,7 @@
 											<% if(targetPageNumber==j){%>
 												class="active"
 											<%}%>
-										><a href="/lender/lenderTransactionRecord?filter=<%=encodeURIComponent(filterDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=j%>"><%=j%></a></li>
+										><a href="/lender/lenderTransactionRecord?oneid=<%=oneidDefault%>&filter=<%=encodeURIComponent(filterDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=j%>"><%=j%></a></li>
 										<%}%>
 									<%}else if(targetPageNumber<=5){%>
 										<% for(var j=1; j<=10; j++) { %>
@@ -385,15 +391,15 @@
 											<% if(targetPageNumber==j){%>
 												class="active"
 											<%}%>
-										><a href="/lender/lenderTransactionRecord?filter=<%=encodeURIComponent(filterDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=j%>"><%=j%></a></li>
+										><a href="/lender/lenderTransactionRecord?oneid=<%=oneidDefault%>&filter=<%=encodeURIComponent(filterDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=j%>"><%=j%></a></li>
 										<%}%>
 									<%}else{%>
 										<% for(var j=targetPageNumber-5; j<targetPageNumber; j++) { %>
-										<li><a href="/lender/lenderTransactionRecord?filter=<%=encodeURIComponent(filterDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=j%>"><%=j%></a></li>
+										<li><a href="/lender/lenderTransactionRecord?oneid=<%=oneidDefault%>&filter=<%=encodeURIComponent(filterDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=j%>"><%=j%></a></li>
 										<%}%>
-										<li class="active"><a href="/lender/lenderTransactionRecord?filter=<%=encodeURIComponent(filterDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=targetPageNumber%>"><%=targetPageNumber%></a></li>
+										<li class="active"><a href="/lender/lenderTransactionRecord?oneid=<%=oneidDefault%>&filter=<%=encodeURIComponent(filterDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=targetPageNumber%>"><%=targetPageNumber%></a></li>
 										<% for(var j=targetPageNumber+1; j<=targetPageNumber+4; j++) { %>
-										<li><a href="/lender/lenderTransactionRecord?filter=<%=encodeURIComponent(filterDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=j%>"><%=j%></a></li>
+										<li><a href="/lender/lenderTransactionRecord?oneid=<%=oneidDefault%>&filter=<%=encodeURIComponent(filterDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=j%>"><%=j%></a></li>
 										<%}%>
 									<%}%>
 								<%}%>
@@ -403,7 +409,7 @@
 									<%}%>
 								>	
 								<% if(targetPageNumber!=pageNumber){%>
-									<a href="/lender/lenderTransactionRecord?filter=<%=encodeURIComponent(filterDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=targetPageNumber+1%>">
+									<a href="/lender/lenderTransactionRecord?oneid=<%=oneidDefault%>&filter=<%=encodeURIComponent(filterDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=targetPageNumber+1%>">
 								<%}else{%>
 									<a href="#" onclick="return false;">
 								<%}%>

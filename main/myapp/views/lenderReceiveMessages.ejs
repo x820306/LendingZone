@@ -171,13 +171,15 @@
 						<li><a href="#tab3<%=i%>" data-toggle="tab">交易紀錄</a></li>
 						<% }%>
 					</ul>
-					<div class="tab-content my-tab-content">
+					<div style="height:310px;" class="tab-content my-tab-content">
 						<div class="tab-pane active" id="tab1<%=i%>">
 							<div style="font-size:25px;display:inline;">來自 </div>
 							<div style="font-size:25px;color:#0000D1;display:inline;"><%=jsonMessage[i].CreatedBy.Username%></div>
 							<br>
-							<%if((jsonMessage[i].FromBorrowRequest.StoryTitle!='')&&(jsonMessage[i].FromBorrowRequest.Story!='')){%>
+							<%if(jsonMessage[i].FromBorrowRequest.StoryTitle!=''){%>
 								在 <a style="font-size:15px;" href="/lender/story?id=<%=jsonMessage[i].FromBorrowRequest._id%>"><%=jsonMessage[i].FromBorrowRequest.StoryTitle%></a>
+							<%}else{%>
+								在 <a style="font-size:15px;" href="/lender/story?id=<%=jsonMessage[i].FromBorrowRequest._id%>">無故事標題</a>
 							<%}%>
 							<br>
 							<br>
@@ -511,7 +513,7 @@
 							<%}%>
 							<td align="right">
 								<div style="color:#337ab7;">
-									Updated：<%=jsonMessage[i].Updated.getFullYear()%>/<%=jsonMessage[i].Updated.getMonth()+1%>/<%=jsonMessage[i].Updated.getDate()%>
+									<%if(filterDefault=='已同意'){%><a href="/lender/lenderTransactionRecord?oneid=<%=jsonMessage[i].Transaction[0]._id%>&filter=<%if(jsonMessage[i].Transaction[0].InsuranceFeePaid>0){%>已保險<%}else{%>未保險<%}%>&sorter=<%=encodeURIComponent("最新")%>&page=1">查詢該筆交易</a>&nbsp;&nbsp;&nbsp;&nbsp;<%}%>Updated：<%=jsonMessage[i].Updated.getFullYear()%>/<%=jsonMessage[i].Updated.getMonth()+1%>/<%=jsonMessage[i].Updated.getDate()%>
 								</div>
 							</td>
 						<tr>

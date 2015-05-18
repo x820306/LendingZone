@@ -1,0 +1,17 @@
+<%- include('layout_header',{nav_cur:'message',actionDefault:'最新',keywordDefault:'',categoryDefault:'不分類'}); -%>
+<div class="container">
+	<div class="row">
+		<div class="col-md-9">
+			<%=msg%>
+		</div>
+		<div class="col-md-3">
+		</div>
+	</div>
+</div>
+<script>
+	$(document).ready(function () {
+		$('#myModalLabel').text("<%=msg%>");
+		$('#myModal').modal('show');
+	});
+</script>
+<%- include('layout_footer',{imgSettingCode:"var ifLoadedCount=0;",imgDrawingCode:""}); -%>

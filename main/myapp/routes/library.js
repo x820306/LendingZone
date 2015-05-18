@@ -5,6 +5,14 @@ var Messages  = mongoose.model('Messages');
 var BankAccounts  = mongoose.model('BankAccounts');
 var Transactions  = mongoose.model('Transactions');
 var sanitizer = require('sanitizer');
+var nodemailer = require('nodemailer');
+var transporter = nodemailer.createTransport({
+    service: 'Gmail',
+    auth: {
+        user: 'x820306test@gmail.com',
+        pass: 'github111'
+    }
+});
 var autoComfirmToBorrowMsgArray=[];
 var insuranceRate=0.01;
 var serviceChargeRate=0.01;
@@ -60,7 +68,7 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 				}else{
 					MID=req.body.array[ctr].MessageID;
 				}
-				Messages.findById(MID).exec(function (err, message){
+				Messages.findById(MID).populate('CreatedBy', 'Username Email').populate('SendTo', 'Username').populate('FromBorrowRequest', 'StoryTitle').exec(function (err, message){
 					if (err) {
 						console.log(err);
 						if(ifRecursive){
@@ -113,14 +121,14 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 								var authResult=true;
 								
 								if(ifLenderSide){
-									if(req.user._id!=message.SendTo){
+									if(req.user._id!=message.SendTo._id){
 										if(!ifAuto){
 											authResult=false;
 											res.redirect('/message?content='+chineseEncodeToURI('認證錯誤!'));
 										}
 									}
 								}else{
-									if(req.user._id!=message.CreatedBy){
+									if(req.user._id!=message.CreatedBy._id){
 										if(!ifAuto){
 											authResult=false;
 											res.redirect('/message?content='+chineseEncodeToURI('認證錯誤!'));
@@ -330,13 +338,56 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																			if(ifRecursive){
 																				ctr++;
 																				if(ctr<ctrTarget){
+																					var mailOptions = {
+																						from: 'x820306test ', // sender address
+																						to: message.CreatedBy.Email, // list of receivers
+																						subject: message.SendTo.Username+'婉拒了您的借款請求!', // Subject line
+																						text: '親愛的 '+message.CreatedBy.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+message.SendTo.Username+' 婉拒了您先前在「'+message.FromBorrowRequest.StoryTitle+'」送出的借款請求！'+String.fromCharCode(10)+String.fromCharCode(10)+'link: "http://localhost:3000/lender/lenderReceiveMessages?msgKeyword='+newUpdate._id+'&filter='+chineseEncodeToURI('已婉拒')+'&sorter='+chineseEncodeToURI('最新')+'&page=1">', // plaintext body
+																						html: '親愛的 '+message.CreatedBy.Username+' 您好：<br><br>'+message.SendTo.Username+' 婉拒了您先前在「'+message.FromBorrowRequest.StoryTitle+'」送出的借款請求！<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://localhost:3000/lender/lenderReceiveMessages?msgKeyword='+newUpdate._id+'&filter='+chineseEncodeToURI('已婉拒')+'&sorter='+chineseEncodeToURI('最新')+'&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看</span></a></td></tr></table>' 
+																						// html body
+																					};
+																					
+																					transporter.sendMail(mailOptions, function(error, info){
+																						if(error){
+																							console.log(error);
+																						}
+																					});
 																					exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,returnSring,req,res,ifAuto,resAddress,ifLenderSide);
 																				}else{
+																					var mailOptions = {
+																						from: 'x820306test ', // sender address
+																						to: message.CreatedBy.Email, // list of receivers
+																						subject: message.SendTo.Username+'婉拒了您的借款請求!', // Subject line
+																						text: '親愛的 '+message.CreatedBy.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+message.SendTo.Username+' 婉拒了您先前在「'+message.FromBorrowRequest.StoryTitle+'」送出的借款請求！'+String.fromCharCode(10)+String.fromCharCode(10)+'link: "http://localhost:3000/lender/lenderReceiveMessages?msgKeyword='+newUpdate._id+'&filter='+chineseEncodeToURI('已婉拒')+'&sorter='+chineseEncodeToURI('最新')+'&page=1">', // plaintext body
+																						html: '親愛的 '+message.CreatedBy.Username+' 您好：<br><br>'+message.SendTo.Username+' 婉拒了您先前在「'+message.FromBorrowRequest.StoryTitle+'」送出的借款請求！<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://localhost:3000/lender/lenderReceiveMessages?msgKeyword='+newUpdate._id+'&filter='+chineseEncodeToURI('已婉拒')+'&sorter='+chineseEncodeToURI('最新')+'&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看</span></a></td></tr></table>' 
+																						// html body
+																					};
+																					
+																					transporter.sendMail(mailOptions, function(error, info){
+																						if(error){
+																							console.log(error);
+																						}
+																					});
 																					if(!ifAuto){
 																						res.redirect('/message?content='+chineseEncodeToURI(returnSring));
 																					}
 																				}
 																			}else{
+																				var mailOptions = {
+																					from: 'x820306test ', // sender address
+																					to: message.CreatedBy.Email, // list of receivers
+																					subject: message.SendTo.Username+'婉拒了您的借款請求!', // Subject line
+																					text: '親愛的 '+message.CreatedBy.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+message.SendTo.Username+' 婉拒了您先前在「'+message.FromBorrowRequest.StoryTitle+'」送出的借款請求！'+String.fromCharCode(10)+String.fromCharCode(10)+'link: "http://localhost:3000/lender/lenderReceiveMessages?msgKeyword='+newUpdate._id+'&filter='+chineseEncodeToURI('已婉拒')+'&sorter='+chineseEncodeToURI('最新')+'&page=1">', // plaintext body
+																					html: '親愛的 '+message.CreatedBy.Username+' 您好：<br><br>'+message.SendTo.Username+' 婉拒了您先前在「'+message.FromBorrowRequest.StoryTitle+'」送出的借款請求！<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://localhost:3000/lender/lenderReceiveMessages?msgKeyword='+newUpdate._id+'&filter='+chineseEncodeToURI('已婉拒')+'&sorter='+chineseEncodeToURI('最新')+'&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看</span></a></td></tr></table>' 
+																					// html body
+																				};
+																				
+																				transporter.sendMail(mailOptions, function(error, info){
+																					if(error){
+																						console.log(error);
+																					}
+																				});
+																				
 																				if(!ifAuto){
 																					res.redirect('/message?content='+chineseEncodeToURI(returnSring));
 																				}
@@ -516,19 +567,59 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																															if(ifRecursive){
 																																ctr++;
 																																if(ctr<ctrTarget){
+																																	var mailOptions = {
+																																		from: 'x820306test ', // sender address
+																																		to: message.CreatedBy.Email, // list of receivers
+																																		subject: message.SendTo.Username+'同意了您的借款請求!', // Subject line
+																																		text: '親愛的 '+message.CreatedBy.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+message.SendTo.Username+' 同意了您先前在「'+message.FromBorrowRequest.StoryTitle+'」送出的借款請求！'+String.fromCharCode(10)+String.fromCharCode(10)+'link: "http://localhost:3000/lender/lenderReceiveMessages?msgKeyword='+newCreateUpdated._id+'&filter='+chineseEncodeToURI('已同意')+'&sorter='+chineseEncodeToURI('最新')+'&page=1">', // plaintext body
+																																		html: '親愛的 '+message.CreatedBy.Username+' 您好：<br><br>'+message.SendTo.Username+' 同意了您先前在「'+message.FromBorrowRequest.StoryTitle+'」送出的借款請求！<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://localhost:3000/lender/lenderReceiveMessages?msgKeyword='+newCreateUpdated._id+'&filter='+chineseEncodeToURI('已同意')+'&sorter='+chineseEncodeToURI('最新')+'&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看訊息與交易結果</span></a></td></tr></table>' 
+																																		// html body
+																																	};
+																																	
+																																	transporter.sendMail(mailOptions, function(error, info){
+																																		if(error){
+																																			console.log(error);
+																																		}
+																																	});
 																																	exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,returnSring,req,res,ifAuto,resAddress,ifLenderSide);
 																																}else{
-																																	if(returnSring){
-																																		if(!ifAuto){
-																																			res.redirect('/message?content='+chineseEncodeToURI(returnSring));
+																																	var mailOptions = {
+																																		from: 'x820306test ', // sender address
+																																		to: message.CreatedBy.Email, // list of receivers
+																																		subject: message.SendTo.Username+'同意了您的借款請求!', // Subject line
+																																		text: '親愛的 '+message.CreatedBy.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+message.SendTo.Username+' 同意了您先前在「'+message.FromBorrowRequest.StoryTitle+'」送出的借款請求！'+String.fromCharCode(10)+String.fromCharCode(10)+'link: "http://localhost:3000/lender/lenderReceiveMessages?msgKeyword='+newCreateUpdated._id+'&filter='+chineseEncodeToURI('已同意')+'&sorter='+chineseEncodeToURI('最新')+'&page=1">', // plaintext body
+																																		html: '親愛的 '+message.CreatedBy.Username+' 您好：<br><br>'+message.SendTo.Username+' 同意了您先前在「'+message.FromBorrowRequest.StoryTitle+'」送出的借款請求！<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://localhost:3000/lender/lenderReceiveMessages?msgKeyword='+newCreateUpdated._id+'&filter='+chineseEncodeToURI('已同意')+'&sorter='+chineseEncodeToURI('最新')+'&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看訊息與交易結果</span></a></td></tr></table>' 
+																																		// html body
+																																	};
+																																	
+																																	transporter.sendMail(mailOptions, function(error, info){
+																																		if(error){
+																																			console.log(error);
 																																		}
-																																	}else{
-																																		if(!ifAuto){
+																																	});
+																																	if(!ifAuto){
+																																		if(returnSring){	
+																																			res.redirect('/message?content='+chineseEncodeToURI(returnSring));
+																																		}else{
 																																			res.redirect(resAddress);
 																																		}
 																																	}
 																																}
 																															}else{
+																																var mailOptions = {
+																																	from: 'x820306test ', // sender address
+																																	to: message.CreatedBy.Email, // list of receivers
+																																	subject: message.SendTo.Username+'同意了您的借款請求!', // Subject line
+																																	text: '親愛的 '+message.CreatedBy.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+message.SendTo.Username+' 同意了您先前在「'+message.FromBorrowRequest.StoryTitle+'」送出的借款請求！'+String.fromCharCode(10)+String.fromCharCode(10)+'link: "http://localhost:3000/lender/lenderReceiveMessages?msgKeyword='+newCreateUpdated._id+'&filter='+chineseEncodeToURI('已同意')+'&sorter='+chineseEncodeToURI('最新')+'&page=1">', // plaintext body
+																																	html: '親愛的 '+message.CreatedBy.Username+' 您好：<br><br>'+message.SendTo.Username+' 同意了您先前在「'+message.FromBorrowRequest.StoryTitle+'」送出的借款請求！<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://localhost:3000/lender/lenderReceiveMessages?msgKeyword='+newCreateUpdated._id+'&filter='+chineseEncodeToURI('已同意')+'&sorter='+chineseEncodeToURI('最新')+'&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看訊息與交易結果</span></a></td></tr></table>' 
+																																	// html body
+																																};
+																																
+																																transporter.sendMail(mailOptions, function(error, info){
+																																	if(error){
+																																		console.log(error);
+																																	}
+																																});
 																																if(!ifAuto){
 																																	res.redirect(resAddress);
 																																}
@@ -572,7 +663,7 @@ exports.rejectMessage=function (ifRecursive,ctr,ctrTarget,returnSring,req,res,if
 	}else{
 		MID=req.body.array[ctr].MessageID;
 	}
-	Messages.findById(MID).exec(function (err, message){
+	Messages.findById(MID).populate('CreatedBy', 'Username Email').populate('SendTo', 'Username').populate('FromBorrowRequest', 'StoryTitle').exec(function (err, message){
 		if (err) {
 			console.log(err);
 			if(ifRecursive){
@@ -622,7 +713,7 @@ exports.rejectMessage=function (ifRecursive,ctr,ctrTarget,returnSring,req,res,if
 						}
 					}
 				}else{
-					if(req.user._id!=message.SendTo){
+					if(req.user._id!=message.SendTo._id){
 						if(!ifAuto){
 							res.redirect('/message?content='+chineseEncodeToURI('認證錯誤!'));
 						}
@@ -650,20 +741,61 @@ exports.rejectMessage=function (ifRecursive,ctr,ctrTarget,returnSring,req,res,if
 								if(ifRecursive){
 									ctr++;
 									if(ctr<ctrTarget){
+										var mailOptions = {
+											from: 'x820306test ', // sender address
+											to: message.CreatedBy.Email, // list of receivers
+											subject: message.SendTo.Username+'婉拒了您的借款請求!', // Subject line
+											text: '親愛的 '+message.CreatedBy.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+message.SendTo.Username+' 婉拒了您先前在「'+message.FromBorrowRequest.StoryTitle+'」送出的借款請求！'+String.fromCharCode(10)+String.fromCharCode(10)+'link: "http://localhost:3000/lender/lenderReceiveMessages?msgKeyword='+newUpdate._id+'&filter='+chineseEncodeToURI('已婉拒')+'&sorter='+chineseEncodeToURI('最新')+'&page=1">', // plaintext body
+											html: '親愛的 '+message.CreatedBy.Username+' 您好：<br><br>'+message.SendTo.Username+' 婉拒了您先前在「'+message.FromBorrowRequest.StoryTitle+'」送出的借款請求！<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://localhost:3000/lender/lenderReceiveMessages?msgKeyword='+newUpdate._id+'&filter='+chineseEncodeToURI('已婉拒')+'&sorter='+chineseEncodeToURI('最新')+'&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看</span></a></td></tr></table>' 
+											// html body
+										};
+										
+										transporter.sendMail(mailOptions, function(error, info){
+											if(error){
+												console.log(error);
+											}
+										});
 										exports.rejectMessage(ifRecursive,ctr,ctrTarget,returnSring,req,res,ifAuto,resAddress);
 									}else{
-										if(returnSring){
-											if(!ifAuto){
-												res.redirect('/message?content='+chineseEncodeToURI(returnSring));
+										var mailOptions = {
+											from: 'x820306test ', // sender address
+											to: message.CreatedBy.Email, // list of receivers
+											subject: message.SendTo.Username+'婉拒了您的借款請求!', // Subject line
+											text: '親愛的 '+message.CreatedBy.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+message.SendTo.Username+' 婉拒了您先前在「'+message.FromBorrowRequest.StoryTitle+'」送出的借款請求！'+String.fromCharCode(10)+String.fromCharCode(10)+'link: "http://localhost:3000/lender/lenderReceiveMessages?msgKeyword='+newUpdate._id+'&filter='+chineseEncodeToURI('已婉拒')+'&sorter='+chineseEncodeToURI('最新')+'&page=1">', // plaintext body
+											html: '親愛的 '+message.CreatedBy.Username+' 您好：<br><br>'+message.SendTo.Username+' 婉拒了您先前在「'+message.FromBorrowRequest.StoryTitle+'」送出的借款請求！<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://localhost:3000/lender/lenderReceiveMessages?msgKeyword='+newUpdate._id+'&filter='+chineseEncodeToURI('已婉拒')+'&sorter='+chineseEncodeToURI('最新')+'&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看</span></a></td></tr></table>' 
+											// html body
+										};
+										
+										transporter.sendMail(mailOptions, function(error, info){
+											if(error){
+												console.log(error);
 											}
-										}else{
-											if(!ifAuto){
+										});
+										
+										if(!ifAuto){
+											if(returnSring){
+												res.redirect('/message?content='+chineseEncodeToURI(returnSring));
+											}else{
 												res.redirect(resAddress);
 											}
 										}
 									}
 								}else{
-									if(!ifAuto){
+									var mailOptions = {
+										from: 'x820306test ', // sender address
+										to: message.CreatedBy.Email, // list of receivers
+										subject: message.SendTo.Username+'婉拒了您的借款請求!', // Subject line
+										text: '親愛的 '+message.CreatedBy.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+message.SendTo.Username+' 婉拒了您先前在「'+message.FromBorrowRequest.StoryTitle+'」送出的借款請求！'+String.fromCharCode(10)+String.fromCharCode(10)+'link: "http://localhost:3000/lender/lenderReceiveMessages?msgKeyword='+newUpdate._id+'&filter='+chineseEncodeToURI('已婉拒')+'&sorter='+chineseEncodeToURI('最新')+'&page=1">', // plaintext body
+										html: '親愛的 '+message.CreatedBy.Username+' 您好：<br><br>'+message.SendTo.Username+' 婉拒了您先前在「'+message.FromBorrowRequest.StoryTitle+'」送出的借款請求！<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://localhost:3000/lender/lenderReceiveMessages?msgKeyword='+newUpdate._id+'&filter='+chineseEncodeToURI('已婉拒')+'&sorter='+chineseEncodeToURI('最新')+'&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看</span></a></td></tr></table>' 
+										// html body
+									};
+									
+									transporter.sendMail(mailOptions, function(error, info){
+										if(error){
+											console.log(error);
+										}
+									});
+									if(!ifAuto){	
 										res.redirect(resAddress);
 									}
 								}
@@ -693,13 +825,14 @@ exports.interestInFutureCalculator=function (money,rate,month){
 
 function ensureAuthenticated(req, res, next) {
   if (req.isAuthenticated()) { return next(null); }
-	res.redirect('/message?content='+chineseEncodeToURI('請登入'));
+	res.render('login',{userName:null,msg:'請登入'});
 }
 
+//add after ensureAuthenticated to confirm ifAdmin
 function ensureAdmin(req, res, next) {
   var objID=mongoose.Types.ObjectId('5555251bb08002f0068fd00f');//管理員ID
   if(req.user._id==objID){ return next(null); }
-	res.redirect('/message?content='+chineseEncodeToURI('請以管理員身分登入'));
+	res.render('login',{userName:null,msg:'請以管理員身分登入'});
 }
 
 function chineseEncodeToURI(string){
