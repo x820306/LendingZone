@@ -822,20 +822,34 @@ router.get('/lenderReceiveMessages/:msgKeyword?/:filter?/:sorter?/:page?', ensur
 
 router.get('/income', ensureAuthenticated, function (req, res) {
 	var totalResultNumber;
+	var monthPrincipalNotReturnNow=0;
 	var monthRevenueNow=0;
 	var monthRoiNow=0;
+	var monthPrincipalNow=0;
+	var monthRevenuePrincipalNow=0;
 	var monthArray=[];
 	var monthArray2=[];
+	var yearPrincipalNotReturn=0;
 	var yearRoi=0;
 	var yearRevenue=0;
+	var yearPrincipal=0;
+	var yearRevenuePrincipal=0;
+	var yearHistoryPrincipalNotReturn=0;
 	var yearHistoryRoi=0;
 	var yearHistoryRevenue=0;
-	var moneyLendedNow=0;
+	var yearHistoryPrincipal=0;
+	var yearHistoryRevenuePrincipal=0;
 	var data1={};
 	var data2={};
 	var data3={};
 	var data4={};
 	var data5={};
+	var data6={};
+	var data7={};
+	var data8={};
+	var data9={};
+	var data10={};
+	var data11={};
 	var Transactions  = mongoose.model('Transactions');
 	Transactions.find({$and:[{Lender:req.user._id},{Principal:{"$gte": 1}},{MonthPeriod:{"$gte": 1}}]}).populate('Return').exec( function (err, transactions, count){
 		if (err) {
@@ -845,13 +859,12 @@ router.get('/income', ensureAuthenticated, function (req, res) {
 			totalResultNumber=transactions.length;
 			console.log(totalResultNumber);
 			if(totalResultNumber<=0){
-				res.render('income',{userName:req.user.Username,totalResultNum:totalResultNumber,monRevNow:monthRevenueNow,monRoiNow:monthRoiNow,yrRoi:yearRoi,yrRev:yearRevenue,yrHistoryRoi:yearHistoryRoi,yrHistoryRev:yearHistoryRevenue,mnyLendNow:moneyLendedNow,data01:data1,data02:data2,data03:data3,data04:data4,data05:data5});
+				res.render('income',{userName:req.user.Username,totalResultNum:totalResultNumber,monPriNRNow:monthPrincipalNotReturnNow,monRevNow:monthRevenueNow,monRoiNow:monthRoiNow,monPriNow:monthPrincipalNow,monRevPriNow:monthRevenuePrincipalNow,yrPriNR:yearPrincipalNotReturn,yrRoi:yearRoi,yrRev:yearRevenue,yrPri:yearPrincipal,yrRevPri:yearRevenuePrincipal,yrHistoryPriNR:yearHistoryPrincipalNotReturn,yrHistoryRoi:yearHistoryRoi,yrHistoryRev:yearHistoryRevenue,yrHistoryPri:yearHistoryPrincipal,yrHistoryRevPri:yearHistoryRevenuePrincipal,data01:data1,data02:data2,data03:data3,data04:data4,data05:data5,data06:data6,data07:data7,data08:data8,data09:data9,data010:data10,data011:data11});
 			}else{
 				for(i=0;i<totalResultNumber;i++){
 					transactions[i].InterestRate-=library.serviceChargeRate;//scr
-					moneyLendedNow+=transactions[i].Principal;
 					transactions[i].tempPrincipal=transactions[i].Principal;
-					transactions[i].monthPaidPrincipal=transactions[i].Principal/transactions[i].MonthPeriod;
+					transactions[i].tempMonthPeriod=transactions[i].MonthPeriod;
 					if(transactions[i].Return.length>0){
 						transactions[i].Return.reverse();
 					}
@@ -860,11 +873,21 @@ router.get('/income', ensureAuthenticated, function (req, res) {
 				for(j=0;j<12;j++){
 					var tempMonthRevunue=0;
 					var tempMonthPrincipal=0;
+					var tempMonthPrincipalReturn=0;
 					for(i=0;i<totalResultNumber;i++){
 						if(transactions[i].tempPrincipal>0){
-							tempMonthRevunue+=transactions[i].tempPrincipal*transactions[i].InterestRate;
 							tempMonthPrincipal+=transactions[i].tempPrincipal;
-							transactions[i].tempPrincipal-=transactions[i].monthPaidPrincipal;
+							tempMonthRevunue+=Math.round(transactions[i].tempPrincipal*transactions[i].InterestRate/12);
+							
+							transactions[i].monthPaidPrincipal=Math.floor(transactions[i].tempPrincipal/transactions[i].tempMonthPeriod);
+							if(transactions[i].tempMonthPeriod>1){
+								tempMonthPrincipalReturn+=transactions[i].monthPaidPrincipal;
+								transactions[i].tempPrincipal-=transactions[i].monthPaidPrincipal;
+							}else{
+								tempMonthPrincipalReturn+=transactions[i].tempPrincipal;
+								transactions[i].tempPrincipal-=transactions[i].tempPrincipal;
+							}
+							transactions[i].tempMonthPeriod-=1;
 							if(transactions[i].tempPrincipal<0){
 								transactions[i].tempPrincipal=0;
 							}
@@ -873,47 +896,52 @@ router.get('/income', ensureAuthenticated, function (req, res) {
 					var tempMonthRoi=0;
 					if(tempMonthPrincipal>0){
 						tempMonthRoi=tempMonthRevunue/tempMonthPrincipal*100;
-						var tempJson={ROI: Math.round(tempMonthRoi*10000)/10000, Revenue: Math.round(tempMonthRevunue*100)/100};
+						var tempJson={PrincipalNR:tempMonthPrincipal,ROI: Math.round(tempMonthRoi*10000)/10000, Revenue: Math.round(tempMonthRevunue*100)/100, Principal: Math.round(tempMonthPrincipalReturn*100)/100, RevenuePrincipal: Math.round((tempMonthRevunue+tempMonthPrincipalReturn)*100)/100};
 						monthArray.push(tempJson);
 					}
 					if(j==0){
+						monthPrincipalNotReturnNow=tempMonthPrincipal.toFixed(0);
 						monthRevenueNow=tempMonthRevunue.toFixed(0);
 						monthRoiNow=tempMonthRoi.toFixed(4);
+						monthPrincipalNow=tempMonthPrincipalReturn.toFixed(0);
+						monthRevenuePrincipalNow=(tempMonthPrincipalReturn+tempMonthRevunue).toFixed(0);
 					}
 				}
 				
 				for(j=0;j<12;j++){
 					var tempMonthRevunue=0;
 					var tempMonthPrincipal=0;
+					var tempMonthPrincipalReturn=0;
 					for(i=0;i<totalResultNumber;i++){
 						if(transactions[i].Return.length>0){
 							tempMonthRevunue+=(transactions[i].Return[0].InterestShouldPaid-transactions[i].Return[0].InterestNotPaid);
 							tempMonthPrincipal+=transactions[i].Return[0].PrincipalBeforePaid;
+							tempMonthPrincipalReturn+=(transactions[i].Return[0].PrincipalShouldPaid-transactions[i].Return[0].PrincipalNotPaid);
 							transactions[i].Return.splice(0,1);
 						}
 					}
 					var tempMonthRoi=0;
 					if(tempMonthPrincipal>0){
 						tempMonthRoi=tempMonthRevunue/tempMonthPrincipal*100;
-						var tempJson={ROI: Math.round(tempMonthRoi*10000)/10000, Revenue: Math.round(tempMonthRevunue*100)/100};
+						var tempJson={PrincipalNR:tempMonthPrincipal,ROI: Math.round(tempMonthRoi*10000)/10000, Revenue: Math.round(tempMonthRevunue*100)/100, Principal: Math.round(tempMonthPrincipalReturn*100)/100, RevenuePrincipal: Math.round((tempMonthRevunue+tempMonthPrincipalReturn)*100)/100};
 						monthArray2.push(tempJson);
 					}
 				}
 				
 				var datasets=[];
 				var dataset={
-							label: "Monthly ROI",
-							fillColor: "rgba(220,220,220,0.2)",
-							strokeColor: "rgba(220,220,220,1)",
-							pointColor: "rgba(220,220,220,1)",
+							label: "Monthly Principal Investment",
+							fillColor: "rgba(151,187,205,0.2)",
+							strokeColor: "rgba(151,187,205,1)",
+							pointColor: "rgba(151,187,205,1)",
 							pointStrokeColor: "#fff",
 							pointHighlightFill: "#fff",
-							pointHighlightStroke: "rgba(220,220,220,1)",
+							pointHighlightStroke: "rgba(151,187,205,1)",
 							data: []
 						};
 				var datasets2=[];
 				var dataset2={
-							label: "Monthly Revenue",
+							label: "Monthly Interest Revenue",
 							fillColor: "rgba(151,187,205,0.2)",
 							strokeColor: "rgba(151,187,205,1)",
 							pointColor: "rgba(151,187,205,1)",
@@ -924,6 +952,28 @@ router.get('/income', ensureAuthenticated, function (req, res) {
 						};
 				var datasets3=[];
 				var dataset3={
+							label: "Monthly Principal Return",
+							fillColor: "rgba(151,187,205,0.2)",
+							strokeColor: "rgba(151,187,205,1)",
+							pointColor: "rgba(151,187,205,1)",
+							pointStrokeColor: "#fff",
+							pointHighlightFill: "#fff",
+							pointHighlightStroke: "rgba(151,187,205,1)",
+							data: []
+						};
+				var datasets4=[];
+				var dataset4={
+							label: "Monthly Interest with Principal Return",
+							fillColor: "rgba(151,187,205,0.2)",
+							strokeColor: "rgba(151,187,205,1)",
+							pointColor: "rgba(151,187,205,1)",
+							pointStrokeColor: "#fff",
+							pointHighlightFill: "#fff",
+							pointHighlightStroke: "rgba(151,187,205,1)",
+							data: []
+						};
+				var datasets5=[];
+				var dataset5={
 							label: "Monthly ROI",
 							fillColor: "rgba(220,220,220,0.2)",
 							strokeColor: "rgba(220,220,220,1)",
@@ -933,9 +983,9 @@ router.get('/income', ensureAuthenticated, function (req, res) {
 							pointHighlightStroke: "rgba(220,220,220,1)",
 							data: []
 						};
-				var datasets4=[];
-				var dataset4={
-							label: "Monthly Revenue",
+				var datasets6=[];
+				var dataset6={
+							label: "History Principal Investment",
 							fillColor: "rgba(151,187,205,0.2)",
 							strokeColor: "rgba(151,187,205,1)",
 							pointColor: "rgba(151,187,205,1)",
@@ -944,65 +994,160 @@ router.get('/income', ensureAuthenticated, function (req, res) {
 							pointHighlightStroke: "rgba(151,187,205,1)",
 							data: []
 						};
+				var datasets7=[];
+				var dataset7={
+							label: "History Interest Revenue",
+							fillColor: "rgba(151,187,205,0.2)",
+							strokeColor: "rgba(151,187,205,1)",
+							pointColor: "rgba(151,187,205,1)",
+							pointStrokeColor: "#fff",
+							pointHighlightFill: "#fff",
+							pointHighlightStroke: "rgba(151,187,205,1)",
+							data: []
+						};
+				var datasets8=[];
+				var dataset8={
+							label: "History Principal Return",
+							fillColor: "rgba(151,187,205,0.2)",
+							strokeColor: "rgba(151,187,205,1)",
+							pointColor: "rgba(151,187,205,1)",
+							pointStrokeColor: "#fff",
+							pointHighlightFill: "#fff",
+							pointHighlightStroke: "rgba(151,187,205,1)",
+							data: []
+						};
+				var datasets9=[];
+				var dataset9={
+							label: "History Interest with Principal Return",
+							fillColor: "rgba(151,187,205,0.2)",
+							strokeColor: "rgba(151,187,205,1)",
+							pointColor: "rgba(151,187,205,1)",
+							pointStrokeColor: "#fff",
+							pointHighlightFill: "#fff",
+							pointHighlightStroke: "rgba(151,187,205,1)",
+							data: []
+						};
+				var datasets10=[];
+				var dataset10={
+							label: "History ROI",
+							fillColor: "rgba(220,220,220,0.2)",
+							strokeColor: "rgba(220,220,220,1)",
+							pointColor: "rgba(220,220,220,1)",
+							pointStrokeColor: "#fff",
+							pointHighlightFill: "#fff",
+							pointHighlightStroke: "rgba(220,220,220,1)",
+							data: []
+						};
+				
 				datasets.push(dataset);
 				datasets2.push(dataset2);
 				datasets3.push(dataset3);
 				datasets4.push(dataset4);
+				datasets5.push(dataset5);
+				datasets6.push(dataset6);
+				datasets7.push(dataset7);
+				datasets8.push(dataset8);
+				datasets9.push(dataset9);
+				datasets10.push(dataset10);
 				data1.labels=[];
 				data2.labels=[];
 				data3.labels=[];
 				data4.labels=[];
+				data5.labels=[];
+				data6.labels=[];
+				data7.labels=[];
+				data8.labels=[];
+				data9.labels=[];
+				data10.labels=[];
 				data1.datasets=datasets;
 				data2.datasets=datasets2;
 				data3.datasets=datasets3;
 				data4.datasets=datasets4;
+				data5.datasets=datasets5;
+				data6.datasets=datasets6;
+				data7.datasets=datasets7;
+				data8.datasets=datasets8;
+				data9.datasets=datasets9;
+				data10.datasets=datasets10;
 				
 				var date = new Date();
 				var ctrMonth=date.getMonth()+1;
 				
 				for(j=0;j<monthArray.length;j++){
 					yearRoi+=monthArray[j].ROI;
-					yearRevenue+=monthArray[j].Revenue
+					yearRevenue+=monthArray[j].Revenue;
+					yearPrincipal+=monthArray[j].Principal;
+					yearRevenuePrincipal+=monthArray[j].RevenuePrincipal;
+					yearPrincipalNotReturn+=monthArray[j].PrincipalNR;
 					data1.labels.push(ctrMonth+'月');
 					data2.labels.push(ctrMonth+'月');
+					data3.labels.push(ctrMonth+'月');
+					data4.labels.push(ctrMonth+'月');
+					data5.labels.push(ctrMonth+'月');
 					ctrMonth+=1;
 					if(ctrMonth>12){
 						ctrMonth=1;
 					}
-					data1.datasets[0].data.push(monthArray[j].ROI);
+					data1.datasets[0].data.push(monthArray[j].PrincipalNR);
 					data2.datasets[0].data.push(monthArray[j].Revenue);
+					data3.datasets[0].data.push(monthArray[j].Principal);
+					data4.datasets[0].data.push(monthArray[j].RevenuePrincipal);
+					data5.datasets[0].data.push(monthArray[j].ROI);
 				}
 				if(monthArray.length>0){
 					yearRoi=yearRoi/monthArray.length;
+					yearPrincipalNotReturn=yearPrincipalNotReturn/monthArray.length;
 				}
+				yearPrincipalNotReturn=yearPrincipalNotReturn.toFixed(0);
 				yearRoi=yearRoi.toFixed(4);
 				yearRevenue=yearRevenue.toFixed(0);
+				yearPrincipal=yearPrincipal.toFixed(0);
+				yearRevenuePrincipal=yearRevenuePrincipal.toFixed(0);
 				
 				var ctrMonth2=date.getMonth();
 				
 				for(j=0;j<monthArray2.length;j++){
 					yearHistoryRoi+=monthArray2[j].ROI;
-					yearHistoryRevenue+=monthArray2[j].Revenue
-					data3.labels.push(ctrMonth2+'月');
-					data4.labels.push(ctrMonth2+'月');
+					yearHistoryRevenue+=monthArray2[j].Revenue;
+					yearHistoryPrincipal+=monthArray2[j].Principal;
+					yearHistoryRevenuePrincipal+=monthArray2[j].RevenuePrincipal;
+					yearHistoryPrincipalNotReturn+=monthArray2[j].PrincipalNR;
+					data6.labels.push(ctrMonth2+'月');
+					data7.labels.push(ctrMonth2+'月');
+					data8.labels.push(ctrMonth2+'月');
+					data9.labels.push(ctrMonth2+'月');
+					data10.labels.push(ctrMonth2+'月');
 					ctrMonth2-=1;
 					if(ctrMonth2<1){
 						ctrMonth2=12;
 					}
-					data3.datasets[0].data.push(monthArray2[j].ROI);
-					data4.datasets[0].data.push(monthArray2[j].Revenue);
+					data6.datasets[0].data.push(monthArray2[j].PrincipalNR);
+					data7.datasets[0].data.push(monthArray2[j].Revenue);
+					data8.datasets[0].data.push(monthArray2[j].Principal);
+					data9.datasets[0].data.push(monthArray2[j].RevenuePrincipal);
+					data10.datasets[0].data.push(monthArray2[j].ROI);
 				}
-				data3.labels.reverse();
-				data3.datasets[0].data.reverse();
-				data4.labels.reverse();
-				data4.datasets[0].data.reverse();
+				data6.labels.reverse();
+				data6.datasets[0].data.reverse();
+				data7.labels.reverse();
+				data7.datasets[0].data.reverse();
+				data8.labels.reverse();
+				data8.datasets[0].data.reverse();
+				data9.labels.reverse();
+				data9.datasets[0].data.reverse();
+				data10.labels.reverse();
+				data10.datasets[0].data.reverse();
 				if(monthArray2.length>0){
 					yearHistoryRoi=yearHistoryRoi/monthArray2.length;
+					yearHistoryPrincipalNotReturn=yearHistoryPrincipalNotReturn/monthArray2.length;
 				}
+				yearHistoryPrincipalNotReturn=yearHistoryPrincipalNotReturn.toFixed(0);
 				yearHistoryRoi=yearHistoryRoi.toFixed(4);
 				yearHistoryRevenue=yearHistoryRevenue.toFixed(0);
+				yearHistoryPrincipal=yearHistoryPrincipal.toFixed(0);
+				yearHistoryRevenuePrincipal=yearHistoryRevenuePrincipal.toFixed(0);
 				
-				var data5Array = [
+				var data11Array = [
 					{
 						value: 0,
 						color:"#F7464A",
@@ -1037,28 +1182,28 @@ router.get('/income', ensureAuthenticated, function (req, res) {
 				
 				for(i=0;i<totalResultNumber;i++){
 					if((transactions[i].Level>=0)&&(transactions[i].Level<5)){
-						data5Array[0].value+=1;
+						data11Array[0].value+=1;
 					}else if((transactions[i].Level>=5)&&(transactions[i].Level<10)){
-						data5Array[1].value+=1;
+						data11Array[1].value+=1;
 					}else if((transactions[i].Level>=10)&&(transactions[i].Level<15)){
-						data5Array[2].value+=1;
+						data11Array[2].value+=1;
 					}else if((transactions[i].Level>=15)&&(transactions[i].Level<20)){
-						data5Array[3].value+=1;
+						data11Array[3].value+=1;
 					}else if(transactions[i].Level>=20){
-						data5Array[4].value+=1;
+						data11Array[4].value+=1;
 					}
 				}
 				
 				var totalTemp=0;
-				for(i=0;i<data5Array.length;i++){
-					totalTemp+=data5Array[i].value;
+				for(i=0;i<data11Array.length;i++){
+					totalTemp+=data11Array[i].value;
 				}
 
-				for(i=0;i<data5Array.length;i++){
-					data5Array[i].value=data5Array[i].value/totalTemp*100;
+				for(i=0;i<data11Array.length;i++){
+					data11Array[i].value=data11Array[i].value/totalTemp*100;
 				}
-				data5.array=data5Array;
-				res.render('income',{userName:req.user.Username,totalResultNum:totalResultNumber,monRevNow:monthRevenueNow,monRoiNow:monthRoiNow,yrRoi:yearRoi,yrRev:yearRevenue,yrHistoryRoi:yearHistoryRoi,yrHistoryRev:yearHistoryRevenue,mnyLendNow:moneyLendedNow,data01:data1,data02:data2,data03:data3,data04:data4,data05:data5});
+				data11.array=data11Array;
+				res.render('income',{userName:req.user.Username,totalResultNum:totalResultNumber,monPriNRNow:monthPrincipalNotReturnNow,monRevNow:monthRevenueNow,monRoiNow:monthRoiNow,monPriNow:monthPrincipalNow,monRevPriNow:monthRevenuePrincipalNow,yrPriNR:yearPrincipalNotReturn,yrRoi:yearRoi,yrRev:yearRevenue,yrPri:yearPrincipal,yrRevPri:yearRevenuePrincipal,yrHistoryPriNR:yearHistoryPrincipalNotReturn,yrHistoryRoi:yearHistoryRoi,yrHistoryRev:yearHistoryRevenue,yrHistoryPri:yearHistoryPrincipal,yrHistoryRevPri:yearHistoryRevenuePrincipal,data01:data1,data02:data2,data03:data3,data04:data4,data05:data5,data06:data6,data07:data7,data08:data8,data09:data9,data010:data10,data011:data11});
 			}
 		}
 	});

@@ -30,7 +30,7 @@ var Lends = new Schema({
 	MinInterestInFuture: { type: Number, default: 0 },
 	MinInterestInFutureMonth: { type: Number, default: 0 },
 	MinInterestInFutureMoneyMonth: { type: Number, default: 0 },
-	MinInterestInFutureDivMoney:{ type: Number, default: 0.01 },
+	MinInterestInFutureDivMoney:{ type: Number, default: 0 },
 	AutoComfirmToBorrowMsgPeriod: { type: Number, default: -1 },
 	AutoComfirmToBorrowMsgSorter: { type: String, default: '-InterestRate' },
 	CreatedBy: { type: Schema.Types.ObjectId, ref: 'Users' },

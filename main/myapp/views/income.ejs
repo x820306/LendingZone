@@ -16,19 +16,37 @@
 				</br>
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						<h3 class="panel-title">目前借出總金額</h3>
+						<h3 class="panel-title">本月貸出餘額</h3>
 					</div>
 					<div class="panel-body">
-						<%=mnyLendNow.toFixed(0)%>元
+						<%=monPriNRNow%>元
 					</div>
 				</div>
 				</br>
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						<h3 class="panel-title">本月預計收入</h3>
+						<h3 class="panel-title">本月預計利息收入</h3>
 					</div>
 					<div class="panel-body">
 						<%=monRevNow%>元
+					</div>
+				</div>
+				</br>
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title">本月預計回收本金</h3>
+					</div>
+					<div class="panel-body">
+						<%=monPriNow%>元
+					</div>
+				</div>
+				</br>
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title">本月預計可收本利和</h3>
+					</div>
+					<div class="panel-body">
+						<%=monRevPriNow%>元
 					</div>
 				</div>
 				</br>
@@ -43,10 +61,37 @@
 				</br>
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						<h3 class="panel-title">年度預計收入</h3>
+						<h3 class="panel-title">年度預計平均貸出餘額</h3>
+					</div>
+					<div class="panel-body">
+						<%=yrPriNR%>元
+					</div>
+				</div>
+				</br>
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title">年度預計利息收入</h3>
 					</div>
 					<div class="panel-body">
 						<%=yrRev%>元
+					</div>
+				</div>
+				</br>
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title">年度預計回收本金</h3>
+					</div>
+					<div class="panel-body">
+						<%=yrPri%>元
+					</div>
+				</div>
+				</br>
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title">年度預計可收本利和</h3>
+					</div>
+					<div class="panel-body">
+						<%=yrRevPri%>元
 					</div>
 				</div>
 				</br>
@@ -58,21 +103,58 @@
 						<%=yrRoi%>%
 					</div>
 				</div></br>
-				<div class="panel panel-default">
-					<div class="panel-heading">
-						<h3 class="panel-title">年度歷史收入</h3>
+				<div id="text6">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3 class="panel-title">年度歷史收款記錄之平均貸出餘額</h3>
+						</div>
+						<div class="panel-body">
+							<%=yrHistoryPriNR%>元
+						</div>
 					</div>
-					<div class="panel-body">
-						<%=yrHistoryRev%>元
-					</div>
+					</br>
 				</div>
-				</br>
-				<div class="panel panel-default">
-					<div class="panel-heading">
-						<h3 class="panel-title">年度歷史投資回報率</h3>
+				<div id="text7">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3 class="panel-title">年度歷史收款記錄之利息收入</h3>
+						</div>
+						<div class="panel-body">
+							<%=yrHistoryRev%>元
+						</div>
 					</div>
-					<div class="panel-body">
-						<%=yrHistoryRoi%>%
+					</br>
+				</div>
+				<div id="text8">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3 class="panel-title">年度歷史收款記錄之回收本金</h3>
+						</div>
+						<div class="panel-body">
+							<%=yrHistoryPri%>元
+						</div>
+					</div>
+					</br>
+				</div>
+				<div id="text9">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3 class="panel-title">年度歷史收款記錄之可收本利和</h3>
+						</div>
+						<div class="panel-body">
+							<%=yrHistoryRevPri%>元
+						</div>
+					</div>
+					</br>
+				</div>
+				<div id="text10">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3 class="panel-title">年度歷史收款記錄之投資回報率</h3>
+						</div>
+						<div class="panel-body">
+							<%=yrHistoryRoi%>%
+						</div>
 					</div>
 				</div>
 			</div>
@@ -82,27 +164,63 @@
 						<table>
 							<tr>
 								<td align="center">
-									<canvas id="myChart2" width="300" height="300"></canvas>
-									<br>
-									各月預計收入曲線圖
-									<br>
-									<br>
 									<canvas id="myChart1" width="300" height="300"></canvas>
 									<br>
-									各月預計投資回報率曲線圖
-									<div id="line3Pic">
+									各月預計貸出餘額曲線圖
 									<br>
 									<br>
-									<canvas id="myChart4" width="300" height="300"></canvas>
+									<canvas id="myChart2" width="300" height="300"></canvas>
 									<br>
-									各月歷史收入曲線圖
-									</div>
-									<div id="line4Pic">
+									各月預計利息收入曲線圖
 									<br>
 									<br>
 									<canvas id="myChart3" width="300" height="300"></canvas>
 									<br>
-									各月歷史投資回報率曲線圖
+									各月預計回收本金曲線圖
+									<br>
+									<br>
+									<canvas id="myChart4" width="300" height="300"></canvas>
+									<br>
+									各月預計可收本利和曲線圖
+									<br>
+									<br>
+									<canvas id="myChart5" width="300" height="300"></canvas>
+									<br>
+									各月預計投資回報率曲線圖
+									<div id="line6Pic">
+										<br>
+										<br>
+										<canvas id="myChart6" width="300" height="300"></canvas>
+										<br>
+										各月歷史收款記錄之貸出餘額曲線圖
+									</div>
+									<div id="line7Pic">	
+										<br>
+										<br>
+										<canvas id="myChart7" width="300" height="300"></canvas>
+										<br>
+										各月歷史收款記錄之利息收入曲線圖
+									</div>
+									<div id="line8Pic">	
+										<br>
+										<br>
+										<canvas id="myChart8" width="300" height="300"></canvas>
+										<br>
+										各月歷史收款記錄之回收本金曲線圖
+									</div>
+									<div id="line9Pic">	
+										<br>
+										<br>
+										<canvas id="myChart9" width="300" height="300"></canvas>
+										<br>
+										各月歷史收款記錄之收到本利和曲線圖
+									</div>
+									<div id="line10Pic">	
+										<br>
+										<br>
+										<canvas id="myChart10" width="300" height="300"></canvas>
+										<br>
+										各月歷史收款記錄之投資回報率曲線圖
 									</div>
 								<td>
 							<tr>
@@ -119,7 +237,7 @@
 									<br>
 									<br>
 									<br>
-									<canvas id="myChart5" width="300" height="300"></canvas>
+									<canvas id="myChart11" width="300" height="300"></canvas>
 									<br>
 									<br>
 									借入者信用等級圓餅比例圖
@@ -133,10 +251,17 @@
 			<input type="hidden" name="line2" id="lineIpt2" value='<%=JSON.stringify(data02);%>'>
 			<input type="hidden" name="line3" id="lineIpt3" value='<%=JSON.stringify(data03);%>'>
 			<input type="hidden" name="line4" id="lineIpt4" value='<%=JSON.stringify(data04);%>'>
-			<input type="hidden" name="pie" id="pieIpt" value='<%=JSON.stringify(data05);%>'>
+			<input type="hidden" name="line5" id="lineIpt5" value='<%=JSON.stringify(data05);%>'>
+			<input type="hidden" name="line6" id="lineIpt6" value='<%=JSON.stringify(data06);%>'>
+			<input type="hidden" name="line7" id="lineIpt7" value='<%=JSON.stringify(data07);%>'>
+			<input type="hidden" name="line8" id="lineIpt8" value='<%=JSON.stringify(data08);%>'>
+			<input type="hidden" name="line9" id="lineIpt9" value='<%=JSON.stringify(data09);%>'>
+			<input type="hidden" name="line10" id="lineIpt10" value='<%=JSON.stringify(data010);%>'>
+			<input type="hidden" name="pie" id="pieIpt" value='<%=JSON.stringify(data011);%>'>
 		</div>
 	<%}%>
 </div>
+<%if(totalResultNum>0){%>
 <script>
 	$( document ).ready( function() {
 		var ctx = $("#myChart1").get(0).getContext("2d");
@@ -144,15 +269,27 @@
 		var ctx3 = $("#myChart3").get(0).getContext("2d");
 		var ctx4 = $("#myChart4").get(0).getContext("2d");
 		var ctx5 = $("#myChart5").get(0).getContext("2d");
+		var ctx6 = $("#myChart6").get(0).getContext("2d");
+		var ctx7 = $("#myChart7").get(0).getContext("2d");
+		var ctx8 = $("#myChart8").get(0).getContext("2d");
+		var ctx9 = $("#myChart9").get(0).getContext("2d");
+		var ctx10 = $("#myChart10").get(0).getContext("2d");
+		var ctx11 = $("#myChart11").get(0).getContext("2d");
 		var data1JSON=JSON.parse($("#lineIpt").val());
 		var data2JSON=JSON.parse($("#lineIpt2").val());
 		var data3JSON=JSON.parse($("#lineIpt3").val());
 		var data4JSON=JSON.parse($("#lineIpt4").val());
-		var data5JSON=JSON.parse($("#pieIpt").val());
+		var data5JSON=JSON.parse($("#lineIpt5").val());
+		var data6JSON=JSON.parse($("#lineIpt6").val());
+		var data7JSON=JSON.parse($("#lineIpt7").val());
+		var data8JSON=JSON.parse($("#lineIpt8").val());
+		var data9JSON=JSON.parse($("#lineIpt9").val());
+		var data10JSON=JSON.parse($("#lineIpt10").val());
+		var data11JSON=JSON.parse($("#pieIpt").val());
 		
 		if(data1JSON.labels){
 			if(data1JSON.labels.length>0){
-				var myLineChart = new Chart(ctx).Line(data1JSON ,{tooltipTemplate: "<%%if (label){%><%%=label%>: <%%}%><%%= value.toFixed(4) %>%",multiTooltipTemplate: "<%%= value.toFixed(4) %>%"});
+				var myLineChart1 = new Chart(ctx).Line(data1JSON ,{tooltipTemplate: "<%%if (label){%><%%=label%>: <%%}%><%%= value.toFixed(2) %>元",multiTooltipTemplate: "<%%= value.toFixed(2) %>元"});
 			}
 		}
 		if(data2JSON.labels){
@@ -162,27 +299,85 @@
 		}
 		if(data3JSON.labels){
 			if(data3JSON.labels.length>0){
-				var myLineChart3 = new Chart(ctx3).Line(data3JSON ,{tooltipTemplate: "<%%if (label){%><%%=label%>: <%%}%><%%= value.toFixed(4) %>%",multiTooltipTemplate: "<%%= value.toFixed(4) %>%"});
-			}else{
-				$("#line3Pic").html('');
+				var myLineChart3 = new Chart(ctx3).Line(data3JSON ,{tooltipTemplate: "<%%if (label){%><%%=label%>: <%%}%><%%= value.toFixed(2) %>元",multiTooltipTemplate: "<%%= value.toFixed(2) %>元"});
 			}
-		}else{
-			$("#line3Pic").html('');
 		}
 		
 		if(data4JSON.labels){
 			if(data4JSON.labels.length>0){
 				var myLineChart4 = new Chart(ctx4).Line(data4JSON ,{tooltipTemplate: "<%%if (label){%><%%=label%>: <%%}%><%%= value.toFixed(2) %>元",multiTooltipTemplate: "<%%= value.toFixed(2) %>元"});
-			}else{
-				$("#line4Pic").html('');
 			}
-		}else{
-			$("#line4Pic").html('');
+		}
+		if(data5JSON.labels){
+			if(data5JSON.labels.length>0){
+				var myLineChart5 = new Chart(ctx5).Line(data5JSON ,{tooltipTemplate: "<%%if (label){%><%%=label%>: <%%}%><%%= value.toFixed(4) %>%",multiTooltipTemplate: "<%%= value.toFixed(4) %>%"});
+			}
 		}
 		
-		if(data5JSON.array){
-			var myPieChart = new Chart(ctx5).Pie(data5JSON.array ,{tooltipTemplate: "<%%if (label){%><%%=label%>: <%%}%><%%= value.toFixed(2) %>%",multiTooltipTemplate: "<%%= value.toFixed(2) %>%"});
+		if(data6JSON.labels){
+			if(data6JSON.labels.length>0){
+				var myLineChart6 = new Chart(ctx6).Line(data6JSON ,{tooltipTemplate: "<%%if (label){%><%%=label%>: <%%}%><%%= value.toFixed(2) %>元",multiTooltipTemplate: "<%%= value.toFixed(2) %>元"});
+			}else{
+				$("#line6Pic").html('');
+				$("#text6").html('');
+			}
+		}else{
+			$("#line6Pic").html('');
+			$("#text6").html('');
+		}
+		
+		if(data7JSON.labels){
+			if(data7JSON.labels.length>0){
+				var myLineChart7 = new Chart(ctx7).Line(data7JSON ,{tooltipTemplate: "<%%if (label){%><%%=label%>: <%%}%><%%= value.toFixed(2) %>元",multiTooltipTemplate: "<%%= value.toFixed(2) %>元"});
+			}else{
+				$("#line7Pic").html('');
+				$("#text7").html('');
+			}
+		}else{
+			$("#line7Pic").html('');
+			$("#text7").html('');
+		}
+		
+		if(data8JSON.labels){
+			if(data8JSON.labels.length>0){
+				var myLineChart8 = new Chart(ctx8).Line(data8JSON ,{tooltipTemplate: "<%%if (label){%><%%=label%>: <%%}%><%%= value.toFixed(2) %>元",multiTooltipTemplate: "<%%= value.toFixed(2) %>元"});
+			}else{
+				$("#line8Pic").html('');
+				$("#text8").html('');
+			}
+		}else{
+			$("#line8Pic").html('');
+			$("#text8").html('');
+		}
+		
+		if(data9JSON.labels){
+			if(data9JSON.labels.length>0){
+				var myLineChart9 = new Chart(ctx9).Line(data9JSON ,{tooltipTemplate: "<%%if (label){%><%%=label%>: <%%}%><%%= value.toFixed(2) %>元",multiTooltipTemplate: "<%%= value.toFixed(2) %>元"});
+			}else{
+				$("#line9Pic").html('');
+				$("#text9").html('');
+			}
+		}else{
+			$("#line9Pic").html('');
+			$("#text9").html('');
+		}
+		
+		if(data10JSON.labels){
+			if(data10JSON.labels.length>0){
+				var myLineChart10 = new Chart(ctx10).Line(data10JSON ,{tooltipTemplate: "<%%if (label){%><%%=label%>: <%%}%><%%= value.toFixed(4) %>%",multiTooltipTemplate: "<%%= value.toFixed(4) %>%"});
+			}else{
+				$("#line10Pic").html('');
+				$("#text10").html('');
+			}
+		}else{
+			$("#line10Pic").html('');
+			$("#text10").html('');
+		}
+		
+		if(data11JSON.array){
+			var myPieChart = new Chart(ctx11).Pie(data11JSON.array ,{tooltipTemplate: "<%%if (label){%><%%=label%>: <%%}%><%%= value.toFixed(2) %>%",multiTooltipTemplate: "<%%= value.toFixed(2) %>%"});
 		}
 	});
 </script>
+<%}%>
 <%- include('layout_footer',{imgSettingCode:"var ifLoadedCount=0;",imgDrawingCode:""}); -%>

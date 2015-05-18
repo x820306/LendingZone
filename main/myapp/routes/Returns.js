@@ -2,6 +2,8 @@ var library=require( './library.js' );
 var mongoose = require('mongoose');
 var Returns  = mongoose.model('Returns');
 var Transactions  = mongoose.model('Transactions');
+var BankAccounts  = mongoose.model('BankAccounts');
+var Lends  = mongoose.model('Lends');
 var sanitizer = require('sanitizer');
 
 var express = require('express');
@@ -21,9 +23,14 @@ router.post('/pay', function(req, res, next) {
 			}else{
 				var PrincipalBeforePaid=transaction.Principal;
 		
-				var ServiceChargeShouldPaid=transaction.Principal*library.serviceChargeRate;//scr
-				var PrincipalShouldPaid=transaction.Principal/transaction.MonthPeriod;
-				var InterestShouldPaid=transaction.Principal*(transaction.InterestRate-library.serviceChargeRate);//scr we should limit borrow.MaxInterestRateAccepted always >=library.serviceChargeRate
+				var ServiceChargeShouldPaid=Math.round(transaction.Principal*library.serviceChargeRate/12);//scr
+				var PrincipalShouldPaid;
+				if(transaction.MonthPeriod>1){
+					PrincipalShouldPaid=Math.floor(transaction.Principal/transaction.MonthPeriod);
+				}else{
+					PrincipalShouldPaid=transaction.Principal;
+				}
+				var InterestShouldPaid=Math.round(transaction.Principal*(transaction.InterestRate-library.serviceChargeRate)/12);//scr we should limit borrow.MaxInterestRateAccepted always >=library.serviceChargeRate
 				var ServiceChargeNotPaid;
 				var PrincipalNotPaid;
 				var InterestNotPaid;

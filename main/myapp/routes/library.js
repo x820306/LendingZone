@@ -809,14 +809,22 @@ exports.rejectMessage=function (ifRecursive,ctr,ctrTarget,returnSring,req,res,if
 }
 
 exports.interestInFutureCalculator=function (money,rate,month){
+	rate/=12;
 	var interestInFuture=0;
-	var monthlyPaid=money/month;
+	var tempMonth=month;
+	var tempMoney=money;
 	for(k=0;k<month;k++){
-		if(money>0){
-			interestInFuture+=money*rate;
-			money-=monthlyPaid;
-			if(money<0){
-				money=0;
+		if(tempMoney>0){
+			interestInFuture+=Math.round(tempMoney*rate);
+			var monthlyPaid=Math.floor(tempMoney/tempMonth);
+			if(tempMonth>1){
+				tempMoney-=monthlyPaid;
+			}else{
+				tempMoney-=tempMoney;
+			}
+			tempMonth-=1;
+			if(tempMoney<0){
+				tempMoney=0;
 			}
 		}
 	}
