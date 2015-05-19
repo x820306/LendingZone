@@ -5,7 +5,7 @@
 			<table width="100%">
 				<tr>
 					<td>
-						<div style="font-size:30px;color:#337ab7;"><%if(json.StoryTitle!=''){%><%=json.StoryTitle%><%}else{%>無標題<%}%></div>
+						<div style="font-size:30px;color:#337ab7;"><%=json.StoryTitle%></div>
 						<div style="font-size:20px;color:#0000D1;"> by <%=json.CreatedBy.Username%></div>
 					</td>
 					<td align="right">
@@ -44,11 +44,7 @@
             </ul>
             <div class="tab-content my-tab-content">
 				<div class="tab-pane active" id="tab1">
-					<%if(json.Story!=''){%>
-						<%=json.Story%>
-					<%}else{%>
-						無內容
-					<%}%>
+					<%=json.Story%>
 				</div>
 				<div class="tab-pane" id="tab2">
 					<table width="100%" height="275px">

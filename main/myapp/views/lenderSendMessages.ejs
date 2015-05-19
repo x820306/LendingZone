@@ -54,11 +54,7 @@
 							<div style="font-size:25px;display:inline;">送往 </div>
 							<div style="font-size:25px;color:#0000D1;display:inline;"><%=jsonMessage[i].SendTo.Username%></div>
 							<br>
-							<%if(jsonMessage[i].FromBorrowRequest.StoryTitle!=''){%>
-								在 <a style="font-size:15px;" href="/lender/story?id=<%=jsonMessage[i].FromBorrowRequest._id%>"><%=jsonMessage[i].FromBorrowRequest.StoryTitle%></a>
-							<%}else{%>
-								在 <a style="font-size:15px;" href="/lender/story?id=<%=jsonMessage[i].FromBorrowRequest._id%>">無故事標題</a>
-							<%}%>
+							在 <a style="font-size:15px;" href="/lender/story?id=<%=jsonMessage[i].FromBorrowRequest._id%>"><%=jsonMessage[i].FromBorrowRequest.StoryTitle%></a>
 							<br>
 							<br>
 							<div>

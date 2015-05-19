@@ -48,7 +48,7 @@ router.post('/create',ensureAuthenticated, function(req, res, next) {
 						}else{
 							var options = {
 								path: 'Discussion',
-								model: Discussions,
+								model: Discussions
 							};
 							Borrows.populate(borrowUpdated, options, function(err, borrowUpdated) {
 								if(err){

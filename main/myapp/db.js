@@ -7,9 +7,9 @@ var Borrows = new Schema({
 	MaxInterestRateAccepted: { type: Number, default: 0 },
 	MonthPeriodAccepted: { type: Number, default: 1 },
 	TimeLimit: { type: Date, default: Date.now },
-	StoryTitle: { type: String, default:''},
-	Story: { type: String, default:''},
-	Category:{ type: String, default:'general'},//'general','education','wedding','tour' etc. we can add more
+	StoryTitle: { type: String, default:'無標題'},
+	Story: { type: String, default:'無內容'},
+	Category:{ type: String, default:'general'},//'general','education','family','tour' etc. we can add more
 	LikeNumber: { type: Number, default: 0 },
 	Likes: [{ type: Schema.Types.ObjectId, ref: 'Users' }],
 	IfReadable: { type: Boolean, default: true },

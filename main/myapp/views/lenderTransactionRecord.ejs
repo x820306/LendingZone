@@ -114,11 +114,7 @@
 								<div style="font-size:25px;display:inline;">借給 </div>
 								<div style="font-size:25px;color:#0000D1;display:inline;"><%=jsonTransaction[i].Borrower.Username%></div>
 								<br>
-								<%if(jsonTransaction[i].CreatedFrom.FromBorrowRequest.StoryTitle!=''){%>
-									在 <a style="font-size:15px;" href="/lender/story?id=<%=jsonTransaction[i].CreatedFrom.FromBorrowRequest._id%>"><%=jsonTransaction[i].CreatedFrom.FromBorrowRequest.StoryTitle%></a>
-								<%}else{%>
-									在 <a style="font-size:15px;" href="/lender/story?id=<%=jsonTransaction[i].CreatedFrom.FromBorrowRequest._id%>">無故事標題</a>
-								<%}%>
+								在 <a style="font-size:15px;" href="/lender/story?id=<%=jsonTransaction[i].CreatedFrom.FromBorrowRequest._id%>"><%=jsonTransaction[i].CreatedFrom.FromBorrowRequest.StoryTitle%></a>
 								<br>
 								<br>
 								<div class="col-md-6">

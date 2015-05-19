@@ -45,8 +45,8 @@ router.get('/search/:keyword?/:action?/:page?', function (req, res) {
 		categoryRec="general";
 	}else if(category=='教育'){
 		categoryRec="education";
-	}else if(category=='婚禮'){
-		categoryRec="wedding";
+	}else if(category=='家庭'){
+		categoryRec="family";
 	}else if(category=='旅行'){
 		categoryRec="tour";
 	}
@@ -78,8 +78,8 @@ router.get('/search/:keyword?/:action?/:page?', function (req, res) {
 	}
 	
 	var andFindCmdAry=[];
-	andFindCmdAry.push({"StoryTitle": {'$ne': '' }});
-	andFindCmdAry.push({"Story": {'$ne': '' }});
+	andFindCmdAry.push({"StoryTitle": {'$ne': '無標題' }});
+	andFindCmdAry.push({"Story": {'$ne': '無內容' }});
 	andFindCmdAry.push({"IfReadable": true});
 	if(categoryRec){
 		andFindCmdAry.push({"Category": categoryRec});
