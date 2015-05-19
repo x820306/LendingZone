@@ -1,3 +1,4 @@
+var library=require( './library.js' );
 var mongoose = require('mongoose');
 var Users  = mongoose.model('Users');
 var Borrows  = mongoose.model('Borrows');
@@ -7,11 +8,19 @@ var Transactions  = mongoose.model('Transactions');
 var BankAccounts  = mongoose.model('BankAccounts');
 var sanitizer = require('sanitizer'); 
 var nodemailer = require('nodemailer');
+var generator = require('xoauth2').createXOAuth2Generator({
+    user: 'lendingzonesystem@gmail.com',
+    clientId: '1064408122186-fheebavu1le96q0h0assuueda5kmb0nk.apps.googleusercontent.com',
+    clientSecret: '8b9UNKvg4IZZsM7vsLI8e3JP',
+    refreshToken: '1/0wqk7whxhYyMKKB81KBTmJDTioc9VnDxJu2hd4v9Bas'
+});
+generator.on('token', function(token){
+    console.log('New token for %s: %s', token.user, token.accessToken);
+});
 var transporter = nodemailer.createTransport({
     service: 'Gmail',
     auth: {
-        user: 'x820306test@gmail.com',
-        pass: 'github111'
+        xoauth2: generator
     }
 });
 
@@ -23,10 +32,10 @@ router.post('/createTest', function(req, res, next) {
 	Users.findOne({Username:temp}).exec(function (err, user){
 		if (err) {
 			console.log(err);
-			res.redirect('/message?content='+chineseEncodeToURI('錯誤'));
+			res.redirect('/message?content='+encodeURIComponent('錯誤'));
 		}else{
 			if(user){
-				res.redirect('/message?content='+chineseEncodeToURI('此帳號已存在!'));
+				res.redirect('/message?content='+encodeURIComponent('此帳號已存在!'));
 			}else{
 				var toCreate = new Users();
 				toCreate.Username=sanitizer.sanitize(req.body.Username);
@@ -47,7 +56,7 @@ router.post('/createTest', function(req, res, next) {
 				toCreate.save(function (err,newCreate) {
 					if (err){
 						console.log(err);
-						res.redirect('/message?content='+chineseEncodeToURI('錯誤'));
+						res.redirect('/message?content='+encodeURIComponent('錯誤'));
 					}else{
 						var toCreateInner = new BankAccounts();
 						toCreateInner.BankAccountNumber=sanitizer.sanitize(req.body.BankAccountNumber);
@@ -58,9 +67,9 @@ router.post('/createTest', function(req, res, next) {
 						toCreateInner.save(function (err,newCreateInner) {
 							if (err){
 								console.log(err);
-								res.redirect('/message?content='+chineseEncodeToURI('錯誤'));
+								res.redirect('/message?content='+encodeURIComponent('錯誤'));
 							}else{
-								res.redirect('/message?content='+chineseEncodeToURI('帳號建立成功'));
+								res.redirect('/message?content='+encodeURIComponent('帳號建立成功'));
 							}
 						});
 					}
@@ -137,8 +146,8 @@ router.post('/forgetPW', function(req, res, next) {
 					res.json({response:'無法找到對應帳號'});
 				}else{
 					var mailOptions = {
-						from: 'x820306test ', // sender address
-						to: user.Email, // list of receivers
+						from: 'LendingZone <lendingzonesystem@gmail.com>', // sender address
+						to: user.Username+' <'+user.Email+'>', // list of receivers
 						subject: '您於Lending Zone忘記的密碼', // Subject line
 						text: user.Password, // plaintext body
 						html: user.Password // html body
@@ -199,18 +208,3 @@ function userLevelSetter(res,uid,newLevel){
 	});
 }
 
-function ensureAuthenticated(req, res, next) {
-  if (req.isAuthenticated()) { return next(null); }
-	res.render('login',{userName:null,msg:'請登入'});
-}
-
-//add after ensureAuthenticated to confirm ifAdmin
-function ensureAdmin(req, res, next) {
-  var objID=mongoose.Types.ObjectId('5555251bb08002f0068fd00f');//管理員ID
-  if(req.user._id==objID){ return next(null); }
-	res.render('login',{userName:null,msg:'請以管理員身分登入'});
-}
-
-function chineseEncodeToURI(string){
-	return encodeURIComponent(string);
-}

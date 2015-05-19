@@ -792,9 +792,25 @@
 							}
 						}
 					}
-					var interestFutureDivMoney=interestFuture/money*100;
-					var interestFutureMonth=interestFuture/month;
-					var interestFutureMoneyMonth=(interestFuture+money)/month;
+					var interestFutureDivMoney
+					if(money>0){
+						interestFutureDivMoney=interestFuture/money*100;
+					}else{
+						interestFutureDivMoney=0;
+					}
+					var interestFutureMonth;
+					if(month>0){
+						interestFutureMonth=interestFuture/month;
+					}else{
+						interestFutureMonth=0;
+					}
+					var interestFutureMoneyMonth;
+					if(month>0){
+						interestFutureMoneyMonth=(interestFuture+money)/month;
+					}else{
+						interestFutureMoneyMonth=0;
+					}
+					
 					$("#interestFuture").val(interestFuture.toFixed(0));
 					$("#interestFutureMonth").val(interestFutureMonth.toFixed(0));
 					$("#interestFutureMoneyMonth").val(interestFutureMoneyMonth.toFixed(0));

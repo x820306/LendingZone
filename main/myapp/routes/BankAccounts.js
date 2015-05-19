@@ -1,3 +1,4 @@
+var library=require( './library.js' );
 var mongoose = require('mongoose');
 var BankAccounts  = mongoose.model('BankAccounts');
 var sanitizer = require('sanitizer');
@@ -25,19 +26,3 @@ router.post('/create', function(req, res, next) {
 });
 
 module.exports = router;
-
-function ensureAuthenticated(req, res, next) {
-  if (req.isAuthenticated()) { return next(null); }
-	res.render('login',{userName:null,msg:'請登入'});
-}
-
-//add after ensureAuthenticated to confirm ifAdmin
-function ensureAdmin(req, res, next) {
-  var objID=mongoose.Types.ObjectId('5555251bb08002f0068fd00f');//管理員ID
-  if(req.user._id==objID){ return next(null); }
-	res.render('login',{userName:null,msg:'請以管理員身分登入'});
-}
-
-function chineseEncodeToURI(string){
-	return encodeURIComponent(string);
-}

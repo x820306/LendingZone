@@ -6,17 +6,98 @@ var BankAccounts  = mongoose.model('BankAccounts');
 var Transactions  = mongoose.model('Transactions');
 var sanitizer = require('sanitizer');
 var nodemailer = require('nodemailer');
+var generator = require('xoauth2').createXOAuth2Generator({
+    user: 'lendingzonesystem@gmail.com',
+    clientId: '1064408122186-fheebavu1le96q0h0assuueda5kmb0nk.apps.googleusercontent.com',
+    clientSecret: '8b9UNKvg4IZZsM7vsLI8e3JP',
+    refreshToken: '1/0wqk7whxhYyMKKB81KBTmJDTioc9VnDxJu2hd4v9Bas'
+});
+generator.on('token', function(token){
+    console.log('New token for %s: %s', token.user, token.accessToken);
+});
 var transporter = nodemailer.createTransport({
     service: 'Gmail',
     auth: {
-        user: 'x820306test@gmail.com',
-        pass: 'github111'
+        xoauth2: generator
     }
 });
 
 var autoComfirmToBorrowMsgArray=[];
-var insuranceRate=0.01;
+var insuranceRate=0.001;
 var serviceChargeRate=0.01;
+
+function mailAgree(message,newCreateUpdated){
+	var mailOptions = {
+		from: 'LendingZone <lendingzonesystem@gmail.com>', // sender address
+		to: message.CreatedBy.Username+' <'+message.CreatedBy.Email+'>', // list of receivers
+		subject: message.SendTo.Username+'同意了您先前送出的借款請求!', // Subject line
+		text: '親愛的 '+message.CreatedBy.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+message.SendTo.Username+' 同意了您先前在「'+message.FromBorrowRequest.StoryTitle+'("http://lendingzone.herokuapp.com/lender/story?id='+message.FromBorrowRequest._id+'")」送出的借款請求！'+String.fromCharCode(10)+'您的交易紅利代碼為： '+exports.randomString(8)+String.fromCharCode(10)+'您可至 玉山銀行網站("http://www.esunbank.com.tw/") 兌換紅利喔!'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看訊息與交易結果:'+String.fromCharCode(10)+'"http://lendingzone.herokuapp.com/lender/lenderReceiveMessages?msgKeyword='+newCreateUpdated._id+'&filter='+encodeURIComponent('已同意')+'&sorter='+encodeURIComponent('最新')+'&page=1"', // plaintext body
+		html: '<img src="cid:bpng" /><br><br>親愛的 '+message.CreatedBy.Username+' 您好：<br><br>'+message.SendTo.Username+' 同意了您先前在「<a href="http://lendingzone.herokuapp.com/lender/story?id='+message.FromBorrowRequest._id+'">'+message.FromBorrowRequest.StoryTitle+'</a>」送出的借款請求！<br>您的交易紅利代碼為： <div style="color:#FF0000;display:inline;">'+exports.randomString(8)+'</div><br>您可至 <a href="http://www.esunbank.com.tw/">玉山銀行網站</a> 兌換紅利喔!<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://lendingzone.herokuapp.com/lender/lenderReceiveMessages?msgKeyword='+newCreateUpdated._id+'&filter='+encodeURIComponent('已同意')+'&sorter='+encodeURIComponent('最新')+'&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看訊息與交易結果</span></a></td></tr></table>', 
+		attachments: [{
+			filename: 'b.png',
+			path: __dirname+'/../public/images/b.png',
+			cid: 'bpng' //same cid value as in the html img src
+		}]
+	};
+	
+	transporter.sendMail(mailOptions, function(error, info){
+		if(error){
+			console.log(error);
+		}
+	});
+	var mailOptions2 = {
+		from: 'LendingZone <lendingzonesystem@gmail.com>', // sender address
+		to: message.SendTo.Username+' <'+message.SendTo.Email+'>', // list of receivers
+		subject: '您同意了'+message.CreatedBy.Username+'先前送來的借款請求!', // Subject line
+		text: '親愛的 '+message.SendTo.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+'您同意了 '+message.CreatedBy.Username+' 先前在「'+message.FromBorrowRequest.StoryTitle+'("http://lendingzone.herokuapp.com/lender/story?id='+message.FromBorrowRequest._id+'")」送來的借款請求！'+String.fromCharCode(10)+'您的交易紅利代碼為： '+exports.randomString(8)+String.fromCharCode(10)+'您可至 玉山銀行網站("http://www.esunbank.com.tw/") 兌換紅利喔!'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看訊息與交易結果:'+String.fromCharCode(10)+'"http://lendingzone.herokuapp.com/lender/lenderReceiveMessages?msgKeyword='+newCreateUpdated._id+'&filter='+encodeURIComponent('已同意')+'&sorter='+encodeURIComponent('最新')+'&page=1"', // plaintext body
+		html: '<img src="cid:bpng" /><br><br>親愛的 '+message.SendTo.Username+' 您好：<br><br>您同意了 '+message.CreatedBy.Username+' 先前在「<a href="http://lendingzone.herokuapp.com/lender/story?id='+message.FromBorrowRequest._id+'">'+message.FromBorrowRequest.StoryTitle+'</a>」送來的借款請求！<br>您的交易紅利代碼為： <div style="color:#FF0000;display:inline;">'+exports.randomString(8)+'</div><br>您可至 <a href="http://www.esunbank.com.tw/">玉山銀行網站</a> 兌換紅利喔!<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://lendingzone.herokuapp.com/lender/lenderReceiveMessages?msgKeyword='+newCreateUpdated._id+'&filter='+encodeURIComponent('已同意')+'&sorter='+encodeURIComponent('最新')+'&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看訊息與交易結果</span></a></td></tr></table>', 
+		attachments: [{
+			filename: 'b.png',
+			path: __dirname+'/../public/images/b.png',
+			cid: 'bpng' //same cid value as in the html img src
+		}]
+	};
+	
+	transporter.sendMail(mailOptions2, function(error, info){
+		if(error){
+			console.log(error);
+		}
+	});
+
+}
+
+function mailReject(message,newUpdate){
+	var mailOptions = {
+		from: 'LendingZone <lendingzonesystem@gmail.com>', // sender address
+		to: message.CreatedBy.Username+' <'+message.CreatedBy.Email+'>', // list of receivers
+		subject: message.SendTo.Username+'婉拒了您先前送出的借款請求!', // Subject line
+		text: '親愛的 '+message.CreatedBy.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+message.SendTo.Username+' 婉拒了您先前在「'+message.FromBorrowRequest.StoryTitle+'("http://lendingzone.herokuapp.com/lender/story?id='+message.FromBorrowRequest._id+'")」送出的借款請求！'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看:'+String.fromCharCode(10)+'"http://lendingzone.herokuapp.com/lender/lenderReceiveMessages?msgKeyword='+newUpdate._id+'&filter='+encodeURIComponent('已婉拒')+'&sorter='+encodeURIComponent('最新')+'&page=1"', // plaintext body
+		html: '親愛的 '+message.CreatedBy.Username+' 您好：<br><br>'+message.SendTo.Username+' 婉拒了您先前在「<a href="http://lendingzone.herokuapp.com/lender/story?id='+message.FromBorrowRequest._id+'">'+message.FromBorrowRequest.StoryTitle+'</a>」送出的借款請求！<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://lendingzone.herokuapp.com/lender/lenderReceiveMessages?msgKeyword='+newUpdate._id+'&filter='+encodeURIComponent('已婉拒')+'&sorter='+encodeURIComponent('最新')+'&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看</span></a></td></tr></table>' 
+		// html body
+	};
+	
+	transporter.sendMail(mailOptions, function(error, info){
+		if(error){
+			console.log(error);
+		}
+	});
+	
+	var mailOptions2 = {
+		from: 'LendingZone <lendingzonesystem@gmail.com>', // sender address
+		to: message.SendTo.Username+' <'+message.SendTo.Email+'>', // list of receivers
+		subject:'您婉拒了'+ message.CreatedBy.Username+'先前送來的借款請求!', // Subject line
+		text: '親愛的 '+message.SendTo.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+'您婉拒了 '+message.CreatedBy.Username+' 先前在「'+message.FromBorrowRequest.StoryTitle+'("http://lendingzone.herokuapp.com/lender/story?id='+message.FromBorrowRequest._id+'")」送來的借款請求！'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看:'+String.fromCharCode(10)+'"http://lendingzone.herokuapp.com/lender/lenderReceiveMessages?msgKeyword='+newUpdate._id+'&filter='+encodeURIComponent('已婉拒')+'&sorter='+encodeURIComponent('最新')+'&page=1"', // plaintext body
+		html: '親愛的 '+message.SendTo.Username+' 您好：<br><br>您婉拒了 '+message.CreatedBy.Username+' 先前在「<a href="http://lendingzone.herokuapp.com/lender/story?id='+message.FromBorrowRequest._id+'">'+message.FromBorrowRequest.StoryTitle+'</a>」送來的借款請求！<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://lendingzone.herokuapp.com/lender/lenderReceiveMessages?msgKeyword='+newUpdate._id+'&filter='+encodeURIComponent('已婉拒')+'&sorter='+encodeURIComponent('最新')+'&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看</span></a></td></tr></table>' 
+		// html body
+	};
+	
+	transporter.sendMail(mailOptions2, function(error, info){
+		if(error){
+			console.log(error);
+		}
+	});
+
+}
 
 exports.autoComfirmToBorrowMsgArray=autoComfirmToBorrowMsgArray;
 exports.insuranceRate=insuranceRate;
@@ -38,12 +119,12 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 					exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide);
 				}else{
 					if(!ifAuto){
-						res.redirect('/message?content='+chineseEncodeToURI('有些訊息因錯誤無法被同意!'));
+						res.redirect('/message?content='+encodeURIComponent('有些訊息因錯誤無法被同意!'));
 					}
 				}
 			}else{
 				if(!ifAuto){
-					res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+					res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 				}
 			}
 		}else{
@@ -54,12 +135,12 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 						exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide);
 					}else{
 						if(!ifAuto){
-							res.redirect('/message?content='+chineseEncodeToURI('有些訊息因錯誤無法被同意!'));
+							res.redirect('/message?content='+encodeURIComponent('有些訊息因錯誤無法被同意!'));
 						}
 					}
 				}else{
 					if(!ifAuto){
-						res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+						res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 					}
 				}
 			}else{
@@ -69,7 +150,7 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 				}else{
 					MID=req.body.array[ctr].MessageID;
 				}
-				Messages.findById(MID).populate('CreatedBy', 'Username Email').populate('SendTo', 'Username').populate('FromBorrowRequest', 'StoryTitle').exec(function (err, message){
+				Messages.findById(MID).populate('CreatedBy', 'Username Email').populate('SendTo', 'Username Email').populate('FromBorrowRequest', 'StoryTitle').exec(function (err, message){
 					if (err) {
 						console.log(err);
 						if(ifRecursive){
@@ -78,12 +159,12 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 								exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide);
 							}else{
 								if(!ifAuto){
-									res.redirect('/message?content='+chineseEncodeToURI('有些訊息因錯誤無法被同意!'));
+									res.redirect('/message?content='+encodeURIComponent('有些訊息因錯誤無法被同意!'));
 								}
 							}
 						}else{
 							if(!ifAuto){
-								res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+								res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 							}
 						}
 					}else{
@@ -94,12 +175,12 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 									exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide);
 								}else{
 									if(!ifAuto){
-										res.redirect('/message?content='+chineseEncodeToURI('有些訊息因錯誤無法被同意!'));
+										res.redirect('/message?content='+encodeURIComponent('有些訊息因錯誤無法被同意!'));
 									}
 								}
 							}else{
 								if(!ifAuto){
-									res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+									res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 								}
 							}
 						}else{
@@ -110,12 +191,12 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 										exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide);
 									}else{
 										if(!ifAuto){
-											res.redirect('/message?content='+chineseEncodeToURI('有些訊息因錯誤無法被同意!'));
+											res.redirect('/message?content='+encodeURIComponent('有些訊息因錯誤無法被同意!'));
 										}
 									}
 								}else{
 									if(!ifAuto){
-										res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+										res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 									}
 								}
 							}else{
@@ -125,14 +206,14 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 									if(req.user._id!=message.SendTo._id){
 										if(!ifAuto){
 											authResult=false;
-											res.redirect('/message?content='+chineseEncodeToURI('認證錯誤!'));
+											res.redirect('/message?content='+encodeURIComponent('認證錯誤!'));
 										}
 									}
 								}else{
 									if(req.user._id!=message.CreatedBy._id){
 										if(!ifAuto){
 											authResult=false;
-											res.redirect('/message?content='+chineseEncodeToURI('認證錯誤!'));
+											res.redirect('/message?content='+encodeURIComponent('認證錯誤!'));
 										}
 									}
 								}
@@ -147,12 +228,12 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 													exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide);
 												}else{
 													if(!ifAuto){
-														res.redirect('/message?content='+chineseEncodeToURI('有些訊息因錯誤無法被同意!'));
+														res.redirect('/message?content='+encodeURIComponent('有些訊息因錯誤無法被同意!'));
 													}
 												}
 											}else{
 												if(!ifAuto){
-													res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+													res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 												}
 											}
 										}else{
@@ -163,12 +244,12 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 														exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide);
 													}else{
 														if(!ifAuto){
-															res.redirect('/message?content='+chineseEncodeToURI('有些訊息因錯誤無法被同意!'));
+															res.redirect('/message?content='+encodeURIComponent('有些訊息因錯誤無法被同意!'));
 														}
 													}
 												}else{
 													if(!ifAuto){
-														res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+														res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 													}
 												}
 											}else{
@@ -181,12 +262,12 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide);
 															}else{
 																if(!ifAuto){
-																	res.redirect('/message?content='+chineseEncodeToURI('有些訊息因錯誤無法被同意!'));
+																	res.redirect('/message?content='+encodeURIComponent('有些訊息因錯誤無法被同意!'));
 																}
 															}
 														}else{
 															if(!ifAuto){
-																res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+																res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 															}
 														}
 													}else{
@@ -197,12 +278,12 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																	exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'找不到自動出借設定，待其重新設定後再嘗試',req,res,ifAuto,resAddress,ifLenderSide);
 																}else{
 																	if(!ifAuto){
-																		res.redirect('/message?content='+chineseEncodeToURI('找不到自動出借設定，待其重新設定後再嘗試'));
+																		res.redirect('/message?content='+encodeURIComponent('找不到自動出借設定，待其重新設定後再嘗試'));
 																	}
 																}
 															}else{
 																if(!ifAuto){
-																	res.redirect('/message?content='+chineseEncodeToURI('找不到自動出借設定，待其重新設定後再嘗試'));
+																	res.redirect('/message?content='+encodeURIComponent('找不到自動出借設定，待其重新設定後再嘗試'));
 																}
 															}
 														}else{
@@ -307,12 +388,12 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																			exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,returnSring,req,res,ifAuto,resAddress,ifLenderSide);
 																		}else{
 																			if(!ifAuto){
-																				res.redirect('/message?content='+chineseEncodeToURI(returnSring));
+																				res.redirect('/message?content='+encodeURIComponent(returnSring));
 																			}
 																		}
 																	}else{
 																		if(!ifAuto){
-																			res.redirect('/message?content='+chineseEncodeToURI(returnSring));
+																			res.redirect('/message?content='+encodeURIComponent(returnSring));
 																		}
 																	}
 																}else{
@@ -327,70 +408,33 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																					exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide);
 																				}else{
 																					if(!ifAuto){
-																						res.redirect('/message?content='+chineseEncodeToURI('有些訊息因錯誤無法被同意!'));
+																						res.redirect('/message?content='+encodeURIComponent('有些訊息因錯誤無法被同意!'));
 																					}
 																				}
 																			}else{
 																				if(!ifAuto){
-																					res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+																					res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 																				}
 																			}
 																		}else{
 																			if(ifRecursive){
 																				ctr++;
 																				if(ctr<ctrTarget){
-																					var mailOptions = {
-																						from: 'x820306test ', // sender address
-																						to: message.CreatedBy.Email, // list of receivers
-																						subject: message.SendTo.Username+'婉拒了您的借款請求!', // Subject line
-																						text: '親愛的 '+message.CreatedBy.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+message.SendTo.Username+' 婉拒了您先前在「'+message.FromBorrowRequest.StoryTitle+'("http://lendingzone.herokuapp.com/lender/story?id='+message.FromBorrowRequest._id+'")」送出的借款請求！'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看:'+String.fromCharCode(10)+'"http://lendingzone.herokuapp.com/lender/lenderReceiveMessages?msgKeyword='+newUpdate._id+'&filter='+chineseEncodeToURI('已婉拒')+'&sorter='+chineseEncodeToURI('最新')+'&page=1"', // plaintext body
-																						html: '親愛的 '+message.CreatedBy.Username+' 您好：<br><br>'+message.SendTo.Username+' 婉拒了您先前在「<a href="http://lendingzone.herokuapp.com/lender/story?id='+message.FromBorrowRequest._id+'">'+message.FromBorrowRequest.StoryTitle+'</a>」送出的借款請求！<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://lendingzone.herokuapp.com/lender/lenderReceiveMessages?msgKeyword='+newUpdate._id+'&filter='+chineseEncodeToURI('已婉拒')+'&sorter='+chineseEncodeToURI('最新')+'&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看</span></a></td></tr></table>' 
-																						// html body
-																					};
+																					mailReject(message,newUpdate)
 																					
-																					transporter.sendMail(mailOptions, function(error, info){
-																						if(error){
-																							console.log(error);
-																						}
-																					});
 																					exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,returnSring,req,res,ifAuto,resAddress,ifLenderSide);
 																				}else{
-																					var mailOptions = {
-																						from: 'x820306test ', // sender address
-																						to: message.CreatedBy.Email, // list of receivers
-																						subject: message.SendTo.Username+'婉拒了您的借款請求!', // Subject line
-																						text: '親愛的 '+message.CreatedBy.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+message.SendTo.Username+' 婉拒了您先前在「'+message.FromBorrowRequest.StoryTitle+'("http://lendingzone.herokuapp.com/lender/story?id='+message.FromBorrowRequest._id+'")」送出的借款請求！'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看:'+String.fromCharCode(10)+'"http://lendingzone.herokuapp.com/lender/lenderReceiveMessages?msgKeyword='+newUpdate._id+'&filter='+chineseEncodeToURI('已婉拒')+'&sorter='+chineseEncodeToURI('最新')+'&page=1"', // plaintext body
-																						html: '親愛的 '+message.CreatedBy.Username+' 您好：<br><br>'+message.SendTo.Username+' 婉拒了您先前在「<a href="http://lendingzone.herokuapp.com/lender/story?id='+message.FromBorrowRequest._id+'">'+message.FromBorrowRequest.StoryTitle+'</a>」送出的借款請求！<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://lendingzone.herokuapp.com/lender/lenderReceiveMessages?msgKeyword='+newUpdate._id+'&filter='+chineseEncodeToURI('已婉拒')+'&sorter='+chineseEncodeToURI('最新')+'&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看</span></a></td></tr></table>' 
-																						// html body
-																					};
+																					mailReject(message,newUpdate)
 																					
-																					transporter.sendMail(mailOptions, function(error, info){
-																						if(error){
-																							console.log(error);
-																						}
-																					});
 																					if(!ifAuto){
-																						res.redirect('/message?content='+chineseEncodeToURI(returnSring));
+																						res.redirect('/message?content='+encodeURIComponent(returnSring));
 																					}
 																				}
 																			}else{
-																				var mailOptions = {
-																					from: 'x820306test ', // sender address
-																					to: message.CreatedBy.Email, // list of receivers
-																					subject: message.SendTo.Username+'婉拒了您的借款請求!', // Subject line
-																					text: '親愛的 '+message.CreatedBy.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+message.SendTo.Username+' 婉拒了您先前在「'+message.FromBorrowRequest.StoryTitle+'("http://lendingzone.herokuapp.com/lender/story?id='+message.FromBorrowRequest._id+'")」送出的借款請求！'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看:'+String.fromCharCode(10)+'"http://lendingzone.herokuapp.com/lender/lenderReceiveMessages?msgKeyword='+newUpdate._id+'&filter='+chineseEncodeToURI('已婉拒')+'&sorter='+chineseEncodeToURI('最新')+'&page=1"', // plaintext body
-																					html: '親愛的 '+message.CreatedBy.Username+' 您好：<br><br>'+message.SendTo.Username+' 婉拒了您先前在「<a href="http://lendingzone.herokuapp.com/lender/story?id='+message.FromBorrowRequest._id+'">'+message.FromBorrowRequest.StoryTitle+'</a>」送出的借款請求！<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://lendingzone.herokuapp.com/lender/lenderReceiveMessages?msgKeyword='+newUpdate._id+'&filter='+chineseEncodeToURI('已婉拒')+'&sorter='+chineseEncodeToURI('最新')+'&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看</span></a></td></tr></table>' 
-																					// html body
-																				};
-																				
-																				transporter.sendMail(mailOptions, function(error, info){
-																					if(error){
-																						console.log(error);
-																					}
-																				});
+																				mailReject(message,newUpdate)
 																				
 																				if(!ifAuto){
-																					res.redirect('/message?content='+chineseEncodeToURI(returnSring));
+																					res.redirect('/message?content='+encodeURIComponent(returnSring));
 																				}
 																			}
 																		}
@@ -415,12 +459,12 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																				exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide);
 																			}else{
 																				if(!ifAuto){
-																					res.redirect('/message?content='+chineseEncodeToURI('有些訊息因錯誤無法被同意!'));
+																					res.redirect('/message?content='+encodeURIComponent('有些訊息因錯誤無法被同意!'));
 																				}
 																			}
 																		}else{
 																			if(!ifAuto){
-																				res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+																				res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 																			}
 																		}
 																	}else{
@@ -433,12 +477,12 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																						exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide);
 																					}else{
 																						if(!ifAuto){
-																							res.redirect('/message?content='+chineseEncodeToURI('有些訊息因錯誤無法被同意!'));
+																							res.redirect('/message?content='+encodeURIComponent('有些訊息因錯誤無法被同意!'));
 																						}
 																					}
 																				}else{
 																					if(!ifAuto){
-																						res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+																						res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 																					}
 																				}
 																			}else{
@@ -449,12 +493,12 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																							exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide);
 																						}else{
 																							if(!ifAuto){
-																								res.redirect('/message?content='+chineseEncodeToURI('有些訊息因錯誤無法被同意!'));
+																								res.redirect('/message?content='+encodeURIComponent('有些訊息因錯誤無法被同意!'));
 																							}
 																						}
 																					}else{
 																						if(!ifAuto){
-																							res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+																							res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 																						}
 																					}
 																				}else{
@@ -469,12 +513,12 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																									exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide);
 																								}else{
 																									if(!ifAuto){
-																										res.redirect('/message?content='+chineseEncodeToURI('有些訊息因錯誤無法被同意!'));
+																										res.redirect('/message?content='+encodeURIComponent('有些訊息因錯誤無法被同意!'));
 																									}
 																								}
 																							}else{
 																								if(!ifAuto){
-																									res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+																									res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 																								}
 																							}
 																						}else{
@@ -489,12 +533,12 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																											exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide);
 																										}else{
 																											if(!ifAuto){
-																												res.redirect('/message?content='+chineseEncodeToURI('有些訊息因錯誤無法被同意!'));
+																												res.redirect('/message?content='+encodeURIComponent('有些訊息因錯誤無法被同意!'));
 																											}
 																										}
 																									}else{
 																										if(!ifAuto){
-																											res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+																											res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 																										}
 																									}
 																								}else{				
@@ -512,12 +556,12 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																													exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide);
 																												}else{
 																													if(!ifAuto){
-																														res.redirect('/message?content='+chineseEncodeToURI('有些訊息因錯誤無法被同意!'));
+																														res.redirect('/message?content='+encodeURIComponent('有些訊息因錯誤無法被同意!'));
 																													}
 																												}
 																											}else{
 																												if(!ifAuto){
-																													res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+																													res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 																												}
 																											}
 																										}else{				
@@ -535,12 +579,12 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																															exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide);
 																														}else{
 																															if(!ifAuto){
-																																res.redirect('/message?content='+chineseEncodeToURI('有些訊息因錯誤無法被同意!'));
+																																res.redirect('/message?content='+encodeURIComponent('有些訊息因錯誤無法被同意!'));
 																															}
 																														}
 																													}else{
 																														if(!ifAuto){
-																															res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+																															res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 																														}
 																													}
 																												}else{		
@@ -556,83 +600,32 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																																	exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide);
 																																}else{
 																																	if(!ifAuto){
-																																		res.redirect('/message?content='+chineseEncodeToURI('有些訊息因錯誤無法被同意!'));
+																																		res.redirect('/message?content='+encodeURIComponent('有些訊息因錯誤無法被同意!'));
 																																	}
 																																}
 																															}else{
 																																if(!ifAuto){
-																																	res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+																																	res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 																																}
 																															}
 																														}else{
 																															if(ifRecursive){
 																																ctr++;
 																																if(ctr<ctrTarget){
-																																	var mailOptions = {
-																																		from: 'x820306test ', // sender address
-																																		to: message.CreatedBy.Email, // list of receivers
-																																		subject: message.SendTo.Username+'同意了您的借款請求!', // Subject line
-																																		text: '親愛的 '+message.CreatedBy.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+message.SendTo.Username+' 同意了您先前在「'+message.FromBorrowRequest.StoryTitle+'("http://lendingzone.herokuapp.com/lender/story?id='+message.FromBorrowRequest._id+'")」送出的借款請求！'+String.fromCharCode(10)+'您的交易紅利代碼為： '+exports.randomString(8)+String.fromCharCode(10)+'您可至 玉山銀行網站("http://www.esunbank.com.tw/") 兌換紅利喔!'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看訊息與交易結果:'+String.fromCharCode(10)+'"http://lendingzone.herokuapp.com/lender/lenderReceiveMessages?msgKeyword='+newCreateUpdated._id+'&filter='+chineseEncodeToURI('已同意')+'&sorter='+chineseEncodeToURI('最新')+'&page=1"', // plaintext body
-																																		html: '<img src="cid:bpng" /><br><br>親愛的 '+message.CreatedBy.Username+' 您好：<br><br>'+message.SendTo.Username+' 同意了您先前在「<a href="http://lendingzone.herokuapp.com/lender/story?id='+message.FromBorrowRequest._id+'">'+message.FromBorrowRequest.StoryTitle+'</a>」送出的借款請求！<br>您的交易紅利代碼為： <div style="color:#FF0000;display:inline;">'+exports.randomString(8)+'</div><br>您可至 <a href="http://www.esunbank.com.tw/">玉山銀行網站</a> 兌換紅利喔!<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://lendingzone.herokuapp.com/lender/lenderReceiveMessages?msgKeyword='+newCreateUpdated._id+'&filter='+chineseEncodeToURI('已同意')+'&sorter='+chineseEncodeToURI('最新')+'&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看訊息與交易結果</span></a></td></tr></table>', 
-																																		attachments: [{
-																																			filename: 'b.png',
-																																			path: __dirname+'/../public/images/b.png',
-																																			cid: 'bpng' //same cid value as in the html img src
-																																		}]
-																																	};
-																																	
-																																	transporter.sendMail(mailOptions, function(error, info){
-																																		if(error){
-																																			console.log(error);
-																																		}
-																																	});
+																																	mailAgree(message,newCreateUpdated);
 																																	exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,returnSring,req,res,ifAuto,resAddress,ifLenderSide);
 																																}else{
-																																	var mailOptions = {
-																																		from: 'x820306test ', // sender address
-																																		to: message.CreatedBy.Email, // list of receivers
-																																		subject: message.SendTo.Username+'同意了您的借款請求!', // Subject line
-																																		text: '親愛的 '+message.CreatedBy.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+message.SendTo.Username+' 同意了您先前在「'+message.FromBorrowRequest.StoryTitle+'("http://lendingzone.herokuapp.com/lender/story?id='+message.FromBorrowRequest._id+'")」送出的借款請求！'+String.fromCharCode(10)+'您的交易紅利代碼為： '+exports.randomString(8)+String.fromCharCode(10)+'您可至 玉山銀行網站("http://www.esunbank.com.tw/") 兌換紅利喔!'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看訊息與交易結果:'+String.fromCharCode(10)+'"http://lendingzone.herokuapp.com/lender/lenderReceiveMessages?msgKeyword='+newCreateUpdated._id+'&filter='+chineseEncodeToURI('已同意')+'&sorter='+chineseEncodeToURI('最新')+'&page=1"', // plaintext body
-																																		html: '<img src="cid:bpng" /><br><br>親愛的 '+message.CreatedBy.Username+' 您好：<br><br>'+message.SendTo.Username+' 同意了您先前在「<a href="http://lendingzone.herokuapp.com/lender/story?id='+message.FromBorrowRequest._id+'">'+message.FromBorrowRequest.StoryTitle+'</a>」送出的借款請求！<br>您的交易紅利代碼為： <div style="color:#FF0000;display:inline;">'+exports.randomString(8)+'</div><br>您可至 <a href="http://www.esunbank.com.tw/">玉山銀行網站</a> 兌換紅利喔!<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://lendingzone.herokuapp.com/lender/lenderReceiveMessages?msgKeyword='+newCreateUpdated._id+'&filter='+chineseEncodeToURI('已同意')+'&sorter='+chineseEncodeToURI('最新')+'&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看訊息與交易結果</span></a></td></tr></table>', 
-																																		attachments: [{
-																																			filename: 'b.png',
-																																			path: __dirname+'/../public/images/b.png',
-																																			cid: 'bpng' //same cid value as in the html img src
-																																		}]
-																																	};
-																																	
-																																	transporter.sendMail(mailOptions, function(error, info){
-																																		if(error){
-																																			console.log(error);
-																																		}
-																																	});
+																																	mailAgree(message,newCreateUpdated);
 																																	if(!ifAuto){
 																																		if(returnSring){	
-																																			res.redirect('/message?content='+chineseEncodeToURI(returnSring));
+																																			res.redirect('/message?content='+encodeURIComponent(returnSring));
 																																		}else{
 																																			res.redirect(resAddress);
 																																		}
 																																	}
 																																}
 																															}else{
-																																var mailOptions = {
-																																	from: 'x820306test ', // sender address
-																																	to: message.CreatedBy.Email, // list of receivers
-																																	subject: message.SendTo.Username+'同意了您的借款請求!', // Subject line
-																																	text: '親愛的 '+message.CreatedBy.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+message.SendTo.Username+' 同意了您先前在「'+message.FromBorrowRequest.StoryTitle+'("http://lendingzone.herokuapp.com/lender/story?id='+message.FromBorrowRequest._id+'")」送出的借款請求！'+String.fromCharCode(10)+'您的交易紅利代碼為： '+exports.randomString(8)+String.fromCharCode(10)+'您可至 玉山銀行網站("http://www.esunbank.com.tw/") 兌換紅利喔!'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看訊息與交易結果:'+String.fromCharCode(10)+'"http://lendingzone.herokuapp.com/lender/lenderReceiveMessages?msgKeyword='+newCreateUpdated._id+'&filter='+chineseEncodeToURI('已同意')+'&sorter='+chineseEncodeToURI('最新')+'&page=1"', // plaintext body
-																																	html: '<img src="cid:bpng" /><br><br>親愛的 '+message.CreatedBy.Username+' 您好：<br><br>'+message.SendTo.Username+' 同意了您先前在「<a href="http://lendingzone.herokuapp.com/lender/story?id='+message.FromBorrowRequest._id+'">'+message.FromBorrowRequest.StoryTitle+'</a>」送出的借款請求！<br>您的交易紅利代碼為： <div style="color:#FF0000;display:inline;">'+exports.randomString(8)+'</div><br>您可至 <a href="http://www.esunbank.com.tw/">玉山銀行網站</a> 兌換紅利喔!<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://lendingzone.herokuapp.com/lender/lenderReceiveMessages?msgKeyword='+newCreateUpdated._id+'&filter='+chineseEncodeToURI('已同意')+'&sorter='+chineseEncodeToURI('最新')+'&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看訊息與交易結果</span></a></td></tr></table>', 
-																																	attachments: [{
-																																		filename: 'b.png',
-																																		path: __dirname+'/../public/images/b.png',
-																																		cid: 'bpng' //same cid value as in the html img src
-																																	}]
-																																};
-																																
-																																transporter.sendMail(mailOptions, function(error, info){
-																																	if(error){
-																																		console.log(error);
-																																	}
-																																});
+																																mailAgree(message,newCreateUpdated);
 																																if(!ifAuto){
 																																	res.redirect(resAddress);
 																																}
@@ -676,7 +669,7 @@ exports.rejectMessage=function (ifRecursive,ctr,ctrTarget,returnSring,req,res,if
 	}else{
 		MID=req.body.array[ctr].MessageID;
 	}
-	Messages.findById(MID).populate('CreatedBy', 'Username Email').populate('SendTo', 'Username').populate('FromBorrowRequest', 'StoryTitle').exec(function (err, message){
+	Messages.findById(MID).populate('CreatedBy', 'Username Email').populate('SendTo', 'Username Email').populate('FromBorrowRequest', 'StoryTitle').exec(function (err, message){
 		if (err) {
 			console.log(err);
 			if(ifRecursive){
@@ -685,12 +678,12 @@ exports.rejectMessage=function (ifRecursive,ctr,ctrTarget,returnSring,req,res,if
 					exports.rejectMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被拒絕!',req,res,ifAuto,resAddress);
 				}else{
 					if(!ifAuto){
-						res.redirect('/message?content='+chineseEncodeToURI('有些訊息因錯誤無法被拒絕!'));
+						res.redirect('/message?content='+encodeURIComponent('有些訊息因錯誤無法被拒絕!'));
 					}
 				}
 			}else{
 				if(!ifAuto){
-					res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+					res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 				}
 			}
 		}else{
@@ -701,12 +694,12 @@ exports.rejectMessage=function (ifRecursive,ctr,ctrTarget,returnSring,req,res,if
 						exports.rejectMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被拒絕!',req,res,ifAuto,resAddress);
 					}else{
 						if(!ifAuto){
-							res.redirect('/message?content='+chineseEncodeToURI('有些訊息因錯誤無法被拒絕!'));
+							res.redirect('/message?content='+encodeURIComponent('有些訊息因錯誤無法被拒絕!'));
 						}
 					}
 				}else{
 					if(!ifAuto){
-						res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+						res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 					}
 				}
 			}else{			
@@ -717,18 +710,18 @@ exports.rejectMessage=function (ifRecursive,ctr,ctrTarget,returnSring,req,res,if
 							exports.rejectMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被拒絕!',req,res,ifAuto,resAddress);
 						}else{
 							if(!ifAuto){
-								res.redirect('/message?content='+chineseEncodeToURI('有些訊息因錯誤無法被拒絕!'));
+								res.redirect('/message?content='+encodeURIComponent('有些訊息因錯誤無法被拒絕!'));
 							}
 						}
 					}else{
 						if(!ifAuto){
-							res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+							res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 						}
 					}
 				}else{
 					if(req.user._id!=message.SendTo._id){
 						if(!ifAuto){
-							res.redirect('/message?content='+chineseEncodeToURI('認證錯誤!'));
+							res.redirect('/message?content='+encodeURIComponent('認證錯誤!'));
 						}
 					}else{
 						message.Status="Rejected";
@@ -742,72 +735,35 @@ exports.rejectMessage=function (ifRecursive,ctr,ctrTarget,returnSring,req,res,if
 										exports.rejectMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被拒絕!',req,res,ifAuto,resAddress);
 									}else{
 										if(!ifAuto){
-											res.redirect('/message?content='+chineseEncodeToURI('有些訊息因錯誤無法被拒絕!'));
+											res.redirect('/message?content='+encodeURIComponent('有些訊息因錯誤無法被拒絕!'));
 										}
 									}
 								}else{
 									if(!ifAuto){
-										res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+										res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 									}
 								}
 							}else{
 								if(ifRecursive){
 									ctr++;
 									if(ctr<ctrTarget){
-										var mailOptions = {
-											from: 'x820306test ', // sender address
-											to: message.CreatedBy.Email, // list of receivers
-											subject: message.SendTo.Username+'婉拒了您的借款請求!', // Subject line
-											text: '親愛的 '+message.CreatedBy.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+message.SendTo.Username+' 婉拒了您先前在「'+message.FromBorrowRequest.StoryTitle+'("http://lendingzone.herokuapp.com/lender/story?id='+message.FromBorrowRequest._id+'")」送出的借款請求！'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看:'+String.fromCharCode(10)+'"http://lendingzone.herokuapp.com/lender/lenderReceiveMessages?msgKeyword='+newUpdate._id+'&filter='+chineseEncodeToURI('已婉拒')+'&sorter='+chineseEncodeToURI('最新')+'&page=1"', // plaintext body
-											html: '親愛的 '+message.CreatedBy.Username+' 您好：<br><br>'+message.SendTo.Username+' 婉拒了您先前在「<a href="http://lendingzone.herokuapp.com/lender/story?id='+message.FromBorrowRequest._id+'">'+message.FromBorrowRequest.StoryTitle+'</a>」送出的借款請求！<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://lendingzone.herokuapp.com/lender/lenderReceiveMessages?msgKeyword='+newUpdate._id+'&filter='+chineseEncodeToURI('已婉拒')+'&sorter='+chineseEncodeToURI('最新')+'&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看</span></a></td></tr></table>' 
-											// html body
-										};
+										mailReject(message,newUpdate)
 										
-										transporter.sendMail(mailOptions, function(error, info){
-											if(error){
-												console.log(error);
-											}
-										});
 										exports.rejectMessage(ifRecursive,ctr,ctrTarget,returnSring,req,res,ifAuto,resAddress);
 									}else{
-										var mailOptions = {
-											from: 'x820306test ', // sender address
-											to: message.CreatedBy.Email, // list of receivers
-											subject: message.SendTo.Username+'婉拒了您的借款請求!', // Subject line
-											text: '親愛的 '+message.CreatedBy.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+message.SendTo.Username+' 婉拒了您先前在「'+message.FromBorrowRequest.StoryTitle+'("http://lendingzone.herokuapp.com/lender/story?id='+message.FromBorrowRequest._id+'")」送出的借款請求！'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看:'+String.fromCharCode(10)+'"http://lendingzone.herokuapp.com/lender/lenderReceiveMessages?msgKeyword='+newUpdate._id+'&filter='+chineseEncodeToURI('已婉拒')+'&sorter='+chineseEncodeToURI('最新')+'&page=1"', // plaintext body
-											html: '親愛的 '+message.CreatedBy.Username+' 您好：<br><br>'+message.SendTo.Username+' 婉拒了您先前在「<a href="http://lendingzone.herokuapp.com/lender/story?id='+message.FromBorrowRequest._id+'">'+message.FromBorrowRequest.StoryTitle+'</a>」送出的借款請求！<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://lendingzone.herokuapp.com/lender/lenderReceiveMessages?msgKeyword='+newUpdate._id+'&filter='+chineseEncodeToURI('已婉拒')+'&sorter='+chineseEncodeToURI('最新')+'&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看</span></a></td></tr></table>' 
-											// html body
-										};
-										
-										transporter.sendMail(mailOptions, function(error, info){
-											if(error){
-												console.log(error);
-											}
-										});
+										mailReject(message,newUpdate)
 										
 										if(!ifAuto){
 											if(returnSring){
-												res.redirect('/message?content='+chineseEncodeToURI(returnSring));
+												res.redirect('/message?content='+encodeURIComponent(returnSring));
 											}else{
 												res.redirect(resAddress);
 											}
 										}
 									}
 								}else{
-									var mailOptions = {
-										from: 'x820306test ', // sender address
-										to: message.CreatedBy.Email, // list of receivers
-										subject: message.SendTo.Username+'婉拒了您的借款請求!', // Subject line
-										text: '親愛的 '+message.CreatedBy.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+message.SendTo.Username+' 婉拒了您先前在「'+message.FromBorrowRequest.StoryTitle+'("http://lendingzone.herokuapp.com/lender/story?id='+message.FromBorrowRequest._id+'")」送出的借款請求！'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看:'+String.fromCharCode(10)+'"http://lendingzone.herokuapp.com/lender/lenderReceiveMessages?msgKeyword='+newUpdate._id+'&filter='+chineseEncodeToURI('已婉拒')+'&sorter='+chineseEncodeToURI('最新')+'&page=1"', // plaintext body
-										html: '親愛的 '+message.CreatedBy.Username+' 您好：<br><br>'+message.SendTo.Username+' 婉拒了您先前在「<a href="http://lendingzone.herokuapp.com/lender/story?id='+message.FromBorrowRequest._id+'">'+message.FromBorrowRequest.StoryTitle+'</a>」送出的借款請求！<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://lendingzone.herokuapp.com/lender/lenderReceiveMessages?msgKeyword='+newUpdate._id+'&filter='+chineseEncodeToURI('已婉拒')+'&sorter='+chineseEncodeToURI('最新')+'&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看</span></a></td></tr></table>' 
-										// html body
-									};
+									mailReject(message,newUpdate)
 									
-									transporter.sendMail(mailOptions, function(error, info){
-										if(error){
-											console.log(error);
-										}
-									});
 									if(!ifAuto){	
 										res.redirect(resAddress);
 									}
@@ -854,18 +810,45 @@ exports.randomString=function (len, charSet) {
     return randomString;
 }
 
-function ensureAuthenticated(req, res, next) {
-  if (req.isAuthenticated()) { return next(null); }
-	res.render('login',{userName:null,msg:'請登入'});
+//ensureAuthenticated->newMsgChecker->ensureAdmin
+exports.newMsgChecker=function (req, res, next) {
+	if (!req.isAuthenticated()) { 
+		req.newlrmNumber=0;
+		req.newlsmNumber=0;
+		return next();
+	}else{
+		Messages.count({$and:[{"SendTo": req.user._id},{"Type": "toBorrow"},{"Status": "NotConfirmed"}]},function (err, count) {
+			if (err){
+				console.log(err);
+				req.newlrmNumber=0;
+				req.newlsmNumber=0;
+				return next();
+			}else{
+				req.newlrmNumber=count;
+				Messages.count({$and:[{"CreatedBy": req.user._id},{"Type": "toLend"},{"Status": "NotConfirmed"}]},function (err, count2) {
+					if (err){
+						console.log(err);
+						req.newlsmNumber=0;
+						return next();
+					}else{
+						console.log(count2);
+						req.newlsmNumber=count2;
+						return next();
+					}
+				});
+			}
+		});
+	}
+}
+
+exports.ensureAuthenticated=function (req, res, next) {
+  if (req.isAuthenticated()) { return next(); }
+	res.render('login',{newlrmNum:0,newlsmNum:0,userName:null,msg:'請登入'});
 }
 
 //add after ensureAuthenticated to confirm ifAdmin
-function ensureAdmin(req, res, next) {
+exports.ensureAdmin=function (req, res, next) {
   var objID=mongoose.Types.ObjectId('5555251bb08002f0068fd00f');//管理員ID
-  if(req.user._id==objID){ return next(null); }
-	res.render('login',{userName:null,msg:'請以管理員身分登入'});
-}
-
-function chineseEncodeToURI(string){
-	return encodeURIComponent(string);
+  if(req.user._id==objID){ return next(); }
+	res.render('login',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:null,msg:'請以管理員身分登入'});
 }

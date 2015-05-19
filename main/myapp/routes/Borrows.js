@@ -1,3 +1,4 @@
+var library=require( './library.js' );
 var mongoose = require('mongoose');
 var Borrows  = mongoose.model('Borrows');
 var Users  = mongoose.model('Users');
@@ -23,8 +24,12 @@ router.post('/create', function(req, res, next) {
 				toCreate.MaxInterestRateAccepted=sanitizer.sanitize(req.body.MaxInterestRateAccepted);
 				toCreate.MonthPeriodAccepted=sanitizer.sanitize(req.body.MonthPeriodAccepted);
 				toCreate.TimeLimit=sanitizer.sanitize(req.body.TimeLimit);
-				toCreate.StoryTitle=sanitizer.sanitize(req.body.StoryTitle);
-				toCreate.Story=sanitizer.sanitize(req.body.Story);
+				if(sanitizer.sanitize(req.body.StoryTitle)!=''){
+					toCreate.StoryTitle=sanitizer.sanitize(req.body.StoryTitle);
+				}
+				if(sanitizer.sanitize(req.body.Story)!=''){
+					toCreate.Story=sanitizer.sanitize(req.body.Story);
+				}
 				toCreate.CreatedBy=sanitizer.sanitize(req.body.CreatedBy);
 				toCreate.Level=user.Level;
 				
@@ -41,7 +46,7 @@ router.post('/create', function(req, res, next) {
 	});
 });
 
-router.post('/like', ensureAuthenticated, function(req, res, next) {
+router.post('/like', library.ensureAuthenticated, function(req, res, next) {
 	Borrows.findById(req.body._id).exec(function (err, borrow){
 		if (err) {
 			console.log(err);
@@ -76,7 +81,7 @@ router.post('/like', ensureAuthenticated, function(req, res, next) {
 	});
 });
 
-router.post('/unlike', ensureAuthenticated, function(req, res, next) {
+router.post('/unlike', library.ensureAuthenticated, function(req, res, next) {
 	Borrows.findById(req.body._id).exec(function (err, borrow){
 		if (err) {
 			console.log(err);
@@ -113,19 +118,3 @@ router.post('/unlike', ensureAuthenticated, function(req, res, next) {
 });
 
 module.exports = router;
-
-function ensureAuthenticated(req, res, next) {
-  if (req.isAuthenticated()) { return next(null); }
-	res.render('login',{userName:null,msg:'請登入'});
-}
-
-//add after ensureAuthenticated to confirm ifAdmin
-function ensureAdmin(req, res, next) {
-  var objID=mongoose.Types.ObjectId('5555251bb08002f0068fd00f');//管理員ID
-  if(req.user._id==objID){ return next(null); }
-	res.render('login',{userName:null,msg:'請以管理員身分登入'});
-}
-
-function chineseEncodeToURI(string){
-	return encodeURIComponent(string);
-}

@@ -4,7 +4,7 @@ var mongoose = require('mongoose');
 var express = require('express');
 var router = express.Router();
 
-router.get('/search/:keyword?/:action?/:page?', function (req, res) {
+router.get('/search/:keyword?/:action?/:page?',library.newMsgChecker, function (req, res) {
 	var auRst=null;
 	if(req.isAuthenticated()){
 		auRst=req.user.Username;
@@ -106,31 +106,31 @@ router.get('/search/:keyword?/:action?/:page?', function (req, res) {
 	Borrows.count({$or:orFindCmdAry,$and:andFindCmdAry},function (err, count) {
 		if (err){
 			console.log(err);
-			res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+			res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 		}else{
 			var divider=10;
 			totalResultNumber=count;
 			if(totalResultNumber<=0){
 				if(targetPage>1){
-					res.redirect('/message?content='+chineseEncodeToURI('錯誤頁碼!'));
+					res.redirect('/message?content='+encodeURIComponent('錯誤頁碼!'));
 				}else{
-					res.render('search',{userName:auRst,keywordDefault:keyword,actionDefault:action,categoryDefault:category,filterDefault:filter,lboundDefault:lbound,uboundDefault:ubound,jsonArray:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage});
+					res.render('search',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,keywordDefault:keyword,actionDefault:action,categoryDefault:category,filterDefault:filter,lboundDefault:lbound,uboundDefault:ubound,jsonArray:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage});
 				}
 			}else{
 				pageNum=Math.ceil(totalResultNumber/divider);
 				if(pageNum<targetPage){
-					res.redirect('/message?content='+chineseEncodeToURI('錯誤頁碼!'));
+					res.redirect('/message?content='+encodeURIComponent('錯誤頁碼!'));
 				}else{
 					Borrows.find({$or:orFindCmdAry,$and:andFindCmdAry}).limit(divider).skip(divider*(targetPage-1)).populate('CreatedBy', 'Username').sort(actionRec).exec( function (err, borrows, count){
 						if (err) {
 							console.log(err);
-							res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+							res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 						}else{
 							for(i=0;i<borrows.length;i++){
 								borrows[i].MaxInterestRateAccepted-=library.serviceChargeRate;//scr
 							}
 							resArrays=borrows;
-							res.render('search',{userName:auRst,keywordDefault:keyword,actionDefault:action,categoryDefault:category,filterDefault:filter,lboundDefault:lbound,uboundDefault:ubound,jsonArray:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage});
+							res.render('search',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,keywordDefault:keyword,actionDefault:action,categoryDefault:category,filterDefault:filter,lboundDefault:lbound,uboundDefault:ubound,jsonArray:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage});
 						}
 					});
 				}
@@ -139,7 +139,7 @@ router.get('/search/:keyword?/:action?/:page?', function (req, res) {
 	});
 });
 
-router.get('/story/:id?', function (req, res) {
+router.get('/story/:id?',library.newMsgChecker, function (req, res) {
 	var auRst=null;
 	if(req.isAuthenticated()){
 		auRst=req.user.Username;
@@ -154,10 +154,10 @@ router.get('/story/:id?', function (req, res) {
 	Borrows.findById(req.query.id).populate('CreatedBy', 'Username').populate('Discussion').exec(function (err, borrow){
 		if (err) {
 			console.log(err);
-			res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+			res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 		}else{
 			if(!borrow){
-				res.redirect('/message?content='+chineseEncodeToURI('錯誤ID!'));
+				res.redirect('/message?content='+encodeURIComponent('錯誤ID!'));
 			}else{
 				var options = {
 					path: 'Discussion.CreatedBy',
@@ -167,17 +167,17 @@ router.get('/story/:id?', function (req, res) {
 				Discussions.populate(borrow, options, function(err, borrow) {
 					if(err){
 						console.log(err);
-						res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+						res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 					}else{
 						borrow.MaxInterestRateAccepted-=library.serviceChargeRate;//scr
 						var ifSelfValue=false;
 						var ifLikedValue=false;
 						if(!auRst){
-							res.render('story',{userName:auRst,ifSelf:ifSelfValue,ifLiked:ifLikedValue,json:borrow,jsonMessage:null,jsonBorrowMessage:null,MoneyInBankAccountValue:0,MoneyLended:0});
+							res.render('story',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,ifSelf:ifSelfValue,ifLiked:ifLikedValue,json:borrow,jsonMessage:null,jsonBorrowMessage:null,MoneyInBankAccountValue:0,MoneyLended:0});
 						}else{
 							if(req.user._id==borrow.CreatedBy._id){
 								ifSelfValue=true;
-								res.render('story',{userName:auRst,ifSelf:ifSelfValue,ifLiked:ifLikedValue,json:borrow,jsonMessage:null,jsonBorrowMessage:null,MoneyInBankAccountValue:0,MoneyLended:0});
+								res.render('story',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,ifSelf:ifSelfValue,ifLiked:ifLikedValue,json:borrow,jsonMessage:null,jsonBorrowMessage:null,MoneyInBankAccountValue:0,MoneyLended:0});
 							}else{
 								var j = 0;
 								for (j = 0; j < borrow.Likes.length; j++) {
@@ -188,16 +188,16 @@ router.get('/story/:id?', function (req, res) {
 								BankAccounts.findOne({"OwnedBy": req.user._id}).exec(function (err, bankaccount){
 									if (err) {
 										console.log(err);
-										res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+										res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 									}else{
 										if(!bankaccount){
-											res.redirect('/message?content='+chineseEncodeToURI('無銀行帳戶!'));
+											res.redirect('/message?content='+encodeURIComponent('無銀行帳戶!'));
 										}else{
 											var moneyLendedCumulated=0
 											Transactions.find({"Lender": req.user._id}).exec(function (err, transactions){
 												if (err) {
 													console.log(err);
-													res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+													res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 												}else{
 													if(transactions.length>0){
 														for(i=0;i<transactions.length;i++){
@@ -207,28 +207,52 @@ router.get('/story/:id?', function (req, res) {
 													Messages.findOne({$and:[{"CreatedBy": req.user._id},{"FromBorrowRequest": req.query.id},{"Type": "toLend"}]}).exec(function (err, message){
 														if (err) {
 															console.log(err);
-															res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+															res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 														}else{
 															if(message){
 																message.InterestRate-=library.serviceChargeRate;//scr
 																message.InterestInFuture=library.interestInFutureCalculator(message.MoneyToLend,message.InterestRate,message.MonthPeriod);
-																message.InterestInFutureDivMoney=message.InterestInFuture/message.MoneyToLend*100;
-																message.InterestInFutureMonth=message.InterestInFuture/message.MonthPeriod;
-																message.InterestInFutureMoneyMonth=(message.InterestInFuture+message.MoneyToLend)/message.MonthPeriod;
+																if(message.MoneyToLend>0){
+																	message.InterestInFutureDivMoney=message.InterestInFuture/message.MoneyToLend*100;
+																}else{
+																	message.InterestInFutureDivMoney=0;
+																}
+																if(message.MonthPeriod>0){
+																	message.InterestInFutureMonth=message.InterestInFuture/message.MonthPeriod;
+																}else{
+																	message.InterestInFutureMonth=0;
+																}
+																if(message.MonthPeriod>0){
+																	message.InterestInFutureMoneyMonth=(message.InterestInFuture+message.MoneyToLend)/message.MonthPeriod;
+																}else{
+																	message.InterestInFutureMoneyMonth=0;
+																}
 															}
 															Messages.findOne({$and:[{"CreatedBy": borrow.CreatedBy._id},{"SendTo": req.user._id},{"FromBorrowRequest": req.query.id},{"Type": "toBorrow"}]}).exec(function (err, borrowMessage){
 																if (err) {
 																	console.log(err);
-																	res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+																	res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 																}else{
 																	if(borrowMessage){
 																		borrowMessage.InterestRate-=library.serviceChargeRate;//scr
 																		borrowMessage.InterestInFuture=library.interestInFutureCalculator(borrowMessage.MoneyToLend,borrowMessage.InterestRate,borrowMessage.MonthPeriod);
-																		borrowMessage.InterestInFutureDivMoney=borrowMessage.InterestInFuture/borrowMessage.MoneyToLend*100;
-																		borrowMessage.InterestInFutureMonth=borrowMessage.InterestInFuture/borrowMessage.MonthPeriod;
-																		borrowMessage.InterestInFutureMoneyMonth=(borrowMessage.InterestInFuture+borrowMessage.MoneyToLend)/borrowMessage.MonthPeriod;
+																		if(borrowMessage.MoneyToLend>0){
+																			borrowMessage.InterestInFutureDivMoney=borrowMessage.InterestInFuture/borrowMessage.MoneyToLend*100;
+																		}else{
+																			borrowMessage.InterestInFutureDivMoney=0;
+																		}
+																		if(borrowMessage.MonthPeriod>0){
+																			borrowMessage.InterestInFutureMonth=borrowMessage.InterestInFuture/borrowMessage.MonthPeriod;
+																		}else{
+																			borrowMessage.InterestInFutureMonth=0;
+																		}
+																		if(borrowMessage.MonthPeriod>0){
+																			borrowMessage.InterestInFutureMoneyMonth=(borrowMessage.InterestInFuture+borrowMessage.MoneyToLend)/borrowMessage.MonthPeriod;
+																		}else{
+																			borrowMessage.InterestInFutureMoneyMonth=0;
+																		}
 																	}
-																	res.render('story',{userName:auRst,ifSelf:ifSelfValue,ifLiked:ifLikedValue,json:borrow,jsonMessage:message,jsonBorrowMessage:borrowMessage,MoneyInBankAccountValue:bankaccount.MoneyInBankAccount,MoneyLended:moneyLendedCumulated});
+																	res.render('story',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,ifSelf:ifSelfValue,ifLiked:ifLikedValue,json:borrow,jsonMessage:message,jsonBorrowMessage:borrowMessage,MoneyInBankAccountValue:bankaccount.MoneyInBankAccount,MoneyLended:moneyLendedCumulated});
 																}
 															});
 														}
@@ -247,23 +271,23 @@ router.get('/story/:id?', function (req, res) {
 	});
 });
 
-router.get('/lend', ensureAuthenticated, function (req, res) {
+router.get('/lend', library.ensureAuthenticated,library.newMsgChecker, function (req, res) {
 	var Lends  = mongoose.model('Lends');
 	var BankAccounts  = mongoose.model('BankAccounts');
 	var Transactions  = mongoose.model('Transactions');
 	BankAccounts.findOne({"OwnedBy": req.user._id}).exec(function (err, bankaccount){
 		if (err) {
 			console.log(err);
-			res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+			res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 		}else{
 			if(!bankaccount){
-				res.redirect('/message?content='+chineseEncodeToURI('無銀行帳戶!'));
+				res.redirect('/message?content='+encodeURIComponent('無銀行帳戶!'));
 			}else{
 				var moneyLendedCumulated=0
 				Transactions.find({"Lender": req.user._id}).exec(function (err, transactions){
 					if (err) {
 						console.log(err);
-						res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+						res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 					}else{
 						if(transactions.length>0){
 							for(i=0;i<transactions.length;i++){
@@ -273,12 +297,12 @@ router.get('/lend', ensureAuthenticated, function (req, res) {
 						Lends.findOne({"CreatedBy": req.user._id}).exec(function (err, lend){
 							if (err) {
 								console.log(err);
-								res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+								res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 							}else{
 								if(lend){
 									lend.InterestRate-=library.serviceChargeRate;//scr
 								}
-								res.render('lend',{userName:req.user.Username,MoneyInBankAccountValue:bankaccount.MoneyInBankAccount,MoneyLended:moneyLendedCumulated,jsonLend:lend});
+								res.render('lend',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,MoneyInBankAccountValue:bankaccount.MoneyInBankAccount,MoneyLended:moneyLendedCumulated,jsonLend:lend});
 							}
 						});
 					}
@@ -288,7 +312,7 @@ router.get('/lend', ensureAuthenticated, function (req, res) {
 	});
 });
 
-router.get('/lenderTransactionRecord/:oneid?/:filter?/:sorter?/:page?', ensureAuthenticated, function (req, res) {
+router.get('/lenderTransactionRecord/:oneid?/:filter?/:sorter?/:page?', library.ensureAuthenticated,library.newMsgChecker, function (req, res) {
 	var resArrays=[];
 	var oneid=decodeURIComponent(req.query.oneid);
 	var sorter=decodeURIComponent(req.query.sorter);
@@ -345,14 +369,14 @@ router.get('/lenderTransactionRecord/:oneid?/:filter?/:sorter?/:page?', ensureAu
 	Transactions.find({$and:andFindCmdAry}).populate('Borrower', 'Username').populate('CreatedFrom', 'FromBorrowRequest').sort(sorterRec).exec( function (err, transactions, count){
 		if (err) {
 			console.log(err);
-			res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+			res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 		}else{
 			totalResultNumber=transactions.length;
 			if(totalResultNumber==0){
 				if(targetPage>1){
-					res.redirect('/message?content='+chineseEncodeToURI('錯誤頁碼!'));
+					res.redirect('/message?content='+encodeURIComponent('錯誤頁碼!'));
 				}else{
-					res.render('lenderTransactionRecord',{userName:req.user.Username,oneidDefault:oneid,filterDefault:filter,sorterDefault:sorter,jsonTransaction:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,insuranceRate:library.insuranceRate,selectedFeeAll:selectedFeeAllIpt});
+					res.render('lenderTransactionRecord',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,oneidDefault:oneid,filterDefault:filter,sorterDefault:sorter,jsonTransaction:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,insuranceRate:library.insuranceRate,selectedFeeAll:selectedFeeAllIpt});
 				}
 			}else{
 				var options = {
@@ -364,14 +388,26 @@ router.get('/lenderTransactionRecord/:oneid?/:filter?/:sorter?/:page?', ensureAu
 				Messages.populate(transactions, options, function(err, transactions) {
 					if(err){
 						console.log(err);
-						res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+						res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 					}else{
 						for(i=0;i<totalResultNumber;i++){
 							transactions[i].InterestRate-=library.serviceChargeRate;//scr
 							transactions[i].InterestInFuture=library.interestInFutureCalculator(transactions[i].Principal,transactions[i].InterestRate,transactions[i].MonthPeriod);
-							transactions[i].InterestInFutureDivMoney=transactions[i].InterestInFuture/transactions[i].Principal*100;
-							transactions[i].InterestInFutureMonth=transactions[i].InterestInFuture/transactions[i].MonthPeriod;
-							transactions[i].InterestInFutureMoneyMonth=(transactions[i].InterestInFuture+transactions[i].Principal)/transactions[i].MonthPeriod;
+							if(transactions[i].Principal>0){
+								transactions[i].InterestInFutureDivMoney=transactions[i].InterestInFuture/transactions[i].Principal*100;
+							}else{
+								transactions[i].InterestInFutureDivMoney=0;
+							}
+							if(transactions[i].MonthPeriod>0){
+								transactions[i].InterestInFutureMonth=transactions[i].InterestInFuture/transactions[i].MonthPeriod;
+							}else{
+								transactions[i].InterestInFutureMonth=0;
+							}
+							if(transactions[i].MonthPeriod>0){
+								transactions[i].InterestInFutureMoneyMonth=(transactions[i].InterestInFuture+transactions[i].Principal)/transactions[i].MonthPeriod;
+							}else{
+								transactions[i].InterestInFutureMoneyMonth=0;
+							}
 							selectedFeeAllIpt+=transactions[i].Principal*library.insuranceRate;
 						}
 						
@@ -395,7 +431,7 @@ router.get('/lenderTransactionRecord/:oneid?/:filter?/:sorter?/:page?', ensureAu
 						pageNum=Math.ceil(transactions.length/divider);
 						
 						if(pageNum<targetPage){
-							res.redirect('/message?content='+chineseEncodeToURI('錯誤頁碼!'));
+							res.redirect('/message?content='+encodeURIComponent('錯誤頁碼!'));
 						}else{
 							var starter=divider*(targetPage-1);
 							var ender;
@@ -407,7 +443,7 @@ router.get('/lenderTransactionRecord/:oneid?/:filter?/:sorter?/:page?', ensureAu
 							for(i=starter;i<ender;i++){
 								resArrays.push(transactions[i]);
 							}
-							res.render('lenderTransactionRecord',{userName:req.user.Username,oneidDefault:oneid,filterDefault:filter,sorterDefault:sorter,jsonTransaction:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,insuranceRate:library.insuranceRate,selectedFeeAll:selectedFeeAllIpt});
+							res.render('lenderTransactionRecord',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,oneidDefault:oneid,filterDefault:filter,sorterDefault:sorter,jsonTransaction:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,insuranceRate:library.insuranceRate,selectedFeeAll:selectedFeeAllIpt});
 						}
 					}
 				});
@@ -416,7 +452,7 @@ router.get('/lenderTransactionRecord/:oneid?/:filter?/:sorter?/:page?', ensureAu
 	});
 });
 
-router.get('/lenderReturnRecord/:oneid?/:id?/:sorter?/:page?', ensureAuthenticated, function (req, res) {
+router.get('/lenderReturnRecord/:oneid?/:id?/:sorter?/:page?', library.ensureAuthenticated, library.newMsgChecker,function (req, res) {
 	var resArrays=[];
 	var oneid=decodeURIComponent(req.query.oneid);
 	var id=decodeURIComponent(req.query.id);
@@ -454,14 +490,14 @@ router.get('/lenderReturnRecord/:oneid?/:id?/:sorter?/:page?', ensureAuthenticat
 	Returns.find({$and:andFindCmdAry}).populate('Borrower', 'Username').sort(sorterRec).exec( function (err, returns, count){
 		if (err) {
 			console.log(err);
-			res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+			res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 		}else{
 			totalResultNumber=returns.length;
 			if(totalResultNumber==0){
 				if(targetPage>1){
-					res.redirect('/message?content='+chineseEncodeToURI('錯誤頁碼!'));
+					res.redirect('/message?content='+encodeURIComponent('錯誤頁碼!'));
 				}else{
-					res.render('lenderReturnRecord',{userName:req.user.Username,oneidDefault:oneid,idDefault:id,sorterDefault:sorter,jsonReturns:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage});
+					res.render('lenderReturnRecord',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,oneidDefault:oneid,idDefault:id,sorterDefault:sorter,jsonReturns:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage});
 				}
 			}else{
 				for(i=0;i<totalResultNumber;i++){
@@ -484,7 +520,7 @@ router.get('/lenderReturnRecord/:oneid?/:id?/:sorter?/:page?', ensureAuthenticat
 				pageNum=Math.ceil(returns.length/divider);
 				
 				if(pageNum<targetPage){
-					res.redirect('/message?content='+chineseEncodeToURI('錯誤頁碼!'));
+					res.redirect('/message?content='+encodeURIComponent('錯誤頁碼!'));
 				}else{
 					var starter=divider*(targetPage-1);
 					var ender;
@@ -496,14 +532,14 @@ router.get('/lenderReturnRecord/:oneid?/:id?/:sorter?/:page?', ensureAuthenticat
 					for(i=starter;i<ender;i++){
 						resArrays.push(returns[i]);
 					}
-					res.render('lenderReturnRecord',{userName:req.user.Username,oneidDefault:oneid,idDefault:id,sorterDefault:sorter,jsonReturns:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage});
+					res.render('lenderReturnRecord',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,oneidDefault:oneid,idDefault:id,sorterDefault:sorter,jsonReturns:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage});
 				}
 			}
 		}
 	});
 });
 
-router.get('/lendsList/:oneid?/:sorter?/:page?', ensureAuthenticated, function (req, res) {
+router.get('/lendsList/:oneid?/:sorter?/:page?', library.ensureAuthenticated, library.newMsgChecker,function (req, res) {
 	var resArrays=[];
 	var oneid=decodeURIComponent(req.query.oneid);
 	var sorter=decodeURIComponent(req.query.sorter);
@@ -543,31 +579,31 @@ router.get('/lendsList/:oneid?/:sorter?/:page?', ensureAuthenticated, function (
 	Lends.count(findCmd,function (err, count) {
 		if (err){
 			console.log(err);
-			res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+			res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 		}else{
 			var divider=10;
 			totalResultNumber=count;
 			if(totalResultNumber<=0){
 				if(targetPage>1){
-					res.redirect('/message?content='+chineseEncodeToURI('錯誤頁碼!'));
+					res.redirect('/message?content='+encodeURIComponent('錯誤頁碼!'));
 				}else{
-					res.render('lendsList',{userName:req.user.Username,oneidDefault:oneid,sorterDefault:sorter,jsonLends:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage});
+					res.render('lendsList',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,oneidDefault:oneid,sorterDefault:sorter,jsonLends:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage});
 				}
 			}else{
 				pageNum=Math.ceil(totalResultNumber/divider);
 				if(pageNum<targetPage){
-					res.redirect('/message?content='+chineseEncodeToURI('錯誤頁碼!'));
+					res.redirect('/message?content='+encodeURIComponent('錯誤頁碼!'));
 				}else{
 					Lends.find(findCmd).limit(divider).skip(divider*(targetPage-1)).populate('CreatedBy', 'Username').sort(sorterRec).exec( function (err, lends, count){
 						if (err) {
 							console.log(err);
-							res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+							res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 						}else{
 							for(i=0;i<lends.length;i++){
 								lends[i].InterestRate-=library.serviceChargeRate;//scr
 							}
 							resArrays=lends;
-							res.render('lendsList',{userName:req.user.Username,oneidDefault:oneid,sorterDefault:sorter,jsonLends:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage});
+							res.render('lendsList',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,oneidDefault:oneid,sorterDefault:sorter,jsonLends:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage});
 						}
 					});
 				}
@@ -576,7 +612,7 @@ router.get('/lendsList/:oneid?/:sorter?/:page?', ensureAuthenticated, function (
 	});
 });
 
-router.get('/lenderSendMessages/:msgKeyword?/:filter?/:sorter?/:page?', ensureAuthenticated, function (req, res) {
+router.get('/lenderSendMessages/:msgKeyword?/:filter?/:sorter?/:page?', library.ensureAuthenticated,library.newMsgChecker, function (req, res) {
 	var resArrays=[];
 	var msgKeyword=decodeURIComponent(req.query.msgKeyword);
 	var filter=decodeURIComponent(req.query.filter);
@@ -629,28 +665,52 @@ router.get('/lenderSendMessages/:msgKeyword?/:filter?/:sorter?/:page?', ensureAu
 	Messages.find({$or:orFindCmdAry,$and:[{"CreatedBy": req.user._id},{"Type": "toLend"},{"Status": filterRec}]}).populate('SendTo', 'Username').populate('FromBorrowRequest', 'StoryTitle').populate('Transaction').sort(sorterRec).exec( function (err, messages, count){
 		if (err) {
 			console.log(err);
-			res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+			res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 		}else{
 			totalResultNumber=messages.length;
 			if(totalResultNumber==0){
 				if(targetPage>1){
-					res.redirect('/message?content='+chineseEncodeToURI('錯誤頁碼!'));
+					res.redirect('/message?content='+encodeURIComponent('錯誤頁碼!'));
 				}else{
-					res.render('lenderSendMessages',{userName:req.user.Username,msgKeywordDefault:msgKeyword,filterDefault:filter,sorterDefault:sorter,jsonMessage:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,insuranceRate:library.insuranceRate});
+					res.render('lenderSendMessages',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,msgKeywordDefault:msgKeyword,filterDefault:filter,sorterDefault:sorter,jsonMessage:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,insuranceRate:library.insuranceRate});
 				}
 			}else{
 				for(i=0;i<totalResultNumber;i++){
 					messages[i].InterestRate-=library.serviceChargeRate;//scr
 					messages[i].InterestInFuture=library.interestInFutureCalculator(messages[i].MoneyToLend,messages[i].InterestRate,messages[i].MonthPeriod);
-					messages[i].InterestInFutureDivMoney=messages[i].InterestInFuture/messages[i].MoneyToLend*100;
-					messages[i].InterestInFutureMonth=messages[i].InterestInFuture/messages[i].MonthPeriod;
-					messages[i].InterestInFutureMoneyMonth=(messages[i].InterestInFuture+messages[i].MoneyToLend)/messages[i].MonthPeriod;
+					if(messages[i].MoneyToLend>0){
+						messages[i].InterestInFutureDivMoney=messages[i].InterestInFuture/messages[i].MoneyToLend*100;
+					}else{
+						messages[i].InterestInFutureDivMoney=0;
+					}
+					if(messages[i].MonthPeriod>0){
+						messages[i].InterestInFutureMonth=messages[i].InterestInFuture/messages[i].MonthPeriod;
+					}else{
+						messages[i].InterestInFutureMonth=0;
+					}
+					if(messages[i].MonthPeriod>0){
+						messages[i].InterestInFutureMoneyMonth=(messages[i].InterestInFuture+messages[i].MoneyToLend)/messages[i].MonthPeriod;
+					}else{
+						messages[i].InterestInFutureMoneyMonth=0;
+					}
 					if(messages[i].Transaction.length>0){
 						messages[i].Transaction[0].InterestRate-=library.serviceChargeRate;//scr
 						messages[i].Transaction[0].InterestInFuture=library.interestInFutureCalculator(messages[i].Transaction[0].Principal,messages[i].Transaction[0].InterestRate,messages[i].Transaction[0].MonthPeriod);
-						messages[i].Transaction[0].InterestInFutureDivMoney=messages[i].Transaction[0].InterestInFuture/messages[i].Transaction[0].Principal*100;
-						messages[i].Transaction[0].InterestInFutureMonth=messages[i].Transaction[0].InterestInFuture/messages[i].Transaction[0].MonthPeriod;
-						messages[i].Transaction[0].InterestInFutureMoneyMonth=(messages[i].Transaction[0].InterestInFuture+messages[i].Transaction[0].Principal)/messages[i].Transaction[0].MonthPeriod;
+						if(messages[i].Transaction[0].Principal>0){
+							messages[i].Transaction[0].InterestInFutureDivMoney=messages[i].Transaction[0].InterestInFuture/messages[i].Transaction[0].Principal*100;
+						}else{
+							messages[i].Transaction[0].InterestInFutureDivMoney=0;
+						}
+						if(messages[i].Transaction[0].MonthPeriod>0){
+							messages[i].Transaction[0].InterestInFutureMonth=messages[i].Transaction[0].InterestInFuture/messages[i].Transaction[0].MonthPeriod;
+						}else{
+							messages[i].Transaction[0].InterestInFutureMonth=0;
+						}
+						if(messages[i].Transaction[0].MonthPeriod>0){
+							messages[i].Transaction[0].InterestInFutureMoneyMonth=(messages[i].Transaction[0].InterestInFuture+messages[i].Transaction[0].Principal)/messages[i].Transaction[0].MonthPeriod;
+						}else{
+							messages[i].Transaction[0].InterestInFutureMoneyMonth==0;
+						}
 					}
 				}
 				
@@ -674,7 +734,7 @@ router.get('/lenderSendMessages/:msgKeyword?/:filter?/:sorter?/:page?', ensureAu
 				pageNum=Math.ceil(messages.length/divider);
 				
 				if(pageNum<targetPage){
-					res.redirect('/message?content='+chineseEncodeToURI('錯誤頁碼!'));
+					res.redirect('/message?content='+encodeURIComponent('錯誤頁碼!'));
 				}else{
 					var starter=divider*(targetPage-1);
 					var ender;
@@ -687,14 +747,14 @@ router.get('/lenderSendMessages/:msgKeyword?/:filter?/:sorter?/:page?', ensureAu
 						resArrays.push(messages[i]);
 					}
 
-					res.render('lenderSendMessages',{userName:req.user.Username,msgKeywordDefault:msgKeyword,filterDefault:filter,sorterDefault:sorter,jsonMessage:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,insuranceRate:library.insuranceRate});
+					res.render('lenderSendMessages',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,msgKeywordDefault:msgKeyword,filterDefault:filter,sorterDefault:sorter,jsonMessage:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,insuranceRate:library.insuranceRate});
 				}
 			}
 		}
 	});
 });
 
-router.get('/lenderReceiveMessages/:msgKeyword?/:filter?/:sorter?/:page?', ensureAuthenticated, function (req, res) {
+router.get('/lenderReceiveMessages/:msgKeyword?/:filter?/:sorter?/:page?', library.ensureAuthenticated,library.newMsgChecker, function (req, res) {
 	var resArrays=[];
 	var msgKeyword=decodeURIComponent(req.query.msgKeyword);
 	var filter=decodeURIComponent(req.query.filter);
@@ -751,28 +811,52 @@ router.get('/lenderReceiveMessages/:msgKeyword?/:filter?/:sorter?/:page?', ensur
 	Messages.find({$or:orFindCmdAry,$and:[{"SendTo": req.user._id},{"Type": "toBorrow"},{"Status": filterRec}]}).populate('CreatedBy', 'Username').populate('FromBorrowRequest', 'StoryTitle').populate('Transaction').sort(sorterRec).exec( function (err, messages, count){
 		if (err) {
 			console.log(err);
-			res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+			res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 		}else{
 			totalResultNumber=messages.length;
 			if(totalResultNumber==0){
 				if(targetPage>1){
-					res.redirect('/message?content='+chineseEncodeToURI('錯誤頁碼!'));
+					res.redirect('/message?content='+encodeURIComponent('錯誤頁碼!'));
 				}else{
-					res.render('lenderReceiveMessages',{userName:req.user.Username,msgKeywordDefault:msgKeyword,filterDefault:filter,sorterDefault:sorter,jsonMessage:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,value1AllDefault:value1ALL,value2AllDefault:value2ALL,value3AllDefault:value3ALL,value4AllDefault:value4ALL,insuranceRate:library.insuranceRate});
+					res.render('lenderReceiveMessages',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,msgKeywordDefault:msgKeyword,filterDefault:filter,sorterDefault:sorter,jsonMessage:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,value1AllDefault:value1ALL,value2AllDefault:value2ALL,value3AllDefault:value3ALL,value4AllDefault:value4ALL,insuranceRate:library.insuranceRate});
 				}
 			}else{
 				for(i=0;i<totalResultNumber;i++){
 					messages[i].InterestRate-=library.serviceChargeRate;//scr
 					messages[i].InterestInFuture=library.interestInFutureCalculator(messages[i].MoneyToLend,messages[i].InterestRate,messages[i].MonthPeriod);
-					messages[i].InterestInFutureDivMoney=messages[i].InterestInFuture/messages[i].MoneyToLend*100;
-					messages[i].InterestInFutureMonth=messages[i].InterestInFuture/messages[i].MonthPeriod;
-					messages[i].InterestInFutureMoneyMonth=(messages[i].InterestInFuture+messages[i].MoneyToLend)/messages[i].MonthPeriod;
+					if(messages[i].MoneyToLend>0){
+						messages[i].InterestInFutureDivMoney=messages[i].InterestInFuture/messages[i].MoneyToLend*100;
+					}else{
+						messages[i].InterestInFutureDivMoney=0;
+					}
+					if(messages[i].MonthPeriod>0){
+						messages[i].InterestInFutureMonth=messages[i].InterestInFuture/messages[i].MonthPeriod;
+					}else{
+						messages[i].InterestInFutureMonth=0;
+					}
+					if(messages[i].MonthPeriod>0){
+						messages[i].InterestInFutureMoneyMonth=(messages[i].InterestInFuture+messages[i].MoneyToLend)/messages[i].MonthPeriod;
+					}else{
+						messages[i].InterestInFutureMoneyMonth=0;
+					}
 					if(messages[i].Transaction.length>0){
 						messages[i].Transaction[0].InterestRate-=library.serviceChargeRate;//scr
 						messages[i].Transaction[0].InterestInFuture=library.interestInFutureCalculator(messages[i].Transaction[0].Principal,messages[i].Transaction[0].InterestRate,messages[i].Transaction[0].MonthPeriod);
-						messages[i].Transaction[0].InterestInFutureDivMoney=messages[i].Transaction[0].InterestInFuture/messages[i].Transaction[0].Principal*100;
-						messages[i].Transaction[0].InterestInFutureMonth=messages[i].Transaction[0].InterestInFuture/messages[i].Transaction[0].MonthPeriod;
-						messages[i].Transaction[0].InterestInFutureMoneyMonth=(messages[i].Transaction[0].InterestInFuture+messages[i].Transaction[0].Principal)/messages[i].Transaction[0].MonthPeriod;
+						if(messages[i].Transaction[0].Principal>0){
+							messages[i].Transaction[0].InterestInFutureDivMoney=messages[i].Transaction[0].InterestInFuture/messages[i].Transaction[0].Principal*100;
+						}else{
+							messages[i].Transaction[0].InterestInFutureDivMoney=0;
+						}
+						if(messages[i].Transaction[0].MonthPeriod>0){
+							messages[i].Transaction[0].InterestInFutureMonth=messages[i].Transaction[0].InterestInFuture/messages[i].Transaction[0].MonthPeriod;
+						}else{
+							messages[i].Transaction[0].InterestInFutureMonth=0;
+						}
+						if(messages[i].Transaction[0].MonthPeriod>0){
+							messages[i].Transaction[0].InterestInFutureMoneyMonth=(messages[i].Transaction[0].InterestInFuture+messages[i].Transaction[0].Principal)/messages[i].Transaction[0].MonthPeriod;
+						}else{
+							messages[i].Transaction[0].InterestInFutureMoneyMonth==0;
+						}
 					}
 					value1ALL+=messages[i].MoneyToLend;
 					value2ALL+=messages[i].InterestInFuture;
@@ -800,7 +884,7 @@ router.get('/lenderReceiveMessages/:msgKeyword?/:filter?/:sorter?/:page?', ensur
 				pageNum=Math.ceil(messages.length/divider);
 				
 				if(pageNum<targetPage){
-					res.redirect('/message?content='+chineseEncodeToURI('錯誤頁碼!'));
+					res.redirect('/message?content='+encodeURIComponent('錯誤頁碼!'));
 				}else{
 					var starter=divider*(targetPage-1);
 					var ender;
@@ -813,14 +897,14 @@ router.get('/lenderReceiveMessages/:msgKeyword?/:filter?/:sorter?/:page?', ensur
 						resArrays.push(messages[i]);
 					}
 
-					res.render('lenderReceiveMessages',{userName:req.user.Username,msgKeywordDefault:msgKeyword,filterDefault:filter,sorterDefault:sorter,jsonMessage:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,value1AllDefault:value1ALL,value2AllDefault:value2ALL,value3AllDefault:value3ALL,value4AllDefault:value4ALL,insuranceRate:library.insuranceRate});
+					res.render('lenderReceiveMessages',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,msgKeywordDefault:msgKeyword,filterDefault:filter,sorterDefault:sorter,jsonMessage:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,value1AllDefault:value1ALL,value2AllDefault:value2ALL,value3AllDefault:value3ALL,value4AllDefault:value4ALL,insuranceRate:library.insuranceRate});
 				}
 			}
 		}
 	});
 });
 
-router.get('/income', ensureAuthenticated, function (req, res) {
+router.get('/income', library.ensureAuthenticated, library.newMsgChecker,function (req, res) {
 	var totalResultNumber;
 	var monthPrincipalNotReturnNow=0;
 	var monthRevenueNow=0;
@@ -854,12 +938,12 @@ router.get('/income', ensureAuthenticated, function (req, res) {
 	Transactions.find({$and:[{Lender:req.user._id},{Principal:{"$gte": 1}},{MonthPeriod:{"$gte": 1}}]}).populate('Return').exec( function (err, transactions, count){
 		if (err) {
 			console.log(err);
-			res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
+			res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 		}else{
 			totalResultNumber=transactions.length;
 			console.log(totalResultNumber);
 			if(totalResultNumber<=0){
-				res.render('income',{userName:req.user.Username,totalResultNum:totalResultNumber,monPriNRNow:monthPrincipalNotReturnNow,monRevNow:monthRevenueNow,monRoiNow:monthRoiNow,monPriNow:monthPrincipalNow,monRevPriNow:monthRevenuePrincipalNow,yrPriNR:yearPrincipalNotReturn,yrRoi:yearRoi,yrRev:yearRevenue,yrPri:yearPrincipal,yrRevPri:yearRevenuePrincipal,yrHistoryPriNR:yearHistoryPrincipalNotReturn,yrHistoryRoi:yearHistoryRoi,yrHistoryRev:yearHistoryRevenue,yrHistoryPri:yearHistoryPrincipal,yrHistoryRevPri:yearHistoryRevenuePrincipal,data01:data1,data02:data2,data03:data3,data04:data4,data05:data5,data06:data6,data07:data7,data08:data8,data09:data9,data010:data10,data011:data11});
+				res.render('income',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,totalResultNum:totalResultNumber,monPriNRNow:monthPrincipalNotReturnNow,monRevNow:monthRevenueNow,monRoiNow:monthRoiNow,monPriNow:monthPrincipalNow,monRevPriNow:monthRevenuePrincipalNow,yrPriNR:yearPrincipalNotReturn,yrRoi:yearRoi,yrRev:yearRevenue,yrPri:yearPrincipal,yrRevPri:yearRevenuePrincipal,yrHistoryPriNR:yearHistoryPrincipalNotReturn,yrHistoryRoi:yearHistoryRoi,yrHistoryRev:yearHistoryRevenue,yrHistoryPri:yearHistoryPrincipal,yrHistoryRevPri:yearHistoryRevenuePrincipal,data01:data1,data02:data2,data03:data3,data04:data4,data05:data5,data06:data6,data07:data7,data08:data8,data09:data9,data010:data10,data011:data11});
 			}else{
 				for(i=0;i<totalResultNumber;i++){
 					transactions[i].InterestRate-=library.serviceChargeRate;//scr
@@ -1203,7 +1287,7 @@ router.get('/income', ensureAuthenticated, function (req, res) {
 					data11Array[i].value=data11Array[i].value/totalTemp*100;
 				}
 				data11.array=data11Array;
-				res.render('income',{userName:req.user.Username,totalResultNum:totalResultNumber,monPriNRNow:monthPrincipalNotReturnNow,monRevNow:monthRevenueNow,monRoiNow:monthRoiNow,monPriNow:monthPrincipalNow,monRevPriNow:monthRevenuePrincipalNow,yrPriNR:yearPrincipalNotReturn,yrRoi:yearRoi,yrRev:yearRevenue,yrPri:yearPrincipal,yrRevPri:yearRevenuePrincipal,yrHistoryPriNR:yearHistoryPrincipalNotReturn,yrHistoryRoi:yearHistoryRoi,yrHistoryRev:yearHistoryRevenue,yrHistoryPri:yearHistoryPrincipal,yrHistoryRevPri:yearHistoryRevenuePrincipal,data01:data1,data02:data2,data03:data3,data04:data4,data05:data5,data06:data6,data07:data7,data08:data8,data09:data9,data010:data10,data011:data11});
+				res.render('income',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,totalResultNum:totalResultNumber,monPriNRNow:monthPrincipalNotReturnNow,monRevNow:monthRevenueNow,monRoiNow:monthRoiNow,monPriNow:monthPrincipalNow,monRevPriNow:monthRevenuePrincipalNow,yrPriNR:yearPrincipalNotReturn,yrRoi:yearRoi,yrRev:yearRevenue,yrPri:yearPrincipal,yrRevPri:yearRevenuePrincipal,yrHistoryPriNR:yearHistoryPrincipalNotReturn,yrHistoryRoi:yearHistoryRoi,yrHistoryRev:yearHistoryRevenue,yrHistoryPri:yearHistoryPrincipal,yrHistoryRevPri:yearHistoryRevenuePrincipal,data01:data1,data02:data2,data03:data3,data04:data4,data05:data5,data06:data6,data07:data7,data08:data8,data09:data9,data010:data10,data011:data11});
 			}
 		}
 	});
@@ -1211,18 +1295,4 @@ router.get('/income', ensureAuthenticated, function (req, res) {
 
 module.exports = router;
 
-function ensureAuthenticated(req, res, next) {
-  if (req.isAuthenticated()) { return next(null); }
-	res.render('login',{userName:null,msg:'請登入'});
-}
 
-//add after ensureAuthenticated to confirm ifAdmin
-function ensureAdmin(req, res, next) {
-  var objID=mongoose.Types.ObjectId('5555251bb08002f0068fd00f');//管理員ID
-  if(req.user._id==objID){ return next(null); }
-	res.render('login',{userName:null,msg:'請以管理員身分登入'});
-}
-
-function chineseEncodeToURI(string){
-	return encodeURIComponent(string);
-}

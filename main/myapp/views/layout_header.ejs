@@ -47,8 +47,8 @@
 								<li <% if(nav_cur=='lenderTransactionRecord'){ %> class="active"<% } %>><% if(!userName){ %><a href="#" data-toggle="modal" data-target="#myModal"><% }else{ %><a href="/lender/lenderTransactionRecord?oneid=&filter=<%=encodeURIComponent("未保險")%>&sorter=<%=encodeURIComponent("最新")%>&page=1"><%}%>借出紀錄</a></li>
 								<li <% if(nav_cur=='lenderReturnRecord'){ %> class="active"<% } %>><% if(!userName){ %><a href="#" data-toggle="modal" data-target="#myModal"><% }else{ %><a href="/lender/lenderReturnRecord?oneid=&id=&sorter=<%=encodeURIComponent("最新")%>&page=1"><%}%>收款記錄</a></li>
 								<li class="divider"></li>
-								<li <% if(nav_cur=='lenderReceiveMessages'){ %> class="active"<% } %>><% if(!userName){ %><a href="#" data-toggle="modal" data-target="#myModal"><% }else{ %><a href="/lender/lenderReceiveMessages?msgKeyword=&filter=<%=encodeURIComponent("未確認")%>&sorter=<%=encodeURIComponent("最新")%>&page=1"><%}%>收到之欲借入訊息</a></li>
-								<li <% if(nav_cur=='lenderSendMessages'){ %> class="active"<% } %>><% if(!userName){ %><a href="#" data-toggle="modal" data-target="#myModal"><% }else{ %><a href="/lender/lenderSendMessages?msgKeyword=&filter=<%=encodeURIComponent("未被確認")%>&sorter=<%=encodeURIComponent("最新")%>&page=1"><%}%>送出之欲借出訊息</a></li>
+								<li <% if(nav_cur=='lenderReceiveMessages'){ %> class="active"<% } %>><% if(!userName){ %><a href="#" data-toggle="modal" data-target="#myModal"><% }else{ %><a href="/lender/lenderReceiveMessages?msgKeyword=&filter=<%=encodeURIComponent("未確認")%>&sorter=<%=encodeURIComponent("最新")%>&page=1"><%}%>收到之欲借入訊息<% if(userName){ %> <span class="badge"><%=newlrmNum%></span><% }%></a></li>
+								<li <% if(nav_cur=='lenderSendMessages'){ %> class="active"<% } %>><% if(!userName){ %><a href="#" data-toggle="modal" data-target="#myModal"><% }else{ %><a href="/lender/lenderSendMessages?msgKeyword=&filter=<%=encodeURIComponent("未被確認")%>&sorter=<%=encodeURIComponent("最新")%>&page=1"><%}%>送出之欲借出訊息<% if(userName){ %> <span class="badge"><%=newlsmNum%></span><% } %></a></li>
 							</ul>
 						</li>
 					</ul>

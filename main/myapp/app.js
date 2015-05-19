@@ -99,29 +99,29 @@ passport.deserializeUser(function (user, done) {
     done(null, user);
 });
 
-app.get('/', function (req, res) {
+app.get('/',library.newMsgChecker, function (req, res) {
 	var auRst=null;
 	if(req.isAuthenticated()){
 		auRst=req.user.Username;
 	}
-	res.render('index',{userName:auRst});
+	res.render('index',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst});
 });
 
-app.get('/message/:content?', function (req, res) {
+app.get('/message/:content?',library.newMsgChecker, function (req, res) {
 	var temp=decodeURIComponent(req.query.content);
 	var auRst=null;
 	if(req.isAuthenticated()){
 		auRst=req.user.Username;
 	}
 	
-	res.render('message',{userName:auRst, content:temp});
+	res.render('message',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst, content:temp});
 });
 
-app.get('/profile', ensureAuthenticated, function (req, res) {
-	res.render('profile',{userName:req.user.Username});
+app.get('/profile', library.ensureAuthenticated,library.newMsgChecker, function (req, res) {
+	res.render('profile',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username});
 });
 
-app.post('/login', passport.authenticate('local', { failureRedirect: '/message?content='+chineseEncodeToURI('登入失敗')}),function (req, res) {
+app.post('/login', passport.authenticate('local', { failureRedirect: '/message?content='+encodeURIComponent('登入失敗')}),function (req, res) {
 	res.redirect(req.get('referer'));
 	//res.redirect('/');
 });
@@ -131,13 +131,13 @@ app.get('/logout', function (req, res) {
     res.redirect('/');
 });
 
-app.get('/signupTest', function (req, res) {
+app.get('/signupTest',library.newMsgChecker, function (req, res) {
    var auRst=null;
 	if(req.isAuthenticated()){
 		auRst=req.user.Username;
 	}
 	
-	res.render('signupTest',{userName:auRst});
+	res.render('signupTest',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst});
 });
 
 app.get('/test', function (req, res) {
@@ -191,21 +191,4 @@ app.use(function(err, req, res, next) {
   });
 });
 
-
 module.exports = app;
-
-function ensureAuthenticated(req, res, next) {
-  if (req.isAuthenticated()) { return next(null); }
-	res.render('login',{userName:null,msg:'請登入'});
-}
-
-//add after ensureAuthenticated to confirm ifAdmin
-function ensureAdmin(req, res, next) {
-  var objID=mongoose.Types.ObjectId('5555251bb08002f0068fd00f');//管理員ID
-  if(req.user._id==objID){ return next(null); }
-	res.render('login',{userName:null,msg:'請以管理員身分登入'});
-}
-
-function chineseEncodeToURI(string){
-	return encodeURIComponent(string);
-}

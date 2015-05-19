@@ -1,3 +1,4 @@
+var library=require( './library.js' );
 var mongoose = require('mongoose');
 var Discussions  = mongoose.model('Discussions');
 var Borrows  = mongoose.model('Borrows');
@@ -23,7 +24,7 @@ router.post('/createTest', function(req, res, next) {
 	});
 });
 
-router.post('/create',ensureAuthenticated, function(req, res, next) {
+router.post('/create',library.ensureAuthenticated, function(req, res, next) {
 	var toCreate = new Discussions();
 	toCreate.Content=sanitizer.sanitize(req.body.Content);
 	toCreate.BelongTo=sanitizer.sanitize(req.body.BelongTo);
@@ -80,19 +81,3 @@ router.post('/create',ensureAuthenticated, function(req, res, next) {
 });
 
 module.exports = router;
-
-function ensureAuthenticated(req, res, next) {
-  if (req.isAuthenticated()) { return next(null); }
-	res.render('login',{userName:null,msg:'請登入'});
-}
-
-//add after ensureAuthenticated to confirm ifAdmin
-function ensureAdmin(req, res, next) {
-  var objID=mongoose.Types.ObjectId('5555251bb08002f0068fd00f');//管理員ID
-  if(req.user._id==objID){ return next(null); }
-	res.render('login',{userName:null,msg:'請以管理員身分登入'});
-}
-
-function chineseEncodeToURI(string){
-	return encodeURIComponent(string);
-}

@@ -8,11 +8,19 @@ var Borrows  = mongoose.model('Borrows');
 var Messages  = mongoose.model('Messages');
 var sanitizer = require('sanitizer');
 var nodemailer = require('nodemailer');
+var generator = require('xoauth2').createXOAuth2Generator({
+    user: 'lendingzonesystem@gmail.com',
+    clientId: '1064408122186-fheebavu1le96q0h0assuueda5kmb0nk.apps.googleusercontent.com',
+    clientSecret: '8b9UNKvg4IZZsM7vsLI8e3JP',
+    refreshToken: '1/0wqk7whxhYyMKKB81KBTmJDTioc9VnDxJu2hd4v9Bas'
+});
+generator.on('token', function(token){
+    console.log('New token for %s: %s', token.user, token.accessToken);
+});
 var transporter = nodemailer.createTransport({
     service: 'Gmail',
     auth: {
-        user: 'x820306test@gmail.com',
-        pass: 'github111'
+        xoauth2: generator
     }
 });
 
@@ -23,7 +31,7 @@ router.post('/pay', function(req, res, next) {
 	var ToTransaction=sanitizer.sanitize(req.body.ToTransaction);
 	var MoneyPaid=parseFloat(sanitizer.sanitize(req.body.MoneyPaid));
 
-	Transactions.findById(ToTransaction).populate('Lender', 'Username Email').populate('Borrower', 'Username').populate('CreatedFrom', 'FromBorrowRequest').exec(function (err, transaction){
+	Transactions.findById(ToTransaction).populate('Lender', 'Username Email').populate('Borrower', 'Username Email').populate('CreatedFrom', 'FromBorrowRequest').exec(function (err, transaction){
 		if (err) {
 			console.log(err);
 			res.end("error");
@@ -181,53 +189,7 @@ router.post('/pay', function(req, res, next) {
 																													res.end("error");
 																												}else{
 																													if(!lend){
-																														var mailOptions = {
-																															from: 'x820306test ', // sender address
-																															to: transaction.Lender.Email, // list of receivers
-																															subject: '您收到了來自'+transaction.Borrower.Username+'的還款!', // Subject line
-																															text: '親愛的 '+transaction.Lender.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+'您收到了來自 '+transaction.Borrower.Username+' 在「'+transaction.CreatedFrom.FromBorrowRequest.StoryTitle+'("http://lendingzone.herokuapp.com/lender/story?id='+transaction.CreatedFrom.FromBorrowRequest._id+'")」的還款！'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看:'+String.fromCharCode(10)+'"http://lendingzone.herokuapp.com/lender/lenderReturnRecord?oneid='+newCreate2._id+'&id=&sorter='+chineseEncodeToURI('最新')+'&page=1"', // plaintext body
-																															html: '<img src="cid:cpng" /><br><br>親愛的 '+transaction.Lender.Username+' 您好：<br><br>您收到了來自 '+transaction.Borrower.Username+' 在「<a href="http://lendingzone.herokuapp.com/lender/story?id='+transaction.CreatedFrom.FromBorrowRequest._id+'">'+transaction.CreatedFrom.FromBorrowRequest.StoryTitle+'</a>」的還款！<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://lendingzone.herokuapp.com/lender/lenderReturnRecord?oneid='+newCreate2._id+'&id=&sorter='+chineseEncodeToURI('最新')+'&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看</span></a></td></tr></table>', 
-																															attachments: [{
-																																filename: 'c.png',
-																																path: __dirname+'/../public/images/c.png',
-																																cid: 'cpng' //same cid value as in the html img src
-																															}]
-																														};
-																														
-																														transporter.sendMail(mailOptions, function(error, info){
-																															if(error){
-																																console.log(error);
-																															}
-																														});
-																														
-																														if((newUpdate.Principal==0)&&(newUpdate.MonthPeriod==0)){
-																															var filterText;
-																															if(newUpdate.InsuranceFeePaid>0){
-																																filterText='已保險';
-																															}else{
-																																filterText='未保險';
-																															}
-																															
-																															var mailOptions2 = {
-																																from: 'x820306test ', // sender address
-																																to: transaction.Lender.Email, // list of receivers
-																																subject: transaction.Borrower.Username+'還清了所有應付款項', // Subject line
-																																text: '親愛的 '+transaction.Lender.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+transaction.Borrower.Username+' 還清了所有在「'+transaction.CreatedFrom.FromBorrowRequest.StoryTitle+'("http://lendingzone.herokuapp.com/lender/story?id='+transaction.CreatedFrom.FromBorrowRequest._id+'")」的應付款項！'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看:'+String.fromCharCode(10)+'"http://lendingzone.herokuapp.com/lender/lenderTransactionRecord?oneid='+newUpdate._id+'&filter='+chineseEncodeToURI(filterText)+'&sorter='+chineseEncodeToURI('最新')+'&page=1"', // plaintext body
-																																html: '<img src="cid:apng" /><br><br>親愛的 '+transaction.Lender.Username+' 您好：<br><br>'+transaction.Borrower.Username+' 還清了所有在「<a href="http://lendingzone.herokuapp.com/lender/story?id='+transaction.CreatedFrom.FromBorrowRequest._id+'">'+transaction.CreatedFrom.FromBorrowRequest.StoryTitle+'</a>」的應付款項！<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://lendingzone.herokuapp.com/lender/lenderTransactionRecord?oneid='+newUpdate._id+'&filter='+chineseEncodeToURI(filterText)+'&sorter='+chineseEncodeToURI('最新')+'&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看</span></a></td></tr></table>', 
-																																attachments: [{
-																																	filename: 'a.png',
-																																	path: __dirname+'/../public/images/a.png',
-																																	cid: 'apng' //same cid value as in the html img src
-																																}]
-																															};
-																															
-																															transporter.sendMail(mailOptions2, function(error, info){
-																																if(error){
-																																	console.log(error);
-																																}
-																															});
-																														}
-																														
+																														mail(transaction,newUpdate,newCreate2);
 																														res.end('success');
 																													}else{
 																														lend.MaxMoneyToLend+=(PrincipalShouldPaid-PrincipalNotPaid);
@@ -237,53 +199,7 @@ router.post('/pay', function(req, res, next) {
 																																console.log(err);
 																																res.end("error");
 																															}else{
-																																var mailOptions = {
-																																	from: 'x820306test ', // sender address
-																																	to: transaction.Lender.Email, // list of receivers
-																																	subject: '您收到了來自'+transaction.Borrower.Username+'的還款!', // Subject line
-																																	text: '親愛的 '+transaction.Lender.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+'您收到了來自 '+transaction.Borrower.Username+' 在「'+transaction.CreatedFrom.FromBorrowRequest.StoryTitle+'("http://lendingzone.herokuapp.com/lender/story?id='+transaction.CreatedFrom.FromBorrowRequest._id+'")」的還款！'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看:'+String.fromCharCode(10)+'"http://lendingzone.herokuapp.com/lender/lenderReturnRecord?oneid='+newCreate2._id+'&id=&sorter='+chineseEncodeToURI('最新')+'&page=1"', // plaintext body
-																																	html: '<img src="cid:cpng" /><br><br>親愛的 '+transaction.Lender.Username+' 您好：<br><br>您收到了來自 '+transaction.Borrower.Username+' 在「<a href="http://lendingzone.herokuapp.com/lender/story?id='+transaction.CreatedFrom.FromBorrowRequest._id+'">'+transaction.CreatedFrom.FromBorrowRequest.StoryTitle+'</a>」的還款！<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://lendingzone.herokuapp.com/lender/lenderReturnRecord?oneid='+newCreate2._id+'&id=&sorter='+chineseEncodeToURI('最新')+'&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看</span></a></td></tr></table>', 
-																																	attachments: [{
-																																		filename: 'c.png',
-																																		path: __dirname+'/../public/images/c.png',
-																																		cid: 'cpng' //same cid value as in the html img src
-																																	}]
-																																};
-																																
-																																transporter.sendMail(mailOptions, function(error, info){
-																																	if(error){
-																																		console.log(error);
-																																	}
-																																});
-																																
-																																if((newUpdate.Principal==0)&&(newUpdate.MonthPeriod==0)){
-																																	var filterText;
-																																	if(newUpdate.InsuranceFeePaid>0){
-																																		filterText='已保險';
-																																	}else{
-																																		filterText='未保險';
-																																	}
-																																	
-																																	var mailOptions2 = {
-																																		from: 'x820306test ', // sender address
-																																		to: transaction.Lender.Email, // list of receivers
-																																		subject: transaction.Borrower.Username+'還清了所有應付款項', // Subject line
-																																		text: '親愛的 '+transaction.Lender.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+transaction.Borrower.Username+' 還清了所有在「'+transaction.CreatedFrom.FromBorrowRequest.StoryTitle+'("http://lendingzone.herokuapp.com/lender/story?id='+transaction.CreatedFrom.FromBorrowRequest._id+'")」的應付款項！'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看:'+String.fromCharCode(10)+'"http://lendingzone.herokuapp.com/lender/lenderTransactionRecord?oneid='+newUpdate._id+'&filter='+chineseEncodeToURI(filterText)+'&sorter='+chineseEncodeToURI('最新')+'&page=1"', // plaintext body
-																																		html: '<img src="cid:apng" /><br><br>親愛的 '+transaction.Lender.Username+' 您好：<br><br>'+transaction.Borrower.Username+' 還清了所有在「<a href="http://lendingzone.herokuapp.com/lender/story?id='+transaction.CreatedFrom.FromBorrowRequest._id+'">'+transaction.CreatedFrom.FromBorrowRequest.StoryTitle+'</a>」的應付款項！<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://lendingzone.herokuapp.com/lender/lenderTransactionRecord?oneid='+newUpdate._id+'&filter='+chineseEncodeToURI(filterText)+'&sorter='+chineseEncodeToURI('最新')+'&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看</span></a></td></tr></table>', 
-																																		attachments: [{
-																																			filename: 'a.png',
-																																			path: __dirname+'/../public/images/a.png',
-																																			cid: 'apng' //same cid value as in the html img src
-																																		}]
-																																	};
-																																	
-																																	transporter.sendMail(mailOptions2, function(error, info){
-																																		if(error){
-																																			console.log(error);
-																																		}
-																																	});
-																																}
-																																
+																																mail(transaction,newUpdate,newCreate2);
 																																res.end('success');
 																															}
 																														});	
@@ -316,24 +232,94 @@ router.post('/pay', function(req, res, next) {
 			}
 		}
 	});
-});
+});		
 
-																		
+function mail(transaction,newUpdate,newCreate2){
+	var mailOptions = {
+		from: 'LendingZone <lendingzonesystem@gmail.com>', // sender address
+		to: transaction.Lender.Username+' <'+transaction.Lender.Email+'>', // list of receivers
+		subject: '您收到了來自'+transaction.Borrower.Username+'的還款!', // Subject line
+		text: '親愛的 '+transaction.Lender.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+'您收到了來自 '+transaction.Borrower.Username+' 在「'+transaction.CreatedFrom.FromBorrowRequest.StoryTitle+'("http://lendingzone.herokuapp.com/lender/story?id='+transaction.CreatedFrom.FromBorrowRequest._id+'")」的還款！'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看:'+String.fromCharCode(10)+'"http://lendingzone.herokuapp.com/lender/lenderReturnRecord?oneid='+newCreate2._id+'&id=&sorter='+encodeURIComponent('最新')+'&page=1"', // plaintext body
+		html: '<img src="cid:cpng" /><br><br>親愛的 '+transaction.Lender.Username+' 您好：<br><br>您收到了來自 '+transaction.Borrower.Username+' 在「<a href="http://lendingzone.herokuapp.com/lender/story?id='+transaction.CreatedFrom.FromBorrowRequest._id+'">'+transaction.CreatedFrom.FromBorrowRequest.StoryTitle+'</a>」的還款！<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://lendingzone.herokuapp.com/lender/lenderReturnRecord?oneid='+newCreate2._id+'&id=&sorter='+encodeURIComponent('最新')+'&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看</span></a></td></tr></table>', 
+		attachments: [{
+			filename: 'c.png',
+			path: __dirname+'/../public/images/c.png',
+			cid: 'cpng' //same cid value as in the html img src
+		}]
+	};
+	
+	transporter.sendMail(mailOptions, function(error, info){
+		if(error){
+			console.log(error);
+		}
+	});
+	
+	var mailOptions2 = {
+		from: 'LendingZone <lendingzonesystem@gmail.com>', // sender address
+		to: transaction.Borrower.Username+' <'+transaction.Borrower.Email+'>', // list of receivers
+		subject: '您已向'+transaction.Lender.Username+'支付了還款!', // Subject line
+		text: '親愛的 '+transaction.Borrower.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+'您已向 '+transaction.Lender.Username+' 支付了「'+transaction.CreatedFrom.FromBorrowRequest.StoryTitle+'("http://lendingzone.herokuapp.com/lender/story?id='+transaction.CreatedFrom.FromBorrowRequest._id+'")」的還款！'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看:'+String.fromCharCode(10)+'"http://lendingzone.herokuapp.com/lender/lenderReturnRecord?oneid='+newCreate2._id+'&id=&sorter='+encodeURIComponent('最新')+'&page=1"', // plaintext body
+		html: '<img src="cid:cpng" /><br><br>親愛的 '+transaction.Borrower.Username+' 您好：<br><br>您已向 '+transaction.Lender.Username+' 支付了「<a href="http://lendingzone.herokuapp.com/lender/story?id='+transaction.CreatedFrom.FromBorrowRequest._id+'">'+transaction.CreatedFrom.FromBorrowRequest.StoryTitle+'</a>」的還款！<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://lendingzone.herokuapp.com/lender/lenderReturnRecord?oneid='+newCreate2._id+'&id=&sorter='+encodeURIComponent('最新')+'&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看</span></a></td></tr></table>', 
+		attachments: [{
+			filename: 'c.png',
+			path: __dirname+'/../public/images/c.png',
+			cid: 'cpng' //same cid value as in the html img src
+		}]
+	};
+	
+	transporter.sendMail(mailOptions2, function(error, info){
+		if(error){
+			console.log(error);
+		}
+	});
+	
+	if((newUpdate.Principal==0)&&(newUpdate.MonthPeriod==0)){
+		var filterText;
+		if(newUpdate.InsuranceFeePaid>0){
+			filterText='已保險';
+		}else{
+			filterText='未保險';
+		}
+		
+		var mailOptions3 = {
+			from: 'LendingZone <lendingzonesystem@gmail.com>', // sender address
+			to: transaction.Lender.Username+' <'+transaction.Lender.Email+'>', // list of receivers
+			subject: transaction.Borrower.Username+'還清了所有應付款項', // Subject line
+			text: '親愛的 '+transaction.Lender.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+transaction.Borrower.Username+' 還清了所有在「'+transaction.CreatedFrom.FromBorrowRequest.StoryTitle+'("http://lendingzone.herokuapp.com/lender/story?id='+transaction.CreatedFrom.FromBorrowRequest._id+'")」的應付款項！'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看:'+String.fromCharCode(10)+'"http://lendingzone.herokuapp.com/lender/lenderTransactionRecord?oneid='+newUpdate._id+'&filter='+encodeURIComponent(filterText)+'&sorter='+encodeURIComponent('最新')+'&page=1"', // plaintext body
+			html: '<img src="cid:apng" /><br><br>親愛的 '+transaction.Lender.Username+' 您好：<br><br>'+transaction.Borrower.Username+' 還清了所有在「<a href="http://lendingzone.herokuapp.com/lender/story?id='+transaction.CreatedFrom.FromBorrowRequest._id+'">'+transaction.CreatedFrom.FromBorrowRequest.StoryTitle+'</a>」的應付款項！<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://lendingzone.herokuapp.com/lender/lenderTransactionRecord?oneid='+newUpdate._id+'&filter='+encodeURIComponent(filterText)+'&sorter='+encodeURIComponent('最新')+'&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看</span></a></td></tr></table>', 
+			attachments: [{
+				filename: 'a.png',
+				path: __dirname+'/../public/images/a.png',
+				cid: 'apng' //same cid value as in the html img src
+			}]
+		};
+		
+		transporter.sendMail(mailOptions3, function(error, info){
+			if(error){
+				console.log(error);
+			}
+		});
+		
+		var mailOptions4 = {
+			from: 'LendingZone <lendingzonesystem@gmail.com>', // sender address
+			to: transaction.Borrower.Username+' <'+transaction.Borrower.Email+'>', // list of receivers
+			subject:'您還清了所有應向'+transaction.Lender.Username+'支付的款項', // Subject line
+			text: '親愛的 '+transaction.Borrower.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+'您還清了所有在「'+transaction.CreatedFrom.FromBorrowRequest.StoryTitle+'("http://lendingzone.herokuapp.com/lender/story?id='+transaction.CreatedFrom.FromBorrowRequest._id+'")」應向 '+transaction.Lender.Username+' 支付的款項！'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看:'+String.fromCharCode(10)+'"http://lendingzone.herokuapp.com/lender/lenderTransactionRecord?oneid='+newUpdate._id+'&filter='+encodeURIComponent(filterText)+'&sorter='+encodeURIComponent('最新')+'&page=1"', // plaintext body
+			html: '<img src="cid:apng" /><br><br>親愛的 '+transaction.Borrower.Username+' 您好：<br><br>您還清了所有在「<a href="http://lendingzone.herokuapp.com/lender/story?id='+transaction.CreatedFrom.FromBorrowRequest._id+'">'+transaction.CreatedFrom.FromBorrowRequest.StoryTitle+'</a>」應向 '+transaction.Lender.Username+' 支付的款項！<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://lendingzone.herokuapp.com/lender/lenderTransactionRecord?oneid='+newUpdate._id+'&filter='+encodeURIComponent(filterText)+'&sorter='+encodeURIComponent('最新')+'&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看</span></a></td></tr></table>', 
+			attachments: [{
+				filename: 'a.png',
+				path: __dirname+'/../public/images/a.png',
+				cid: 'apng' //same cid value as in the html img src
+			}]
+		};
+		
+		transporter.sendMail(mailOptions4, function(error, info){
+			if(error){
+				console.log(error);
+			}
+		});
+	}
+}																
 
 module.exports = router;
 
-function ensureAuthenticated(req, res, next) {
-  if (req.isAuthenticated()) { return next(null); }
-	res.render('login',{userName:null,msg:'請登入'});
-}
-
-//add after ensureAuthenticated to confirm ifAdmin
-function ensureAdmin(req, res, next) {
-  var objID=mongoose.Types.ObjectId('5555251bb08002f0068fd00f');//管理員ID
-  if(req.user._id==objID){ return next(null); }
-	res.render('login',{userName:null,msg:'請以管理員身分登入'});
-}
-
-function chineseEncodeToURI(string){
-	return encodeURIComponent(string);
-}
