@@ -55,7 +55,7 @@
 						<h3 class="panel-title">本月預計投資回報率</h3>
 					</div>
 					<div class="panel-body">
-						<%=monRoiNow%>%
+						<%=monRoiNow%>‰
 					</div>
 				</div>
 				</br>
@@ -100,7 +100,7 @@
 						<h3 class="panel-title">年度預計平均每月投資回報率</h3>
 					</div>
 					<div class="panel-body">
-						<%=yrRoi%>%
+						<%=yrRoi%>‰
 					</div>
 				</div></br>
 				<div id="text6">
@@ -153,7 +153,7 @@
 							<h3 class="panel-title">年度歷史收款記錄之平均每月投資回報率</h3>
 						</div>
 						<div class="panel-body">
-							<%=yrHistoryRoi%>%
+							<%=yrHistoryRoi%>‰
 						</div>
 					</div>
 				</div>
@@ -310,7 +310,7 @@
 		}
 		if(data5JSON.labels){
 			if(data5JSON.labels.length>0){
-				var myLineChart5 = new Chart(ctx5).Line(data5JSON ,{tooltipTemplate: "<%%if (label){%><%%=label%>: <%%}%><%%= value.toFixed(4) %>%",multiTooltipTemplate: "<%%= value.toFixed(4) %>%"});
+				var myLineChart5 = new Chart(ctx5).Line(data5JSON ,{tooltipTemplate: "<%%if (label){%><%%=label%>: <%%}%><%%= value.toFixed(4) %>‰",multiTooltipTemplate: "<%%= value.toFixed(4) %>‰"});
 			}
 		}
 		
@@ -364,7 +364,7 @@
 		
 		if(data10JSON.labels){
 			if(data10JSON.labels.length>0){
-				var myLineChart10 = new Chart(ctx10).Line(data10JSON ,{tooltipTemplate: "<%%if (label){%><%%=label%>: <%%}%><%%= value.toFixed(4) %>%",multiTooltipTemplate: "<%%= value.toFixed(4) %>%"});
+				var myLineChart10 = new Chart(ctx10).Line(data10JSON ,{tooltipTemplate: "<%%if (label){%><%%=label%>: <%%}%><%%= value.toFixed(4) %>‰",multiTooltipTemplate: "<%%= value.toFixed(4) %>‰"});
 			}else{
 				$("#line10Pic").html('');
 				$("#text10").html('');

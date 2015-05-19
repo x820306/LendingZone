@@ -108,7 +108,7 @@ router.get('/search/:keyword?/:action?/:page?', function (req, res) {
 			console.log(err);
 			res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
 		}else{
-			var divider=2;
+			var divider=10;
 			totalResultNumber=count;
 			if(totalResultNumber<=0){
 				if(targetPage>1){
@@ -391,7 +391,7 @@ router.get('/lenderTransactionRecord/:oneid?/:filter?/:sorter?/:page?', ensureAu
 							transactions.sort(function(a,b) { return parseFloat(b.InterestInFutureDivMoney) - parseFloat(a.InterestInFutureDivMoney) } );
 						}
 						
-						var divider=2;
+						var divider=10;
 						pageNum=Math.ceil(transactions.length/divider);
 						
 						if(pageNum<targetPage){
@@ -480,7 +480,7 @@ router.get('/lenderReturnRecord/:oneid?/:id?/:sorter?/:page?', ensureAuthenticat
 					returns.sort(function(a,b) { return parseFloat(a.MoneyNotPaid) - parseFloat(b.MoneyNotPaid)} );
 				}
 				
-				var divider=2;
+				var divider=10;
 				pageNum=Math.ceil(returns.length/divider);
 				
 				if(pageNum<targetPage){
@@ -545,7 +545,7 @@ router.get('/lendsList/:oneid?/:sorter?/:page?', ensureAuthenticated, function (
 			console.log(err);
 			res.redirect('/message?content='+chineseEncodeToURI('錯誤!'));
 		}else{
-			var divider=2;
+			var divider=10;
 			totalResultNumber=count;
 			if(totalResultNumber<=0){
 				if(targetPage>1){
@@ -670,7 +670,7 @@ router.get('/lenderSendMessages/:msgKeyword?/:filter?/:sorter?/:page?', ensureAu
 					messages.sort(function(a,b) { return parseFloat(b.InterestInFutureDivMoney) - parseFloat(a.InterestInFutureDivMoney) } );
 				}
 				
-				var divider=2;
+				var divider=10;
 				pageNum=Math.ceil(messages.length/divider);
 				
 				if(pageNum<targetPage){
@@ -796,7 +796,7 @@ router.get('/lenderReceiveMessages/:msgKeyword?/:filter?/:sorter?/:page?', ensur
 					messages.sort(function(a,b) { return parseFloat(b.InterestInFutureDivMoney) - parseFloat(a.InterestInFutureDivMoney) } );
 				}
 				
-				var divider=2;
+				var divider=10;
 				pageNum=Math.ceil(messages.length/divider);
 				
 				if(pageNum<targetPage){
@@ -895,7 +895,7 @@ router.get('/income', ensureAuthenticated, function (req, res) {
 					}
 					var tempMonthRoi=0;
 					if(tempMonthPrincipal>0){
-						tempMonthRoi=tempMonthRevunue/tempMonthPrincipal*100;
+						tempMonthRoi=tempMonthRevunue/tempMonthPrincipal*1000;
 						var tempJson={PrincipalNR:tempMonthPrincipal,ROI: Math.round(tempMonthRoi*10000)/10000, Revenue: Math.round(tempMonthRevunue*100)/100, Principal: Math.round(tempMonthPrincipalReturn*100)/100, RevenuePrincipal: Math.round((tempMonthRevunue+tempMonthPrincipalReturn)*100)/100};
 						monthArray.push(tempJson);
 					}
@@ -922,7 +922,7 @@ router.get('/income', ensureAuthenticated, function (req, res) {
 					}
 					var tempMonthRoi=0;
 					if(tempMonthPrincipal>0){
-						tempMonthRoi=tempMonthRevunue/tempMonthPrincipal*100;
+						tempMonthRoi=tempMonthRevunue/tempMonthPrincipal*1000;
 						var tempJson={PrincipalNR:tempMonthPrincipal,ROI: Math.round(tempMonthRoi*10000)/10000, Revenue: Math.round(tempMonthRevunue*100)/100, Principal: Math.round(tempMonthPrincipalReturn*100)/100, RevenuePrincipal: Math.round((tempMonthRevunue+tempMonthPrincipalReturn)*100)/100};
 						monthArray2.push(tempJson);
 					}
