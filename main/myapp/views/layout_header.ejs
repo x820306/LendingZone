@@ -35,12 +35,12 @@
 				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 					<ul class="nav navbar-nav navbar-left">
 						<li class="dropdown">
-							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">借入 <span class="caret"></span></a>
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">借入者 <span class="caret"></span></a>
 							<ul class="dropdown-menu" role="menu">
 							</ul>
 						</li>
-						<li class="dropdown<% if((nav_cur=='lend')||(nav_cur=='lenderSendMessages')||(nav_cur=='lenderReceiveMessages')||(nav_cur=='lenderTransactions')){ %> active<% } %>">
-							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">借出 <span class="caret"></span></a>
+						<li class="dropdown<% if((nav_cur=='lend')||(nav_cur=='lenderSendMessages')||(nav_cur=='lenderReceiveMessages')||(nav_cur=='lenderTransactionRecord')||(nav_cur=='lenderReturnRecord')||(nav_cur=='income')){ %> active<% } %>">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">借出者 <span class="caret"></span></a>
 							<ul class="dropdown-menu" role="menu">
 								<li <% if(nav_cur=='lend'){ %> class="active"<% } %>><% if(!userName){ %><a href="#" data-toggle="modal" data-target="#myModal"><% }else{ %><a href="/lender/lend"><%}%>自動借出設定</a></li>
 								<li <% if(nav_cur=='income'){ %> class="active"<% } %>><% if(!userName){ %><a href="#" data-toggle="modal" data-target="#myModal"><% }else{ %><a href="/lender/income"><%}%>收入分析</a></li>
