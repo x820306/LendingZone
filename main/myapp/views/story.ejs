@@ -5,7 +5,7 @@
 			<table width="100%">
 				<tr>
 					<td>
-						<div style="font-size:30px;color:#337ab7;"><%=json.StoryTitle%></div>
+						<div style="font-size:30px;<%if(json.TitleColor=="default"){%>color:#337ab7;<%}else if(json.TitleColor=="red"){%>color:#FF0000;<%}else if(json.TitleColor=="yellow"){%>color:#ffd900;<%}else if(json.TitleColor=="black"){%>color:#000000;<%}%>">[<%if(json.Category=='general'){%>一般<%}else if(json.Category=='education'){%>教育<%}else if(json.Category=='family'){%>家庭<%}else if(json.Category=='tour'){%>旅遊<%}%>]&nbsp;&nbsp;<%=json.StoryTitle%></div>
 						<div style="font-size:20px;color:#0000D1;"> by <%=json.CreatedBy.Username%></div>
 					</td>
 					<td align="right">
@@ -289,6 +289,27 @@
 										<span class="input-group-addon">元</span>
 									</div>
 									<br>
+								<form action="/Messages/toLendCreate" method="post">
+									<h4>本次欲借出金額：</h4>
+									<div class="input-group">
+										<input type="number" class="form-control" name="MoneyToLend">
+										<span class="input-group-addon">元</span>
+									</div>
+									<br>
+									<h4>本次欲借出年利率：</h4>
+									<div class="input-group">	
+										<input type="text" class="form-control" name="InterestRate">
+										<span class="input-group-addon">%</span>
+									</div>
+									<br>
+									<h4>本次欲借出期數（單位/月）：</h4>
+									<div class="input-group">
+										<input type="number" class="form-control" name="MonthPeriod">
+										<span class="input-group-addon">個月</span>
+									</div>
+									<br>
+									<button type="button" class="btn btn-default" onclick="interestInFutureCalculator();">試算</button>
+									<br>
 									<h4>預計總利息：</h4>
 									<div class="input-group">
 										<input type="text" class="form-control" id="interestFuture" readonly="readonly" value="0">
@@ -313,28 +334,7 @@
 										<span class="input-group-addon">%</span>
 									</div>
 									<br>
-									<button type="button" class="btn btn-default" onclick="interestInFutureCalculator();">試算</button>
-									<br>
-								<form action="/Messages/toLendCreate" method="post">
-									<h4>本次欲借出金額：</h4>
-									<div class="input-group">
-										<input type="number" class="form-control" name="MoneyToLend">
-										<span class="input-group-addon">元</span>
-									</div>
-									<br>
-									<h4>本次欲借出年利率：</h4>
-									<div class="input-group">	
-										<input type="text" class="form-control" name="InterestRate">
-										<span class="input-group-addon">%</span>
-									</div>
-									<br>
-									<h4>本次欲借出期數（單位/月）：</h4>
-									<div class="input-group">
-										<input type="number" class="form-control" name="MonthPeriod">
-										<span class="input-group-addon">個月</span>
-									</div>
-									<br>
-									<h4>訊息：</h4>
+									<h4>訊息（選填）：</h4>
 									<textarea class="form-control" name="Message" rows="3"></textarea>
 								</div>
 									<input type="hidden" name="FromBorrowRequest" value="<%=json._id%>">
@@ -360,6 +360,24 @@
 									<h4 class="modal-title" id="myModalLabel">欲借出訊息 - <%if(jsonMessage.Status=='Confirmed'){ %>已被同意<%}else if(jsonMessage.Status=='NotConfirmed'){%>未被確認<%}else if(jsonMessage.Status=='Rejected'){%>已被婉拒<%}%></h4>
 								</div>
 								<div class="modal-body">
+									<h4>本次欲借出金額：</h4>
+									<div class="input-group">
+										<input type="number" class="form-control" name="MoneyToLend" readonly="readonly" value="<%=jsonMessage.MoneyToLend.toFixed(0)%>">
+										<span class="input-group-addon">元</span>
+									</div>
+									<br>
+									<h4>本次欲借出年利率：</h4>
+									<div class="input-group">
+										<input type="text" class="form-control" name="InterestRate" readonly="readonly" value="<%=(jsonMessage.InterestRate*100).toFixed(2)%>">
+										<span class="input-group-addon">%</span>
+									</div>
+									<br>
+									<h4>本次欲借出期數（單位/月）：</h4>
+									<div class="input-group">
+										<input type="number" class="form-control" name="MonthPeriod" readonly="readonly" value="<%=jsonMessage.MonthPeriod.toFixed(0)%>">
+										<span class="input-group-addon">個月</span>
+									</div>
+									<br>
 									<h4>預計總利息：</h4>
 									<div class="input-group">
 										<input type="text" class="form-control" id="interestFuture" readonly="readonly" value="<%=jsonMessage.InterestInFuture.toFixed(0)%>">
@@ -382,24 +400,6 @@
 									<div class="input-group">
 										<input type="text" class="form-control" id="interestFutureDivMoney" readonly="readonly" value="<%=jsonMessage.InterestInFutureDivMoney.toFixed(2)%>">
 										<span class="input-group-addon">%</span>
-									</div>
-									<br>
-									<h4>本次欲借出金額：</h4>
-									<div class="input-group">
-										<input type="number" class="form-control" name="MoneyToLend" readonly="readonly" value="<%=jsonMessage.MoneyToLend.toFixed(0)%>">
-										<span class="input-group-addon">元</span>
-									</div>
-									<br>
-									<h4>本次欲借出年利率：</h4>
-									<div class="input-group">
-										<input type="text" class="form-control" name="InterestRate" readonly="readonly" value="<%=(jsonMessage.InterestRate*100).toFixed(2)%>">
-										<span class="input-group-addon">%</span>
-									</div>
-									<br>
-									<h4>本次欲借出期數（單位/月）：</h4>
-									<div class="input-group">
-										<input type="number" class="form-control" name="MonthPeriod" readonly="readonly" value="<%=jsonMessage.MonthPeriod.toFixed(0)%>">
-										<span class="input-group-addon">個月</span>
 									</div>
 									<br>
 									<h4>訊息：</h4>
@@ -430,6 +430,27 @@
 										<span class="input-group-addon">元</span>
 									</div>
 									<br>
+								<form action="/Messages/toLendUpdate" method="post" id="formID">
+									<h4>本次欲借出金額：</h4>
+									<div class="input-group">
+										<input type="number" class="form-control" name="MoneyToLend" value="<%=jsonMessage.MoneyToLend.toFixed(0)%>">
+										<span class="input-group-addon">元</span>
+									</div>
+									<br>
+									<h4>本次欲借出年利率：</h4>
+									<div class="input-group">
+										<input type="text" class="form-control" name="InterestRate" value="<%=(jsonMessage.InterestRate*100).toFixed(2)%>">
+										<span class="input-group-addon">%</span>
+									</div>
+									<br>
+									<h4>本次欲借出期數（單位/月）：</h4>
+									<div class="input-group">
+										<input type="number" class="form-control" name="MonthPeriod" value="<%=jsonMessage.MonthPeriod.toFixed(0)%>">
+										<span class="input-group-addon">個月</span>
+									</div>
+									<br>
+									<button type="button" class="btn btn-default" onclick="interestInFutureCalculator();">重新試算</button>
+									<br>
 									<h4>預計總利息：</h4>
 									<div class="input-group">
 										<input type="text" class="form-control" id="interestFuture" readonly="readonly" value="<%=jsonMessage.InterestInFuture.toFixed(0)%>">
@@ -454,28 +475,7 @@
 										<span class="input-group-addon">%</span>
 									</div>
 									<br>
-									<button type="button" class="btn btn-default" onclick="interestInFutureCalculator();">重新試算</button>
-									<br>
-								<form action="/Messages/toLendUpdate" method="post" id="formID">
-									<h4>本次欲借出金額：</h4>
-									<div class="input-group">
-										<input type="number" class="form-control" name="MoneyToLend" value="<%=jsonMessage.MoneyToLend.toFixed(0)%>">
-										<span class="input-group-addon">元</span>
-									</div>
-									<br>
-									<h4>本次欲借出年利率：</h4>
-									<div class="input-group">
-										<input type="text" class="form-control" name="InterestRate" value="<%=(jsonMessage.InterestRate*100).toFixed(2)%>">
-										<span class="input-group-addon">%</span>
-									</div>
-									<br>
-									<h4>本次欲借出期數（單位/月）：</h4>
-									<div class="input-group">
-										<input type="number" class="form-control" name="MonthPeriod" value="<%=jsonMessage.MonthPeriod.toFixed(0)%>">
-										<span class="input-group-addon">個月</span>
-									</div>
-									<br>
-									<h4>訊息：</h4>
+									<h4>訊息（選填）：</h4>
 									<textarea class="form-control" name="Message" rows="3"><%=jsonMessage.Message%></textarea>
 								</div>
 									<input type="hidden" name="FromBorrowRequest" value="<%=json._id%>">
@@ -506,6 +506,24 @@
 								<h4 class="modal-title" id="myModalLabel">借款請求 - <%if(jsonBorrowMessage.Status=='Confirmed'){ %>已同意<%}else if(jsonBorrowMessage.Status=='NotConfirmed'){%>未確認<%}else if(jsonBorrowMessage.Status=='Rejected'){%>已婉拒<%}%></h4>
 							</div>
 							<div class="modal-body">
+								<h4>金額：</h4>
+								<div class="input-group">
+									<input type="number" class="form-control" name="MoneyToLend" readonly="readonly" value="<%=jsonBorrowMessage.MoneyToLend.toFixed(0)%>">
+									<span class="input-group-addon">元</span>
+								</div>
+								<br>
+								<h4>年利率：</h4>
+								<div class="input-group">
+									<input type="text" class="form-control" name="InterestRate" readonly="readonly" value="<%=(jsonBorrowMessage.InterestRate*100).toFixed(2)%>">
+									<span class="input-group-addon">%</span>
+								</div>
+								<br>
+								<h4>期數（單位/月）：</h4>
+								<div class="input-group">
+									<input type="number" class="form-control" name="MonthPeriod" readonly="readonly" value="<%=jsonBorrowMessage.MonthPeriod.toFixed(0)%>">
+									<span class="input-group-addon">個月</span>
+								</div>
+								<br>
 								<h4>預計總利息：</h4>
 								<div class="input-group">
 									<input type="text" class="form-control" id="interestFuture" readonly="readonly" value="<%=jsonBorrowMessage.InterestInFuture.toFixed(0)%>">
@@ -528,24 +546,6 @@
 								<div class="input-group">
 									<input type="text" class="form-control" id="interestFutureDivMoney" readonly="readonly" value="<%=jsonBorrowMessage.InterestInFutureDivMoney.toFixed(2)%>">
 									<span class="input-group-addon">%</span>
-								</div>
-								<br>
-								<h4>金額：</h4>
-								<div class="input-group">
-									<input type="number" class="form-control" name="MoneyToLend" readonly="readonly" value="<%=jsonBorrowMessage.MoneyToLend.toFixed(0)%>">
-									<span class="input-group-addon">元</span>
-								</div>
-								<br>
-								<h4>年利率：</h4>
-								<div class="input-group">
-									<input type="text" class="form-control" name="InterestRate" readonly="readonly" value="<%=(jsonBorrowMessage.InterestRate*100).toFixed(2)%>">
-									<span class="input-group-addon">%</span>
-								</div>
-								<br>
-								<h4>期數（單位/月）：</h4>
-								<div class="input-group">
-									<input type="number" class="form-control" name="MonthPeriod" readonly="readonly" value="<%=jsonBorrowMessage.MonthPeriod.toFixed(0)%>">
-									<span class="input-group-addon">個月</span>
 								</div>
 								<br>
 								<h4>訊息：</h4>
@@ -576,6 +576,38 @@
 									<span class="input-group-addon">元</span>
 								</div>
 								<br>
+								<h4>您目前的自動出借額度：</h4>
+								<div class="input-group">
+									<%if(jsonLend){%>
+										<input type="text" class="form-control" readonly="readonly" value="<%=jsonLend.MaxMoneyToLend.toFixed(0)%>">
+										<span class="input-group-addon">元</span>
+									<%}else{%>
+										<input type="text" class="form-control" readonly="readonly" value="未找到自動出借設定！">
+										<span class="input-group-addon">#</span>
+									<%}%>
+								</div>
+								<br>
+							<form action="/Messages/confirmToBorrowMessageInStory" method="post" id="confirmFormID">
+								<h4>金額：</h4>
+								<div class="input-group">
+									<input type="number" class="form-control" name="MoneyToLend" value="<%=jsonBorrowMessage.MoneyToLend.toFixed(0)%>">
+									<span class="input-group-addon">元</span>
+								</div>
+								<br>
+								<h4>年利率：</h4>
+								<div class="input-group">
+									<input type="text" class="form-control" name="InterestRate" value="<%=(jsonBorrowMessage.InterestRate*100).toFixed(2)%>">
+									<span class="input-group-addon">%</span>
+								</div>
+								<br>
+								<h4>期數（單位/月）：</h4>
+								<div class="input-group">
+									<input type="number" class="form-control" name="MonthPeriod" value="<%=jsonBorrowMessage.MonthPeriod.toFixed(0)%>">
+									<span class="input-group-addon">個月</span>
+								</div>
+								<br>
+								<button type="button" class="btn btn-default" onclick="interestInFutureCalculator();">重新試算</button>
+								<br>
 								<h4>預計總利息：</h4>
 								<div class="input-group">
 									<input type="text" class="form-control" id="interestFuture" readonly="readonly" value="<%=jsonBorrowMessage.InterestInFuture.toFixed(0)%>">
@@ -598,27 +630,6 @@
 								<div class="input-group">
 									<input type="text" class="form-control" id="interestFutureDivMoney" readonly="readonly" value="<%=jsonBorrowMessage.InterestInFutureDivMoney.toFixed(2)%>">
 									<span class="input-group-addon">%</span>
-								</div>
-								<br>
-								<button type="button" class="btn btn-default" onclick="interestInFutureCalculator();">重新試算</button>
-								<br>
-							<form action="/Messages/confirmToBorrowMessageInStory" method="post" id="confirmFormID">
-								<h4>金額：</h4>
-								<div class="input-group">
-									<input type="number" class="form-control" name="MoneyToLend" value="<%=jsonBorrowMessage.MoneyToLend.toFixed(0)%>">
-									<span class="input-group-addon">元</span>
-								</div>
-								<br>
-								<h4>年利率：</h4>
-								<div class="input-group">
-									<input type="text" class="form-control" name="InterestRate" value="<%=(jsonBorrowMessage.InterestRate*100).toFixed(2)%>">
-									<span class="input-group-addon">%</span>
-								</div>
-								<br>
-								<h4>期數（單位/月）：</h4>
-								<div class="input-group">
-									<input type="number" class="form-control" name="MonthPeriod" value="<%=jsonBorrowMessage.MonthPeriod.toFixed(0)%>">
-									<span class="input-group-addon">個月</span>
 								</div>
 								<br>
 								<h4>訊息：</h4>

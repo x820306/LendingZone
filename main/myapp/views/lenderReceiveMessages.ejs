@@ -22,7 +22,7 @@
 						<div class="btn-group">
 							<button type="button" style="height:40px;" class="btn btn-default" id="sorterSelected" data-toggle="dropdown" aria-expanded="false"><%=sorterDefault%> <span class='caret'></span></button>
 							<ul class="dropdown-menu" role="menu">
-								<% if(filterDefault=='未確認'){%>
+								<% if((filterDefault=='未確認')&&(pageNumber>1)){%>
 								<li style="display:none"><a href="#" id="sorter0"><%=sorterDefault%></a></li>
 								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter1').text());$('#cAll').attr('href','/Messages/confirmToBorrowMessageInLRMall?msgKeyword=<%=encodeURIComponent(msgKeywordDefault)%>&sorter='+encodeURIComponent($('#sorterSelected').text()));$('#rAll').attr('href','/Messages/rejectToBorrowMessageInLRMall?msgKeyword=<%=encodeURIComponent(msgKeywordDefault)%>&sorter='+encodeURIComponent($('#sorterSelected').text()));$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter1">最新</a></li>
 								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter2').text());$('#cAll').attr('href','/Messages/confirmToBorrowMessageInLRMall?msgKeyword=<%=encodeURIComponent(msgKeywordDefault)%>&sorter='+encodeURIComponent($('#sorterSelected').text()));$('#rAll').attr('href','/Messages/rejectToBorrowMessageInLRMall?msgKeyword=<%=encodeURIComponent(msgKeywordDefault)%>&sorter='+encodeURIComponent($('#sorterSelected').text()));$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter2">利率最高</a></li>
@@ -52,8 +52,28 @@
 				</div> 
 				<% if(totalResultNum>0){ %>
 					<% if(filterDefault=='未確認'){%>
-						<%if(pageNumber>1){%>
 						<br>
+						<table style="display:inline;" class="table">
+							<thead>
+								<tr>
+									<th>
+									您目前的自動出借額度
+									</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>
+										<%if(jsonLend){%>
+											<%=jsonLend.MaxMoneyToLend%>元
+										<%}else{%>
+											未找到自動出借設定！
+										<%}%>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+						<%if(pageNumber>1){%>
 						<br>
 						<table style="display:inline;" class="table">
 							<thead>
@@ -96,18 +116,63 @@
 							</tbody>
 						</table>
 						<br>
-						<a href="/Messages/confirmToBorrowMessageInLRMall?msgKeyword=<%=encodeURIComponent(msgKeywordDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>" id="cAll">
-							<button class="btn btn-default" id="confirmAllBtn" onclick="confirmAll();">
-								<span style="color:#337ab7;">同意全部收到之請求</span>
-							</button>
-						</a>
-						<a href="/Messages/rejectToBorrowMessageInLRMall?msgKeyword=<%=encodeURIComponent(msgKeywordDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>" id="rAll">
-							<button class="btn btn-default" id="rejectAllBtn" onclick="rejectAll();">
-								<span style="color:#337ab7;">婉拒全部收到之請求</span>
-							</button>
-						</a>
-						<%}%>
+						<button type="button" class="btn btn-default" data-toggle="modal" data-target="#chkModal1">
+							<span style="color:#337ab7;">同意全部收到之請求</span>
+						</button>
+						<div class="modal fade" id="chkModal1">
+							<div class="modal-dialog modal-sm"">
+								<div class="modal-content">
+									<div class="modal-header">
+										<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+										<h4 class="modal-title">再次確認</h4>
+									</div>
+									<div class="modal-body">
+										<br>
+										您確定要同意全部收到之請求嗎?
+										<br>
+										<br>
+									</div>
+									<div class="modal-footer">
+										<a href="/Messages/confirmToBorrowMessageInLRMall?msgKeyword=<%=encodeURIComponent(msgKeywordDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>" id="cAll">
+											<button class="btn btn-primary" id="confirmAllBtn" onclick="confirmAll();">
+												確定
+											</button>
+										</a>
+										<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+									</div>
+								</div>
+							</div>
+						</div>
+						&nbsp;&nbsp;
+						<button type="button" class="btn btn-default" data-toggle="modal" data-target="#chkModal2">
+							<span style="color:#337ab7;">婉拒全部收到之請求</span>
+						</button>
+						<div class="modal fade" id="chkModal2">
+							<div class="modal-dialog modal-sm"">
+								<div class="modal-content">
+									<div class="modal-header">
+										<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+										<h4 class="modal-title">再次確認</h4>
+									</div>
+									<div class="modal-body">
+										<br>
+										您確定要婉拒全部收到之請求嗎?
+										<br>
+										<br>
+									</div>
+									<div class="modal-footer">
+										<a href="/Messages/rejectToBorrowMessageInLRMall?msgKeyword=<%=encodeURIComponent(msgKeywordDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>" id="rAll">
+											<button class="btn btn-primary" id="rejectAllBtn" onclick="rejectAll();">
+												確定
+											</button>
+										</a>
+										<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+									</div>
+								</div>
+							</div>
+						</div>
 						<br>
+						<%}%>
 						<br>
 						<table style="display:inline;" class="table">
 							<thead>
@@ -151,15 +216,79 @@
 						</table>
 						<br>
 						<input type="checkbox" id="selectAll" onclick="selectAllFun();"> 全選&nbsp;&nbsp;&nbsp;&nbsp;
-						<button class="btn btn-default" id="confirmBtn" onclick="confirm();">
+						<button type="button" class="btn btn-default" onclick="checkAndOpenModal('#chkModal3')">
 							<span style="color:#337ab7;">同意</span>
 						</button>
-						<button class="btn btn-default" id="rejectBtn" onclick="reject();">
+						<div class="modal fade" id="chkModal3">
+							<div class="modal-dialog modal-sm"">
+								<div class="modal-content">
+									<div class="modal-header">
+										<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+										<h4 class="modal-title">再次確認</h4>
+									</div>
+									<div class="modal-body">
+										<br>
+										您確定要同意已選之請求嗎?
+										<br>
+										<br>
+									</div>
+									<div class="modal-footer">
+										<button class="btn btn-primary" id="confirmBtn" onclick="confirm();">
+											確定
+										</button>
+										<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+									</div>
+								</div>
+							</div>
+						</div>
+						&nbsp;&nbsp;
+						<button type="button" class="btn btn-default" onclick="checkAndOpenModal('#chkModal4')">
 							<span style="color:#337ab7;">婉拒</span>
 						</button>
+						<div class="modal fade" id="chkModal4">
+							<div class="modal-dialog modal-sm"">
+								<div class="modal-content">
+									<div class="modal-header">
+										<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+										<h4 class="modal-title">再次確認</h4>
+									</div>
+									<div class="modal-body">
+										<br>
+										您確定要婉拒已選之請求嗎?
+										<br>
+										<br>
+									</div>
+									<div class="modal-footer">
+										<button class="btn btn-primary" id="rejectBtn" onclick="reject();">
+											確定
+										</button>
+										<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+									</div>
+								</div>
+							</div>
+						</div>
 						<br>
 						<br>
 						<br>
+						<div class="modal fade" id="msgModal">
+							<div class="modal-dialog modal-sm"">
+								<div class="modal-content">
+									<div class="modal-header">
+										<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+										<h4 class="modal-title">訊息</h4>
+									</div>
+									<div class="modal-body">
+										<br>
+										您未選擇訊息！
+										<br>
+										<br>
+									</div>
+									<div class="modal-footer">
+										<button type="button" class="btn btn-default" data-dismiss="modal">關閉</button>
+									</div>
+								</div>
+							</div>
+						</div>
 					<% }else{%>
 						<br>
 						<br>
@@ -599,6 +728,20 @@
 </div>
 <script>
 <% if((filterDefault=='未確認')&&(totalResultNum>0)){%>
+function checkAndOpenModal(target){
+	var ctr=0;
+	$("input[name='selectCheckBox']").each(function() {
+			if($(this).prop("checked")){
+				ctr+=1;
+			}
+	});
+	if(ctr>0){
+		$(target).modal('show');
+	}else{
+		$('#msgModal').modal('show');
+	}
+}
+
 function selectAllFun(){
 	if($("#selectAll").prop("checked"))
 	{
@@ -704,6 +847,7 @@ function selectFun(index){
 	}
 }
 
+<%if(pageNumber>1){%>
 function confirmAll(){
 	disableButton();
 }
@@ -711,6 +855,7 @@ function confirmAll(){
 function rejectAll(){
 	disableButton();
 }
+<%}%>
 
 function confirm(){
 	samepart(confirmInner);
@@ -733,6 +878,7 @@ function disableButton(){
 		$(rejectBtn).attr('class',orig);
 	}
 	
+	<%if(pageNumber>1){%>
 	orig=$('#confirmAllBtn').attr('class');
 	if(orig.search(' disabled')<0){
 		orig=orig+' disabled';
@@ -744,6 +890,7 @@ function disableButton(){
 		orig=orig+' disabled';
 		$('#rejectAllBtn').attr('class',orig);
 	}
+	<%}%>
 }
 
 function confirmInner(){
@@ -772,8 +919,6 @@ function samepart(toDO){
 		JSONarrayString+=']}';
 		$("#hdnIpt").val(JSONarrayString);
 		toDO();
-	}else{
-		alert("未選擇欲同意訊息!");
 	}
 }
 <%}%>

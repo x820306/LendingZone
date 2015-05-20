@@ -100,7 +100,7 @@
 							<table width="100%">
 								<tr>
 									<td>
-										<a style="font-size:25px;" href="/lender/story?id=<%=jsonArray[i]._id%>"><%=jsonArray[i].StoryTitle%></a>
+										<a style="font-size:25px;<%if(jsonArray[i].TitleColor=="red"){%>color:#FF0000;<%}else if(jsonArray[i].TitleColor=="yellow"){%>color:#ffd900;<%}else if(jsonArray[i].TitleColor=="black"){%>color:#000000;<%}%>" href="/lender/story?id=<%=jsonArray[i]._id%>">[<%if(jsonArray[i].Category=='general'){%>一般<%}else if(jsonArray[i].Category=='education'){%>教育<%}else if(jsonArray[i].Category=='family'){%>家庭<%}else if(jsonArray[i].Category=='tour'){%>旅遊<%}%>]&nbsp;&nbsp;<%=jsonArray[i].StoryTitle%></a>
 										<div style="font-size:15px;color:#0000D1;">by <%=jsonArray[i].CreatedBy.Username%></div>
 									</td>
 									<td align="right">

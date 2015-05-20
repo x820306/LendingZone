@@ -21,7 +21,7 @@
 							<%=sorterDefault%> <span class="caret"></span>
 						</button>
 						<ul class="dropdown-menu">
-							<% if(filterDefault=='未保險'){%>
+							<% if((filterDefault=='未保險')&&(pageNumber>1)){%>
 							<li style="display:none"><a href="#" id="sorter0"><%=sorterDefault%></a></li>
 							<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter1').text());$('#bAll').attr('href','/Transactions/buyInsuranceAll?oneid=<%=oneidDefault%>&sorter='+encodeURIComponent($('#sorterSelected').text()));$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter1">最新</a></li>
 							<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter2').text());$('#bAll').attr('href','/Transactions/buyInsuranceAll?oneid=<%=oneidDefault%>&sorter='+encodeURIComponent($('#sorterSelected').text()));$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter2">已獲利最多</a></li>
@@ -47,6 +47,8 @@
 							<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter9').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter9">預計平均本利和最高</a></li>
 							<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter10').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter10">預計利本比最高</a></li>
 							<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter11').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter11">成交日期最晚</a></li>
+							<%}%>
+							<% if(filterDefault=='已保險'){%>
 							<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter12').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter12">已付保險費最高</a></li>
 							<%}%>
 						</ul>
@@ -75,11 +77,33 @@
 							</tbody>
 						</table>
 						<br>
-						<a href="/Transactions/buyInsuranceAll?oneid=<%=oneidDefault%>&sorter=<%=encodeURIComponent(sorterDefault)%>" id="bAll">
-							<button class="btn btn-default" id="buyBtnAll" onclick="buyAll();">
-								<span style="color:#337ab7;">為所有交易購買保險</span>
-							</button>
-						</a>
+						<button type="button" class="btn btn-default" data-toggle="modal" data-target="#chkModal1">
+							<span style="color:#337ab7;">為所有交易購買保險</span>
+						</button>
+						<div class="modal fade" id="chkModal1">
+							<div class="modal-dialog modal-sm"">
+								<div class="modal-content">
+									<div class="modal-header">
+										<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+										<h4 class="modal-title">再次確認</h4>
+									</div>
+									<div class="modal-body">
+										<br>
+										您確定要為所有交易購買保險嗎?
+										<br>
+										<br>
+									</div>
+									<div class="modal-footer">
+										<a href="/Transactions/buyInsuranceAll?oneid=<%=oneidDefault%>&sorter=<%=encodeURIComponent(sorterDefault)%>" id="bAll">
+											<button class="btn btn-primary" id="buyBtnAll" onclick="buyAll();">
+												確定
+											</button>
+										</a>
+										<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+									</div>
+								</div>
+							</div>
+						</div>
 						<%}%>
 						<br>
 						<br>
@@ -101,12 +125,53 @@
 						</table>
 						<br>
 						<input type="checkbox" id="selectAll" onclick="selectAllFun();"> 全選&nbsp;&nbsp;&nbsp;&nbsp;
-						<button class="btn btn-default" id="buyBtn" onclick="buy();">
+						<button type="button" class="btn btn-default" onclick="checkAndOpenModal('#chkModal2')">
 							<span style="color:#337ab7;">購買保險</span>
 						</button>
+						<div class="modal fade" id="chkModal2">
+							<div class="modal-dialog modal-sm"">
+								<div class="modal-content">
+									<div class="modal-header">
+										<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+										<h4 class="modal-title">再次確認</h4>
+									</div>
+									<div class="modal-body">
+										<br>
+										您確定要為已選交易購買保險嗎?
+										<br>
+										<br>
+									</div>
+									<div class="modal-footer">
+										<button class="btn btn-primary" id="buyBtn" onclick="buy();">
+											確定
+										</button>
+										<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+									</div>
+								</div>
+							</div>
+						</div>
 						<br>
 						<br>
 						<br>
+						<div class="modal fade" id="msgModal">
+							<div class="modal-dialog modal-sm"">
+								<div class="modal-content">
+									<div class="modal-header">
+										<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+										<h4 class="modal-title">訊息</h4>
+									</div>
+									<div class="modal-body">
+										<br>
+										您未選擇交易！
+										<br>
+										<br>
+									</div>
+									<div class="modal-footer">
+										<button type="button" class="btn btn-default" data-dismiss="modal">關閉</button>
+									</div>
+								</div>
+							</div>
+						</div>
 					<% }else{%>
 						<br>
 						<br>
@@ -427,6 +492,20 @@
 </div>
 <script>
 <% if((filterDefault=='未保險')&&(totalResultNum>0)){%>
+function checkAndOpenModal(target){
+	var ctr=0;
+	$("input[name='selectCheckBox']").each(function() {
+			if($(this).prop("checked")){
+				ctr+=1;
+			}
+	});
+	if(ctr>0){
+		$(target).modal('show');
+	}else{
+		$('#msgModal').modal('show');
+	}
+}
+
 function selectAllFun(){
 	if($("#selectAll").prop("checked"))
 	{
@@ -480,9 +559,11 @@ function selectFun(index){
 	}
 }
 
+<%if(pageNumber>1){%>
 function buyAll(){
 	disableButton();
 }
+<%}%>
 
 function buy(){
 	samepart(buyInner);
@@ -495,11 +576,13 @@ function disableButton(){
 		$('#buyBtn').attr('class',orig);
 	}
 	
+	<%if(pageNumber>1){%>
 	orig=$('#buyBtnAll').attr('class');
 	if(orig.search(' disabled')<0){
 		orig=orig+' disabled';
 		$(buyBtnAll).attr('class',orig);
 	}
+	<%}%>
 }
 
 function buyInner(){
@@ -521,8 +604,6 @@ function samepart(toDO){
 		JSONarrayString+=']}';
 		$("#hdnIpt").val(JSONarrayString);
 		toDO();
-	}else{
-		alert("未選擇欲同意訊息!");
 	}
 }
 <%}%>

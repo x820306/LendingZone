@@ -25,83 +25,12 @@ var transporter = nodemailer.createTransport({
 var autoComfirmToBorrowMsgArray=[];
 var insuranceRate=0.001;
 var serviceChargeRate=0.01;
-
-function mailAgree(message,newCreateUpdated){
-	var mailOptions = {
-		from: 'LendingZone <lendingzonesystem@gmail.com>', // sender address
-		to: message.CreatedBy.Username+' <'+message.CreatedBy.Email+'>', // list of receivers
-		subject: message.SendTo.Username+'同意了您先前送出的借款請求!', // Subject line
-		text: '親愛的 '+message.CreatedBy.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+message.SendTo.Username+' 同意了您先前在「'+message.FromBorrowRequest.StoryTitle+'("http://lendingzone.herokuapp.com/lender/story?id='+message.FromBorrowRequest._id+'")」送出的借款請求！'+String.fromCharCode(10)+'您的交易紅利代碼為： '+exports.randomString(8)+String.fromCharCode(10)+'您可至 玉山銀行網站("http://www.esunbank.com.tw/") 兌換紅利喔!'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看訊息與交易結果:'+String.fromCharCode(10)+'"http://lendingzone.herokuapp.com/lender/lenderReceiveMessages?msgKeyword='+newCreateUpdated._id+'&filter='+encodeURIComponent('已同意')+'&sorter='+encodeURIComponent('最新')+'&page=1"', // plaintext body
-		html: '<img src="cid:bpng" /><br><br>親愛的 '+message.CreatedBy.Username+' 您好：<br><br>'+message.SendTo.Username+' 同意了您先前在「<a href="http://lendingzone.herokuapp.com/lender/story?id='+message.FromBorrowRequest._id+'">'+message.FromBorrowRequest.StoryTitle+'</a>」送出的借款請求！<br>您的交易紅利代碼為： <div style="color:#FF0000;display:inline;">'+exports.randomString(8)+'</div><br>您可至 <a href="http://www.esunbank.com.tw/">玉山銀行網站</a> 兌換紅利喔!<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://lendingzone.herokuapp.com/lender/lenderReceiveMessages?msgKeyword='+newCreateUpdated._id+'&filter='+encodeURIComponent('已同意')+'&sorter='+encodeURIComponent('最新')+'&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看訊息與交易結果</span></a></td></tr></table>', 
-		attachments: [{
-			filename: 'b.png',
-			path: __dirname+'/../public/images/b.png',
-			cid: 'bpng' //same cid value as in the html img src
-		}]
-	};
-	
-	transporter.sendMail(mailOptions, function(error, info){
-		if(error){
-			console.log(error);
-		}
-	});
-	var mailOptions2 = {
-		from: 'LendingZone <lendingzonesystem@gmail.com>', // sender address
-		to: message.SendTo.Username+' <'+message.SendTo.Email+'>', // list of receivers
-		subject: '您同意了'+message.CreatedBy.Username+'先前送來的借款請求!', // Subject line
-		text: '親愛的 '+message.SendTo.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+'您同意了 '+message.CreatedBy.Username+' 先前在「'+message.FromBorrowRequest.StoryTitle+'("http://lendingzone.herokuapp.com/lender/story?id='+message.FromBorrowRequest._id+'")」送來的借款請求！'+String.fromCharCode(10)+'您的交易紅利代碼為： '+exports.randomString(8)+String.fromCharCode(10)+'您可至 玉山銀行網站("http://www.esunbank.com.tw/") 兌換紅利喔!'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看訊息與交易結果:'+String.fromCharCode(10)+'"http://lendingzone.herokuapp.com/lender/lenderReceiveMessages?msgKeyword='+newCreateUpdated._id+'&filter='+encodeURIComponent('已同意')+'&sorter='+encodeURIComponent('最新')+'&page=1"', // plaintext body
-		html: '<img src="cid:bpng" /><br><br>親愛的 '+message.SendTo.Username+' 您好：<br><br>您同意了 '+message.CreatedBy.Username+' 先前在「<a href="http://lendingzone.herokuapp.com/lender/story?id='+message.FromBorrowRequest._id+'">'+message.FromBorrowRequest.StoryTitle+'</a>」送來的借款請求！<br>您的交易紅利代碼為： <div style="color:#FF0000;display:inline;">'+exports.randomString(8)+'</div><br>您可至 <a href="http://www.esunbank.com.tw/">玉山銀行網站</a> 兌換紅利喔!<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://lendingzone.herokuapp.com/lender/lenderReceiveMessages?msgKeyword='+newCreateUpdated._id+'&filter='+encodeURIComponent('已同意')+'&sorter='+encodeURIComponent('最新')+'&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看訊息與交易結果</span></a></td></tr></table>', 
-		attachments: [{
-			filename: 'b.png',
-			path: __dirname+'/../public/images/b.png',
-			cid: 'bpng' //same cid value as in the html img src
-		}]
-	};
-	
-	transporter.sendMail(mailOptions2, function(error, info){
-		if(error){
-			console.log(error);
-		}
-	});
-
-}
-
-function mailReject(message,newUpdate){
-	var mailOptions = {
-		from: 'LendingZone <lendingzonesystem@gmail.com>', // sender address
-		to: message.CreatedBy.Username+' <'+message.CreatedBy.Email+'>', // list of receivers
-		subject: message.SendTo.Username+'婉拒了您先前送出的借款請求!', // Subject line
-		text: '親愛的 '+message.CreatedBy.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+message.SendTo.Username+' 婉拒了您先前在「'+message.FromBorrowRequest.StoryTitle+'("http://lendingzone.herokuapp.com/lender/story?id='+message.FromBorrowRequest._id+'")」送出的借款請求！'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看:'+String.fromCharCode(10)+'"http://lendingzone.herokuapp.com/lender/lenderReceiveMessages?msgKeyword='+newUpdate._id+'&filter='+encodeURIComponent('已婉拒')+'&sorter='+encodeURIComponent('最新')+'&page=1"', // plaintext body
-		html: '親愛的 '+message.CreatedBy.Username+' 您好：<br><br>'+message.SendTo.Username+' 婉拒了您先前在「<a href="http://lendingzone.herokuapp.com/lender/story?id='+message.FromBorrowRequest._id+'">'+message.FromBorrowRequest.StoryTitle+'</a>」送出的借款請求！<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://lendingzone.herokuapp.com/lender/lenderReceiveMessages?msgKeyword='+newUpdate._id+'&filter='+encodeURIComponent('已婉拒')+'&sorter='+encodeURIComponent('最新')+'&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看</span></a></td></tr></table>' 
-		// html body
-	};
-	
-	transporter.sendMail(mailOptions, function(error, info){
-		if(error){
-			console.log(error);
-		}
-	});
-	
-	var mailOptions2 = {
-		from: 'LendingZone <lendingzonesystem@gmail.com>', // sender address
-		to: message.SendTo.Username+' <'+message.SendTo.Email+'>', // list of receivers
-		subject:'您婉拒了'+ message.CreatedBy.Username+'先前送來的借款請求!', // Subject line
-		text: '親愛的 '+message.SendTo.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+'您婉拒了 '+message.CreatedBy.Username+' 先前在「'+message.FromBorrowRequest.StoryTitle+'("http://lendingzone.herokuapp.com/lender/story?id='+message.FromBorrowRequest._id+'")」送來的借款請求！'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看:'+String.fromCharCode(10)+'"http://lendingzone.herokuapp.com/lender/lenderReceiveMessages?msgKeyword='+newUpdate._id+'&filter='+encodeURIComponent('已婉拒')+'&sorter='+encodeURIComponent('最新')+'&page=1"', // plaintext body
-		html: '親愛的 '+message.SendTo.Username+' 您好：<br><br>您婉拒了 '+message.CreatedBy.Username+' 先前在「<a href="http://lendingzone.herokuapp.com/lender/story?id='+message.FromBorrowRequest._id+'">'+message.FromBorrowRequest.StoryTitle+'</a>」送來的借款請求！<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://lendingzone.herokuapp.com/lender/lenderReceiveMessages?msgKeyword='+newUpdate._id+'&filter='+encodeURIComponent('已婉拒')+'&sorter='+encodeURIComponent('最新')+'&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看</span></a></td></tr></table>' 
-		// html body
-	};
-	
-	transporter.sendMail(mailOptions2, function(error, info){
-		if(error){
-			console.log(error);
-		}
-	});
-
-}
+var ifMail=false;
 
 exports.autoComfirmToBorrowMsgArray=autoComfirmToBorrowMsgArray;
 exports.insuranceRate=insuranceRate;
 exports.serviceChargeRate=serviceChargeRate;
+exports.ifMail=ifMail;
 
 exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,req,res,ifAuto,resAddress,ifLenderSide){
 	var FBR;
@@ -851,4 +780,79 @@ exports.ensureAdmin=function (req, res, next) {
   var objID=mongoose.Types.ObjectId('5555251bb08002f0068fd00f');//管理員ID
   if(req.user._id==objID){ return next(); }
 	res.render('login',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:null,msg:'請以管理員身分登入'});
+}
+
+function mailAgree(message,newCreateUpdated){
+	if(exports.ifMail){
+		var mailOptions = {
+			from: 'LendingZone <lendingzonesystem@gmail.com>', // sender address
+			to: message.CreatedBy.Username+' <'+message.CreatedBy.Email+'>', // list of receivers
+			subject: message.SendTo.Username+'同意了您先前送出的借款請求!', // Subject line
+			text: '親愛的 '+message.CreatedBy.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+message.SendTo.Username+' 同意了您先前在「'+message.FromBorrowRequest.StoryTitle+'("http://lendingzone.herokuapp.com/lender/story?id='+message.FromBorrowRequest._id+'")」送出的借款請求！'+String.fromCharCode(10)+'您的交易紅利代碼為： '+exports.randomString(8)+String.fromCharCode(10)+'您可至 玉山銀行網站("http://www.esunbank.com.tw/") 兌換紅利喔!'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看訊息與交易結果:'+String.fromCharCode(10)+'"http://lendingzone.herokuapp.com/lender/lenderReceiveMessages?msgKeyword='+newCreateUpdated._id+'&filter='+encodeURIComponent('已同意')+'&sorter='+encodeURIComponent('最新')+'&page=1"', // plaintext body
+			html: '<img src="cid:bpng" /><br><br>親愛的 '+message.CreatedBy.Username+' 您好：<br><br>'+message.SendTo.Username+' 同意了您先前在「<a href="http://lendingzone.herokuapp.com/lender/story?id='+message.FromBorrowRequest._id+'">'+message.FromBorrowRequest.StoryTitle+'</a>」送出的借款請求！<br>您的交易紅利代碼為： <div style="color:#FF0000;display:inline;">'+exports.randomString(8)+'</div><br>您可至 <a href="http://www.esunbank.com.tw/">玉山銀行網站</a> 兌換紅利喔!<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://lendingzone.herokuapp.com/lender/lenderReceiveMessages?msgKeyword='+newCreateUpdated._id+'&filter='+encodeURIComponent('已同意')+'&sorter='+encodeURIComponent('最新')+'&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看訊息與交易結果</span></a></td></tr></table>', 
+			attachments: [{
+				filename: 'b.png',
+				path: __dirname+'/../public/images/b.png',
+				cid: 'bpng' //same cid value as in the html img src
+			}]
+		};
+		
+		transporter.sendMail(mailOptions, function(error, info){
+			if(error){
+				console.log(error);
+			}
+		});
+		var mailOptions2 = {
+			from: 'LendingZone <lendingzonesystem@gmail.com>', // sender address
+			to: message.SendTo.Username+' <'+message.SendTo.Email+'>', // list of receivers
+			subject: '您同意了'+message.CreatedBy.Username+'先前送來的借款請求!', // Subject line
+			text: '親愛的 '+message.SendTo.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+'您同意了 '+message.CreatedBy.Username+' 先前在「'+message.FromBorrowRequest.StoryTitle+'("http://lendingzone.herokuapp.com/lender/story?id='+message.FromBorrowRequest._id+'")」送來的借款請求！'+String.fromCharCode(10)+'您的交易紅利代碼為： '+exports.randomString(8)+String.fromCharCode(10)+'您可至 玉山銀行網站("http://www.esunbank.com.tw/") 兌換紅利喔!'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看訊息與交易結果:'+String.fromCharCode(10)+'"http://lendingzone.herokuapp.com/lender/lenderReceiveMessages?msgKeyword='+newCreateUpdated._id+'&filter='+encodeURIComponent('已同意')+'&sorter='+encodeURIComponent('最新')+'&page=1"', // plaintext body
+			html: '<img src="cid:bpng" /><br><br>親愛的 '+message.SendTo.Username+' 您好：<br><br>您同意了 '+message.CreatedBy.Username+' 先前在「<a href="http://lendingzone.herokuapp.com/lender/story?id='+message.FromBorrowRequest._id+'">'+message.FromBorrowRequest.StoryTitle+'</a>」送來的借款請求！<br>您的交易紅利代碼為： <div style="color:#FF0000;display:inline;">'+exports.randomString(8)+'</div><br>您可至 <a href="http://www.esunbank.com.tw/">玉山銀行網站</a> 兌換紅利喔!<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://lendingzone.herokuapp.com/lender/lenderReceiveMessages?msgKeyword='+newCreateUpdated._id+'&filter='+encodeURIComponent('已同意')+'&sorter='+encodeURIComponent('最新')+'&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看訊息與交易結果</span></a></td></tr></table>', 
+			attachments: [{
+				filename: 'b.png',
+				path: __dirname+'/../public/images/b.png',
+				cid: 'bpng' //same cid value as in the html img src
+			}]
+		};
+		
+		transporter.sendMail(mailOptions2, function(error, info){
+			if(error){
+				console.log(error);
+			}
+		});
+	}
+}
+
+function mailReject(message,newUpdate){
+	if(exports.ifMail){
+		var mailOptions = {
+			from: 'LendingZone <lendingzonesystem@gmail.com>', // sender address
+			to: message.CreatedBy.Username+' <'+message.CreatedBy.Email+'>', // list of receivers
+			subject: message.SendTo.Username+'婉拒了您先前送出的借款請求!', // Subject line
+			text: '親愛的 '+message.CreatedBy.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+message.SendTo.Username+' 婉拒了您先前在「'+message.FromBorrowRequest.StoryTitle+'("http://lendingzone.herokuapp.com/lender/story?id='+message.FromBorrowRequest._id+'")」送出的借款請求！'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看:'+String.fromCharCode(10)+'"http://lendingzone.herokuapp.com/lender/lenderReceiveMessages?msgKeyword='+newUpdate._id+'&filter='+encodeURIComponent('已婉拒')+'&sorter='+encodeURIComponent('最新')+'&page=1"', // plaintext body
+			html: '親愛的 '+message.CreatedBy.Username+' 您好：<br><br>'+message.SendTo.Username+' 婉拒了您先前在「<a href="http://lendingzone.herokuapp.com/lender/story?id='+message.FromBorrowRequest._id+'">'+message.FromBorrowRequest.StoryTitle+'</a>」送出的借款請求！<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://lendingzone.herokuapp.com/lender/lenderReceiveMessages?msgKeyword='+newUpdate._id+'&filter='+encodeURIComponent('已婉拒')+'&sorter='+encodeURIComponent('最新')+'&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看</span></a></td></tr></table>' 
+			// html body
+		};
+		
+		transporter.sendMail(mailOptions, function(error, info){
+			if(error){
+				console.log(error);
+			}
+		});
+		
+		var mailOptions2 = {
+			from: 'LendingZone <lendingzonesystem@gmail.com>', // sender address
+			to: message.SendTo.Username+' <'+message.SendTo.Email+'>', // list of receivers
+			subject:'您婉拒了'+ message.CreatedBy.Username+'先前送來的借款請求!', // Subject line
+			text: '親愛的 '+message.SendTo.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+'您婉拒了 '+message.CreatedBy.Username+' 先前在「'+message.FromBorrowRequest.StoryTitle+'("http://lendingzone.herokuapp.com/lender/story?id='+message.FromBorrowRequest._id+'")」送來的借款請求！'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看:'+String.fromCharCode(10)+'"http://lendingzone.herokuapp.com/lender/lenderReceiveMessages?msgKeyword='+newUpdate._id+'&filter='+encodeURIComponent('已婉拒')+'&sorter='+encodeURIComponent('最新')+'&page=1"', // plaintext body
+			html: '親愛的 '+message.SendTo.Username+' 您好：<br><br>您婉拒了 '+message.CreatedBy.Username+' 先前在「<a href="http://lendingzone.herokuapp.com/lender/story?id='+message.FromBorrowRequest._id+'">'+message.FromBorrowRequest.StoryTitle+'</a>」送來的借款請求！<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://lendingzone.herokuapp.com/lender/lenderReceiveMessages?msgKeyword='+newUpdate._id+'&filter='+encodeURIComponent('已婉拒')+'&sorter='+encodeURIComponent('最新')+'&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看</span></a></td></tr></table>' 
+			// html body
+		};
+		
+		transporter.sendMail(mailOptions2, function(error, info){
+			if(error){
+				console.log(error);
+			}
+		});
+	}
 }

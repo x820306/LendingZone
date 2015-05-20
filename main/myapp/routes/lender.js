@@ -121,13 +121,32 @@ router.get('/search/:keyword?/:action?/:page?',library.newMsgChecker, function (
 				if(pageNum<targetPage){
 					res.redirect('/message?content='+encodeURIComponent('錯誤頁碼!'));
 				}else{
-					Borrows.find({$or:orFindCmdAry,$and:andFindCmdAry}).limit(divider).skip(divider*(targetPage-1)).populate('CreatedBy', 'Username').sort(actionRec).exec( function (err, borrows, count){
+					Borrows.find({$or:orFindCmdAry,$and:andFindCmdAry}).limit(divider).skip(divider*(targetPage-1)).populate('CreatedBy', 'Username').populate('Message','CreatedBy SendTo Type Status').sort(actionRec).exec( function (err, borrows, count){
 						if (err) {
 							console.log(err);
 							res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 						}else{
 							for(i=0;i<borrows.length;i++){
 								borrows[i].MaxInterestRateAccepted-=library.serviceChargeRate;//scr
+								if(!auRst){
+									borrows[i].TitleColor='default';
+								}else{
+									for(j=0;j<borrows[i].Message.length;j++){
+										if((req.user._id==borrows[i].Message[j].CreatedBy)&&(borrows[i].Message[j].Type=="toLend")){
+											if(borrows[i].Message[j].Status=="NotConfirmed"){
+												borrows[i].TitleColor='red';
+											}else{
+												borrows[i].TitleColor='black';
+											}
+										}else if((req.user._id==borrows[i].Message[j].SendTo)&&(borrows[i].Message[j].Type=="toBorrow")){
+											if(borrows[i].Message[j].Status=="NotConfirmed"){
+												borrows[i].TitleColor='yellow';
+											}else{
+												borrows[i].TitleColor='black';
+											}
+										}
+									}
+								}
 							}
 							resArrays=borrows;
 							res.render('search',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,keywordDefault:keyword,actionDefault:action,categoryDefault:category,filterDefault:filter,lboundDefault:lbound,uboundDefault:ubound,jsonArray:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage});
@@ -151,7 +170,7 @@ router.get('/story/:id?',library.newMsgChecker, function (req, res) {
 	var Messages  = mongoose.model('Messages');
 	var BankAccounts  = mongoose.model('BankAccounts');
 	var Transactions  = mongoose.model('Transactions');
-	Borrows.findById(req.query.id).populate('CreatedBy', 'Username').populate('Discussion').exec(function (err, borrow){
+	Borrows.findById(req.query.id).populate('CreatedBy', 'Username').populate('Discussion').populate('Message').exec(function (err, borrow){
 		if (err) {
 			console.log(err);
 			res.redirect('/message?content='+encodeURIComponent('錯誤!'));
@@ -169,15 +188,16 @@ router.get('/story/:id?',library.newMsgChecker, function (req, res) {
 						console.log(err);
 						res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 					}else{
+						borrow.TitleColor="default";
 						borrow.MaxInterestRateAccepted-=library.serviceChargeRate;//scr
 						var ifSelfValue=false;
 						var ifLikedValue=false;
 						if(!auRst){
-							res.render('story',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,ifSelf:ifSelfValue,ifLiked:ifLikedValue,json:borrow,jsonMessage:null,jsonBorrowMessage:null,MoneyInBankAccountValue:0,MoneyLended:0});
+							res.render('story',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,ifSelf:ifSelfValue,ifLiked:ifLikedValue,json:borrow,jsonMessage:null,jsonBorrowMessage:null,jsonLend:null,MoneyInBankAccountValue:0,MoneyLended:0});
 						}else{
 							if(req.user._id==borrow.CreatedBy._id){
 								ifSelfValue=true;
-								res.render('story',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,ifSelf:ifSelfValue,ifLiked:ifLikedValue,json:borrow,jsonMessage:null,jsonBorrowMessage:null,MoneyInBankAccountValue:0,MoneyLended:0});
+								res.render('story',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,ifSelf:ifSelfValue,ifLiked:ifLikedValue,json:borrow,jsonMessage:null,jsonBorrowMessage:null,jsonLend:null,MoneyInBankAccountValue:0,MoneyLended:0});
 							}else{
 								var j = 0;
 								for (j = 0; j < borrow.Likes.length; j++) {
@@ -204,57 +224,75 @@ router.get('/story/:id?',library.newMsgChecker, function (req, res) {
 															moneyLendedCumulated+=transactions[i].Principal;
 														}
 													}
-													Messages.findOne({$and:[{"CreatedBy": req.user._id},{"FromBorrowRequest": req.query.id},{"Type": "toLend"}]}).exec(function (err, message){
+													var message=null;
+													var borrowMessage=null;
+													for(j=0;j<borrow.Message.length;j++){
+														if((req.user._id==borrow.Message[j].CreatedBy)&&(borrow.Message[j].Type=="toLend")){
+															message=borrow.Message[j];
+															if(message.Status=="NotConfirmed"){
+																borrow.TitleColor='red';
+																break;
+															}else{
+																borrow.TitleColor='black';
+																break;
+															}
+														}else if((req.user._id==borrow.Message[j].SendTo)&&(borrow.Message[j].Type=="toBorrow")){
+															borrowMessage=borrow.Message[j];
+															if(borrowMessage.Status=="NotConfirmed"){
+																borrow.TitleColor='yellow';
+																break;
+															}else{
+																borrow.TitleColor='black';
+																break;
+															}
+														}
+													}
+													if(message){
+														message.InterestRate-=library.serviceChargeRate;//scr
+														message.InterestInFuture=library.interestInFutureCalculator(message.MoneyToLend,message.InterestRate,message.MonthPeriod);
+														if(message.MoneyToLend>0){
+															message.InterestInFutureDivMoney=message.InterestInFuture/message.MoneyToLend*100;
+														}else{
+															message.InterestInFutureDivMoney=0;
+														}
+														if(message.MonthPeriod>0){
+															message.InterestInFutureMonth=message.InterestInFuture/message.MonthPeriod;
+														}else{
+															message.InterestInFutureMonth=0;
+														}
+														if(message.MonthPeriod>0){
+															message.InterestInFutureMoneyMonth=(message.InterestInFuture+message.MoneyToLend)/message.MonthPeriod;
+														}else{
+															message.InterestInFutureMoneyMonth=0;
+														}
+													}
+													if(borrowMessage){
+														borrowMessage.InterestRate-=library.serviceChargeRate;//scr
+														borrowMessage.InterestInFuture=library.interestInFutureCalculator(borrowMessage.MoneyToLend,borrowMessage.InterestRate,borrowMessage.MonthPeriod);
+														if(borrowMessage.MoneyToLend>0){
+															borrowMessage.InterestInFutureDivMoney=borrowMessage.InterestInFuture/borrowMessage.MoneyToLend*100;
+														}else{
+															borrowMessage.InterestInFutureDivMoney=0;
+														}
+														if(borrowMessage.MonthPeriod>0){
+															borrowMessage.InterestInFutureMonth=borrowMessage.InterestInFuture/borrowMessage.MonthPeriod;
+														}else{
+															borrowMessage.InterestInFutureMonth=0;
+														}
+														if(borrowMessage.MonthPeriod>0){
+															borrowMessage.InterestInFutureMoneyMonth=(borrowMessage.InterestInFuture+borrowMessage.MoneyToLend)/borrowMessage.MonthPeriod;
+														}else{
+															borrowMessage.InterestInFutureMoneyMonth=0;
+														}
+													}	
+													
+													var Lends = mongoose.model('Lends');
+													Lends.findOne({"CreatedBy": req.user._id}).exec( function (err, lend){
 														if (err) {
 															console.log(err);
 															res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 														}else{
-															if(message){
-																message.InterestRate-=library.serviceChargeRate;//scr
-																message.InterestInFuture=library.interestInFutureCalculator(message.MoneyToLend,message.InterestRate,message.MonthPeriod);
-																if(message.MoneyToLend>0){
-																	message.InterestInFutureDivMoney=message.InterestInFuture/message.MoneyToLend*100;
-																}else{
-																	message.InterestInFutureDivMoney=0;
-																}
-																if(message.MonthPeriod>0){
-																	message.InterestInFutureMonth=message.InterestInFuture/message.MonthPeriod;
-																}else{
-																	message.InterestInFutureMonth=0;
-																}
-																if(message.MonthPeriod>0){
-																	message.InterestInFutureMoneyMonth=(message.InterestInFuture+message.MoneyToLend)/message.MonthPeriod;
-																}else{
-																	message.InterestInFutureMoneyMonth=0;
-																}
-															}
-															Messages.findOne({$and:[{"CreatedBy": borrow.CreatedBy._id},{"SendTo": req.user._id},{"FromBorrowRequest": req.query.id},{"Type": "toBorrow"}]}).exec(function (err, borrowMessage){
-																if (err) {
-																	console.log(err);
-																	res.redirect('/message?content='+encodeURIComponent('錯誤!'));
-																}else{
-																	if(borrowMessage){
-																		borrowMessage.InterestRate-=library.serviceChargeRate;//scr
-																		borrowMessage.InterestInFuture=library.interestInFutureCalculator(borrowMessage.MoneyToLend,borrowMessage.InterestRate,borrowMessage.MonthPeriod);
-																		if(borrowMessage.MoneyToLend>0){
-																			borrowMessage.InterestInFutureDivMoney=borrowMessage.InterestInFuture/borrowMessage.MoneyToLend*100;
-																		}else{
-																			borrowMessage.InterestInFutureDivMoney=0;
-																		}
-																		if(borrowMessage.MonthPeriod>0){
-																			borrowMessage.InterestInFutureMonth=borrowMessage.InterestInFuture/borrowMessage.MonthPeriod;
-																		}else{
-																			borrowMessage.InterestInFutureMonth=0;
-																		}
-																		if(borrowMessage.MonthPeriod>0){
-																			borrowMessage.InterestInFutureMoneyMonth=(borrowMessage.InterestInFuture+borrowMessage.MoneyToLend)/borrowMessage.MonthPeriod;
-																		}else{
-																			borrowMessage.InterestInFutureMoneyMonth=0;
-																		}
-																	}
-																	res.render('story',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,ifSelf:ifSelfValue,ifLiked:ifLikedValue,json:borrow,jsonMessage:message,jsonBorrowMessage:borrowMessage,MoneyInBankAccountValue:bankaccount.MoneyInBankAccount,MoneyLended:moneyLendedCumulated});
-																}
-															});
+															res.render('story',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,ifSelf:ifSelfValue,ifLiked:ifLikedValue,json:borrow,jsonMessage:message,jsonBorrowMessage:borrowMessage,jsonLend:lend,MoneyInBankAccountValue:bankaccount.MoneyInBankAccount,MoneyLended:moneyLendedCumulated});
 														}
 													});
 												}
@@ -805,6 +843,7 @@ router.get('/lenderReceiveMessages/:msgKeyword?/:filter?/:sorter?/:page?', libra
 		orFindCmdAry.push({"_id": msgObjID});
 	}
 	
+	var Lends = mongoose.model('Lends');
 	var Messages  = mongoose.model('Messages');
 	var Transactions  = mongoose.model('Transactions');
 	Messages.find({$or:orFindCmdAry,$and:[{"SendTo": req.user._id},{"Type": "toBorrow"},{"Status": filterRec}]}).populate('CreatedBy', 'Username').populate('FromBorrowRequest', 'StoryTitle').populate('Transaction').sort(sorterRec).exec( function (err, messages, count){
@@ -817,7 +856,7 @@ router.get('/lenderReceiveMessages/:msgKeyword?/:filter?/:sorter?/:page?', libra
 				if(targetPage>1){
 					res.redirect('/message?content='+encodeURIComponent('錯誤頁碼!'));
 				}else{
-					res.render('lenderReceiveMessages',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,msgKeywordDefault:msgKeyword,filterDefault:filter,sorterDefault:sorter,jsonMessage:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,value1AllDefault:value1ALL,value2AllDefault:value2ALL,value3AllDefault:value3ALL,value4AllDefault:value4ALL,insuranceRate:library.insuranceRate});
+					res.render('lenderReceiveMessages',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,msgKeywordDefault:msgKeyword,filterDefault:filter,sorterDefault:sorter,jsonMessage:resArrays,jsonLend:null,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,value1AllDefault:value1ALL,value2AllDefault:value2ALL,value3AllDefault:value3ALL,value4AllDefault:value4ALL,insuranceRate:library.insuranceRate});
 				}
 			}else{
 				for(i=0;i<totalResultNumber;i++){
@@ -896,7 +935,14 @@ router.get('/lenderReceiveMessages/:msgKeyword?/:filter?/:sorter?/:page?', libra
 						resArrays.push(messages[i]);
 					}
 
-					res.render('lenderReceiveMessages',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,msgKeywordDefault:msgKeyword,filterDefault:filter,sorterDefault:sorter,jsonMessage:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,value1AllDefault:value1ALL,value2AllDefault:value2ALL,value3AllDefault:value3ALL,value4AllDefault:value4ALL,insuranceRate:library.insuranceRate});
+					Lends.findOne({"CreatedBy": req.user._id}).exec( function (err, lend){
+						if (err) {
+							console.log(err);
+							res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+						}else{
+							res.render('lenderReceiveMessages',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,msgKeywordDefault:msgKeyword,filterDefault:filter,sorterDefault:sorter,jsonMessage:resArrays,jsonLend:lend,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,value1AllDefault:value1ALL,value2AllDefault:value2ALL,value3AllDefault:value3ALL,value4AllDefault:value4ALL,insuranceRate:library.insuranceRate});
+						}
+					});
 				}
 			}
 		}
