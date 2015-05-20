@@ -1,0 +1,30 @@
+<%- include('layout_header',{nav_cur:'signup',actionDefault:'最新',keywordDefault:'',categoryDefault:'不分類'}); -%>
+	<div align = "center">
+	<button type="button" class="btn btn-default">
+  	<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>玉山卡片連結</button>
+	<button type="button" class="btn btn-default">
+  	<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>個人資料確認</button>
+	<button type="button" class="btn btn-default">
+  	<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>帳號密碼設定</button>
+	<button type="button" class="btn btn-default">
+  	<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>社群資料提供</button>
+	<button type="button" class="btn btn-primary">
+  	<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>帳戶建立完成</button>
+	</div>
+
+	<center>
+		<form>
+		<h3>會員申請成功！<br></h3>
+		<h5><br>目前持有卡片：<br></h5>
+		<img src = "/images/dual.jpg" style = "height:30px">
+		<button type="button" class="btn btn-default btn-sm">
+		<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>添加</button><br><br>
+		<button type="button" class="btn btn-default btn-lg" onClick = "javascript:location.href='/'" >
+		  <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> 確認
+		</button>
+		<button type="button" class="btn btn-default btn-lg" onClick = "javascript:location.href='/'" >
+		  <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> 關閉
+		</button>
+		</form>
+	</center>
+<%- include('layout_footer',{imgSettingCode:"var ifLoadedCount=0;",imgDrawingCode:""}); -%>

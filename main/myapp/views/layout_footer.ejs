@@ -53,6 +53,17 @@
 	
 	$(document).ready(function () {
 		var id;
+		$('.hastip').tooltipsy({
+			className: 'bubbletooltip_tip',
+			offset: [0, -15],
+			show: function (e, $el) {
+				$el.fadeIn(100);
+			},
+			hide: function (e, $el) {
+				$el.fadeOut(500);
+			}
+		});
+		
 		doneResizing();
 		$(window).resize(function(){
 			clearTimeout(id);

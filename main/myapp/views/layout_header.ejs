@@ -12,6 +12,7 @@
 	<!-- plugin js-->
 	<script src="/javascripts/jquery.cookie.js"></script>
 	<script src="/javascripts/Chart.js"></script>
+	<script type="text/javascript" src="/javascripts/tooltipsy.min.js"></script>
 	<!-- bootstrap css-->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
 	<!-- local css-->
@@ -39,7 +40,7 @@
 							<ul class="dropdown-menu" role="menu">
 							</ul>
 						</li>
-						<li class="dropdown<% if((nav_cur=='lend')||(nav_cur=='lenderSendMessages')||(nav_cur=='lenderReceiveMessages')||(nav_cur=='lenderTransactionRecord')||(nav_cur=='lenderReturnRecord')||(nav_cur=='income')){ %> active<% } %>">
+						<li class="dropdown<% if((nav_cur=='lend')||(nav_cur=='lenderSendMessages')||(nav_cur=='lenderReceiveMessages')||(nav_cur=='lenderTransactionRecord')||(nav_cur=='lenderReturnRecord')||(nav_cur=='income')||(nav_cur=='search')){ %> active<% } %>">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">借出者 <span class="caret"></span></a>
 							<ul class="dropdown-menu" role="menu">
 								<li <% if(nav_cur=='lend'){ %> class="active"<% } %>><% if(!userName){ %><a href="#" data-toggle="modal" data-target="#myModal"><% }else{ %><a href="/lender/lend"><%}%>自動借出設定</a></li>
@@ -87,9 +88,8 @@
 						</div> 
 					</div>
 					<ul class="nav navbar-nav navbar-right">
-						<li><a href="#" onclick="if(ifLoadedCount<=0){if(!ifDrawed){doneResizing();}$('#introCanvas').attr('style',$('#introCanvas').attr('style').replace(/display:none;/g, ''));}else{alert('請等候圖片載入完畢');}return false;">引導</a></li>
-						<!-- change 'signupTest' to your signup pages, use || for mutiple conditions -->
-						<% if(nav_cur!='signupTest'){ %>
+						<!--<li><a href="#" onclick="if(ifLoadedCount<=0){if(!ifDrawed){doneResizing();}$('#introCanvas').attr('style',$('#introCanvas').attr('style').replace(/display:none;/g, ''));}else{alert('請等候圖片載入完畢');}return false;">引導</a></li>%>-->
+						<% if(nav_cur!='signup'){ %>
 							<% if(!userName){ %>
 								<li><a href="#" data-toggle="modal" data-target="#myModal">登入</a></li>
 								<li><a href="/signupTest">註冊</a></li>
