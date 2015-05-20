@@ -344,6 +344,8 @@ router.get('/lenderTransactionRecord/:oneid?/:filter?/:sorter?/:page?', library.
 		sorterRec="-Updated";
 	}else if(sorter=='預計利本比最高'){
 		sorterRec="-Updated";
+	}else if(sorter=='成交日期最晚'){
+		sorterRec="-Created";
 	}else if(sorter=='已付保險費最高'){
 		sorterRec="-InsuranceFeePaid";
 	}
