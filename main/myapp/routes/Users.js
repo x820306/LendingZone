@@ -125,7 +125,7 @@ router.post('/levelSetter', function(req, res, next) {
 	userLevelSetter(res,Uid,Level);
 	//for setting user's level
 	
-	/*Borrows.update({}, { Discussion:[]},{multi:true}, function(err, numberAffected){  
+	/*Transactions.update({}, { InsuranceFeePaid:0},{multi:true}, function(err, numberAffected){  
 		console.log(numberAffected);
 		res.end('end');
 	});*/

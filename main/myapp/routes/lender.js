@@ -350,13 +350,10 @@ router.get('/lenderTransactionRecord/:oneid?/:filter?/:sorter?/:page?', library.
 	
 	var andFindCmdAry=[];
 	andFindCmdAry.push({"Lender": req.user._id});
-	var jsonTemp={};
 	if(filter=='未保險'){
-		jsonTemp['InsuranceFeePaid']={"$lt": 1};
-		andFindCmdAry.push(jsonTemp);
+		andFindCmdAry.push({"InsuranceFeePaid": 0});
 	}else if(filter=='已保險'){
-		jsonTemp['InsuranceFeePaid']={"$gte": 1};
-		andFindCmdAry.push(jsonTemp);
+		andFindCmdAry.push({"InsuranceFeePaid": {'$ne': 0 }});
 	}
 	if(mongoose.Types.ObjectId.isValid(oneid)){
 		var ObjID=mongoose.Types.ObjectId(oneid);

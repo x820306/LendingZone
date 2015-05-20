@@ -396,7 +396,8 @@ router.post('/confirmToBorrowMessageInLRM', library.ensureAuthenticated, functio
 	}
 });
 
-router.get('/rejectToBorrowMessageInLRMall/:sorter?', library.ensureAuthenticated, function(req, res, next) {
+router.get('/rejectToBorrowMessageInLRMall/:msgKeyword?/:sorter?', library.ensureAuthenticated, function(req, res, next) {
+	var msgKeyword=decodeURIComponent(req.query.msgKeyword);
 	var sorter=decodeURIComponent(req.query.sorter);
 	var sorterRec;
 	if(sorter=='最新'){
@@ -419,7 +420,14 @@ router.get('/rejectToBorrowMessageInLRMall/:sorter?', library.ensureAuthenticate
 		sorterRec="-Updated";
 	}
 	
-	Messages.find({$and:[{"SendTo": req.user._id},{"Type": "toBorrow"},{"Status": "NotConfirmed"}]}).sort(sorterRec).exec(function (err, messages){
+	var orFindCmdAry=[];
+	orFindCmdAry.push({"Message": new RegExp(msgKeyword,'i')});
+	if(mongoose.Types.ObjectId.isValid(msgKeyword)){
+		var msgObjID=mongoose.Types.ObjectId(msgKeyword);
+		orFindCmdAry.push({"_id": msgObjID});
+	}
+	
+	Messages.find({$or:orFindCmdAry,$and:[{"SendTo": req.user._id},{"Type": "toBorrow"},{"Status": "NotConfirmed"}]}).sort(sorterRec).exec(function (err, messages){
 		if (err) {
 			console.log(err);
 			res.redirect('/message?content='+'錯誤!');
@@ -477,7 +485,8 @@ router.get('/rejectToBorrowMessageInLRMall/:sorter?', library.ensureAuthenticate
 	});
 });
 
-router.get('/confirmToBorrowMessageInLRMall/:sorter?', library.ensureAuthenticated, function(req, res, next) {
+router.get('/confirmToBorrowMessageInLRMall/:msgKeyword?/:sorter?', library.ensureAuthenticated, function(req, res, next) {
+	var msgKeyword=decodeURIComponent(req.query.msgKeyword);
 	var sorter=decodeURIComponent(req.query.sorter);
 	var sorterRec;
 	if(sorter=='最新'){
@@ -500,7 +509,14 @@ router.get('/confirmToBorrowMessageInLRMall/:sorter?', library.ensureAuthenticat
 		sorterRec="-Updated";
 	}
 	
-	Messages.find({$and:[{"SendTo": req.user._id},{"Type": "toBorrow"},{"Status": "NotConfirmed"}]}).sort(sorterRec).exec(function (err, messages){
+	var orFindCmdAry=[];
+	orFindCmdAry.push({"Message": new RegExp(msgKeyword,'i')});
+	if(mongoose.Types.ObjectId.isValid(msgKeyword)){
+		var msgObjID=mongoose.Types.ObjectId(msgKeyword);
+		orFindCmdAry.push({"_id": msgObjID});
+	}
+	
+	Messages.find({$or:orFindCmdAry,$and:[{"SendTo": req.user._id},{"Type": "toBorrow"},{"Status": "NotConfirmed"}]}).sort(sorterRec).exec(function (err, messages){
 		if (err) {
 			console.log(err);
 			res.redirect('/message?content='+'錯誤!');

@@ -50,7 +50,8 @@ router.post('/buyInsurance',library.ensureAuthenticated, function(req, res, next
 	}
 });
 
-router.get('/buyInsuranceAll/:sorter?',library.ensureAuthenticated, function(req, res, next) {
+router.get('/buyInsuranceAll/:oneid?/:sorter?',library.ensureAuthenticated, function(req, res, next) {
+	var oneid=decodeURIComponent(req.query.oneid);
 	var sorter=decodeURIComponent(req.query.sorter);
 	
 	var sorterRec;
@@ -77,7 +78,15 @@ router.get('/buyInsuranceAll/:sorter?',library.ensureAuthenticated, function(req
 		sorterRec="-Updated";
 	}
 	
-	Transactions.find({$and:[{"Lender": req.user._id},{"InsuranceFeePaid":{"$lt": 1}}]}).sort(sorterRec).exec(function (err, transactions){
+	var andFindCmdAry=[];
+	andFindCmdAry.push({"Lender": req.user._id});
+	andFindCmdAry.push({"InsuranceFeePaid":0});
+	if(mongoose.Types.ObjectId.isValid(oneid)){
+		var ObjID=mongoose.Types.ObjectId(oneid);
+		andFindCmdAry.push({"_id": ObjID});
+	}
+	
+	Transactions.find({$and:andFindCmdAry}).sort(sorterRec).exec(function (err, transactions){
 		if (err) {
 			console.log(err);
 			res.redirect('/message?content='+'錯誤!');
