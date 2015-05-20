@@ -52,6 +52,7 @@
 				</div> 
 				<% if(totalResultNum>0){ %>
 					<% if(filterDefault=='未確認'){%>
+						<%if(pageNumber>1){%>
 						<br>
 						<br>
 						<table style="display:inline;" class="table">
@@ -105,6 +106,7 @@
 								<span style="color:#337ab7;">婉拒全部收到之請求</span>
 							</button>
 						</a>
+						<%}%>
 						<br>
 						<br>
 						<table style="display:inline;" class="table">

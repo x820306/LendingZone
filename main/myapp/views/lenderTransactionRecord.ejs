@@ -53,6 +53,7 @@
 				</div>
 				<% if(totalResultNum!=0){ %>
 					<% if(filterDefault=='未保險'){%>
+						<%if(pageNumber>1){%>
 						<br>
 						<br>
 						<table style="display:inline;" class="table">
@@ -77,6 +78,7 @@
 								<span style="color:#337ab7;">為所有交易購買保險</span>
 							</button>
 						</a>
+						<%}%>
 						<br>
 						<br>
 						<table style="display:inline;" class="table">
