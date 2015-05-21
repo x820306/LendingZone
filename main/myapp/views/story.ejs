@@ -369,6 +369,9 @@
 													新建
 												</button>
 											</div>
+											<div class="btn-group" role="group">
+												<button type="button" class="btn btn-default" data-dismiss="modal">關閉</button>
+											</div>
 										</div>
 									</div>
 							</div>
@@ -385,7 +388,7 @@
 								</div>
 								<div class="modal-footer">
 									<button type="submit" class="btn btn-primary" id="createBtnID" onclick="create()">確定</button>
-									<button type="button" class="btn btn-default" data-dismiss="modal">關閉</button>
+									<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
 								</div>
 							</div>
 						</div>
@@ -523,7 +526,7 @@
 								<input type="hidden" name="FromBorrowRequest" value="<%=json._id%>">
 								<input type="hidden" name="_id" value="<%=jsonMessage._id%>">
 								<div class="modal-footer">
-									<div class="btn-toolbar" role="toolbar">
+									<div style="float:left;" class="btn-toolbar" role="toolbar">
 										<div class="btn-group" role="group">
 											<button type="button" class="btn btn-info" onclick="checkAndOpenModal(chkModal2,mdlCnt2,'更新欲借出訊息嗎?',true);">
 												更新
@@ -533,6 +536,11 @@
 											<button type="button" class="btn btn-danger" onclick="checkAndOpenModal(chkModal3,mdlCnt3,'您確定要刪除欲借出訊息嗎?',false);">
 												刪除
 											</button>
+										</div>
+									</div>
+									<div style="float:right;">
+										<div class="btn-group" role="group">
+											<button type="button" class="btn btn-default" data-dismiss="modal">關閉</button>
 										</div>
 									</div>
 								</div>
@@ -550,7 +558,7 @@
 								</div>
 								<div class="modal-footer">
 									<button type="submit" class="btn btn-primary" id="updateBtnID" onclick="update()">確定</button>
-									<button type="button" class="btn btn-default" data-dismiss="modal">關閉</button>
+									<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
 								</div>
 							</div>
 						</div>
@@ -566,7 +574,7 @@
 								</div>
 								<div class="modal-footer">
 									<button type="button" class="btn btn-danger" id="destroyBtnID" onclick="destroy();">確定</button>
-									<button type="button" class="btn btn-default" data-dismiss="modal">關閉</button>
+									<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
 								</div>
 							</div>
 						</div>
@@ -716,7 +724,7 @@
 							<input type="hidden" name="FromBorrowRequest" value="<%=json._id%>">
 							<input type="hidden" name="MessageID" value="<%=jsonBorrowMessage._id%>">
 							<div class="modal-footer">
-								<div class="btn-toolbar" role="toolbar">
+								<div style="float:left;" class="btn-toolbar" role="toolbar">
 									<div class="btn-group" role="group">
 										<button type="button" class="btn btn-info" onclick="checkAndOpenModal(chkModal4,mdlCnt4,'同意此借款請求嗎?',true);">
 											同意
@@ -726,6 +734,11 @@
 										<button type="button" class="btn btn-danger" onclick="checkAndOpenModal(chkModal5,mdlCnt5,'您確定要婉拒此借款請求嗎?',false);">
 											婉拒
 										</button>
+									</div>
+								</div>
+								<div style="float:right;">
+									<div class="btn-group" role="group">
+										<button type="button" class="btn btn-default" data-dismiss="modal">關閉</button>
 									</div>
 								</div>
 							</div>
@@ -743,7 +756,7 @@
 							</div>
 							<div class="modal-footer">
 								<button type="submit" class="btn btn-primary"  onclick="agree();" id="argBtnID">確定</button>
-								<button type="button" class="btn btn-default" data-dismiss="modal">關閉</button>
+								<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
 							</div>
 						</div>
 					</div>
@@ -759,7 +772,7 @@
 							</div>
 							<div class="modal-footer">
 								<button type="button" class="btn btn-danger" onclick="refuse();" id="rfsBtnID">確定</button>
-								<button type="button" class="btn btn-default" data-dismiss="modal">關閉</button>
+								<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
 							</div>
 						</div>
 					</div>
