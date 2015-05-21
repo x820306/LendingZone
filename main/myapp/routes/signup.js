@@ -21,7 +21,7 @@ router.get('/',library.newMsgChecker, function (req, res) {
 });
 
 // this is the basic type when page no need to ensure authenticated. U can try this by /signup/signupExample
-router.get('/cardData', function (req, res) {
+router.get('/cardData',library.newMsgChecker, function (req, res) {
 	var auRst=null;
 	if(req.isAuthenticated()){
 		auRst=req.user.Username;
@@ -30,21 +30,21 @@ router.get('/cardData', function (req, res) {
 	//get data from database and process them here
 	
 	//pass what u get from database and send them into ejs in this line
-	res.render('cardData_1',{userName:auRst});
+	res.render('cardData_1',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst});
 });
 
 // this is the basic type when page no need to ensure authenticated. U can try this by /signup/signupExample
-router.post('/checkPro', function (req, res) {
+router.post('/checkPro',library.newMsgChecker, function (req, res) {
 	var auRst=null;
 	if(req.isAuthenticated()){
 		auRst=req.user.Username;
 	}
 	
-	res.render('checkPro_1',{userName:auRst,BankAccountNumber:req.body.cardIpt,BankAccountPassword:req.body.cardPwdIpt});
+	res.render('checkPro_1',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,BankAccountNumber:req.body.cardIpt,BankAccountPassword:req.body.cardPwdIpt});
 });
 
 // this is the basic type when page no need to ensure authenticated. U can try this by /signup/signupExample
-router.get('/newAcc', function (req, res) {
+router.get('/newAcc',library.newMsgChecker, function (req, res) {
 	var auRst=null;
 	if(req.isAuthenticated()){
 		auRst=req.user.Username;
@@ -53,22 +53,22 @@ router.get('/newAcc', function (req, res) {
 	//get data from database and process them here
 	
 	//pass what u get from database and send them into ejs in this line
-	res.render('newAcc_2',{userName:auRst});
+	res.render('newAcc_2',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst});
 });
 
 // this is the basic type when page no need to ensure authenticated. U can try this by /signup/signupExample
-router.post('/apply', function (req, res) {
+router.post('/apply',library.newMsgChecker, function (req, res) {
 	var auRst=null;
 	if(req.isAuthenticated()){
 		auRst=req.user.Username;
 	}
 
-	res.render('apply_1',{userName:auRst, Name:req.body.nameIpt, Email:req.body.emailIpt, Gender:req.body.genderIpt,
+	res.render('apply_1',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst, Name:req.body.nameIpt, Email:req.body.emailIpt, Gender:req.body.genderIpt,
 		BirthDay:req.body.birthIpt, Phone:req.body.telIpt, Address:req.body.addrIpt,IdCardNumber:req.body.ssnIpt,IdCard:req.body.IdCard,IdCardType:req.body.IdCardType,SecondCard:req.body.SecondCard,SecondCardType:req.body.SecondCardType,
 		BankAccountNumber:req.body.BankAccountNumber,BankAccountPassword:req.body.BankAccountPassword});
 });
 
-router.post('/_apply', function (req, res) {
+router.post('/_apply',library.newMsgChecker, function (req, res) {
 	var auRst=null;
 	if(req.isAuthenticated()){
 		auRst=req.user.Username;
@@ -79,35 +79,35 @@ router.post('/_apply', function (req, res) {
 	var SecondCardBase64=req.files.cerImg.buffer.toString('base64');;
 	
 	//pass what u get from database and send them into ejs in this line
-	res.render('apply_2',{userName:auRst, Name:req.body.nameIpt, Email:req.body.emailIpt, Gender:req.body.genderIpt,
+	res.render('apply_2',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst, Name:req.body.nameIpt, Email:req.body.emailIpt, Gender:req.body.genderIpt,
 		BirthDay:req.body.birthIpt, Phone:req.body.telIpt, Address:req.body.addrIpt,IdCardNumber:req.body.ssnIpt,IdCard:IdCardBase64,IdCardType:varIdCardType,SecondCard:SecondCardBase64,SecondCardType:varSecondCardType,
 		BankAccountNumber:req.body.cardIpt,BankAccountPassword:req.body.cardPwdIpt});
 });
 
 // this is the basic type when page no need to ensure authenticated. U can try this by /signup/signupExample
-router.post('/community', function (req, res) {
+router.post('/community',library.newMsgChecker, function (req, res) {
 	var auRst=null;
 	if(req.isAuthenticated()){
 		auRst=req.user.Username;
 	}
 	userCreator(req,res,function (){
-		res.render('community_1',{userName:auRst});
+		res.render('community_1',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst});
 	});
 });
 
 // this is the basic type when page no need to ensure authenticated. U can try this by /signup/signupExample
-router.post('/_community', function (req, res) {
+router.post('/_community',library.newMsgChecker, function (req, res) {
 	var auRst=null;
 	if(req.isAuthenticated()){
 		auRst=req.user.Username;
 	}
 	userCreator(req,res,function (){
-		res.render('community_2',{userName:auRst});
+		res.render('community_2',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst});
 	});
 });
 
 // this is the basic type when page no need to ensure authenticated. U can try this by /signup/signupExample
-router.get('/success', function (req, res) {
+router.get('/success',library.newMsgChecker, function (req, res) {
 	var auRst=null;
 	if(req.isAuthenticated()){
 		auRst=req.user.Username;
@@ -116,11 +116,11 @@ router.get('/success', function (req, res) {
 	//get data from database and process them here
 	
 	//pass what u get from database and send them into ejs in this line
-	res.render('success_1',{userName:auRst});
+	res.render('success_1',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst});
 });
 
 // this is the basic type when page no need to ensure authenticated. U can try this by /signup/signupExample
-router.get('/_success', function (req, res) {
+router.get('/_success',library.newMsgChecker, function (req, res) {
 	var auRst=null;
 	if(req.isAuthenticated()){
 		auRst=req.user.Username;
@@ -129,7 +129,7 @@ router.get('/_success', function (req, res) {
 	//get data from database and process them here
 	
 	//pass what u get from database and send them into ejs in this line
-	res.render('success_2',{userName:auRst});
+	res.render('success_2',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst});
 });
 
 // this is the basic type when page no need to ensure authenticated. U can try this by /signup/signupExample
