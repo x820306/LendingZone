@@ -7,6 +7,8 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
+var ccap = require('ccap');
+var captcha = ccap({});
 var mongoose = require( 'mongoose' );
 var multer = require('multer');
 var session = require('express-session')
@@ -121,9 +123,42 @@ app.get('/profile', library.ensureAuthenticated,library.newMsgChecker, function 
 	res.render('profile',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username});
 });
 
-app.post('/login', passport.authenticate('local', { failureRedirect: '/message?content='+encodeURIComponent('登入失敗')}),function (req, res) {
-	res.redirect(req.get('referer'));
-	//res.redirect('/');
+app.post('/login',captchaChecker, passport.authenticate('local', { failureRedirect: '/message?content='+encodeURIComponent('帳號或密碼錯誤！')}),function (req, res) {
+	var origString=req.get('referer');
+	var stringArray=origString.split('/');
+	var subString=stringArray[stringArray.length-1];
+	var subStringArray=subString.split('?');
+	var target=subStringArray[0];
+	if(target=='message'){
+		res.redirect('/');
+	}else{
+		res.redirect(req.get('referer'));
+	}
+});
+
+app.get('/captcha/:captchaIdfr?', function (req, res) {
+   console.log('captcha');
+	var captchaIdfr=parseInt(req.query.captchaIdfr);
+	
+	if(captchaIdfr>0){
+		var ctr = -1;
+		for(i=0;i<library.captchaTextArray.length;i++){
+			if(captchaIdfr==library.captchaTextArray[i].Idfr){
+				ctr=i;
+				break;
+			}
+		}
+		if(ctr>-1){
+			library.captchaTextArray.splice(ctr, 1);
+		}
+	}
+	var ary = captcha.get();
+	library.captchaIdfrCtr+=1;
+	library.captchaTextArray.push({Idfr:library.captchaIdfrCtr,Text:ary[0]});
+	
+	var base64=ary[1].toString('base64');
+	var base64='data:image/bmp;base64,'+base64;
+	res.json({CaptchaIdfr:library.captchaIdfrCtr,CaptchaPic:base64});
 });
 
 app.get('/logout', function (req, res) {
@@ -141,8 +176,8 @@ app.get('/signupTest',library.newMsgChecker, function (req, res) {
 });
 
 app.get('/test', function (req, res) {
-	console.log(library.autoComfirmToBorrowMsgArray);
-	res.json(library.autoComfirmToBorrowMsgArray);
+	console.log(library.captchaTextArray);
+	res.json(library.captchaTextArray);
 });
 
 //database models routers
@@ -190,5 +225,32 @@ app.use(function(err, req, res, next) {
     error: {}
   });
 });
+
+function captchaChecker(req, res, next){
+	var Idfr=parseInt(req.body.CaptchaIdfr);
+	var Text=req.body.CaptchaText;
+	var passFlag=false;
+	if(Idfr>0){
+		var ctr = -1;
+		for(i=0;i<library.captchaTextArray.length;i++){
+			if(Idfr==library.captchaTextArray[i].Idfr){
+				ctr=i;
+				if(Text==library.captchaTextArray[i].Text){
+					passFlag=true;
+				}
+				break;
+			}
+		}
+		if(ctr>-1){
+			library.captchaTextArray.splice(ctr, 1);
+		}
+	}
+	
+	if(passFlag){
+		return next();
+	}else{
+		res.redirect('/message?content='+encodeURIComponent('驗證碼錯誤！'));
+	}
+}
 
 module.exports = app;

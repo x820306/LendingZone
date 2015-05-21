@@ -26,11 +26,16 @@ var autoComfirmToBorrowMsgArray=[];
 var insuranceRate=0.001;
 var serviceChargeRate=0.01;
 var ifMail=false;
+var captchaIdfrCtr=0;
+var captchaTextArray=[];
 
 exports.autoComfirmToBorrowMsgArray=autoComfirmToBorrowMsgArray;
 exports.insuranceRate=insuranceRate;
 exports.serviceChargeRate=serviceChargeRate;
 exports.ifMail=ifMail;
+exports.captchaIdfrCtr=captchaIdfrCtr;
+exports.captchaTextArray=captchaTextArray;
+setInterval( function(){exports.captchaTextArray=[];},600000);
 
 exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,req,res,ifAuto,resAddress,ifLenderSide){
 	var FBR;

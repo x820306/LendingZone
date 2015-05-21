@@ -641,14 +641,16 @@ router.post('/destroy', library.ensureAuthenticated, function(req, res, next) {
 							console.log(err);
 							res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 						}else{
-							var i = 0;
+							var ctr = -1;
 							for (i = 0; i < borrow.Message.length; i++) {
 								if (borrow.Message[i].toString() === message._id.toString()) {
-									console.log("found");
+									ctr=i;
 									break;
 								}
 							};
-							borrow.Message.splice(i, 1);
+							if(ctr>-1){
+								borrow.Message.splice(ctr, 1);
+							}
 							borrow.save(function (err,updatedBorrow) {
 								if (err){
 									console.log(err);

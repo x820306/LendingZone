@@ -11,7 +11,7 @@
 				<div class="modal-content">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-						<h4 class="modal-title" id="myModalLabel">登入面板</h4>
+						<h4 class="modal-title" id="myModalLabel">登入</h4>
 					</div>
 					<form action="/login" method="post" id="loginForm">
 						<div class="modal-body">
@@ -22,6 +22,25 @@
 							<div class="input-group">
 									<input type="password" class="form-control" name="Password" id="passwordID" placeholder="密碼">
 							</div>
+							<br>
+							<input type="hidden" name="CaptchaIdfr" id="captchaIdfr" value="0">
+							<table>
+								<tr>
+									<td style="width:30%;">
+										<input type="text" class="form-control" name="CaptchaText" id="captchaText" placeholder="驗證碼">
+									</td>
+									<td>
+										&nbsp;&nbsp;&nbsp;&nbsp;<img id="captchaPic" width="100px" height="35px;" src="" />
+									</td>
+								</tr>
+								<tr>
+									<td>
+									</td>
+									<td>
+										&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" onclick="ajaxCaptcha();return false;">看不清?</a>
+									</td>
+								</tr>
+							</table>
 						</div>
 						<div class="modal-footer">
 							<div class="checkbox" align = "left">
@@ -53,6 +72,10 @@
 	
 	$(document).ready(function () {
 		var id;
+		<% if(!userName){ %>
+			ajaxCaptcha();
+		<% } %>
+		
 		$('.hastip').tooltipsy({
 			className: 'bubbletooltip_tip',
 			offset: [0, -15],
@@ -114,6 +137,21 @@
 	}
 	
 	<% if(!userName){ %>
+		function ajaxCaptcha(){
+			$.ajax({ 
+				url: '/captcha?captchaIdfr='+$('#captchaIdfr').val(),
+				type: 'GET',
+				dataType: 'json',
+				success: function(Jdata) {
+					$('#captchaIdfr').val(Jdata.CaptchaIdfr);
+					$('#captchaPic').attr('src',Jdata.CaptchaPic);
+				},
+				error: function() {
+				}
+			});
+		
+		}
+		
 		var forgettingFlag=false;
 		function forget(){
 			if(forgettingFlag){

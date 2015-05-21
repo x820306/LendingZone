@@ -135,12 +135,18 @@ function updatePart(res,req,lend){
 			console.log(err);
 			res.redirect('/message?content='+encodeURIComponent('更新失敗!'));
 		}else{
+			var ctr=-1;
 			for(i=0;i<library.autoComfirmToBorrowMsgArray.length;i++){
 				if((req.user._id==library.autoComfirmToBorrowMsgArray[i].CreatedBy)&&(library.autoComfirmToBorrowMsgArray[i].LendID.equals(newUpdate._id))){
-					clearInterval(library.autoComfirmToBorrowMsgArray[i].CommandID);
-					library.autoComfirmToBorrowMsgArray.splice(i,1);
+					ctr=i;
+					break;
 				}
 			}
+			if(ctr>-1){
+				clearInterval(library.autoComfirmToBorrowMsgArray[ctr].CommandID);
+				library.autoComfirmToBorrowMsgArray.splice(ctr,1);
+			}
+			
 			if(newUpdate.AutoComfirmToBorrowMsgPeriod>0){
 				var toSaveID=setInterval( function() { autoConfirm(req,res,newUpdate.AutoComfirmToBorrowMsgSorter,newUpdate._id); }, 86400000*newUpdate.AutoComfirmToBorrowMsgPeriod);
 				var toSaveJSON={CreatedBy:req.user._id,CommandID:toSaveID,LendID:newUpdate._id};
@@ -269,11 +275,16 @@ router.post('/destroy', library.ensureAuthenticated, function(req, res, next) {
 							console.log(err);
 							res.redirect('/message?content='+encodeURIComponent('刪除失敗!'));
 						}else{
+							var ctr=-1;
 							for(i=0;i<library.autoComfirmToBorrowMsgArray.length;i++){
 								if((req.user._id==library.autoComfirmToBorrowMsgArray[i].CreatedBy)&&(library.autoComfirmToBorrowMsgArray[i].LendID.equals(removedItem._id))){
-									clearInterval(library.autoComfirmToBorrowMsgArray[i].CommandID);
-									library.autoComfirmToBorrowMsgArray.splice(i,1);
+									ctr=i;
+									break;
 								}
+							}
+							if(ctr>-1){
+								clearInterval(library.autoComfirmToBorrowMsgArray[ctr].CommandID);
+								library.autoComfirmToBorrowMsgArray.splice(ctr,1);
 							}
 							res.redirect('/lender/lend');
 						}
