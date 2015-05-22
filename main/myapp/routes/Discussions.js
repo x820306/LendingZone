@@ -80,4 +80,27 @@ router.post('/create',library.ensureAuthenticated, function(req, res, next) {
 	});
 });
 
+router.post('/findDiscussions', function(req, res, next) {
+	Borrows.findById(sanitizer.sanitize(req.body._id)).populate('Discussion').exec(function (err, borrow){
+		if (err) {
+			console.log(err);
+			res.json({error: "Borrow finding failed.",success:false}, 500);
+		}else{
+			var options = {
+				path: 'Discussion.CreatedBy',
+				model: Users,
+				select: 'Username'
+			};
+			Discussions.populate(borrow, options, function(err, borrow) {
+				if(err){
+					console.log(err);
+					res.json({error: "Population failed.",success:false}, 500);
+				}else{
+					res.json({success:true,result:borrow.Discussion,date:borrow.Updated});
+				}
+			});
+		}
+	});
+});
+
 module.exports = router;

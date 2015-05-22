@@ -5,7 +5,7 @@
 			<table width="100%">
 				<tr>
 					<td>
-						<div style="font-size:30px;<%if(json.TitleColor=="default"){%>color:#337ab7;<%}else if(json.TitleColor=="red"){%>color:#FF0000;<%}else if(json.TitleColor=="yellow"){%>color:#ffd900;<%}else if(json.TitleColor=="black"){%>color:#000000;<%}%>">[<%if(json.Category=='general'){%>一般<%}else if(json.Category=='education'){%>教育<%}else if(json.Category=='family'){%>家庭<%}else if(json.Category=='tour'){%>旅遊<%}%>]&nbsp;&nbsp;<%=json.StoryTitle%></div>
+						<div style="font-size:30px;<%if(json.TitleColor=="default"){%>color:#337ab7;<%}else if(json.TitleColor=="red"){%>color:#FF0000;<%}else if(json.TitleColor=="yellow"){%>color:#ffd900;<%}else if(json.TitleColor=="black"){%>color:#000000;<%}else if(json.TitleColor=="gray"){%>color:#808080;<%}%>">[<%if(json.Category=='general'){%>一般<%}else if(json.Category=='education'){%>教育<%}else if(json.Category=='family'){%>家庭<%}else if(json.Category=='tour'){%>旅遊<%}%>]&nbsp;&nbsp;<%=json.StoryTitle%></div>
 						<div style="font-size:20px;color:#0000D1;"> by <div id="aiteName" style="display:inline;"><%=json.CreatedBy.Username%></div></div>
 					</td>
 					<td align="right">
@@ -784,7 +784,7 @@
 <%}%>			
 <script>
 	<%if(userName){%>
-		$(document).ready(function () {
+		$(document).ready(function (){
 			$('.modal')
 				.on({
 					'show.bs.modal': function() {
@@ -807,6 +807,61 @@
 						}
 					}
 				});
+				
+				var orig=$('#btnID').attr('class');
+				if(orig.search(' disabled')<0){
+					orig=orig+' disabled';
+					$('#btnID').attr('class',orig);
+				}
+				$.ajax({ 
+					url: '/Borrows/iflike',
+					type: 'POST',
+					data:{_id:"<%=json._id%>"},
+					dataType: 'json',
+					success: function(Jdata) {
+						if(Jdata.success){
+							var dateObj=new Date(Jdata.date);
+							$('#updatedDate').html(dateObj.getFullYear()+'/'+(dateObj.getMonth()+1)+'/'+dateObj.getDate());
+							if(Jdata.status==-1){
+								$('#likeBtn').html('<button class="btn btn-default" data-toggle="modal" data-target="#myModal"><span style="color:#337ab7;" class="glyphicon glyphicon-thumbs-up"></span></button>');	
+							}else if(Jdata.status==0){
+								$('#likeBtn').html('<button class="btn btn-default" onclick="like();" id="btnID"><span style="color:#337ab7;" class="glyphicon glyphicon-thumbs-up"></span></button>');	
+							}else if(Jdata.status==1){
+								$('#likeBtn').html('<button class="btn btn-default" onclick="unlike();" id="btnID"><span style="color:#337ab7;" class="glyphicon glyphicon-remove"></span></button>');	
+							}else if(Jdata.status==2){
+								$('#likeBtn').html('<button class="btn btn-default disabled"><span style="color:#337ab7;" class="glyphicon glyphicon-thumbs-up"></span></button>');	
+							}
+							$('#likeNum').html('&nbsp;'+Jdata.result);
+						}else{
+						}
+					},
+					error: function() {
+					}
+				});	
+				
+				$.ajax({ 
+					url: '/Discussions/findDiscussions',
+					type: 'POST',
+					data:{_id:"<%=json._id%>"},
+					dataType: 'json',
+					success: function(Jdata) {
+						if(Jdata.success){
+							$('#discussionDiv').html('');
+							for(i=0;i<Jdata.result.length;i++){
+								var dateObj=new Date(Jdata.result[i].Updated);
+								var year=dateObj.getFullYear();
+								var month=dateObj.getMonth()+1;
+								var date=dateObj.getDate();
+								$('#discussionDiv').append(Jdata.result[i].CreatedBy.Username+'：<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+Jdata.result[i].Content+'<br>'+year+'/'+month+'/'+date+'<br><br>');
+							}
+							$('#iptCtr').val('');
+						}else{
+						}
+					},
+					error: function() {
+					}
+				});	
+				
 		});
 		
 		function checkAndOpenModal(target,cntNumber,cntTail,flag){

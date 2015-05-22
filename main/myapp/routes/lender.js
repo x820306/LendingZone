@@ -19,7 +19,7 @@ router.get('/search/:keyword?/:action?/:page?',library.newMsgChecker, function (
 	var keyword=decodeURIComponent(req.query.keyword);
 	var targetPage=parseInt(req.query.page);
 	var pageNum=0
-	var totalResultNumber;
+	var totalResultNumber=0;
 	
 	var actionRec=null;
 	
@@ -95,63 +95,110 @@ router.get('/search/:keyword?/:action?/:page?',library.newMsgChecker, function (
 		jsonTemp[filterRec]={"$lt": uboundRec};
 		andFindCmdAry.push(jsonTemp);
 	}
-	var orFindCmdAry=[];
-	orFindCmdAry.push({"StoryTitle": new RegExp(keyword,'i')});
-	orFindCmdAry.push({"Story": new RegExp(keyword,'i')});
+	
+	var reg=new RegExp(keyword,'i');
+	var keyObjID=null;
 	if(mongoose.Types.ObjectId.isValid(keyword)){
-		var borrowObjID=mongoose.Types.ObjectId(keyword);
-		orFindCmdAry.push({"_id": borrowObjID});
+		keyObjID=mongoose.Types.ObjectId(keyword);
 	}
+	
 	var Borrows  = mongoose.model('Borrows');
-	Borrows.count({$or:orFindCmdAry,$and:andFindCmdAry},function (err, count) {
-		if (err){
+	Borrows.find({$and:andFindCmdAry}).populate('CreatedBy', 'Username').populate('Message','CreatedBy SendTo Type Status').sort(actionRec).exec( function (err, borrows, count){
+		if (err) {
 			console.log(err);
 			res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 		}else{
-			var divider=10;
-			totalResultNumber=count;
-			if(totalResultNumber<=0){
+			if(borrows.length==0){
 				if(targetPage>1){
 					res.redirect('/message?content='+encodeURIComponent('錯誤頁碼!'));
 				}else{
 					res.render('search',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,keywordDefault:keyword,actionDefault:action,categoryDefault:category,filterDefault:filter,lboundDefault:lbound,uboundDefault:ubound,jsonArray:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage});
 				}
 			}else{
-				pageNum=Math.ceil(totalResultNumber/divider);
-				if(pageNum<targetPage){
-					res.redirect('/message?content='+encodeURIComponent('錯誤頁碼!'));
+				for(j=borrows.length-1;j>-1;j--){
+					var localFlag=[];
+					localFlag[0]=false;
+					localFlag[1]=false;
+					localFlag[2]=false;
+					localFlag[3]=false;
+					if(keyObjID){
+						if(keyObjID.equals(borrows[j]._id)){
+							localFlag[0]=true;
+						}
+					}
+					if(borrows[j].StoryTitle.match(reg)){
+						localFlag[1]=true;
+					}
+					if(borrows[j].Story.match(reg)){
+						localFlag[2]=true;
+					}
+					if(borrows[j].CreatedBy.Username.match(reg)){
+						localFlag[3]=true;
+					}
+					
+					if((!localFlag[0])&&(!localFlag[1])&&(!localFlag[2])&&(!localFlag[3])){
+						borrows.splice(j, 1);
+					}
+				}
+				totalResultNumber=borrows.length;
+				
+				if(totalResultNumber==0){
+					if(targetPage>1){
+						res.redirect('/message?content='+encodeURIComponent('錯誤頁碼!'));
+					}else{
+						res.render('search',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,keywordDefault:keyword,actionDefault:action,categoryDefault:category,filterDefault:filter,lboundDefault:lbound,uboundDefault:ubound,jsonArray:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage});
+					}
 				}else{
-					Borrows.find({$or:orFindCmdAry,$and:andFindCmdAry}).limit(divider).skip(divider*(targetPage-1)).populate('CreatedBy', 'Username').populate('Message','CreatedBy SendTo Type Status').sort(actionRec).exec( function (err, borrows, count){
-						if (err) {
-							console.log(err);
-							res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+					var divider=10;
+					pageNum=Math.ceil(totalResultNumber/divider);
+					
+					if(pageNum<targetPage){
+						res.redirect('/message?content='+encodeURIComponent('錯誤頁碼!'));
+					}else{
+						var starter=divider*(targetPage-1);
+						var ender;
+						if(targetPage==pageNum){
+							ender=totalResultNumber;
 						}else{
-							for(i=0;i<borrows.length;i++){
-								borrows[i].MaxInterestRateAccepted-=library.serviceChargeRate;//scr
-								if(!auRst){
-									borrows[i].TitleColor='default';
-								}else{
-									for(j=0;j<borrows[i].Message.length;j++){
-										if((req.user._id==borrows[i].Message[j].CreatedBy)&&(borrows[i].Message[j].Type=="toLend")){
-											if(borrows[i].Message[j].Status=="NotConfirmed"){
-												borrows[i].TitleColor='red';
-											}else{
-												borrows[i].TitleColor='black';
-											}
-										}else if((req.user._id==borrows[i].Message[j].SendTo)&&(borrows[i].Message[j].Type=="toBorrow")){
-											if(borrows[i].Message[j].Status=="NotConfirmed"){
-												borrows[i].TitleColor='yellow';
-											}else{
-												borrows[i].TitleColor='black';
-											}
+							ender=starter+divider;
+						}
+						for(i=starter;i<ender;i++){
+							resArrays.push(borrows[i]);
+						}
+						for(i=0;i<resArrays.length;i++){
+							resArrays[i].MaxInterestRateAccepted-=library.serviceChargeRate;//scr
+							if(!auRst){
+								resArrays[i].TitleColor='default';
+							}else{
+								for(j=0;j<resArrays[i].Message.length;j++){
+									if((req.user._id==resArrays[i].Message[j].CreatedBy)&&(resArrays[i].Message[j].Type=="toLend")){
+										if(resArrays[i].Message[j].Status=="NotConfirmed"){
+											resArrays[i].TitleColor='red';
+										}else{
+											resArrays[i].TitleColor='black';
+										}
+									}else if((req.user._id==resArrays[i].Message[j].SendTo)&&(resArrays[i].Message[j].Type=="toBorrow")){
+										if(resArrays[i].Message[j].Status=="NotConfirmed"){
+											resArrays[i].TitleColor='yellow';
+										}else{
+											resArrays[i].TitleColor='black';
 										}
 									}
 								}
+								if(req.user._id==resArrays[i].CreatedBy._id){
+									resArrays[i].TitleColor='gray';
+								}
+								resArrays[i].ifLiked=false;
+								for(j=0;j<resArrays[i].Likes.length;j++){
+									if(resArrays[i].Likes[j]==req.user._id){
+										resArrays[i].ifLiked=true;
+										break;
+									}
+								}
 							}
-							resArrays=borrows;
-							res.render('search',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,keywordDefault:keyword,actionDefault:action,categoryDefault:category,filterDefault:filter,lboundDefault:lbound,uboundDefault:ubound,jsonArray:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage});
 						}
-					});
+						res.render('search',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,keywordDefault:keyword,actionDefault:action,categoryDefault:category,filterDefault:filter,lboundDefault:lbound,uboundDefault:ubound,jsonArray:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage});
+					}
 				}
 			}
 		}
@@ -196,6 +243,7 @@ router.get('/story/:id?',library.newMsgChecker, function (req, res) {
 							res.render('story',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,ifSelf:ifSelfValue,ifLiked:ifLikedValue,json:borrow,jsonMessage:null,jsonBorrowMessage:null,jsonLend:null,MoneyInBankAccountValue:0,MoneyLended:0});
 						}else{
 							if(req.user._id==borrow.CreatedBy._id){
+								borrow.TitleColor='gray';
 								ifSelfValue=true;
 								res.render('story',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,ifSelf:ifSelfValue,ifLiked:ifLikedValue,json:borrow,jsonMessage:null,jsonBorrowMessage:null,jsonLend:null,MoneyInBankAccountValue:0,MoneyLended:0});
 							}else{
@@ -247,6 +295,7 @@ router.get('/story/:id?',library.newMsgChecker, function (req, res) {
 															}
 														}
 													}
+
 													if(message){
 														message.InterestRate-=library.serviceChargeRate;//scr
 														message.InterestInFuture=library.interestInFutureCalculator(message.MoneyToLend,message.InterestRate,message.MonthPeriod);
@@ -657,7 +706,7 @@ router.get('/lenderSendMessages/:msgKeyword?/:filter?/:sorter?/:page?', library.
 	var sorter=decodeURIComponent(req.query.sorter);
 	var targetPage=parseInt(req.query.page);
 	var pageNum=0
-	var totalResultNumber;
+	var totalResultNumber=0;
 	
 	var filterRec;
 	
@@ -691,29 +740,27 @@ router.get('/lenderSendMessages/:msgKeyword?/:filter?/:sorter?/:page?', library.
 		sorterRec="-Updated";
 	}
 	
-	var orFindCmdAry=[];
-	orFindCmdAry.push({"Message": new RegExp(msgKeyword,'i')});
+	var reg=new RegExp(msgKeyword,'i');
+	var msgObjID=null;
 	if(mongoose.Types.ObjectId.isValid(msgKeyword)){
-		var msgObjID=mongoose.Types.ObjectId(msgKeyword);
-		orFindCmdAry.push({"_id": msgObjID});
+		msgObjID=mongoose.Types.ObjectId(msgKeyword);
 	}
 	
 	var Messages  = mongoose.model('Messages');
 	var Transactions  = mongoose.model('Transactions');
-	Messages.find({$or:orFindCmdAry,$and:[{"CreatedBy": req.user._id},{"Type": "toLend"},{"Status": filterRec}]}).populate('SendTo', 'Username').populate('FromBorrowRequest', 'StoryTitle').populate('Transaction').sort(sorterRec).exec( function (err, messages, count){
+	Messages.find({$and:[{"CreatedBy": req.user._id},{"Type": "toLend"},{"Status": filterRec}]}).populate('SendTo', 'Username').populate('FromBorrowRequest', 'StoryTitle').populate('Transaction').sort(sorterRec).exec( function (err, messages, count){
 		if (err) {
 			console.log(err);
 			res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 		}else{
-			totalResultNumber=messages.length;
-			if(totalResultNumber==0){
+			if(messages.length==0){
 				if(targetPage>1){
 					res.redirect('/message?content='+encodeURIComponent('錯誤頁碼!'));
 				}else{
 					res.render('lenderSendMessages',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,msgKeywordDefault:msgKeyword,filterDefault:filter,sorterDefault:sorter,jsonMessage:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,insuranceRate:library.insuranceRate});
 				}
 			}else{
-				for(i=0;i<totalResultNumber;i++){
+				for(i=0;i<messages.length;i++){
 					messages[i].InterestRate-=library.serviceChargeRate;//scr
 					messages[i].InterestInFuture=library.interestInFutureCalculator(messages[i].MoneyToLend,messages[i].InterestRate,messages[i].MonthPeriod);
 					if(messages[i].MoneyToLend>0){
@@ -762,24 +809,59 @@ router.get('/lenderSendMessages/:msgKeyword?/:filter?/:sorter?/:page?', library.
 					messages.sort(function(a,b) { return parseFloat(b.InterestInFutureDivMoney) - parseFloat(a.InterestInFutureDivMoney) } );
 				}
 				
-				var divider=10;
-				pageNum=Math.ceil(messages.length/divider);
+				for(j=messages.length-1;j>-1;j--){
+					var localFlag=[];
+					localFlag[0]=false;
+					localFlag[1]=false;
+					localFlag[2]=false;
+					localFlag[3]=false;
+					if(msgObjID){
+						if(msgObjID.equals(messages[j]._id)){
+							localFlag[0]=true;
+						}
+					}
+					if(messages[j].Message.match(reg)){
+						localFlag[1]=true;
+					}
+					if(messages[j].FromBorrowRequest.StoryTitle.match(reg)){
+						localFlag[2]=true;
+					}
+					if(messages[j].SendTo.Username.match(reg)){
+						localFlag[3]=true;
+					}
+					
+					if((!localFlag[0])&&(!localFlag[1])&&(!localFlag[2])&&(!localFlag[3])){
+						messages.splice(j, 1);
+					}
+				}
+				totalResultNumber=messages.length;
 				
-				if(pageNum<targetPage){
-					res.redirect('/message?content='+encodeURIComponent('錯誤頁碼!'));
-				}else{
-					var starter=divider*(targetPage-1);
-					var ender;
-					if(targetPage==pageNum){
-						ender=messages.length;
+				if(totalResultNumber==0){
+					if(targetPage>1){
+						res.redirect('/message?content='+encodeURIComponent('錯誤頁碼!'));
 					}else{
-						ender=starter+divider;
+						res.render('lenderSendMessages',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,msgKeywordDefault:msgKeyword,filterDefault:filter,sorterDefault:sorter,jsonMessage:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,insuranceRate:library.insuranceRate});
 					}
-					for(i=starter;i<ender;i++){
-						resArrays.push(messages[i]);
-					}
+				}else{
+					var divider=10;
+					pageNum=Math.ceil(totalResultNumber/divider);
+					
+					if(pageNum<targetPage){
+						res.redirect('/message?content='+encodeURIComponent('錯誤頁碼!'));
+					}else{
+						var starter=divider*(targetPage-1);
+						var ender;
+						if(targetPage==pageNum){
+							ender=totalResultNumber;
+						}else{
+							ender=starter+divider;
+						}
+						for(i=starter;i<ender;i++){
+							resArrays.push(messages[i]);
+						}
 
-					res.render('lenderSendMessages',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,msgKeywordDefault:msgKeyword,filterDefault:filter,sorterDefault:sorter,jsonMessage:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,insuranceRate:library.insuranceRate});
+						res.render('lenderSendMessages',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,msgKeywordDefault:msgKeyword,filterDefault:filter,sorterDefault:sorter,jsonMessage:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,insuranceRate:library.insuranceRate});
+					}
 				}
 			}
 		}
@@ -793,7 +875,7 @@ router.get('/lenderReceiveMessages/:msgKeyword?/:filter?/:sorter?/:page?', libra
 	var sorter=decodeURIComponent(req.query.sorter);
 	var targetPage=parseInt(req.query.page);
 	var pageNum=0
-	var totalResultNumber;
+	var totalResultNumber=0;
 	var value1ALL=0;
 	var value2ALL=0;
 	var value3ALL=0;
@@ -831,30 +913,28 @@ router.get('/lenderReceiveMessages/:msgKeyword?/:filter?/:sorter?/:page?', libra
 		sorterRec="-Updated";
 	}
 	
-	var orFindCmdAry=[];
-	orFindCmdAry.push({"Message": new RegExp(msgKeyword,'i')});
+	var reg=new RegExp(msgKeyword,'i');
+	var msgObjID=null;
 	if(mongoose.Types.ObjectId.isValid(msgKeyword)){
-		var msgObjID=mongoose.Types.ObjectId(msgKeyword);
-		orFindCmdAry.push({"_id": msgObjID});
+		msgObjID=mongoose.Types.ObjectId(msgKeyword);
 	}
 	
 	var Lends = mongoose.model('Lends');
 	var Messages  = mongoose.model('Messages');
 	var Transactions  = mongoose.model('Transactions');
-	Messages.find({$or:orFindCmdAry,$and:[{"SendTo": req.user._id},{"Type": "toBorrow"},{"Status": filterRec}]}).populate('CreatedBy', 'Username').populate('FromBorrowRequest', 'StoryTitle').populate('Transaction').sort(sorterRec).exec( function (err, messages, count){
+	Messages.find({$and:[{"SendTo": req.user._id},{"Type": "toBorrow"},{"Status": filterRec}]}).populate('CreatedBy', 'Username').populate('FromBorrowRequest', 'StoryTitle').populate('Transaction').sort(sorterRec).exec( function (err, messages, count){
 		if (err) {
 			console.log(err);
 			res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 		}else{
-			totalResultNumber=messages.length;
-			if(totalResultNumber==0){
+			if(messages.length==0){
 				if(targetPage>1){
 					res.redirect('/message?content='+encodeURIComponent('錯誤頁碼!'));
 				}else{
 					res.render('lenderReceiveMessages',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,msgKeywordDefault:msgKeyword,filterDefault:filter,sorterDefault:sorter,jsonMessage:resArrays,jsonLend:null,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,value1AllDefault:value1ALL,value2AllDefault:value2ALL,value3AllDefault:value3ALL,value4AllDefault:value4ALL,insuranceRate:library.insuranceRate});
 				}
 			}else{
-				for(i=0;i<totalResultNumber;i++){
+				for(i=0;i<messages.length;i++){
 					messages[i].InterestRate-=library.serviceChargeRate;//scr
 					messages[i].InterestInFuture=library.interestInFutureCalculator(messages[i].MoneyToLend,messages[i].InterestRate,messages[i].MonthPeriod);
 					if(messages[i].MoneyToLend>0){
@@ -891,10 +971,6 @@ router.get('/lenderReceiveMessages/:msgKeyword?/:filter?/:sorter?/:page?', libra
 							messages[i].Transaction[0].InterestInFutureMoneyMonth==0;
 						}
 					}
-					value1ALL+=messages[i].MoneyToLend;
-					value2ALL+=messages[i].InterestInFuture;
-					value3ALL+=messages[i].InterestInFutureMonth;
-					value4ALL+=messages[i].InterestInFutureMoneyMonth;
 				}
 				
 				if(sorter=='預計總利息最高'){
@@ -907,31 +983,71 @@ router.get('/lenderReceiveMessages/:msgKeyword?/:filter?/:sorter?/:page?', libra
 					messages.sort(function(a,b) { return parseFloat(b.InterestInFutureDivMoney) - parseFloat(a.InterestInFutureDivMoney) } );
 				}
 				
-				var divider=10;
-				pageNum=Math.ceil(messages.length/divider);
-				
-				if(pageNum<targetPage){
-					res.redirect('/message?content='+encodeURIComponent('錯誤頁碼!'));
-				}else{
-					var starter=divider*(targetPage-1);
-					var ender;
-					if(targetPage==pageNum){
-						ender=messages.length;
-					}else{
-						ender=starter+divider;
-					}
-					for(i=starter;i<ender;i++){
-						resArrays.push(messages[i]);
-					}
-
-					Lends.findOne({"CreatedBy": req.user._id}).exec( function (err, lend){
-						if (err) {
-							console.log(err);
-							res.redirect('/message?content='+encodeURIComponent('錯誤!'));
-						}else{
-							res.render('lenderReceiveMessages',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,msgKeywordDefault:msgKeyword,filterDefault:filter,sorterDefault:sorter,jsonMessage:resArrays,jsonLend:lend,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,value1AllDefault:value1ALL,value2AllDefault:value2ALL,value3AllDefault:value3ALL,value4AllDefault:value4ALL,insuranceRate:library.insuranceRate});
+				for(j=messages.length-1;j>-1;j--){
+					var localFlag=[];
+					localFlag[0]=false;
+					localFlag[1]=false;
+					localFlag[2]=false;
+					localFlag[3]=false;
+					if(msgObjID){
+						if(msgObjID.equals(messages[j]._id)){
+							localFlag[0]=true;
 						}
-					});
+					}
+					if(messages[j].Message.match(reg)){
+						localFlag[1]=true;
+					}
+					if(messages[j].FromBorrowRequest.StoryTitle.match(reg)){
+						localFlag[2]=true;
+					}
+					if(messages[j].CreatedBy.Username.match(reg)){
+						localFlag[3]=true;
+					}
+					
+					if((!localFlag[0])&&(!localFlag[1])&&(!localFlag[2])&&(!localFlag[3])){
+						messages.splice(j, 1);
+					}else{
+						value1ALL+=messages[j].MoneyToLend;
+						value2ALL+=messages[j].InterestInFuture;
+						value3ALL+=messages[j].InterestInFutureMonth;
+						value4ALL+=messages[j].InterestInFutureMoneyMonth;
+					}
+				}
+				totalResultNumber=messages.length;
+				
+				if(totalResultNumber==0){
+					if(targetPage>1){
+						res.redirect('/message?content='+encodeURIComponent('錯誤頁碼!'));
+					}else{
+						res.render('lenderReceiveMessages',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,msgKeywordDefault:msgKeyword,filterDefault:filter,sorterDefault:sorter,jsonMessage:resArrays,jsonLend:null,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,value1AllDefault:value1ALL,value2AllDefault:value2ALL,value3AllDefault:value3ALL,value4AllDefault:value4ALL,insuranceRate:library.insuranceRate});
+					}
+				}else{
+					var divider=2;
+					pageNum=Math.ceil(totalResultNumber/divider);
+					
+					if(pageNum<targetPage){
+						res.redirect('/message?content='+encodeURIComponent('錯誤頁碼!'));
+					}else{
+						var starter=divider*(targetPage-1);
+						var ender;
+						if(targetPage==pageNum){
+							ender=totalResultNumber;
+						}else{
+							ender=starter+divider;
+						}
+						for(i=starter;i<ender;i++){
+							resArrays.push(messages[i]);
+						}
+
+						Lends.findOne({"CreatedBy": req.user._id}).exec( function (err, lend){
+							if (err) {
+								console.log(err);
+								res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+							}else{
+								res.render('lenderReceiveMessages',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,msgKeywordDefault:msgKeyword,filterDefault:filter,sorterDefault:sorter,jsonMessage:resArrays,jsonLend:lend,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,value1AllDefault:value1ALL,value2AllDefault:value2ALL,value3AllDefault:value3ALL,value4AllDefault:value4ALL,insuranceRate:library.insuranceRate});
+							}
+						});
+					}
 				}
 			}
 		}

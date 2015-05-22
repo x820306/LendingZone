@@ -7,7 +7,7 @@
 				<div style="font-size:20pt;color:#0000D1;">&nbsp;<%=totalResultNum%> result</div>
 				<br>
 				<div class="input-group">
-					<input type="text" style="height:40px;" class="form-control" id="subKeywordIpt" placeholder="搜尋借入者的故事" value="<%=keywordDefault%>" onkeypress="if(event.keyCode==13){ window.open('/lender/search?keyword='+encodeURIComponent($('#subKeywordIpt').val())+'&action='+encodeURIComponent($('#sorter0').text())+'&category='+encodeURIComponent($('#subCategory0').text())+'&filter='+encodeURIComponent($('#filter0').text())+'&lbound='+encodeURIComponent($('#lbound').val())+'&ubound='+encodeURIComponent($('#ubound').val())+'&page=1','_self');}">
+					<input type="text" style="height:40px;" class="form-control" id="subKeywordIpt" placeholder="搜尋借入者的名稱或故事標題、內容" value="<%=keywordDefault%>" onkeypress="if(event.keyCode==13){ window.open('/lender/search?keyword='+encodeURIComponent($('#subKeywordIpt').val())+'&action='+encodeURIComponent($('#sorter0').text())+'&category='+encodeURIComponent($('#subCategory0').text())+'&filter='+encodeURIComponent($('#filter0').text())+'&lbound='+encodeURIComponent($('#lbound').val())+'&ubound='+encodeURIComponent($('#ubound').val())+'&page=1','_self');}">
 					<span class="input-group-btn">
 						<div class="btn-group">
 							<button type="button" style="height:40px;" class="btn btn-default dropdown-toggle" data-toggle="dropdown" id="subCategorySelected">
@@ -100,14 +100,34 @@
 							<table width="100%">
 								<tr>
 									<td>
-										<a style="font-size:25px;<%if(jsonArray[i].TitleColor=="red"){%>color:#FF0000;<%}else if(jsonArray[i].TitleColor=="yellow"){%>color:#ffd900;<%}else if(jsonArray[i].TitleColor=="black"){%>color:#000000;<%}%>" href="/lender/story?id=<%=jsonArray[i]._id%>">[<%if(jsonArray[i].Category=='general'){%>一般<%}else if(jsonArray[i].Category=='education'){%>教育<%}else if(jsonArray[i].Category=='family'){%>家庭<%}else if(jsonArray[i].Category=='tour'){%>旅遊<%}%>]&nbsp;&nbsp;<%=jsonArray[i].StoryTitle%></a>
+										<a style="font-size:25px;<%if(jsonArray[i].TitleColor=="red"){%>color:#FF0000;<%}else if(jsonArray[i].TitleColor=="yellow"){%>color:#ffd900;<%}else if(jsonArray[i].TitleColor=="black"){%>color:#000000;<%}else if(jsonArray[i].TitleColor=="gray"){%>color:#808080;<%}%>" href="/lender/story?id=<%=jsonArray[i]._id%>">[<%if(jsonArray[i].Category=='general'){%>一般<%}else if(jsonArray[i].Category=='education'){%>教育<%}else if(jsonArray[i].Category=='family'){%>家庭<%}else if(jsonArray[i].Category=='tour'){%>旅遊<%}%>]&nbsp;&nbsp;<%=jsonArray[i].StoryTitle%></a>
 										<div style="font-size:15px;color:#0000D1;">by <%=jsonArray[i].CreatedBy.Username%></div>
 									</td>
 									<td align="right">
-										<div style="font-size:20px;display:inline;color:#337ab7;">
-											<span class="glyphicon glyphicon-thumbs-up"></span>
+										<div style="font-size:20px;display:inline;color:#337ab7;" id="likeBtn<%=i%>">
+											<%if(!userName){ %>
+												<button class="btn btn-default" data-toggle="modal" data-target="#myModal">
+													<span style="color:#337ab7;" class="glyphicon glyphicon-thumbs-up"></span>
+												</button>
+											<% }else{ %>
+												<%if(jsonArray[i].TitleColor!="gray"){ %>
+													<%if(!jsonArray[i].ifLiked){ %>
+														<button class="btn btn-default" onclick="like(<%=i%>);" id="btnID<%=i%>">
+															<span style="color:#337ab7;" class="glyphicon glyphicon-thumbs-up"></span>
+														</button>
+													<% }else{ %>
+														<button class="btn btn-default" onclick="unlike(<%=i%>);" id="btnID<%=i%>">
+															<span style="color:#337ab7;" class="glyphicon glyphicon-remove"></span>
+														</button>
+													<%}%>
+												<% }else{ %>
+													<button class="btn btn-default disabled">
+														<span style="color:#337ab7;" class="glyphicon glyphicon-thumbs-up"></span>
+													</button>
+												<%}%>
+											<%}%>
 										</div>
-										<div style="font-size:25px;color: red;display:inline;">
+										<div style="font-size:20px;color: red;display:inline;" id="likeNum<%=i%>">
 											&nbsp;<%=jsonArray[i].LikeNumber%>
 										</div>
 									</td>
@@ -119,6 +139,7 @@
 							</div>
 						</div>
 					</div>
+					<input type="hidden" id="borrowID<%=i%>" value="<%=jsonArray[i]._id%>">
 					<br>
 				<% } %>
 				<br>
@@ -195,4 +216,116 @@
 		</div>
 	</div>
 </div>
+<script>
+	<%if(userName){%>
+		$(document).ready(function (){
+			recursiveAjax(0,<%=jsonArray.length%>);	
+		});
+		
+		function recursiveAjax(ctr,ctrTarget){
+			var orig=$('#btnID'+ctr).attr('class');
+			if(orig.search(' disabled')<0){
+				orig=orig+' disabled';
+				$('#btnID'+ctr).attr('class',orig);
+			}
+			$.ajax({ 
+				url: '/Borrows/iflike',
+				type: 'POST',
+				data:{_id:$('#borrowID'+ctr).val()},
+				dataType: 'json',
+				success: function(Jdata) {
+					if(Jdata.success){
+						if(Jdata.status==-1){
+							$('#likeBtn'+ctr).html('<button class="btn btn-default" data-toggle="modal" data-target="#myModal"><span style="color:#337ab7;" class="glyphicon glyphicon-thumbs-up"></span></button>');	
+						}else if(Jdata.status==0){
+							$('#likeBtn'+ctr).html('<button class="btn btn-default" onclick="like('+ctr+');" id="btnID'+ctr+'"><span style="color:#337ab7;" class="glyphicon glyphicon-thumbs-up"></span></button>');	
+						}else if(Jdata.status==1){
+							$('#likeBtn'+ctr).html('<button class="btn btn-default" onclick="unlike('+ctr+');" id="btnID'+ctr+'"><span style="color:#337ab7;" class="glyphicon glyphicon-remove"></span></button>');	
+						}else if(Jdata.status==2){
+							$('#likeBtn'+ctr).html('<button class="btn btn-default disabled"><span style="color:#337ab7;" class="glyphicon glyphicon-thumbs-up"></span></button>');	
+						}
+						$('#likeNum'+ctr).html('&nbsp;'+Jdata.result);
+						ctr++
+						if(ctr<ctrTarget){
+							recursiveAjax(ctr,ctrTarget);
+						}
+					}else{
+						ctr++
+						if(ctr<ctrTarget){
+							recursiveAjax(ctr,ctrTarget);
+						}
+					}
+				},
+				error: function() {
+					ctr++
+					if(ctr<ctrTarget){
+						recursiveAjax(ctr,ctrTarget);
+					}
+				}
+			});
+		}
+	
+		function like(index){
+			var orig=$('#btnID'+index).attr('class');
+			if(orig.search(' disabled')<0){
+				orig=orig+' disabled';
+				$('#btnID'+index).attr('class',orig);
+			}
+			$.ajax({ 
+					url: '/Borrows/like',
+					type: 'POST',
+					data:{_id:$('#borrowID'+index).val()},
+					dataType: 'json',
+					success: function(Jdata) {
+						if(Jdata.success){
+							$('#likeBtn'+index).html('<button class="btn btn-default" onclick="unlike('+index+');" id="btnID'+index+'"><span style="color:#337ab7;" class="glyphicon glyphicon-remove"></span></button>');
+							$('#likeNum'+index).html('&nbsp;'+Jdata.result);
+						}else{
+							alert('something wrong.');
+							var origInner=$('#btnID'+index).attr('class');
+							origInner=origInner.replace(/ disabled/g, '');
+							$('#btnID'+index).attr('class',origInner);
+						}
+					},
+					error: function() {
+						alert('something wrong.');
+						var origInner=$('#btnID'+index).attr('class');
+						origInner=origInner.replace(/ disabled/g, '');
+						$('#btnID'+index).attr('class',origInner);
+					}
+			});	
+		}
+		
+		function unlike(index){
+			var orig=$('#btnID'+index).attr('class');
+			if(orig.search(' disabled')<0){
+				orig=orig+' disabled';
+				$('#btnID'+index).attr('class',orig);
+			}
+			$.ajax({ 
+					url: '/Borrows/unlike',
+					type: 'POST',
+					data:{_id:$('#borrowID'+index).val()},
+					dataType: 'json',
+					success: function(Jdata) {
+						if(Jdata.success){
+							$('#likeBtn'+index).html('<button class="btn btn-default" onclick="like('+index+');" id="btnID'+index+'"><span style="color:#337ab7;" class="glyphicon glyphicon-thumbs-up"></span></button>');
+							$('#likeNum'+index).html('&nbsp;'+Jdata.result);
+						}else{
+							alert('something wrong.');
+							var origInner=$('#btnID'+index).attr('class');
+							origInner=origInner.replace(/ disabled/g, '');
+							$('#btnID'+index).attr('class',origInner);
+						}
+					},
+					error: function() {
+						alert('something wrong.');
+						var origInner=$('#btnID'+index).attr('class');
+						origInner=origInner.replace(/ disabled/g, '');
+						$('#btnID'+index).attr('class',origInner);
+					}
+			});	
+		}
+	<%}%>
+</script>
 <%- include('layout_footer',{imgSettingCode:"var ifLoadedCount=0;",imgDrawingCode:""}); -%>

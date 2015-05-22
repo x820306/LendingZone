@@ -447,14 +447,13 @@ router.get('/rejectToBorrowMessageInLRMall/:msgKeyword?/:sorter?', library.ensur
 		sorterRec="-Updated";
 	}
 	
-	var orFindCmdAry=[];
-	orFindCmdAry.push({"Message": new RegExp(msgKeyword,'i')});
+	var reg=new RegExp(msgKeyword,'i');
+	var msgObjID=null;
 	if(mongoose.Types.ObjectId.isValid(msgKeyword)){
-		var msgObjID=mongoose.Types.ObjectId(msgKeyword);
-		orFindCmdAry.push({"_id": msgObjID});
+		msgObjID=mongoose.Types.ObjectId(msgKeyword);
 	}
 	
-	Messages.find({$or:orFindCmdAry,$and:[{"SendTo": req.user._id},{"Type": "toBorrow"},{"Status": "NotConfirmed"}]}).sort(sorterRec).exec(function (err, messages){
+	Messages.find({$and:[{"SendTo": req.user._id},{"Type": "toBorrow"},{"Status": "NotConfirmed"}]}).populate('CreatedBy', 'Username').populate('FromBorrowRequest', 'StoryTitle').sort(sorterRec).exec(function (err, messages){
 		if (err) {
 			console.log(err);
 			res.redirect('/message?content='+'錯誤!');
@@ -494,13 +493,43 @@ router.get('/rejectToBorrowMessageInLRMall/:msgKeyword?/:sorter?', library.ensur
 					}
 				}
 				
-				var arrayOp=[];
-				for(i=0;i<messages.length;i++){
-					var temp={MessageID:messages[i]._id};
-					arrayOp.push(temp);
+				for(j=messages.length-1;j>-1;j--){
+					var localFlag=[];
+					localFlag[0]=false;
+					localFlag[1]=false;
+					localFlag[2]=false;
+					localFlag[3]=false;
+					if(msgObjID){
+						if(msgObjID.equals(messages[j]._id)){
+							localFlag[0]=true;
+						}
+					}
+					if(messages[j].Message.match(reg)){
+						localFlag[1]=true;
+					}
+					if(messages[j].FromBorrowRequest.StoryTitle.match(reg)){
+						localFlag[2]=true;
+					}
+					if(messages[j].CreatedBy.Username.match(reg)){
+						localFlag[3]=true;
+					}
+					
+					if((!localFlag[0])&&(!localFlag[1])&&(!localFlag[2])&&(!localFlag[3])){
+						messages.splice(j, 1);
+					}
 				}
-				req.body.array=arrayOp;
-				library.rejectMessage(true,0,req.body.array.length,null,req,res,false,'/lender/lenderReceiveMessages?msgKeyword=&filter='+encodeURIComponent('已婉拒')+'&sorter='+encodeURIComponent('最新')+'&page=1');
+				
+				if(messages.length==0){
+					res.redirect('/message?content='+'錯誤!');
+				}else{
+					var arrayOp=[];
+					for(i=0;i<messages.length;i++){
+						var temp={MessageID:messages[i]._id};
+						arrayOp.push(temp);
+					}
+					req.body.array=arrayOp;
+					library.rejectMessage(true,0,req.body.array.length,null,req,res,false,'/lender/lenderReceiveMessages?msgKeyword=&filter='+encodeURIComponent('已婉拒')+'&sorter='+encodeURIComponent('最新')+'&page=1');
+				}
 			}
 		}
 	});
@@ -530,14 +559,13 @@ router.get('/confirmToBorrowMessageInLRMall/:msgKeyword?/:sorter?', library.ensu
 		sorterRec="-Updated";
 	}
 	
-	var orFindCmdAry=[];
-	orFindCmdAry.push({"Message": new RegExp(msgKeyword,'i')});
+	var reg=new RegExp(msgKeyword,'i');
+	var msgObjID=null;
 	if(mongoose.Types.ObjectId.isValid(msgKeyword)){
-		var msgObjID=mongoose.Types.ObjectId(msgKeyword);
-		orFindCmdAry.push({"_id": msgObjID});
+		msgObjID=mongoose.Types.ObjectId(msgKeyword);
 	}
 	
-	Messages.find({$or:orFindCmdAry,$and:[{"SendTo": req.user._id},{"Type": "toBorrow"},{"Status": "NotConfirmed"}]}).sort(sorterRec).exec(function (err, messages){
+	Messages.find({$and:[{"SendTo": req.user._id},{"Type": "toBorrow"},{"Status": "NotConfirmed"}]}).populate('CreatedBy', 'Username').populate('FromBorrowRequest', 'StoryTitle').sort(sorterRec).exec(function (err, messages){
 		if (err) {
 			console.log(err);
 			res.redirect('/message?content='+'錯誤!');
@@ -577,13 +605,43 @@ router.get('/confirmToBorrowMessageInLRMall/:msgKeyword?/:sorter?', library.ensu
 					}
 				}
 				
-				var arrayOp=[];
-				for(i=0;i<messages.length;i++){
-					var temp={FromBorrowRequest:messages[i].FromBorrowRequest,MessageID:messages[i]._id};
-					arrayOp.push(temp);
+				for(j=messages.length-1;j>-1;j--){
+					var localFlag=[];
+					localFlag[0]=false;
+					localFlag[1]=false;
+					localFlag[2]=false;
+					localFlag[3]=false;
+					if(msgObjID){
+						if(msgObjID.equals(messages[j]._id)){
+							localFlag[0]=true;
+						}
+					}
+					if(messages[j].Message.match(reg)){
+						localFlag[1]=true;
+					}
+					if(messages[j].FromBorrowRequest.StoryTitle.match(reg)){
+						localFlag[2]=true;
+					}
+					if(messages[j].CreatedBy.Username.match(reg)){
+						localFlag[3]=true;
+					}
+					
+					if((!localFlag[0])&&(!localFlag[1])&&(!localFlag[2])&&(!localFlag[3])){
+						messages.splice(j, 1);
+					}
 				}
-				req.body.array=arrayOp;
-				library.confirmToBorrowMessage(true,0,req.body.array.length,null,req,res,false,'/lender/lenderReceiveMessages?msgKeyword=&filter='+encodeURIComponent('已同意')+'&sorter='+encodeURIComponent('最新')+'&page=1',true);
+				
+				if(messages.length==0){
+					res.redirect('/message?content='+'錯誤!');
+				}else{
+					var arrayOp=[];
+					for(i=0;i<messages.length;i++){
+						var temp={FromBorrowRequest:messages[i].FromBorrowRequest,MessageID:messages[i]._id};
+						arrayOp.push(temp);
+					}
+					req.body.array=arrayOp;
+					library.confirmToBorrowMessage(true,0,req.body.array.length,null,req,res,false,'/lender/lenderReceiveMessages?msgKeyword=&filter='+encodeURIComponent('已同意')+'&sorter='+encodeURIComponent('最新')+'&page=1',true);
+				}
 			}
 		}
 	});

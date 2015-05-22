@@ -47,7 +47,7 @@ router.post('/create', function(req, res, next) {
 });
 
 router.post('/like', library.ensureAuthenticated, function(req, res, next) {
-	Borrows.findById(req.body._id).exec(function (err, borrow){
+	Borrows.findById(sanitizer.sanitize(req.body._id)).exec(function (err, borrow){
 		if (err) {
 			console.log(err);
 			res.json({error: "something wrong",success:false}, 500);
@@ -60,6 +60,7 @@ router.post('/like', library.ensureAuthenticated, function(req, res, next) {
 				for (i = 0; i < borrow.Likes.length; i++) {
 					if (borrow.Likes[i].toString() === req.user._id.toString()) {
 						flag = 1;
+						break;
 					}
 				}
 				if (flag === 1) {
@@ -82,7 +83,7 @@ router.post('/like', library.ensureAuthenticated, function(req, res, next) {
 });
 
 router.post('/unlike', library.ensureAuthenticated, function(req, res, next) {
-	Borrows.findById(req.body._id).exec(function (err, borrow){
+	Borrows.findById(sanitizer.sanitize(req.body._id)).exec(function (err, borrow){
 		if (err) {
 			console.log(err);
 			res.json({error: "something wrong",success:false}, 500);
@@ -111,6 +112,36 @@ router.post('/unlike', library.ensureAuthenticated, function(req, res, next) {
 						}
 						res.json({success:true,result:newborrow.LikeNumber});
 					})
+				}
+			}
+		}
+	});
+});
+
+router.post('/iflike', function(req, res, next) {
+	Borrows.findById(sanitizer.sanitize(req.body._id)).exec(function (err, borrow){
+		if (err) {
+			console.log(err);
+			res.json({error: "something wrong",success:false}, 500);
+		}else{
+			if(!borrow){
+				res.json({error: "ID not found",success:false}, 500);
+			}else{
+				if (!req.isAuthenticated()){ 
+					res.json({success:true,result:borrow.LikeNumber,status:-1,date:borrow.Updated});
+				}else{
+					var i = 0;
+					var flag = 0;
+					for (i = 0; i < borrow.Likes.length; i++) {
+						if (borrow.Likes[i].toString() === req.user._id.toString()) {
+							flag = 1;
+							break;
+						}
+					}
+					if(borrow.CreatedBy==req.user._id){
+						flag = 2;
+					}
+					res.json({success:true,result:borrow.LikeNumber,status:flag,date:borrow.Updated});
 				}
 			}
 		}
