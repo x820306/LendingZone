@@ -203,17 +203,11 @@ function autoConfirm(req,res,sorter,lendID){
 									
 									if(sorterReserve=='-SpecialA'){
 										messages.sort(function(a,b) { return parseFloat(b.InterestInFuture) - parseFloat(a.InterestInFuture)} );
-									}
-									
-									if(sorterReserve=='-SpecialA'){
+									}else if(sorterReserve=='-SpecialA'){
 										messages.sort(function(a,b) { return parseFloat(b.InterestInFutureMonth) - parseFloat(a.InterestInFutureMonth)} );
-									}
-									
-									if(sorterReserve=='-SpecialD'){
+									}else if(sorterReserve=='-SpecialD'){
 										messages.sort(function(a,b) { return parseFloat(b.InterestInFutureMoneyMonth) - parseFloat(a.InterestInFutureMoneyMonth) } );
-									}
-									
-									if(sorterReserve=='-SpecialD'){
+									}else if(sorterReserve=='-SpecialD'){
 										messages.sort(function(a,b) { return parseFloat(b.InterestInFutureDivMoney) - parseFloat(a.InterestInFutureDivMoney) } );
 									}
 								}

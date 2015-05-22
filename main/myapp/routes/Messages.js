@@ -485,17 +485,11 @@ router.get('/rejectToBorrowMessageInLRMall/:msgKeyword?/:sorter?', library.ensur
 					
 					if(sorter=='預計總利息最高'){
 						messages.sort(function(a,b) { return parseFloat(b.InterestInFuture) - parseFloat(a.InterestInFuture)} );
-					}
-					
-					if(sorter=='預計平均利息最高'){
+					}else if(sorter=='預計平均利息最高'){
 						messages.sort(function(a,b) { return parseFloat(b.InterestInFutureMonth) - parseFloat(a.InterestInFutureMonth)} );
-					}
-					
-					if(sorter=='預計平均本利和最高'){
+					}else if(sorter=='預計平均本利和最高'){
 						messages.sort(function(a,b) { return parseFloat(b.InterestInFutureMoneyMonth) - parseFloat(a.InterestInFutureMoneyMonth)} );
-					}
-					
-					if(sorter=='預計利本比最高'){
+					}else if(sorter=='預計利本比最高'){
 						messages.sort(function(a,b) { return parseFloat(b.InterestInFutureDivMoney) - parseFloat(a.InterestInFutureDivMoney) } );
 					}
 				}
@@ -574,17 +568,11 @@ router.get('/confirmToBorrowMessageInLRMall/:msgKeyword?/:sorter?', library.ensu
 					
 					if(sorter=='預計總利息最高'){
 						messages.sort(function(a,b) { return parseFloat(b.InterestInFuture) - parseFloat(a.InterestInFuture)} );
-					}
-					
-					if(sorter=='預計平均利息最高'){
+					}else if(sorter=='預計平均利息最高'){
 						messages.sort(function(a,b) { return parseFloat(b.InterestInFutureMonth) - parseFloat(a.InterestInFutureMonth)} );
-					}
-					
-					if(sorter=='預計平均本利和最高'){
+					}else if(sorter=='預計平均本利和最高'){
 						messages.sort(function(a,b) { return parseFloat(b.InterestInFutureMoneyMonth) - parseFloat(a.InterestInFutureMoneyMonth)} );
-					}
-					
-					if(sorter=='預計利本比最高'){
+					}else if(sorter=='預計利本比最高'){
 						messages.sort(function(a,b) { return parseFloat(b.InterestInFutureDivMoney) - parseFloat(a.InterestInFutureDivMoney) } );
 					}
 				}

@@ -384,7 +384,11 @@ router.get('/lenderTransactionRecord/:oneid?/:filter?/:sorter?/:page?', library.
 		sorterRec="-Updated";
 	}else if(sorter=='成交日期最晚'){
 		sorterRec="-Created";
-	}else if(sorter=='已付保險費最高'){
+	}else if(sorter=='收款記錄最多'){
+		sorterRec="-Updated";
+	}else if(sorter=='保險所需費用最高'){
+		sorterRec="-Principal";
+	}else if(sorter=='已付保險費用最高'){
 		sorterRec="-InsuranceFeePaid";
 	}
 	
@@ -445,23 +449,20 @@ router.get('/lenderTransactionRecord/:oneid?/:filter?/:sorter?/:page?', library.
 							}else{
 								transactions[i].InterestInFutureMoneyMonth=0;
 							}
+							transactions[i].ReturnCount=transactions[i].Return.length;
 							selectedFeeAllIpt+=transactions[i].Principal*library.insuranceRate;
 						}
 						
 						if(sorter=='預計總利息最高'){
 							transactions.sort(function(a,b) { return parseFloat(b.InterestInFuture) - parseFloat(a.InterestInFuture)} );
-						}
-						
-						if(sorter=='預計平均利息最高'){
+						}else if(sorter=='預計平均利息最高'){
 							transactions.sort(function(a,b) { return parseFloat(b.InterestInFutureMonth) - parseFloat(a.InterestInFutureMonth)} );
-						}
-						
-						if(sorter=='預計平均本利和最高'){
+						}else if(sorter=='預計平均本利和最高'){
 							transactions.sort(function(a,b) { return parseFloat(b.InterestInFutureMoneyMonth) - parseFloat(a.InterestInFutureMoneyMonth)} );
-						}
-						
-						if(sorter=='預計利本比最高'){
+						}else if(sorter=='預計利本比最高'){
 							transactions.sort(function(a,b) { return parseFloat(b.InterestInFutureDivMoney) - parseFloat(a.InterestInFutureDivMoney) } );
+						}else if(sorter=='收款記錄最多'){
+							transactions.sort(function(a,b) { return b.ReturnCount - a.ReturnCount } );
 						}
 						
 						var divider=10;
@@ -753,17 +754,11 @@ router.get('/lenderSendMessages/:msgKeyword?/:filter?/:sorter?/:page?', library.
 				
 				if(sorter=='預計總利息最高'){
 					messages.sort(function(a,b) { return parseFloat(b.InterestInFuture) - parseFloat(a.InterestInFuture)} );
-				}
-				
-				if(sorter=='預計平均利息最高'){
+				}else if(sorter=='預計平均利息最高'){
 					messages.sort(function(a,b) { return parseFloat(b.InterestInFutureMonth) - parseFloat(a.InterestInFutureMonth)} );
-				}
-				
-				if(sorter=='預計平均本利和最高'){
+				}else if(sorter=='預計平均本利和最高'){
 					messages.sort(function(a,b) { return parseFloat(b.InterestInFutureMoneyMonth) - parseFloat(a.InterestInFutureMoneyMonth)} );
-				}
-				
-				if(sorter=='預計利本比最高'){
+				}else if(sorter=='預計利本比最高'){
 					messages.sort(function(a,b) { return parseFloat(b.InterestInFutureDivMoney) - parseFloat(a.InterestInFutureDivMoney) } );
 				}
 				
@@ -904,17 +899,11 @@ router.get('/lenderReceiveMessages/:msgKeyword?/:filter?/:sorter?/:page?', libra
 				
 				if(sorter=='預計總利息最高'){
 					messages.sort(function(a,b) { return parseFloat(b.InterestInFuture) - parseFloat(a.InterestInFuture)} );
-				}
-				
-				if(sorter=='預計平均利息最高'){
+				}else if(sorter=='預計平均利息最高'){
 					messages.sort(function(a,b) { return parseFloat(b.InterestInFutureMonth) - parseFloat(a.InterestInFutureMonth)} );
-				}
-				
-				if(sorter=='預計平均本利和最高'){
+				}else if(sorter=='預計平均本利和最高'){
 					messages.sort(function(a,b) { return parseFloat(b.InterestInFutureMoneyMonth) - parseFloat(a.InterestInFutureMoneyMonth)} );
-				}
-				
-				if(sorter=='預計利本比最高'){
+				}else if(sorter=='預計利本比最高'){
 					messages.sort(function(a,b) { return parseFloat(b.InterestInFutureDivMoney) - parseFloat(a.InterestInFutureDivMoney) } );
 				}
 				

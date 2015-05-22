@@ -78,6 +78,10 @@ router.get('/buyInsuranceAll/:oneid?/:sorter?',library.ensureAuthenticated, func
 		sorterRec="-Updated";
 	}else if(sorter=='成交日期最晚'){
 		sorterRec="-Created";
+	}else if(sorter=='收款記錄最多'){
+		sorterRec="-Updated";
+	}else if(sorter=='保險所需費用最高'){
+		sorterRec="-Principal";
 	}
 	
 	var andFindCmdAry=[];
@@ -115,22 +119,19 @@ router.get('/buyInsuranceAll/:oneid?/:sorter?',library.ensureAuthenticated, func
 						}else{
 							transactions[i].InterestInFutureMoneyMonth=0;
 						}
+						transactions[i].ReturnCount=transactions[i].Return.length;
 					}
 					
 					if(sorter=='預計總利息最高'){
 						transactions.sort(function(a,b) { return parseFloat(b.InterestInFuture) - parseFloat(a.InterestInFuture)} );
-					}
-					
-					if(sorter=='預計平均利息最高'){
+					}else if(sorter=='預計平均利息最高'){
 						transactions.sort(function(a,b) { return parseFloat(b.InterestInFutureMonth) - parseFloat(a.InterestInFutureMonth)} );
-					}
-					
-					if(sorter=='預計平均本利和最高'){
+					}else if(sorter=='預計平均本利和最高'){
 						transactions.sort(function(a,b) { return parseFloat(b.InterestInFutureMoneyMonth) - parseFloat(a.InterestInFutureMoneyMonth)} );
-					}
-					
-					if(sorter=='預計利本比最高'){
+					}else if(sorter=='預計利本比最高'){
 						transactions.sort(function(a,b) { return parseFloat(b.InterestInFutureDivMoney) - parseFloat(a.InterestInFutureDivMoney) } );
+					}else if(sorter=='收款記錄最多'){
+						transactions.sort(function(a,b) { return b.ReturnCount - a.ReturnCount } );
 					}
 				}
 				

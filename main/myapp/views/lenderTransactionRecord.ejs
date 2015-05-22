@@ -34,6 +34,8 @@
 							<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter9').text());$('#bAll').attr('href','/Transactions/buyInsuranceAll?oneid=<%=oneidDefault%>&sorter='+encodeURIComponent($('#sorterSelected').text()));$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter9">預計平均本利和最高</a></li>
 							<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter10').text());$('#bAll').attr('href','/Transactions/buyInsuranceAll?oneid=<%=oneidDefault%>&sorter='+encodeURIComponent($('#sorterSelected').text()));$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter10">預計利本比最高</a></li>
 							<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter11').text());$('#bAll').attr('href','/Transactions/buyInsuranceAll?oneid=<%=oneidDefault%>&sorter='+encodeURIComponent($('#sorterSelected').text()));$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter11">成交日期最晚</a></li>
+							<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter12').text());$('#bAll').attr('href','/Transactions/buyInsuranceAll?oneid=<%=oneidDefault%>&sorter='+encodeURIComponent($('#sorterSelected').text()));$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter12">收款記錄最多</a></li>
+							<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter13').text());$('#bAll').attr('href','/Transactions/buyInsuranceAll?oneid=<%=oneidDefault%>&sorter='+encodeURIComponent($('#sorterSelected').text()));$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter13">保險所需費用最高</a></li>
 							<%}else{%>
 							<li style="display:none"><a href="#" id="sorter0"><%=sorterDefault%></a></li>
 							<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter1').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter1">最新</a></li>
@@ -47,9 +49,12 @@
 							<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter9').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter9">預計平均本利和最高</a></li>
 							<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter10').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter10">預計利本比最高</a></li>
 							<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter11').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter11">成交日期最晚</a></li>
-							<%}%>
-							<% if(filterDefault=='已保險'){%>
-							<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter12').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter12">已付保險費最高</a></li>
+							<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter12').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter12">收款記錄最多</a></li>
+								<% if(filterDefault=='已保險'){%>
+									<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter13').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter13">已付保險費用最高</a></li>
+								<%}else if(filterDefault=='未保險'){%>
+									<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter13').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter13">保險所需費用最高</a></li>
+								<%}%>
 							<%}%>
 						</ul>
 					</div>
@@ -403,7 +408,7 @@
 						<%}%>
 						<td align="right">
 							<div style="color:#337ab7;">
-								<a href="/lender/lenderReturnRecord?oneid=&id=<%=jsonTransaction[i]._id%>&sorter=<%=encodeURIComponent("最新")%>&page=1">該筆交易收款記錄</a>&nbsp;&nbsp;&nbsp;&nbsp;Updated：<%=jsonTransaction[i].Updated.getFullYear()%>/<%=jsonTransaction[i].Updated.getMonth()+1%>/<%=jsonTransaction[i].Updated.getDate()%>
+								<a href="/lender/lenderReturnRecord?oneid=&id=<%=jsonTransaction[i]._id%>&sorter=<%=encodeURIComponent("最新")%>&page=1">該交易有<%=jsonTransaction[i].Return.length%>筆收款記錄</a>&nbsp;&nbsp;&nbsp;&nbsp;Updated：<%=jsonTransaction[i].Updated.getFullYear()%>/<%=jsonTransaction[i].Updated.getMonth()+1%>/<%=jsonTransaction[i].Updated.getDate()%>
 							</div>
 						</td>
 					<tr>
