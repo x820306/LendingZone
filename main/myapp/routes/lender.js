@@ -126,13 +126,13 @@ router.get('/search/:keyword?/:action?/:page?',library.newMsgChecker, function (
 							localFlag[0]=true;
 						}
 					}
-					if(borrows[j].StoryTitle.match(reg)){
+					if(borrows[j].StoryTitle.search(reg)>-1){
 						localFlag[1]=true;
 					}
-					if(borrows[j].Story.match(reg)){
+					if(borrows[j].Story.search(reg)>-1){
 						localFlag[2]=true;
 					}
-					if(borrows[j].CreatedBy.Username.match(reg)){
+					if(borrows[j].CreatedBy.Username.search(reg)>-1){
 						localFlag[3]=true;
 					}
 					
@@ -820,13 +820,13 @@ router.get('/lenderSendMessages/:msgKeyword?/:filter?/:sorter?/:page?', library.
 							localFlag[0]=true;
 						}
 					}
-					if(messages[j].Message.match(reg)){
+					if(messages[j].Message.search(reg)>-1){
 						localFlag[1]=true;
 					}
-					if(messages[j].FromBorrowRequest.StoryTitle.match(reg)){
+					if(messages[j].FromBorrowRequest.StoryTitle.search(reg)>-1){
 						localFlag[2]=true;
 					}
-					if(messages[j].SendTo.Username.match(reg)){
+					if(messages[j].SendTo.Username.search(reg)>-1){
 						localFlag[3]=true;
 					}
 					
@@ -994,13 +994,13 @@ router.get('/lenderReceiveMessages/:msgKeyword?/:filter?/:sorter?/:page?', libra
 							localFlag[0]=true;
 						}
 					}
-					if(messages[j].Message.match(reg)){
+					if(messages[j].Message.search(reg)>-1){
 						localFlag[1]=true;
 					}
-					if(messages[j].FromBorrowRequest.StoryTitle.match(reg)){
+					if(messages[j].FromBorrowRequest.StoryTitle.search(reg)>-1){
 						localFlag[2]=true;
 					}
-					if(messages[j].CreatedBy.Username.match(reg)){
+					if(messages[j].CreatedBy.Username.search(reg)>-1){
 						localFlag[3]=true;
 					}
 					

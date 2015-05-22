@@ -106,7 +106,7 @@
 									<td align="right">
 										<div style="font-size:20px;display:inline;color:#337ab7;" id="likeBtn<%=i%>">
 											<%if(!userName){ %>
-												<button class="btn btn-default" data-toggle="modal" data-target="#myModal">
+												<button class="btn btn-default" data-toggle="modal" data-target="#myModal" id="btnID<%=i%>">
 													<span style="color:#337ab7;" class="glyphicon glyphicon-thumbs-up"></span>
 												</button>
 											<% }else{ %>
@@ -121,7 +121,7 @@
 														</button>
 													<%}%>
 												<% }else{ %>
-													<button class="btn btn-default disabled">
+													<button class="btn btn-default disabled" id="btnID<%=i%>">
 														<span style="color:#337ab7;" class="glyphicon glyphicon-thumbs-up"></span>
 													</button>
 												<%}%>
@@ -236,13 +236,13 @@
 				success: function(Jdata) {
 					if(Jdata.success){
 						if(Jdata.status==-1){
-							$('#likeBtn'+ctr).html('<button class="btn btn-default" data-toggle="modal" data-target="#myModal"><span style="color:#337ab7;" class="glyphicon glyphicon-thumbs-up"></span></button>');	
+							$('#likeBtn'+ctr).html('<button class="btn btn-default" data-toggle="modal" data-target="#myModal" id="btnID'+ctr+'"><span style="color:#337ab7;" class="glyphicon glyphicon-thumbs-up"></span></button>');	
 						}else if(Jdata.status==0){
 							$('#likeBtn'+ctr).html('<button class="btn btn-default" onclick="like('+ctr+');" id="btnID'+ctr+'"><span style="color:#337ab7;" class="glyphicon glyphicon-thumbs-up"></span></button>');	
 						}else if(Jdata.status==1){
 							$('#likeBtn'+ctr).html('<button class="btn btn-default" onclick="unlike('+ctr+');" id="btnID'+ctr+'"><span style="color:#337ab7;" class="glyphicon glyphicon-remove"></span></button>');	
 						}else if(Jdata.status==2){
-							$('#likeBtn'+ctr).html('<button class="btn btn-default disabled"><span style="color:#337ab7;" class="glyphicon glyphicon-thumbs-up"></span></button>');	
+							$('#likeBtn'+ctr).html('<button class="btn btn-default disabled" id="btnID'+ctr+'"><span style="color:#337ab7;" class="glyphicon glyphicon-thumbs-up"></span></button>');	
 						}
 						$('#likeNum'+ctr).html('&nbsp;'+Jdata.result);
 						ctr++

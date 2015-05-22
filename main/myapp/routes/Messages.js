@@ -504,13 +504,13 @@ router.get('/rejectToBorrowMessageInLRMall/:msgKeyword?/:sorter?', library.ensur
 							localFlag[0]=true;
 						}
 					}
-					if(messages[j].Message.match(reg)){
+					if(messages[j].Message.search(reg)>-1){
 						localFlag[1]=true;
 					}
-					if(messages[j].FromBorrowRequest.StoryTitle.match(reg)){
+					if(messages[j].FromBorrowRequest.StoryTitle.search(reg)>-1){
 						localFlag[2]=true;
 					}
-					if(messages[j].CreatedBy.Username.match(reg)){
+					if(messages[j].CreatedBy.Username.search(reg)>-1){
 						localFlag[3]=true;
 					}
 					
@@ -616,13 +616,13 @@ router.get('/confirmToBorrowMessageInLRMall/:msgKeyword?/:sorter?', library.ensu
 							localFlag[0]=true;
 						}
 					}
-					if(messages[j].Message.match(reg)){
+					if(messages[j].Message.search(reg)>-1){
 						localFlag[1]=true;
 					}
-					if(messages[j].FromBorrowRequest.StoryTitle.match(reg)){
+					if(messages[j].FromBorrowRequest.StoryTitle.search(reg)>-1){
 						localFlag[2]=true;
 					}
-					if(messages[j].CreatedBy.Username.match(reg)){
+					if(messages[j].CreatedBy.Username.search(reg)>-1){
 						localFlag[3]=true;
 					}
 					
