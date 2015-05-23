@@ -5,29 +5,29 @@
 			<table width="100%">
 				<tr>
 					<td>
-						<div style="font-size:30px;<%if(json.TitleColor=="default"){%>color:#337ab7;<%}else if(json.TitleColor=="red"){%>color:#FF0000;<%}else if(json.TitleColor=="yellow"){%>color:#ffd900;<%}else if(json.TitleColor=="black"){%>color:#000000;<%}else if(json.TitleColor=="gray"){%>color:#808080;<%}%>">[<%if(json.Category=='general'){%>一般<%}else if(json.Category=='education'){%>教育<%}else if(json.Category=='family'){%>家庭<%}else if(json.Category=='tour'){%>旅遊<%}%>]&nbsp;&nbsp;<%=json.StoryTitle%></div>
-						<div style="font-size:20px;color:#0000D1;"> by <div id="aiteName" style="display:inline;"><%=json.CreatedBy.Username%></div></div>
+						<div style="font-size:30px;" <%if(json.TitleColor=="default"){%>class="default"<%}else if(json.TitleColor=="color1"){%>class="color1"<%}else if(json.TitleColor=="color3"){%>class="color3"<%}else if(json.TitleColor=="color2"){%>class="color2"<%}else if(json.TitleColor=="color4"){%>class="color4"<%}%>>[<%if(json.Category=='general'){%>一般<%}else if(json.Category=='education'){%>教育<%}else if(json.Category=='family'){%>家庭<%}else if(json.Category=='tour'){%>旅遊<%}%>]&nbsp;&nbsp;<%=json.StoryTitle%></div>
+						<div style="font-size:20px;"> by <div id="aiteName" style="display:inline;"><%=json.CreatedBy.Username%></div></div>
 					</td>
 					<td align="right">
-						<div style="font-size:20px;display:inline;color:#337ab7;" id="likeBtn">
+						<div style="font-size:20px;display:inline;" class="myTitle2" id="likeBtn">
 							<%if(!userName){ %>
 								<button class="btn btn-default" data-toggle="modal" data-target="#myModal" id="btnID">
-									<span style="color:#337ab7;" class="glyphicon glyphicon-thumbs-up"></span>
+									<span class="glyphicon glyphicon-thumbs-up myTitle2"></span>
 								</button>
 							<% }else{ %>
 								<%if(!ifSelf){ %>
 									<%if(!ifLiked){ %>
 										<button class="btn btn-default" onclick="like();" id="btnID">
-											<span style="color:#337ab7;" class="glyphicon glyphicon-thumbs-up"></span>
+											<span class="glyphicon glyphicon-thumbs-up myTitle2"></span>
 										</button>
 									<% }else{ %>
 										<button class="btn btn-default" onclick="unlike();" id="btnID">
-											<span style="color:#337ab7;" class="glyphicon glyphicon-remove"></span>
+											<span class="glyphicon glyphicon-remove myTitle2"></span>
 										</button>
 									<%}%>
 								<% }else{ %>
 									<button class="btn btn-default disabled" id="btnID">
-										<span style="color:#337ab7;" class="glyphicon glyphicon-thumbs-up"></span>
+										<span class="glyphicon glyphicon-thumbs-up myTitle2"></span>
 									</button>
 								<%}%>
 							<%}%>
@@ -50,7 +50,7 @@
 					<table width="100%" height="275px">
 						<tr>
 							<td>
-								<div style="color:#337ab7;">
+								<div class="myTitle">
 									需要金額：
 								</div>
 							</td>
@@ -64,7 +64,7 @@
 						<tr>
 						<tr>
 							<td>
-								<div style="color:#337ab7;">
+								<div class="myTitle">
 									已經借到：
 								</div>
 							</td>
@@ -78,7 +78,7 @@
 						<tr>
 						<tr>
 							<td>
-								<div style="color:#337ab7;">
+								<div class="myTitle">
 									還需要：
 								</div>
 							</td>
@@ -92,7 +92,7 @@
 						<tr>
 						<tr>
 							<td>
-								<div style="color:#337ab7;">
+								<div class="myTitle">
 									可接受年利率：
 								</div>							
 							</td>
@@ -106,7 +106,7 @@
 						<tr>
 						<tr>
 							<td>
-								<div style="color:#337ab7;">
+								<div class="myTitle">
 									可接受期數（單位/月）:
 								</div>
 							</td>
@@ -120,7 +120,7 @@
 						<tr>
 						<tr>
 							<td>
-								<div style="color:#337ab7;">
+								<div class="myTitle">
 									希望於幾號前借到錢：
 								</div>
 							</td>
@@ -134,7 +134,7 @@
 						<tr>
 						<tr>
 							<td>
-								<div style="color:#337ab7;">
+								<div class="myTitle">
 									信用等級：
 								</div>
 							</td>
@@ -151,11 +151,11 @@
 				<div class="tab-pane" id="tab3">
 					<div class="my_discussion" id="discussionDiv">
 						<%for(i=0;i<json.Discussion.length;i++){%>
-							<%=json.Discussion[i].CreatedBy.Username%>：
+							<div style="display:inline;" class="myTitle"><%=json.Discussion[i].CreatedBy.Username%>：</div>
 							<br>
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=json.Discussion[i].Content%>
 							<br>
-							<%=json.Discussion[i].Updated.getFullYear()%>/<%=json.Discussion[i].Updated.getMonth()+1%>/<%=json.Discussion[i].Updated.getDate()%>
+							<div style="display:inline;" class="myTitle"><%=json.Discussion[i].Updated.getFullYear()%>/<%=json.Discussion[i].Updated.getMonth()+1%>/<%=json.Discussion[i].Updated.getDate()%></div>
 							<br>
 							<br>
 						<%}%>
@@ -165,14 +165,14 @@
 							<input style="height:35px;" type="text" placeholder="留言..." class="form-control" onkeypress="if(event.keyCode==13){$('#myModal').modal('show');}">
 							<span class="input-group-btn">
 								<button style="height:35px;" class="btn btn-default" type="button" id="sendButton" data-toggle="modal" data-target="#myModal">
-									<span style="color:#337ab7;" class="glyphicon glyphicon-comment"></span>
+									<span class="glyphicon glyphicon-comment myTitle2"></span>
 								</button>
 							</span>
 						<% }else{ %>
 							<input id="iptCtr" style="height:35px;" type="text" placeholder="留言..." class="form-control" onkeypress="if(event.keyCode==13){sendComment();}">
 							<span class="input-group-btn">
 								<button style="height:35px;" onclick="sendComment();" class="btn btn-default" type="button" id="sendButton">
-									<span style="color:#337ab7;" class="glyphicon glyphicon-comment"></span>
+									<span class="glyphicon glyphicon-comment myTitle2"></span>
 								</button>
 							</span>
 						<%}%>
@@ -185,7 +185,7 @@
 					<td>
 						<%if(!userName){ %>
 							<button class="btn btn-default" data-toggle="modal" data-target="#myModal">
-								<span style="color:#337ab7;">我想借錢給此人</span>
+								<span class="myTitle2">我想借錢給此人</span>
 							</button>
 						<% }else{ %>
 							<%if(!ifSelf){ %>
@@ -193,30 +193,30 @@
 									<%if(!jsonMessage){ %>
 										<%if(!json.IfReadable){ %>
 											<button class="btn btn-default disabled">
-												<span style="color:#337ab7;">該故事已封存</span>
+												<span class="myTitle2">該故事已封存</span>
 											</button>
 										<%}else{%>
 											<button class="btn btn-default" data-toggle="modal" data-target="#hendLendModal">
-												<span style="color:#337ab7;">我想借錢給此人</span>
+												<span class="myTitle2">我想借錢給此人</span>
 											</button>
 										<%}%>
 									<% }else{ %>
 										<%if(!json.IfReadable){ %>
 											<button class="btn btn-default" data-toggle="modal" data-target="#hendLendModal">
-												<span style="color:#337ab7;">該故事已封存，但您仍可查看訊息</span>
+												<span class="myTitle2">該故事已封存，但您仍可查看訊息</span>
 											</button>
 										<%}else{%>
 											<%if(jsonMessage.Status=='Confirmed'){ %>
 												<button class="btn btn-default" data-toggle="modal" data-target="#hendLendModal">
-													<span style="color:#337ab7;">您的出借訊息已被同意</span>
+													<span class="myTitle2">您的出借訊息已被同意</span>
 												</button>
 											<% }else if(jsonMessage.Status=='Rejected'){ %>
 												<button class="btn btn-default" data-toggle="modal" data-target="#hendLendModal">
-													<span style="color:#337ab7;">您的出借訊息已被婉拒</span>
+													<span class="myTitle2">您的出借訊息已被婉拒</span>
 												</button>
 											<% }else if(jsonMessage.Status=='NotConfirmed'){ %>
 												<button class="btn btn-default" data-toggle="modal" data-target="#hendLendModal">
-													<span style="color:#337ab7;">我想更新出借訊息</span>
+													<span class="myTitle2">我想更新出借訊息</span>
 												</button>
 											<%}%>
 										<%}%>
@@ -224,36 +224,36 @@
 								<%}else{%>
 									<%if(!json.IfReadable){ %>
 										<button class="btn btn-default"  data-toggle="modal" data-target="#confirmModal">
-											<span style="color:#337ab7;">該故事已封存，但您仍可查看訊息</span>
+											<span class="myTitle2">該故事已封存，但您仍可查看訊息</span>
 										</button>
 									<%}else{%>
 										<%if(jsonBorrowMessage.Status=='Confirmed'){ %>
 											<button class="btn btn-default" data-toggle="modal" data-target="#confirmModal">
-												<span style="color:#337ab7;">您已同意來自此人的借款請求</span>
+												<span class="myTitle2">您已同意來自此人的借款請求</span>
 											</button>
 										<% }else if(jsonBorrowMessage.Status=='Rejected'){ %>
 											<button class="btn btn-default" data-toggle="modal" data-target="#confirmModal">
-												<span style="color:#337ab7;">您已婉拒來自此人的借款請求</span>
+												<span class="myTitle2">您已婉拒來自此人的借款請求</span>
 											</button>
 										<% }else if(jsonBorrowMessage.Status=='NotConfirmed'){ %>
 											<button class="btn btn-default" data-toggle="modal" data-target="#confirmModal">
-												<span style="color:#337ab7;">查看來自此人的訊息</span>
+												<span class="myTitle2">查看來自此人的訊息</span>
 											</button>
 										<%}%>
 									<%}%>
 								<%}%>
 							<%}else{%>
 								<button class="btn btn-default disabled">
-										<span style="color:#337ab7;">此故事為您所有</span>
+										<span class="myTitle2">此故事為您所有</span>
 								</button>
 							<%}%>
 						<%}%>
 					</td>
 					<td align="right">
-						<div style="color:#337ab7;">
+						<div>
 							Updated：<div style="display:inline;" id="updatedDate"><%=json.Updated.getFullYear()%>/<%=json.Updated.getMonth()+1%>/<%=json.Updated.getDate()%></div>
 						</div>
-						<div style="color:#337ab7;">
+						<div>
 							Created：<%=json.Created.getFullYear()%>/<%=json.Created.getMonth()+1%>/<%=json.Created.getDate()%></div>
 						</div>
 					</td>
@@ -451,6 +451,13 @@
 									<textarea class="form-control" name="Message" rows="3" readonly="readonly"><%=jsonMessage.Message%></textarea>
 									<br>
 								</div>
+								<div class="modal-footer">
+									<div class="btn-toolbar" role="toolbar">
+										<div class="btn-group" role="group">
+											<button type="button" class="btn btn-default" data-dismiss="modal">關閉</button>
+										</div>
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -638,6 +645,13 @@
 								<textarea class="form-control" name="Message" rows="3" readonly="readonly"><%=jsonBorrowMessage.Message%></textarea>
 								<br>
 							</div>
+							<div class="modal-footer">
+								<div class="btn-toolbar" role="toolbar">
+									<div class="btn-group" role="group">
+										<button type="button" class="btn btn-default" data-dismiss="modal">關閉</button>
+									</div>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -823,13 +837,13 @@
 							var dateObj=new Date(Jdata.date);
 							$('#updatedDate').html(dateObj.getFullYear()+'/'+(dateObj.getMonth()+1)+'/'+dateObj.getDate());
 							if(Jdata.status==-1){
-								$('#likeBtn').html('<button class="btn btn-default" data-toggle="modal" data-target="#myModal" id="btnID"><span style="color:#337ab7;" class="glyphicon glyphicon-thumbs-up"></span></button>');	
+								$('#likeBtn').html('<button class="btn btn-default" data-toggle="modal" data-target="#myModal" id="btnID"><span class="glyphicon glyphicon-thumbs-up myTitle2"></span></button>');	
 							}else if(Jdata.status==0){
-								$('#likeBtn').html('<button class="btn btn-default" onclick="like();" id="btnID"><span style="color:#337ab7;" class="glyphicon glyphicon-thumbs-up"></span></button>');	
+								$('#likeBtn').html('<button class="btn btn-default" onclick="like();" id="btnID"><span class="glyphicon glyphicon-thumbs-up myTitle2"></span></button>');	
 							}else if(Jdata.status==1){
-								$('#likeBtn').html('<button class="btn btn-default" onclick="unlike();" id="btnID"><span style="color:#337ab7;" class="glyphicon glyphicon-remove"></span></button>');	
+								$('#likeBtn').html('<button class="btn btn-default" onclick="unlike();" id="btnID"><span class="glyphicon glyphicon-remove myTitle2"></span></button>');	
 							}else if(Jdata.status==2){
-								$('#likeBtn').html('<button class="btn btn-default disabled" id="btnID"><span style="color:#337ab7;" class="glyphicon glyphicon-thumbs-up"></span></button>');	
+								$('#likeBtn').html('<button class="btn btn-default disabled" id="btnID"><span class="glyphicon glyphicon-thumbs-up myTitle2"></span></button>');	
 							}
 							$('#likeNum').html('&nbsp;'+Jdata.result);
 						}else{
@@ -852,7 +866,7 @@
 								var year=dateObj.getFullYear();
 								var month=dateObj.getMonth()+1;
 								var date=dateObj.getDate();
-								$('#discussionDiv').append(Jdata.result[i].CreatedBy.Username+'：<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+Jdata.result[i].Content+'<br>'+year+'/'+month+'/'+date+'<br><br>');
+								$('#discussionDiv').append('<div style="display:inline;" class="myTitle">'+Jdata.result[i].CreatedBy.Username+'：</div><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+Jdata.result[i].Content+'<br><div style="display:inline;" class="myTitle">'+year+'/'+month+'/'+date+'</div><br><br>');
 							}
 							$('#iptCtr').val('');
 						}else{
@@ -914,7 +928,7 @@
 									var year=dateObj.getFullYear();
 									var month=dateObj.getMonth()+1;
 									var date=dateObj.getDate();
-									$('#discussionDiv').append(Jdata.result[i].CreatedBy.Username+'：<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+Jdata.result[i].Content+'<br>'+year+'/'+month+'/'+date+'<br><br>');
+									$('#discussionDiv').append('<div style="display:inline;" class="myTitle">'+Jdata.result[i].CreatedBy.Username+'：</div><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+Jdata.result[i].Content+'<br><div style="display:inline;" class="myTitle">'+year+'/'+month+'/'+date+'</div><br><br>');
 								}
 								$('#discussionDiv').stop().animate({
 								  scrollTop: $("#discussionDiv")[0].scrollHeight
@@ -962,7 +976,7 @@
 							if(Jdata.success){
 								var td=new Date();
 								$('#updatedDate').html(td.getFullYear()+'/'+(td.getMonth()+1)+'/'+td.getDate());
-								$('#likeBtn').html('<button class="btn btn-default" onclick="unlike();" id="btnID"><span style="color:#337ab7;" class="glyphicon glyphicon-remove"></span></button>');
+								$('#likeBtn').html('<button class="btn btn-default" onclick="unlike();" id="btnID"><span class="glyphicon glyphicon-remove myTitle2"></span></button>');
 								$('#likeNum').html('&nbsp;'+Jdata.result);
 							}else{
 								alert('something wrong.');
@@ -995,7 +1009,7 @@
 							if(Jdata.success){
 								var td=new Date();
 								$('#updatedDate').html(td.getFullYear()+'/'+(td.getMonth()+1)+'/'+td.getDate());
-								$('#likeBtn').html('<button class="btn btn-default" onclick="like();" id="btnID"><span style="color:#337ab7;" class="glyphicon glyphicon-thumbs-up"></span></button>');
+								$('#likeBtn').html('<button class="btn btn-default" onclick="like();" id="btnID"><span class="glyphicon glyphicon-thumbs-up myTitle2"></span></button>');
 								$('#likeNum').html('&nbsp;'+Jdata.result);
 							}else{
 								alert('something wrong.');

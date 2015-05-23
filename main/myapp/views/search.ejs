@@ -3,8 +3,8 @@
 <div class="container">
 	<div class="row">
 		<div class="col-md-9">
-			<div style="font-size:30pt;color:#337ab7;">搜尋結果</div>
-				<div style="font-size:20pt;color:#0000D1;">&nbsp;<%=totalResultNum%> result</div>
+			<div style="font-size:30pt;"><img src="/images/search.png " height="40px" width="40px"/>&nbsp;故事列表</div>
+				<div style="font-size:20pt;">&nbsp;<%=totalResultNum%> result</div>
 				<br>
 				<div class="input-group">
 					<input type="text" style="height:40px;" class="form-control" id="subKeywordIpt" placeholder="搜尋借入者的名稱或故事標題、內容" value="<%=keywordDefault%>" onkeypress="if(event.keyCode==13){ window.open('/lender/search?keyword='+encodeURIComponent($('#subKeywordIpt').val())+'&action='+encodeURIComponent($('#sorter0').text())+'&category='+encodeURIComponent($('#subCategory0').text())+'&filter='+encodeURIComponent($('#filter0').text())+'&lbound='+encodeURIComponent($('#lbound').val())+'&ubound='+encodeURIComponent($('#ubound').val())+'&page=1','_self');}">
@@ -70,25 +70,25 @@
 					<table style="margin-bottom: 0px;" class="table" width="100%">
 						<tr>
 							<td style="border-top-style: none;">
-								<div style="font-size:15px;color:#337ab7;display:inline;">
+								<div style="font-size:15px;display:inline;">
 									金額：<%=jsonArray[i].MoneyToBorrow.toFixed(0)%>元
 								</div>&nbsp;&nbsp;&nbsp;&nbsp;
-								<div style="font-size:15px;color:#337ab7;display:inline;">
+								<div style="font-size:15px;display:inline;">
 									年利率：<%=(jsonArray[i].MaxInterestRateAccepted*100).toFixed(2)%>%
 								</div>&nbsp;&nbsp;&nbsp;&nbsp;
-								<div style="font-size:15px;color:#337ab7;display:inline;">
+								<div style="font-size:15px;display:inline;">
 									期數：<%=jsonArray[i].MonthPeriodAccepted.toFixed(0)%>個月
 								</div>&nbsp;&nbsp;&nbsp;&nbsp;
-								<div style="font-size:15px;color:#337ab7;display:inline;">
+								<div style="font-size:15px;display:inline;">
 									信用：<%=jsonArray[i].Level.toFixed(0)%>級
 								</div>
 							</td>
 							<td style="border-top-style: none;" align="right">
-								<div style="font-size:15px;color:#337ab7;display:inline;">
+								<div style="font-size:15px;display:inline;">
 									Deadline：<%=jsonArray[i].TimeLimit.getFullYear()%>/<%=jsonArray[i].TimeLimit.getMonth()+1%>/<%=jsonArray[i].TimeLimit.getDate()%>
 								</div>
 								&nbsp;&nbsp;&nbsp;&nbsp;
-								<div style="font-size:15px;color:#337ab7;display:inline;">
+								<div style="font-size:15px;display:inline;">
 									Created：<%=jsonArray[i].Created.getFullYear()%>/<%=jsonArray[i].Created.getMonth()+1%>/<%=jsonArray[i].Created.getDate()%>
 								</div>
 							</td>
@@ -100,29 +100,29 @@
 							<table width="100%">
 								<tr>
 									<td>
-										<a style="font-size:25px;<%if(jsonArray[i].TitleColor=="red"){%>color:#FF0000;<%}else if(jsonArray[i].TitleColor=="yellow"){%>color:#ffd900;<%}else if(jsonArray[i].TitleColor=="black"){%>color:#000000;<%}else if(jsonArray[i].TitleColor=="gray"){%>color:#808080;<%}%>" href="/lender/story?id=<%=jsonArray[i]._id%>">[<%if(jsonArray[i].Category=='general'){%>一般<%}else if(jsonArray[i].Category=='education'){%>教育<%}else if(jsonArray[i].Category=='family'){%>家庭<%}else if(jsonArray[i].Category=='tour'){%>旅遊<%}%>]&nbsp;&nbsp;<%=jsonArray[i].StoryTitle%></a>
-										<div style="font-size:15px;color:#0000D1;">by <%=jsonArray[i].CreatedBy.Username%></div>
+										<a style="font-size:25px;" <%if(jsonArray[i].TitleColor=="color1"){%>class="color1"<%}else if(jsonArray[i].TitleColor=="color3"){%>class="color3"<%}else if(jsonArray[i].TitleColor=="color2"){%>class="color2"<%}else if(jsonArray[i].TitleColor=="color4"){%>class="color4"<%}%> href="/lender/story?id=<%=jsonArray[i]._id%>">[<%if(jsonArray[i].Category=='general'){%>一般<%}else if(jsonArray[i].Category=='education'){%>教育<%}else if(jsonArray[i].Category=='family'){%>家庭<%}else if(jsonArray[i].Category=='tour'){%>旅遊<%}%>]&nbsp;&nbsp;<%=jsonArray[i].StoryTitle%></a>
+										<div style="font-size:15px;" class="myTitle">by <%=jsonArray[i].CreatedBy.Username%></div>
 									</td>
 									<td align="right">
-										<div style="font-size:20px;display:inline;color:#337ab7;" id="likeBtn<%=i%>">
+										<div style="font-size:20px;display:inline;" class="myTitle2" id="likeBtn<%=i%>">
 											<%if(!userName){ %>
 												<button class="btn btn-default" data-toggle="modal" data-target="#myModal" id="btnID<%=i%>">
-													<span style="color:#337ab7;" class="glyphicon glyphicon-thumbs-up"></span>
+													<span class="glyphicon glyphicon-thumbs-up myTitle2"></span>
 												</button>
 											<% }else{ %>
 												<%if(jsonArray[i].TitleColor!="gray"){ %>
 													<%if(!jsonArray[i].ifLiked){ %>
 														<button class="btn btn-default" onclick="like(<%=i%>);" id="btnID<%=i%>">
-															<span style="color:#337ab7;" class="glyphicon glyphicon-thumbs-up"></span>
+															<span class="glyphicon glyphicon-thumbs-up myTitle2"></span>
 														</button>
 													<% }else{ %>
 														<button class="btn btn-default" onclick="unlike(<%=i%>);" id="btnID<%=i%>">
-															<span style="color:#337ab7;" class="glyphicon glyphicon-remove"></span>
+															<span class="glyphicon glyphicon-remove myTitle2"></span>
 														</button>
 													<%}%>
 												<% }else{ %>
 													<button class="btn btn-default disabled" id="btnID<%=i%>">
-														<span style="color:#337ab7;" class="glyphicon glyphicon-thumbs-up"></span>
+														<span class="glyphicon glyphicon-thumbs-up myTitle2"></span>
 													</button>
 												<%}%>
 											<%}%>
@@ -236,13 +236,13 @@
 				success: function(Jdata) {
 					if(Jdata.success){
 						if(Jdata.status==-1){
-							$('#likeBtn'+ctr).html('<button class="btn btn-default" data-toggle="modal" data-target="#myModal" id="btnID'+ctr+'"><span style="color:#337ab7;" class="glyphicon glyphicon-thumbs-up"></span></button>');	
+							$('#likeBtn'+ctr).html('<button class="btn btn-default" data-toggle="modal" data-target="#myModal" id="btnID'+ctr+'"><span class="glyphicon glyphicon-thumbs-up myTitle2"></span></button>');	
 						}else if(Jdata.status==0){
-							$('#likeBtn'+ctr).html('<button class="btn btn-default" onclick="like('+ctr+');" id="btnID'+ctr+'"><span style="color:#337ab7;" class="glyphicon glyphicon-thumbs-up"></span></button>');	
+							$('#likeBtn'+ctr).html('<button class="btn btn-default" onclick="like('+ctr+');" id="btnID'+ctr+'"><span class="glyphicon glyphicon-thumbs-up myTitle2"></span></button>');	
 						}else if(Jdata.status==1){
-							$('#likeBtn'+ctr).html('<button class="btn btn-default" onclick="unlike('+ctr+');" id="btnID'+ctr+'"><span style="color:#337ab7;" class="glyphicon glyphicon-remove"></span></button>');	
+							$('#likeBtn'+ctr).html('<button class="btn btn-default" onclick="unlike('+ctr+');" id="btnID'+ctr+'"><span class="glyphicon glyphicon-remove myTitle2"></span></button>');	
 						}else if(Jdata.status==2){
-							$('#likeBtn'+ctr).html('<button class="btn btn-default disabled" id="btnID'+ctr+'"><span style="color:#337ab7;" class="glyphicon glyphicon-thumbs-up"></span></button>');	
+							$('#likeBtn'+ctr).html('<button class="btn btn-default disabled" id="btnID'+ctr+'"><span class="glyphicon glyphicon-thumbs-up myTitle2"></span></button>');	
 						}
 						$('#likeNum'+ctr).html('&nbsp;'+Jdata.result);
 						ctr++
@@ -278,7 +278,7 @@
 					dataType: 'json',
 					success: function(Jdata) {
 						if(Jdata.success){
-							$('#likeBtn'+index).html('<button class="btn btn-default" onclick="unlike('+index+');" id="btnID'+index+'"><span style="color:#337ab7;" class="glyphicon glyphicon-remove"></span></button>');
+							$('#likeBtn'+index).html('<button class="btn btn-default" onclick="unlike('+index+');" id="btnID'+index+'"><span class="glyphicon glyphicon-remove myTitle2"></span></button>');
 							$('#likeNum'+index).html('&nbsp;'+Jdata.result);
 						}else{
 							alert('something wrong.');
@@ -309,7 +309,7 @@
 					dataType: 'json',
 					success: function(Jdata) {
 						if(Jdata.success){
-							$('#likeBtn'+index).html('<button class="btn btn-default" onclick="like('+index+');" id="btnID'+index+'"><span style="color:#337ab7;" class="glyphicon glyphicon-thumbs-up"></span></button>');
+							$('#likeBtn'+index).html('<button class="btn btn-default" onclick="like('+index+');" id="btnID'+index+'"><span class="glyphicon glyphicon-thumbs-up myTitle2"></span></button>');
 							$('#likeNum'+index).html('&nbsp;'+Jdata.result);
 						}else{
 							alert('something wrong.');

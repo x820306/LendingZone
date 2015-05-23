@@ -8,7 +8,7 @@
 }
 
 .my-footer{
-	border-top: 1px solid #e5e5e5;
+	border-top: 1px solid #eca752;
 	padding-top: 40px;
 	padding-bottom: 40px;
 	margin-top: 50px;
@@ -25,6 +25,7 @@
 }
 
 .my-tab-content{
+	background:#fff9e5;
 	border-left: 1px solid #ddd;
 	border-right: 1px solid #ddd;
 	border-bottom: 1px solid #ddd;
@@ -68,4 +69,56 @@
     border-color: rgb(255, 239, 213) transparent transparent transparent;
     top: 100%;
     left: 40%;
+}
+
+input{
+	background:#fff9e5;
+}
+
+select{
+	background:#fff9e5;
+}
+
+.modal-header {
+   background:#f9cb9c;
+}
+
+.modal-footer {
+   background:#f9cb9c;
+}
+
+.myThead {
+   background:#f9cb9c;
+}
+
+.myTbody {
+   background:#fff9e5;
+}
+
+.myTitle {
+   color:#be7214;
+}
+
+.myTitle2 {
+   color:#be7214;
+}
+
+.default{
+	color:#ff0080;
+}
+.color1{
+	color:#a349a4;
+}
+.color2{
+	color:#008000;
+}
+.color3{
+	color:#0000ff;
+}
+.color4{
+	color:#808080;
+}
+
+.btn-default:focus, .btn-default:hover {
+  background-color: #f2c166;
 }

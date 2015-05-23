@@ -2,8 +2,8 @@
 <div class="container">
 	<div class="row">
 		<div class="col-md-9">
-			<div style="font-size:30pt;color:#337ab7;">自動借出設定列表</div>
-				<div style="font-size:20pt;color:#0000D1;">&nbsp;<%=totalResultNum%> result</div>
+			<div style="font-size:30pt;">自動借出設定列表</div>
+				<div style="font-size:20pt;">&nbsp;<%=totalResultNum%> result</div>
 				<br>
 				<div class="btn-group">
 					<div class="btn-group">
@@ -32,14 +32,14 @@
 					<% for(var i=0; i<jsonLends.length; i++) { %>
 						<div style="height: 350px;margin-bottom:0px;" class="panel panel-default pd">
 							<div class="panel-body">
-								<div style="font-size:25px;color:#0000D1;display:inline;"><%=jsonLends[i].CreatedBy.Username%></div>
+								<div style="font-size:25px;display:inline;" class="myTitle"><%=jsonLends[i].CreatedBy.Username%></div>
 								<br>
 								<br>
 								<div class="col-md-6">
 									<table width="100%" height="250px">
 										<tr>
 											<td>
-												<div style="color:#337ab7;">
+												<div class="myTitle">
 													&nbsp;&nbsp;&nbsp;&nbsp;最大可借出金額：
 												</div>
 											</td>
@@ -53,7 +53,7 @@
 										<tr>
 										<tr>
 											<td>
-												<div style="color:#337ab7;">
+												<div class="myTitle">
 													&nbsp;&nbsp;&nbsp;&nbsp;最低欲借出年利率：
 												</div>
 											</td>
@@ -67,7 +67,7 @@
 										<tr>
 										<tr>
 											<td>
-												<div style="color:#337ab7;&nbsp;&nbsp;&nbsp;&nbsp;">
+												<div class="myTitle">
 													&nbsp;&nbsp;&nbsp;&nbsp;最低欲借出期數：
 												</div>
 											</td>
@@ -81,7 +81,7 @@
 										<tr>
 										<tr>
 											<td>
-												<div style="color:#337ab7;">
+												<div class="myTitle">
 													&nbsp;&nbsp;&nbsp;&nbsp;最低可接受信用等級：
 												</div>
 											</td>
@@ -95,7 +95,7 @@
 										<tr>
 										<tr>
 											<td>
-												<div style="color:#337ab7;">
+												<div class="myTitle">
 													&nbsp;&nbsp;&nbsp;&nbsp;最低可接受總利息
 												</div>
 											</td>
@@ -113,7 +113,7 @@
 									<table width="100%" height="250px">		
 										<tr>
 											<td>
-												<div style="color:#337ab7;">
+												<div class="myTitle">
 													&nbsp;&nbsp;&nbsp;&nbsp;最低可接受每期平均利息
 												</div>
 											</td>
@@ -127,7 +127,7 @@
 										<tr>
 										<tr>
 											<td>
-												<div style="color:#337ab7;">
+												<div class="myTitle">
 													&nbsp;&nbsp;&nbsp;&nbsp;最低可接受每期平均本利和
 												</div>
 											</td>
@@ -141,7 +141,7 @@
 										<tr>
 										<tr>
 											<td>
-												<div style="color:#337ab7;">
+												<div class="myTitle">
 													&nbsp;&nbsp;&nbsp;&nbsp;最低可接受總利息/最初本金比
 												</div>
 											</td>
@@ -155,7 +155,7 @@
 										<tr>
 										<tr>
 											<td>
-												<div style="color:#337ab7;">
+												<div class="myTitle">
 													&nbsp;&nbsp;&nbsp;&nbsp;自動同意借款請求：
 												</div>
 											</td>
@@ -179,7 +179,7 @@
 										<tr>
 										<tr>
 											<td>
-												<div style="color:#337ab7;">
+												<div class="myTitle">
 													&nbsp;&nbsp;&nbsp;&nbsp;自動同意優先順序:
 												</div>
 											</td>
@@ -218,7 +218,7 @@
 					<table width="100%">
 					<tr>
 						<td align="right">
-							<div style="color:#337ab7;">
+							<div>
 								Updated：<%=jsonLends[i].Updated.getFullYear()%>/<%=jsonLends[i].Updated.getMonth()+1%>/<%=jsonLends[i].Updated.getDate()%>
 							</div>
 						</td>

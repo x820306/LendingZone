@@ -173,20 +173,20 @@ router.get('/search/:keyword?/:action?/:page?',library.newMsgChecker, function (
 								for(j=0;j<resArrays[i].Message.length;j++){
 									if((req.user._id==resArrays[i].Message[j].CreatedBy)&&(resArrays[i].Message[j].Type=="toLend")){
 										if(resArrays[i].Message[j].Status=="NotConfirmed"){
-											resArrays[i].TitleColor='red';
+											resArrays[i].TitleColor='color1';
 										}else{
-											resArrays[i].TitleColor='black';
+											resArrays[i].TitleColor='color2';
 										}
 									}else if((req.user._id==resArrays[i].Message[j].SendTo)&&(resArrays[i].Message[j].Type=="toBorrow")){
 										if(resArrays[i].Message[j].Status=="NotConfirmed"){
-											resArrays[i].TitleColor='yellow';
+											resArrays[i].TitleColor='color3';
 										}else{
-											resArrays[i].TitleColor='black';
+											resArrays[i].TitleColor='color2';
 										}
 									}
 								}
 								if(req.user._id==resArrays[i].CreatedBy._id){
-									resArrays[i].TitleColor='gray';
+									resArrays[i].TitleColor='color4';
 								}
 								resArrays[i].ifLiked=false;
 								for(j=0;j<resArrays[i].Likes.length;j++){
@@ -243,7 +243,7 @@ router.get('/story/:id?',library.newMsgChecker, function (req, res) {
 							res.render('story',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,ifSelf:ifSelfValue,ifLiked:ifLikedValue,json:borrow,jsonMessage:null,jsonBorrowMessage:null,jsonLend:null,MoneyInBankAccountValue:0,MoneyLended:0});
 						}else{
 							if(req.user._id==borrow.CreatedBy._id){
-								borrow.TitleColor='gray';
+								borrow.TitleColor='color4';
 								ifSelfValue=true;
 								res.render('story',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,ifSelf:ifSelfValue,ifLiked:ifLikedValue,json:borrow,jsonMessage:null,jsonBorrowMessage:null,jsonLend:null,MoneyInBankAccountValue:0,MoneyLended:0});
 							}else{
@@ -278,19 +278,19 @@ router.get('/story/:id?',library.newMsgChecker, function (req, res) {
 														if((req.user._id==borrow.Message[j].CreatedBy)&&(borrow.Message[j].Type=="toLend")){
 															message=borrow.Message[j];
 															if(message.Status=="NotConfirmed"){
-																borrow.TitleColor='red';
+																borrow.TitleColor='color1';
 																break;
 															}else{
-																borrow.TitleColor='black';
+																borrow.TitleColor='color2';
 																break;
 															}
 														}else if((req.user._id==borrow.Message[j].SendTo)&&(borrow.Message[j].Type=="toBorrow")){
 															borrowMessage=borrow.Message[j];
 															if(borrowMessage.Status=="NotConfirmed"){
-																borrow.TitleColor='yellow';
+																borrow.TitleColor='color3';
 																break;
 															}else{
-																borrow.TitleColor='black';
+																borrow.TitleColor='color2';
 																break;
 															}
 														}
@@ -1022,7 +1022,7 @@ router.get('/lenderReceiveMessages/:msgKeyword?/:filter?/:sorter?/:page?', libra
 						res.render('lenderReceiveMessages',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,msgKeywordDefault:msgKeyword,filterDefault:filter,sorterDefault:sorter,jsonMessage:resArrays,jsonLend:null,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,value1AllDefault:value1ALL,value2AllDefault:value2ALL,value3AllDefault:value3ALL,value4AllDefault:value4ALL,insuranceRate:library.insuranceRate});
 					}
 				}else{
-					var divider=2;
+					var divider=10;
 					pageNum=Math.ceil(totalResultNumber/divider);
 					
 					if(pageNum<targetPage){

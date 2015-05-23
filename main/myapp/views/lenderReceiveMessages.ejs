@@ -2,8 +2,8 @@
 <div class="container"><div class="container">
 	<div class="row">
 		<div class="col-md-9">
-			<div style="font-size:30pt;color:#337ab7;">借出者收到之訊息 - <%=filterDefault%></div>
-				<div style="font-size:20pt;color:#0000D1;">&nbsp;<%=totalResultNum%> result</div>
+			<div style="font-size:30pt;">借出者收到之訊息 - <%=filterDefault%></div>
+				<div style="font-size:20pt;">&nbsp;<%=totalResultNum%> result</div>
 				<br>
 				<div class="input-group">
 					<input type="text" style="height:40px;" class="form-control" id="msgKeywordIpt" placeholder="搜尋訊息內容、故事標題或用戶名稱" value="<%=msgKeywordDefault%>" onkeypress="if(event.keyCode==13){ window.open('/lender/lenderReceiveMessages?msgKeyword='+encodeURIComponent($('#msgKeywordIpt').val())+'&filter='+encodeURIComponent($('#filter0').text())+'&sorter='+encodeURIComponent($('#sorter0').text())+'&page=1','_self');}">
@@ -54,14 +54,14 @@
 					<% if(filterDefault=='未確認'){%>
 						<br>
 						<table style="display:inline;" class="table">
-							<thead>
+							<thead class="myThead">
 								<tr>
 									<th>
 									您目前的自動借出額度
 									</th>
 								</tr>
 							</thead>
-							<tbody>
+							<tbody class="myTbody">
 								<tr>
 									<td>
 										<%if(jsonLend){%>
@@ -76,7 +76,7 @@
 						<%if(pageNumber>1){%>
 						<br>
 						<table style="display:inline;" class="table">
-							<thead>
+							<thead class="myThead">
 								<tr>
 									<th>
 									全部合計借出金額
@@ -95,7 +95,7 @@
 									</th>
 								</tr>
 							</thead>
-							<tbody>
+							<tbody class="myTbody">
 								<tr>
 									<td>
 									<div style="display:inline;" id="value1All"><%=value1AllDefault.toFixed(0)%></div><div style="display:inline;">元</div>
@@ -116,8 +116,8 @@
 							</tbody>
 						</table>
 						<br>
-						<button type="button" class="btn btn-default" data-toggle="modal" data-target="#chkModal1">
-							<span style="color:#337ab7;">同意全部收到之請求</span>
+						<button type="button" class="btn btn-info" data-toggle="modal" data-target="#chkModal1">
+							同意全部收到之請求
 						</button>
 						<div class="modal fade" id="chkModal1">
 							<div class="modal-dialog modal-sm"">
@@ -144,8 +144,8 @@
 							</div>
 						</div>
 						&nbsp;&nbsp;
-						<button type="button" class="btn btn-default" data-toggle="modal" data-target="#chkModal2">
-							<span style="color:#337ab7;">婉拒全部收到之請求</span>
+						<button type="button" class="btn btn-danger" data-toggle="modal" data-target="#chkModal2">
+							婉拒全部收到之請求
 						</button>
 						<div class="modal fade" id="chkModal2">
 							<div class="modal-dialog modal-sm"">
@@ -162,7 +162,7 @@
 									</div>
 									<div class="modal-footer">
 										<a href="/Messages/rejectToBorrowMessageInLRMall?msgKeyword=<%=encodeURIComponent(msgKeywordDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>" id="rAll">
-											<button class="btn btn-primary" id="rejectAllBtn" onclick="rejectAll();">
+											<button class="btn btn-danger" id="rejectAllBtn" onclick="rejectAll();">
 												確定
 											</button>
 										</a>
@@ -175,7 +175,7 @@
 						<%}%>
 						<br>
 						<table style="display:inline;" class="table">
-							<thead>
+							<thead class="myThead">
 								<tr>
 									<th>
 									已選合計借出金額
@@ -194,7 +194,7 @@
 									</th>
 								</tr>
 							</thead>
-							<tbody>
+							<tbody class="myTbody">
 								<tr>
 									<td>
 										<div style="display:inline;" id="value1">0</div><div style="display:inline;">元</div>
@@ -216,8 +216,8 @@
 						</table>
 						<br>
 						<input type="checkbox" id="selectAll" onclick="selectAllFun();"> 全選&nbsp;&nbsp;&nbsp;&nbsp;
-						<button type="button" class="btn btn-default" onclick="checkAndOpenModal('#chkModal3')">
-							<span style="color:#337ab7;">同意</span>
+						<button type="button" class="btn btn-info" onclick="checkAndOpenModal('#chkModal3')">
+							同意
 						</button>
 						<div class="modal fade" id="chkModal3">
 							<div class="modal-dialog modal-sm"">
@@ -242,8 +242,8 @@
 							</div>
 						</div>
 						&nbsp;&nbsp;
-						<button type="button" class="btn btn-default" onclick="checkAndOpenModal('#chkModal4')">
-							<span style="color:#337ab7;">婉拒</span>
+						<button type="button" class="btn btn-danger" onclick="checkAndOpenModal('#chkModal4')">
+							婉拒
 						</button>
 						<div class="modal fade" id="chkModal4">
 							<div class="modal-dialog modal-sm"">
@@ -259,7 +259,7 @@
 										<br>
 									</div>
 									<div class="modal-footer">
-										<button class="btn btn-primary" id="rejectBtn" onclick="reject();">
+										<button class="btn btn-danger" id="rejectBtn" onclick="reject();">
 											確定
 										</button>
 										<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
@@ -305,7 +305,7 @@
 					<div style="height:310px;" class="tab-content my-tab-content">
 						<div class="tab-pane active" id="tab1<%=i%>">
 							<div style="font-size:25px;display:inline;">來自 </div>
-							<div style="font-size:25px;color:#0000D1;display:inline;"><%=jsonMessage[i].CreatedBy.Username%></div>
+							<div style="font-size:25px;display:inline;" class="myTitle"><%=jsonMessage[i].CreatedBy.Username%></div>
 							<br>
 							在 <a style="font-size:15px;" href="/lender/story?id=<%=jsonMessage[i].FromBorrowRequest._id%>"><%=jsonMessage[i].FromBorrowRequest.StoryTitle%></a>
 							<br>
@@ -319,7 +319,7 @@
 								<table width="100%" height="270px">
 									<tr>
 										<td>
-											<div style="color:#337ab7;">
+											<div  class="myTitle">
 												欲借入金額：
 											</div>
 										</td>
@@ -333,7 +333,7 @@
 									<tr>
 									<tr>
 										<td>
-											<div style="color:#337ab7;">
+											<div class="myTitle">
 												欲借入年利率：
 											</div>
 										</td>
@@ -347,7 +347,7 @@
 									<tr>
 									<tr>
 										<td>
-											<div style="color:#337ab7;">
+											<div class="myTitle">
 												欲借入期數：
 											</div>
 										</td>
@@ -361,7 +361,7 @@
 									<tr>
 									<tr>
 										<td>
-											<div style="color:#337ab7;">
+											<div class="myTitle">
 												對方信用等級：
 											</div>
 										</td>
@@ -379,7 +379,7 @@
 								<table width="100%" height="270px">	
 									<tr>
 										<td>
-											<div style="color:#337ab7;">
+											<div class="myTitle">
 												預計總利息：
 											</div>
 										</td>
@@ -393,7 +393,7 @@
 									<tr>
 									<tr>
 										<td>
-											<div style="color:#337ab7;">
+											<div class="myTitle">
 												預計每期平均利息：
 											</div>
 										</td>
@@ -407,7 +407,7 @@
 									<tr>
 									<tr>
 										<td>
-											<div style="color:#337ab7;">
+											<div class="myTitle">
 												預計每期平均本利和：
 											</div>
 										</td>
@@ -421,7 +421,7 @@
 									<tr>
 									<tr>
 										<td>
-											<div style="color:#337ab7;">
+											<div class="myTitle">
 												預計總利息/最初本金比：
 											</div>
 										</td>
@@ -442,7 +442,7 @@
 									<table width="100%" height="270px">
 										<tr>
 											<td>
-												<div style="color:#337ab7;">
+												<div class="myTitle">
 													對方未還本金：
 												</div>
 											</td>
@@ -456,7 +456,7 @@
 										<tr>
 										<tr>
 											<td>
-												<div style="color:#337ab7;">
+												<div class="myTitle">
 													對方已還本金：
 												</div>
 											</td>
@@ -470,7 +470,7 @@
 										<tr>
 										<tr>
 											<td>
-												<div style="color:#337ab7;">
+												<div class="myTitle">
 													年利率：
 												</div>
 											</td>
@@ -484,7 +484,7 @@
 										<tr>
 										<tr>
 											<td>
-												<div style="color:#337ab7;">
+												<div class="myTitle">
 													已得利息：
 												</div>
 											</td>
@@ -498,7 +498,7 @@
 										<tr>
 										<tr>
 											<td>
-												<div style="color:#337ab7;">
+												<div class="myTitle">
 													剩下期數：
 												</div>
 											</td>
@@ -512,7 +512,7 @@
 										<tr>
 										<tr>
 											<td>
-												<div style="color:#337ab7;">
+												<div class="myTitle">
 													已過期數:
 												</div>
 											</td>
@@ -530,7 +530,7 @@
 									<table width="100%" height="275px">
 										<tr>
 											<td>
-												<div style="color:#337ab7;">
+												<div class="myTitle">
 													成交日期:
 												</div>
 											</td>
@@ -544,7 +544,7 @@
 										<tr>
 										<tr>
 											<td>
-												<div style="color:#337ab7;">
+												<div class="myTitle">
 													預計尚可收取利息：
 												</div>
 											</td>
@@ -558,7 +558,7 @@
 										<tr>
 										<tr>
 											<td>
-												<div style="color:#337ab7;">
+												<div class="myTitle">
 													預計剩餘每期平均利息：
 												</div>
 											</td>
@@ -572,7 +572,7 @@
 										<tr>
 										<tr>
 											<td>
-												<div style="color:#337ab7;">
+												<div class="myTitle">
 													預計剩餘每期平均本利和：
 												</div>
 											</td>
@@ -586,7 +586,7 @@
 										<tr>
 										<tr>
 											<td>
-												<div style="color:#337ab7;">
+												<div class="myTitle">
 													預計尚可收取利息/目前本金比：
 												</div>
 											</td>
@@ -600,7 +600,7 @@
 										<tr>
 										<tr>
 											<td>
-												<div style="color:#337ab7;">
+												<div class="myTitle">
 													保險所需費用：
 												</div>
 											</td>
@@ -614,7 +614,7 @@
 										<tr>
 										<tr>
 											<td>
-												<div style="color:#337ab7;">
+												<div class="myTitle">
 													已付保險費用：
 												</div>
 											</td>
@@ -639,7 +639,7 @@
 								</td>
 							<%}%>
 							<td align="right">
-								<div style="color:#337ab7;">
+								<div>
 									<%if(filterDefault=='已同意'){%><a href="/lender/lenderTransactionRecord?oneid=<%=jsonMessage[i].Transaction[0]._id%>&filter=<%if(jsonMessage[i].Transaction[0].InsuranceFeePaid>0){%>已保險<%}else{%>未保險<%}%>&sorter=<%=encodeURIComponent("最新")%>&page=1">查詢該筆交易</a>&nbsp;&nbsp;&nbsp;&nbsp;<%}%>Updated：<%=jsonMessage[i].Updated.getFullYear()%>/<%=jsonMessage[i].Updated.getMonth()+1%>/<%=jsonMessage[i].Updated.getDate()%>
 								</div>
 							</td>
