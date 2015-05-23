@@ -24,6 +24,7 @@ router.post('/create', function(req, res, next) {
 				toCreate.MaxInterestRateAccepted=sanitizer.sanitize(req.body.MaxInterestRateAccepted);
 				toCreate.MonthPeriodAccepted=sanitizer.sanitize(req.body.MonthPeriodAccepted);
 				toCreate.TimeLimit=sanitizer.sanitize(req.body.TimeLimit);
+				toCreate.Category=sanitizer.sanitize(req.body.Category);
 				if(sanitizer.sanitize(req.body.StoryTitle)!=''){
 					toCreate.StoryTitle=sanitizer.sanitize(req.body.StoryTitle);
 				}

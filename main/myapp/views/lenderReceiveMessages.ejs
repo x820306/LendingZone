@@ -311,7 +311,7 @@
 							<br>
 							<br>
 							<div>	
-								<%=jsonMessage[i].Message%>
+								<%-jsonMessage[i].Message.replace(new RegExp('\n','g'),'<br>')%>
 							</div>
 						</div>
 						<div class="tab-pane" id="tab2<%=i%>">

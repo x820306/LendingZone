@@ -95,11 +95,11 @@
 						<tr>
 					</table>
 					</div>
-					<div class="panel panel-default pd">
+					<div style="height:300px;" class="panel panel-default pd">
 						<div class="panel-body">
 							<table width="100%">
 								<tr>
-									<td>
+									<td style="width:90%;">
 										<a style="font-size:25px;" <%if(jsonArray[i].TitleColor=="color1"){%>class="color1"<%}else if(jsonArray[i].TitleColor=="color3"){%>class="color3"<%}else if(jsonArray[i].TitleColor=="color2"){%>class="color2"<%}else if(jsonArray[i].TitleColor=="color4"){%>class="color4"<%}%> href="/lender/story?id=<%=jsonArray[i]._id%>">[<%if(jsonArray[i].Category=='general'){%>一般<%}else if(jsonArray[i].Category=='education'){%>教育<%}else if(jsonArray[i].Category=='family'){%>家庭<%}else if(jsonArray[i].Category=='tour'){%>旅遊<%}%>]&nbsp;&nbsp;<%=jsonArray[i].StoryTitle%></a>
 										<div style="font-size:15px;" class="myTitle">by <%=jsonArray[i].CreatedBy.Username%></div>
 									</td>
@@ -135,7 +135,7 @@
 							</table>
 							<br>
 							<div>
-								 <%=jsonArray[i].Story%>
+								 <%-jsonArray[i].Story.replace(new RegExp('\n','g'),'<br>')%>
 							</div>
 						</div>
 					</div>

@@ -4,7 +4,7 @@
 		<div class="col-md-9">
 			<table width="100%">
 				<tr>
-					<td>
+					<td style="width:90%;">
 						<div style="font-size:30px;" <%if(json.TitleColor=="default"){%>class="default"<%}else if(json.TitleColor=="color1"){%>class="color1"<%}else if(json.TitleColor=="color3"){%>class="color3"<%}else if(json.TitleColor=="color2"){%>class="color2"<%}else if(json.TitleColor=="color4"){%>class="color4"<%}%>>[<%if(json.Category=='general'){%>一般<%}else if(json.Category=='education'){%>教育<%}else if(json.Category=='family'){%>家庭<%}else if(json.Category=='tour'){%>旅遊<%}%>]&nbsp;&nbsp;<%=json.StoryTitle%></div>
 						<div style="font-size:20px;"> by <div id="aiteName" style="display:inline;"><%=json.CreatedBy.Username%></div></div>
 					</td>
@@ -44,7 +44,7 @@
             </ul>
             <div class="tab-content my-tab-content">
 				<div class="tab-pane active" id="tab1">
-					<%=json.Story%>
+					<%-json.Story.replace(new RegExp('\n','g'),'<br>')%>
 				</div>
 				<div class="tab-pane" id="tab2">
 					<table width="100%" height="275px">
