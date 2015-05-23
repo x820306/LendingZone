@@ -219,15 +219,17 @@
 <script>
 	<%if(userName){%>
 		$(document).ready(function (){
+			for(i=0;i<<%=jsonArray.length%>;i++){
+				var orig=$('#btnID'+i).attr('class');
+				if(orig.search(' disabled')<0){
+					orig=orig+' disabled';
+					$('#btnID'+i).attr('class',orig);
+				}
+			}
 			recursiveAjax(0,<%=jsonArray.length%>);	
 		});
 		
 		function recursiveAjax(ctr,ctrTarget){
-			var orig=$('#btnID'+ctr).attr('class');
-			if(orig.search(' disabled')<0){
-				orig=orig+' disabled';
-				$('#btnID'+ctr).attr('class',orig);
-			}
 			$.ajax({ 
 				url: '/Borrows/iflike',
 				type: 'POST',
