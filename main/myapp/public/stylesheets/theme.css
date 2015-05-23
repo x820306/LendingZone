@@ -4409,14 +4409,14 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
   background-color: rgba(0, 0, 0, 0);
 }
 .navbar-default .navbar-toggle {
-  border-color: #dddddd;
+  border-color: #de8500;
 }
 .navbar-default .navbar-toggle:hover,
 .navbar-default .navbar-toggle:focus {
-  background-color: #dddddd;
+  background-color: #de8500;
 }
 .navbar-default .navbar-toggle .icon-bar {
-  background-color: #888888;
+  background-color: #000000;
 }
 .navbar-default .navbar-collapse,
 .navbar-default .navbar-form {
