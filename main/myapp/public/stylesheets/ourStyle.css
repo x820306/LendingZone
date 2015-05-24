@@ -52,8 +52,8 @@
     font-size: 14px;
     text-align: center;
     color: rgb(0, 0, 0);
-    background: rgb(255, 239, 213);
-    border: 3.63636350631714px solid rgb(255, 239, 213);
+    background: rgb(255, 255, 255);
+    border: 3.63636350631714px solid rgb(255, 255, 255);
     border-radius: 5px;
     text-shadow: rgba(0, 0, 0, 0.0980392) 1px 1px 1px;
     box-shadow: rgba(0, 0, 0, 0.0980392) 1px 1px 2px 0px;
@@ -66,7 +66,7 @@
     height: 0;
     border-width: 15px;
     border-style: solid;
-    border-color: rgb(255, 239, 213) transparent transparent transparent;
+    border-color: rgb(255, 255, 255) transparent transparent transparent;
     top: 100%;
     left: 40%;
 }
