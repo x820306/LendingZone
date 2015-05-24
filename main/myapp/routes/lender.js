@@ -47,7 +47,7 @@ router.get('/search/:keyword?/:action?/:page?',library.newMsgChecker, function (
 		categoryRec="education";
 	}else if(category=='家庭'){
 		categoryRec="family";
-	}else if(category=='旅行'){
+	}else if(category=='旅遊'){
 		categoryRec="tour";
 	}
 	
