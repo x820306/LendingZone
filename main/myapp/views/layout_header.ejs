@@ -40,9 +40,13 @@
 				<!-- Collect the nav links, forms, and other content for toggling -->
 				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 					<ul class="nav navbar-nav navbar-left">
-						<li class="dropdown">
+						<li class="dropdown<% if((nav_cur=='borrowPage')||(nav_cur=='borrowerPanel')||(nav_cur=='borrowerConfirmedMatch')||(nav_cur=='checkMatch')){ %> active<% } %>">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">借入者 <span class="caret"></span></a>
 							<ul class="dropdown-menu" role="menu">
+								<li <% if(nav_cur=='borrowPage'){ %> class="active"<% } %>><a href="/borrower/borrowPage">第一頁</a></li>
+								<li <% if(nav_cur=='borrowerPanel'){ %> class="active"<% } %>><a href="/borrower/borrowerPanel">第二頁</a></li>
+								<li <% if(nav_cur=='borrowerConfirmedMatch'){ %> class="active"<% } %>><a href="/borrower/borrowerConfirmedMatch">第三頁</a></li>
+								<li <% if(nav_cur=='checkMatch'){ %> class="active"<% } %>><a href="/borrower/checkMatch">第四頁</a></li>
 							</ul>
 						</li>
 						<li class="dropdown<% if((nav_cur=='lend')||(nav_cur=='lenderSendMessages')||(nav_cur=='lenderReceiveMessages')||(nav_cur=='lenderTransactionRecord')||(nav_cur=='lenderReturnRecord')||(nav_cur=='income')||(nav_cur=='search')||(nav_cur=='story')){ %> active<% } %>">
