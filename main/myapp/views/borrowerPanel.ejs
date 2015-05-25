@@ -1,0 +1,88 @@
+<%- include('layout_header',{nav_cur:'index',actionDefault:'最新',keywordDefault:'',categoryDefault:'不分類'}); -%>
+<div class="borrowTableContainer">
+
+<div class="borrowContainerTitle">還款紀錄</div>
+
+<section class="chartSection">
+  <div  class="chart">
+    <canvas id="pieChart" width="300" height="300"></canvas>
+  </div>
+  <div class="chart textChart">
+      <div style="font-size:3em;">已完成還款</div>
+      <div class="number" style="font-size:5em;">55%</div>
+      <div style="font-size:2em;">剩餘金額
+        <div class="number">
+          $45,000
+        </div>
+      </div>
+  </div>
+
+</section>
+
+<section class="lender_info">
+<table class="table">
+      <thead>
+        <tr class="tableAttribute">
+          <th><div class="tdContent">出借人編號</div></th>
+          <th><div class="tdContent">每期應償還金額</div></th>
+          <th><div class="tdContent">總期數</div></th>
+          <th><div class="tdContent">總款項</div></th>
+          <th><div class="tdContent">剩餘期數</div></th>
+          <th><div class="tdContent">剩餘款項</div></th>
+          <th><div class="tdContent">最近償還日期</div></th>
+          <th><div class="tdContent">下次償還日期</div></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="eachTrans">
+          <td><div class="tdContent">01</div></td>
+          <td><div class="tdContent">$2,000</div></td>
+          <td><div class="tdContent">12</div></td>
+          <td><div class="tdContent">$24,000</div></td>
+          <td><div class="tdContent">10</div></td>
+          <td><div class="tdContent">$25,000</div></td>
+          <td><div class="tdContent">2015/05/12</div></td>
+          <td><div class="tdContent">2015/06/12</div></td>
+        </tr>
+        <tr class="eachTrans">
+          <td><div class="tdContent">01</div></td>
+          <td><div class="tdContent">$2,000</div></td>
+          <td><div class="tdContent">12</div></td>
+          <td><div class="tdContent">$24,000</div></td>
+          <td><div class="tdContent">10</div></td>
+          <td><div class="tdContent">$25,000</div></td>
+          <td><div class="tdContent">2015/05/12</div></td>
+          <td><div class="tdContent">2015/06/12</div></td>
+        </tr>
+      </tbody>
+    </table>
+</section>
+</div>
+
+
+    <script src="/javascripts/jquery-ui.js"></script>
+    <link rel="stylesheet" href="/stylesheets/borrower.css">
+    <script>
+    //document.body.style['background-color'] = '#FEF2E8';
+    var data = [
+    {
+        value: 55,
+        color:"#E0E0E0",
+        //highlight: "#FF5A5E",
+        label: "已還清"
+    },
+    {
+        value: 45,
+        color: "#666666",
+        //highlight: "#5AD3D1",
+        label: "未還清"
+    }];
+
+        var pieCtx = document.getElementById("pieChart").getContext("2d");
+        var PieChart = new Chart(pieCtx).Pie(data);
+
+        var textCtx = document.getElementById("textChart").getContext("2d");
+        textCtx.fillText("已完成還款", 350, 350);
+
+    </script>
+    <%- include('layout_footer',{imgSettingCode:"var ifLoadedCount=2;img1 = new Image;img1.onload = function(){ifLoadedCount-=1;};img1.src='/images/camera.png';img2 = new Image;img2.onload = function(){ifLoadedCount-=1;};img2.src='/images/like.png';",imgDrawingCode:"var offset1 = $('#intro1').offset();ctx.drawImage(img1,offset1.left,offset1.top,100,100);var offset2 = $('#intro3').offset();ctx.drawImage(img2,offset2.left,offset2.top,100,100);"}); -%>

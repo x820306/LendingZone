@@ -1,0 +1,19 @@
+<%- include('layout_header',{nav_cur:'index',actionDefault:'最新',keywordDefault:'',categoryDefault:'不分類'}); -%>
+<section class="topSection">
+    <div class="topPic">
+        <img src="/images/topPic.png" >
+    </div>
+    <div class="topText">
+        <p>恭喜您成功完成借款</p>
+        <p>系統將會盡速將款項轉交給您！</p>
+        <p>祝您一切順利！</p>
+        <p>若日後還有需要服務的地方，歡迎日後再回到LendingZone</p>
+    </div>
+</section>
+
+    <script src="/javascripts/jquery-ui.js"></script>
+    <link rel="stylesheet" href="/stylesheets/borrower.css">
+    <script>
+ document.getElementsByClassName('topSection')[0]['style']['background-color'] = 'white';
+    </script>
+<%- include('layout_footer',{imgSettingCode:"var ifLoadedCount=2;img1 = new Image;img1.onload = function(){ifLoadedCount-=1;};img1.src='/images/camera.png';img2 = new Image;img2.onload = function(){ifLoadedCount-=1;};img2.src='/images/like.png';",imgDrawingCode:"var offset1 = $('#intro1').offset();ctx.drawImage(img1,offset1.left,offset1.top,100,100);var offset2 = $('#intro3').offset();ctx.drawImage(img2,offset2.left,offset2.top,100,100);"}); -%>

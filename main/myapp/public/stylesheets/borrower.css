@@ -1,0 +1,255 @@
+.borrowerInfo{
+    height: 300px;
+    width: 100%;
+    position: relative;
+    background-color: gray;
+}
+
+.borrowStoryPic{
+    height: 250px;
+    width: 350px;
+    position: relative;
+    float: left;
+    margin: 20px 30px 0px 20px;
+    background-color: white;
+}
+.borrowStoryArticle{
+    height: 250px;
+    width: 350px;
+    position: relative;
+    float: left;
+    margin: 20px 20px 0px 20px;
+}
+
+.borrowTableContainer{
+    background-color:#FEF2E8;
+    width:95%;
+    margin-left:2.5%;
+    padding-bottom:30px;
+    border:2px dashed black;
+}
+
+.borrowContainerTitle{
+    font-size:2.5em;
+    text-align:center;
+    background-color:#FF9836;
+    width:5em;
+    margin:20px auto 10px auto;
+    font-weight: bold;
+    border:2px outset black;
+}
+
+.table{
+    width: 95%;
+    margin: 20px 2.5% 0px 2.5%;
+}
+.tableAttribute{
+    background-color: #9FC6F4;
+}
+.tableAttribute th{
+
+    text-align: center;
+}
+td{
+    position: relative;
+    margin: 0px 0px 20px 0px;
+}
+.tdContent{
+    text-align: center;
+    border: 2px solid black;
+    background-color: white;
+}
+.total{
+    width: 60%;
+    position: relative;
+    margin: 20px 20% 20px 20%;
+    text-align: center;
+}
+.eachTotal{
+    width: 100%;
+    height:1.73em;
+    margin: 0px 0px 10px 0px;
+    border: 2px solid black;
+}
+.leftBlue{
+    width: 60%;
+    position: relative;
+    float: left;
+    background-color: #95BDED;
+}
+.rightWhite{
+    width: 40%;
+    position: relative;
+    float: left;
+}
+
+.chartSection{
+    width: 60%;
+    height: 350px;
+    padding-top: 25px;
+    margin-left:20%;
+    margin-right:20%;
+    border: 3px solid gray;
+}
+
+.chart{
+position: relative;
+float: left;
+}
+.textChart{
+    padding:25px 0px 0px 50px;
+}
+.number{
+    color: #FF9836;
+}
+
+.lender_info{
+
+
+}
+
+.borrowTitle{
+    width: 150px;
+    height: 60px;
+    border: 1px solid black;
+    border-radius: 6px;
+    padding: 15px 20px 15px 20px;
+    margin-bottom: 20px;
+    font-size: 1.5em;
+}
+
+.borrowBlock{
+    margin-bottom: 20px;
+}
+
+.borrowBlockTitle{
+    font-size: 1.5em;
+}
+
+.buttonSubmit{
+    padding:10px;
+    background-color:#F6B176;
+    border:1px solid #F6B176;
+    border-radius:10px;
+    margin: 0px 10px 0px 0px;
+}
+
+
+.buttonSubmit:active{
+    background-color:#95BDED;
+    border:1px solid #95BDED;
+}
+
+.buttonExit{
+    padding:10px;
+    background-color:#F6B176;
+    border:1px solid #F6B176;
+    border-radius:10px;
+}
+
+.buttonExit:active{
+    background-color:#95BDED;
+    border:1px solid #95BDED;
+}
+
+.topSection{
+    margin-top: -20px;
+    width: 100%;
+    height: 300px;
+    background-color: #DDDDDD;
+}
+
+.topPic{
+    width: 25%;
+    height: 300px;
+    position: relative;
+    float: left;
+}
+
+.topPic img{
+
+    height:100%;
+
+}
+
+.topText{
+    width: 75%;
+    height: 300px;
+    position: relative;
+    float: left;
+    padding-top: 25px;
+}
+
+.topText p{
+    width: 100%;
+    position: relative;
+    float: left;
+    font-size: 2em;
+}
+
+.bottomSection{
+    margin: 30px 0px 0px 5%;
+    width: 90%;
+    background-color: #FFF9E7;
+    padding: 5%;
+}
+
+#li{
+    position: absolute;
+}
+
+#liPic{
+    position: absolute;
+    width: 200px;
+    height: 200px;
+}
+#talkContent{
+    position: absolute;
+    background-image: url('../images/talk_content.png');
+    width: 273px;
+    height: 158px;
+    left:200px;
+    top:-100px;
+}
+#talkContent p{
+    margin-top: 20px;
+    margin-left: 30px;
+}
+
+#borrowDialog{
+    background-color: white;
+    position: absolute;
+    left:40%;
+    height: 200px;
+    width: 300px;
+    border: 2px solid black;
+    padding-top: 5px;
+    padding-left: 20px;
+    z-index: 999;
+}
+#borrowDialog p{
+    margin-top: 10px;
+}
+
+.dialogTitle{
+    color: red;
+    text-align: center;
+}
+
+.autoTrans{
+    background-color:#B5D7AD;
+    border-top:10px solid white;
+}
+
+.manualTrans{
+    border-top:10px solid white;
+    background-color:#F9CAA2;
+}
+
+.buttonBlock{
+    text-align: center;
+}
+.eachTrans{
+    background-color:#B5D7AD;
+    border-top:10px solid white;
+}

@@ -1,0 +1,89 @@
+<%- include('layout_header',{nav_cur:'index',actionDefault:'最新',keywordDefault:'',categoryDefault:'不分類'}); -%>
+<section class="lender_info">
+<table class="table">
+      <thead>
+        <tr class="tableAttribute" style="background-color:#F9CAA2;">
+          <th><div class="tdContent" style="background-color:#FF9836;">優化排序</div></th>
+          <th><div class="tdContent" style="background-color:#FF9836;">OK</div></th>
+          <th><div class="tdContent" style="background-color:#FF9836;">媒合方式</div></th>
+          <th><div class="tdContent" style="background-color:#FF9836;">欲出借金額</div></th>
+          <th><div class="tdContent" style="background-color:#FF9836;">利率</div></th>
+          <th><div class="tdContent" style="background-color:#FF9836;">期數</div></th>
+          <th><div class="tdContent" style="background-color:#FF9836;">每期應償還金額</div></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="autoTrans">
+          <td><div class="tdContent">01</div></td>
+          <td><div class="tdContent">✔</div></td>
+          <td><div class="tdContent">自動</div></td>
+          <td><div class="tdContent">$50,000</div></td>
+          <td><div class="tdContent">0.9%</div></td>
+          <td><div class="tdContent">20</div></td>
+          <td><div class="tdContent">$2,700</div></td>
+        </tr>
+        <tr class="manualTrans ">
+          <td><div class="tdContent">02</div></td>
+          <td><div class="tdContent">✗</div></td>
+          <td><div class="tdContent">手動</div></td>
+          <td><div class="tdContent">$8,000</div></td>
+          <td><div class="tdContent">1.4%</div></td>
+          <td><div class="tdContent">12</div></td>
+          <td><div class="tdContent">$2,000</div></td>
+        </tr>
+      </tbody>
+    </table>
+</section>
+
+<section class="total">
+    <div class="eachTotal">
+        <div class="leftBlue">已完成的金額總和</div>
+        <div class="rightWhite">$50,000</div>
+    </div>
+
+    <div class="eachTotal">
+        <div class="leftBlue">已點選的金額總和</div>
+        <div class="rightWhite">$36,000</div>
+    </div>
+    <div class="eachTotal">
+        <div class="leftBlue">不足額</div>
+        <div class="rightWhite">$20,000</div>
+    </div>
+</section>
+
+
+<section class="buttonBlock">
+    <form>
+      <button type="button" id="buttonCancel" class="buttonExit">放棄，我想繼續等待新的媒合</button>
+      <button type="button" id="buttonSubmit" class="buttonSubmit">確定，以上配對我很滿意</button>
+    </form>
+</section>
+
+
+<div id="li" >
+    <img id="liPic" src="/images/li.png">
+    <div id="talkContent">
+        <p>把借款的故事或原因寫下來，</p>
+        <p>能幫助其他人暸解您的情況！</p>
+        <p>有助於借款喔！</p>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+    <script src="/javascripts/jquery-ui.js"></script>
+    <link rel="stylesheet" href="/stylesheets/borrower.css">
+    <script>
+        $( '#li' ).css({
+            'top': (window.pageYOffset+window.innerHeight/2).toString()+'px',
+            'left': '60%'
+        }).draggable();
+    </script>
+<%- include('layout_footer',{imgSettingCode:"var ifLoadedCount=2;img1 = new Image;img1.onload = function(){ifLoadedCount-=1;};img1.src='/images/camera.png';img2 = new Image;img2.onload = function(){ifLoadedCount-=1;};img2.src='/images/like.png';",imgDrawingCode:"var offset1 = $('#intro1').offset();ctx.drawImage(img1,offset1.left,offset1.top,100,100);var offset2 = $('#intro3').offset();ctx.drawImage(img2,offset2.left,offset2.top,100,100);"}); -%>
