@@ -40,13 +40,15 @@
 				<!-- Collect the nav links, forms, and other content for toggling -->
 				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 					<ul class="nav navbar-nav navbar-left">
-						<li class="dropdown"> 
+						<!-- below line,  you should add if situations for borrower pages -->
+						<li id="userTypeDropdown" class="dropdown <% if((nav_cur=='lend')||(nav_cur=='lenderSendMessages')||(nav_cur=='lenderReceiveMessages')||(nav_cur=='lenderTransactionRecord')||(nav_cur=='lenderReturnRecord')||(nav_cur=='income')||(nav_cur=='search')||(nav_cur=='story')||(nav_cur=='borrowPage')||(nav_cur=='borrowerPanel')||(nav_cur=='borrowerConfirmedMatch')||(nav_cur=='checkMatch')){ %>active<%}%>"> 
 							<!-- below line,  you should let the showing text be "借入者" for borrower pages -->
-							<a id="userType" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><% if((nav_cur=='lend')||(nav_cur=='lenderSendMessages')||(nav_cur=='lenderReceiveMessages')||(nav_cur=='lenderTransactionRecord')||(nav_cur=='lenderReturnRecord')||(nav_cur=='income')||(nav_cur=='search')||(nav_cur=='story')){ %>借出者<%}else{%>請選擇身分<%}%> <span class="caret"></span></a>
+							<a id="userType" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><% if((nav_cur=='lend')||(nav_cur=='lenderSendMessages')||(nav_cur=='lenderReceiveMessages')||(nav_cur=='lenderTransactionRecord')||(nav_cur=='lenderReturnRecord')||(nav_cur=='income')||(nav_cur=='search')||(nav_cur=='story')){ %>借出者<%}else if((nav_cur=='borrowPage')||(nav_cur=='borrowerPanel')||(nav_cur=='borrowerConfirmedMatch')||(nav_cur=='checkMatch')){%>借入者<%}else{%>請選擇身分<%}%> <span class="caret"></span></a>
 							<ul class="dropdown-menu" role="menu">
-								<li><a href="#" onclick="$('#menuContent').html($('#hide3').html());$('#userType').html('請選擇身分 <span class=\'caret\'>');return false;">請選擇身分</a></li>
-								<li><a href="#" onclick="$('#menuContent').html($('#hide2').html());$('#userType').html('借入者 <span class=\'caret\'>');return false;">借入者</a></li>
-								<li><a href="#" onclick="$('#menuContent').html($('#hide1').html());$('#userType').html('借出者 <span class=\'caret\'>');return false;">借出者</a></li>
+								<li><a href="#" onclick="$('#userTypeDropdown').attr('class','dropdown');$('#menuContent').html($('#hide3').html());$('#userType').html('請選擇身分 <span class=\'caret\'>');return false;">請選擇身分</a></li>
+								<!-- below line,  you should add if situations for borrower pages to use "active" class-->
+								<li><a href="#" onclick="$('#userTypeDropdown').attr('class','dropdown <% if((nav_cur=='borrowPage')||(nav_cur=='borrowerPanel')||(nav_cur=='borrowerConfirmedMatch')||(nav_cur=='checkMatch')){%>active<%}%>');$('#menuContent').html($('#hide2').html());$('#userType').html('借入者 <span class=\'caret\'>');return false;">借入者</a></li>
+								<li><a href="#" onclick="$('#userTypeDropdown').attr('class','dropdown <% if((nav_cur=='lend')||(nav_cur=='lenderSendMessages')||(nav_cur=='lenderReceiveMessages')||(nav_cur=='lenderTransactionRecord')||(nav_cur=='lenderReturnRecord')||(nav_cur=='income')||(nav_cur=='search')||(nav_cur=='story')){ %>active<%}%>');$('#menuContent').html($('#hide1').html());$('#userType').html('借出者 <span class=\'caret\'>');return false;">借出者</a></li>
 							</ul>
 						</li>
 						<li id="menuContent" class="dropdown">
@@ -61,6 +63,14 @@
 									<li class="divider"></li>
 									<li <% if(nav_cur=='lenderReceiveMessages'){ %> class="active"<% } %>><a href="/lender/lenderReceiveMessages?msgKeyword=&filter=<%=encodeURIComponent("未確認")%>&sorter=<%=encodeURIComponent("最新")%>&page=1">收到之訊息<% if(userName){ %> <span class="badge"><%=newlrmNum%></span><% }%></a></li>
 									<li <% if(nav_cur=='lenderSendMessages'){ %> class="active"<% } %>><a href="/lender/lenderSendMessages?msgKeyword=&filter=<%=encodeURIComponent("未被確認")%>&sorter=<%=encodeURIComponent("最新")%>&page=1">送出之訊息<% if(userName){ %> <span class="badge"><%=newlsmNum%></span><% } %></a></li>
+								</ul>
+							<%}else if((nav_cur=='borrowPage')||(nav_cur=='borrowerPanel')||(nav_cur=='borrowerConfirmedMatch')||(nav_cur=='checkMatch')){%>
+								<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><% if(nav_cur=='borrowPage'){%>第一頁<% }else if(nav_cur=='borrowerPanel'){%>第二頁<% }else if(nav_cur=='borrowerConfirmedMatch'){%>第三頁<% }else if(nav_cur=='checkMatch'){%>第四頁<%}else{%>請選擇頁面<%}%> <span class="caret"></span></a>
+								<ul class="dropdown-menu" role="menu">
+									<li <% if(nav_cur=='borrowPage'){ %> class="active"<% } %>><a href="/borrower/borrowPage">第一頁</a></li>
+									<li <% if(nav_cur=='borrowerPanel'){ %> class="active"<% } %>><a href="/borrower/borrowerPanel">第二頁</a></li>
+									<li <% if(nav_cur=='borrowerConfirmedMatch'){ %> class="active"<% } %>><a href="/borrower/borrowerConfirmedMatch">第三頁</a></li>
+									<li <% if(nav_cur=='checkMatch'){ %> class="active"<% } %>><a href="/borrower/checkMatch">第四頁</a></li>
 								</ul>
 							<%}else{%>
 								<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">請選擇頁面 <span class="caret"></span></a>
@@ -141,9 +151,13 @@
 				<li <% if(nav_cur=='lenderSendMessages'){ %> class="active"<% } %>><a href="/lender/lenderSendMessages?msgKeyword=&filter=<%=encodeURIComponent("未被確認")%>&sorter=<%=encodeURIComponent("最新")%>&page=1">送出之訊息<% if(userName){ %> <span class="badge"><%=newlsmNum%></span><% } %></a></li>
 			</ul>
 		</div>
-		<div id="hide2" style="display:none;"><!-- you should put the same borrower menu as above in this div -->
-			<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">請選擇頁面 <span class="caret"></span></a>
+		<div id="hide2" style="display:none;"><!-- you should put the same borrower menu located between line54 to line72 in this div -->
+			<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><% if(nav_cur=='borrowPage'){%>第一頁<% }else if(nav_cur=='borrowerPanel'){%>第二頁<% }else if(nav_cur=='borrowerConfirmedMatch'){%>第三頁<% }else if(nav_cur=='checkMatch'){%>第四頁<%}else{%>請選擇頁面<%}%> <span class="caret"></span></a>
 			<ul class="dropdown-menu" role="menu">
+				<li <% if(nav_cur=='borrowPage'){ %> class="active"<% } %>><a href="/borrower/borrowPage">第一頁</a></li>
+				<li <% if(nav_cur=='borrowerPanel'){ %> class="active"<% } %>><a href="/borrower/borrowerPanel">第二頁</a></li>
+				<li <% if(nav_cur=='borrowerConfirmedMatch'){ %> class="active"<% } %>><a href="/borrower/borrowerConfirmedMatch">第三頁</a></li>
+				<li <% if(nav_cur=='checkMatch'){ %> class="active"<% } %>><a href="/borrower/checkMatch">第四頁</a></li>
 			</ul>
 		</div>
 		<div id="hide3" style="display:none;">
