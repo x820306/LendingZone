@@ -73,10 +73,22 @@ router.post('/_apply',library.newMsgChecker, function (req, res) {
 	if(req.isAuthenticated()){
 		auRst=req.user.Username;
 	}
-	var varIdCardType=req.files.ssnImg.mimetype;
-	var varSecondCardType=req.files.cerImg.mimetype;
-	var IdCardBase64=req.files.ssnImg.buffer.toString('base64');
-	var SecondCardBase64=req.files.cerImg.buffer.toString('base64');
+	var varIdCardType='';
+	if(req.files.ssnImg){
+		varIdCardType=req.files.ssnImg.mimetype;
+	}
+	var varSecondCardType='';
+	if(req.files.cerImg){
+		varSecondCardType=req.files.cerImg.mimetype;
+	}
+	var IdCardBase64='';
+	if(req.files.ssnImg){
+		IdCardBase64=req.files.ssnImg.buffer.toString('base64');
+	}
+	var SecondCardBase64='';
+	if(req.files.cerImg){
+		SecondCardBase64=req.files.cerImg.buffer.toString('base64');
+	}
 	
 	//pass what u get from database and send them into ejs in this line
 	res.render('apply_2',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst, Name:req.body.nameIpt, Email:req.body.emailIpt, Gender:req.body.genderIpt,
