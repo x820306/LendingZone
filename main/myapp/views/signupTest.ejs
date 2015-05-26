@@ -1,4 +1,11 @@
 <%- include('layout_header',{nav_cur:'signup',actionDefault:'最新',keywordDefault:'',categoryDefault:'不分類'}); -%>
+	<style>
+	.hint{
+	position:absolute;
+	right:450px; 
+	bottom:420px;
+	}
+	</style>
 	<center>
 		<form>
 			<h3>是否持有玉山卡？<br><br></h3>
@@ -11,7 +18,10 @@
 			<button type="button" class="btn btn-default btn-lg">
 				<span class="glyphicon glyphicon-remove" aria-hidden="true"></span> 否
 			</button></a>
-
+			<br>
+			<div class = "hint">
+						&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"><img width="65px" height="65px" src="/images/icon.png" class="hastip" title="用玉山卡註冊更快捷～<br>LendingZone期待你的加入XD"/></div>
+					</div>
 		</form>
 	</center>
 <%- include('layout_footer',{imgSettingCode:"var ifLoadedCount=0;",imgDrawingCode:""}); -%>

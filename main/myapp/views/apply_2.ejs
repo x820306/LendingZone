@@ -1,4 +1,11 @@
 <%- include('layout_header',{nav_cur:'signup',actionDefault:'最新',keywordDefault:'',categoryDefault:'不分類'}); -%>
+	<style>
+	.hint{
+	position:absolute;
+	right:370px; 
+	bottom:330px;
+	}
+	</style>
 	<div align = "center">
 	<button type="button" class="btn btn-default">
   	<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>個人資料登錄</button>
@@ -49,6 +56,10 @@
 			  <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> 關閉
 		</button></div>
 	</form>
+</center>
+<div class = "hint">
+						&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"><img width="65px" height="65px" src="/images/icon.png" class="hastip" title="您只會有這一個帳號喔～<br>快設置獨一無二的吧!"/></div>
+					</div>
 </center>
 <script>
 	function checkPwd()

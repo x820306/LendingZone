@@ -1,4 +1,11 @@
 <%- include('layout_header',{nav_cur:'signup',actionDefault:'最新',keywordDefault:'',categoryDefault:'不分類'}); -%>
+	<style>
+	.hint{
+	position:absolute;
+	right:370px; 
+	bottom:330px;
+	}
+	</style>
 	<div align = "center">
 	<button type="button" class="btn btn-primary">
   	<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>個人資料登錄</button>
@@ -77,5 +84,8 @@
 			</form>		
 		</center>
 		</div>
+	</div>
+	<div class = "hint">
+	&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"><img width="65px" height="65px" src="/images/icon.png" class="hastip" title="快快填上您的資料吧~<br>放心，您的資料會被妥善保管的!"/></div>
 	</div>
 <%- include('layout_footer',{imgSettingCode:"var ifLoadedCount=0;",imgDrawingCode:""}); -%>
