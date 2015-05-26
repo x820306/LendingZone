@@ -5,6 +5,11 @@
 	input[type="text"]::-moz-placeholder {color: #050505;}
 	input[type="text"]:-ms-input-placeholder {color: #050505;}
 	input[type="text"]::-webkit-input-placeholder {color: #050505;}
+	.hint{
+	position:absolute;
+	right:400px; 
+	bottom:400px;
+	}
 	</style>
 	<div align = "center">
 	<button type="button" class="btn btn-default">
@@ -44,15 +49,15 @@
 				</tr>
 				<tr>
 					<td align = "right" style = "width:15%">行動電話</td>
-					<td>0912-345-678<input type="hidden" class="form-control" id="telIpt" name = "telIpt" value="0912345678" placeholder="0912345678"></td>
+					<td><input type="text" class="form-control" id="telIpt" name = "telIpt" value="0912345678" placeholder="0912345678"></td>
 				</tr>
 				<tr>
 					<td align = "right" style = "width:15%">E-mail</td>
-					<td>baby@jin.com<input type="hidden" class="form-control" id="emailIpt" name = "emailIpt" value="baby@jin.com" placeholder="baby@jin.com"></td>
+					<td><input type="text" class="form-control" id="emailIpt" name = "emailIpt" value="baby@jin.com" placeholder="baby@jin.com"></td>
 				</tr>
 				<tr>
 					<td align = "right" style = "width:15%">住址</td>
-					<td>天龍市貝比路1號<input type="hidden" class="form-control" id="addrIpt" name = "addrIpt" value="天龍市貝比路1號" placeholder="天龍市貝比路1號"></td>
+					<td><input type="text" class="form-control" id="addrIpt" name = "addrIpt" value = "天龍市貝比路1號" placeholder="天龍市貝比路1號"></td>
 				</tr>
 				</table>
 				<div class="btn-toolbar" role="toolbar" style = "margin-top: 10px;">
@@ -72,5 +77,8 @@
 			</form>		
 		</center>
 		</div>
+	</div>
+	<div class = "hint">
+	&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"><img width="65px" height="65px" src="/images/icon.png" class="hastip" title="看看您的資訊都對不對？<br>您的更改將會同步更新玉山帳戶資料"/></div>
 	</div>
 <%- include('layout_footer',{imgSettingCode:"var ifLoadedCount=0;",imgDrawingCode:""}); -%>

@@ -1,4 +1,11 @@
 <%- include('layout_header',{nav_cur:'signup',actionDefault:'最新',keywordDefault:'',categoryDefault:'不分類'}); -%>
+	<style>
+	.hint{
+	position:absolute;
+	right:370px; 
+	bottom:310px;
+	}
+	</style>
 	<div align = "center">
 	<button type="button" class="btn btn-default">
   	<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>玉山卡片連結</button>
@@ -27,4 +34,7 @@
 		</button>
 		</form>
 	</center>
+	<div class = "hint">
+	&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"><img width="100px" src="/images/icon4.png" class="hastip" title="我們和其他銀行有良好的合作關係，<br>所以可以加入或替換成別的卡片喔!"/></div>
+	</div>
 <%- include('layout_footer',{imgSettingCode:"var ifLoadedCount=0;",imgDrawingCode:""}); -%>
