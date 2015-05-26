@@ -45,30 +45,40 @@
   margin-top: 12px;
 }
 
-.bubbletooltip_tip { 
+.bubbletooltip_tip {
 	position: relative;
-    line-height: 20px;
+	line-height: 20px;
     padding: 10px;
-    font-size: 14px;
-    text-align: center;
-    color: rgb(0, 0, 0);
-    background: rgb(255, 255, 255);
-    border: 3.63636350631714px solid rgb(255, 255, 255);
-    border-radius: 5px;
+	text-align: center;
+	color: rgb(0, 0, 0);
+	background: #ffffff;
+	border: 2px solid #000000;
+	border-radius: 5px;
     text-shadow: rgba(0, 0, 0, 0.0980392) 1px 1px 1px;
     box-shadow: rgba(0, 0, 0, 0.0980392) 1px 1px 2px 0px;
 }
-
-.bubbletooltip_tip:after { 
-	content: "";
+.bubbletooltip_tip:after, .bubbletooltip_tip:before {
+	top: 100%;
+	left: 50%;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
 	position: absolute;
-    width: 0;
-    height: 0;
-    border-width: 15px;
-    border-style: solid;
-    border-color: rgb(255, 255, 255) transparent transparent transparent;
-    top: 100%;
-    left: 40%;
+	pointer-events: none;
+}
+
+.bubbletooltip_tip:after {
+	border-color: rgba(255, 255, 255, 0);
+	border-top-color: #ffffff;
+	border-width: 10px;
+	margin-left: -10px;
+}
+.bubbletooltip_tip:before {
+	border-color: rgba(0, 0, 0, 0);
+	border-top-color: #000000;
+	border-width: 13px;
+	margin-left: -13px;
 }
 
 input{
