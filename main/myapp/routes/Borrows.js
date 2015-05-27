@@ -8,7 +8,7 @@ var express = require('express');
 var router = express.Router();
 
 //for test, u have to write one like this to achieve what u want.
-router.post('/create', function(req, res, next) {
+router.post('/createTest', function(req, res, next) {
 	var id=sanitizer.sanitize(req.body.CreatedBy);
 	
 	Users.findById(id).exec(function (err, user){

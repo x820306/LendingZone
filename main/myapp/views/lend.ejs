@@ -32,13 +32,13 @@
 		<% } %>
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						<h3 class="panel-title">最大可借出金額</h3>
+						<h3 class="panel-title">最大可借出金額<i style="color:red;">&nbsp;*</i></h3>
 					</div>
 					<div class="panel-body">
 						<% if(!jsonLend){ %>
-							<input type="number" style="width:95%;" class="textForm" name="MaxMoneyToLend">
+							<input type="number" style="width:95%;" class="textForm" name="MaxMoneyToLend" required="required">
 						<% }else{ %>
-							<input type="number" style="width:95%;" class="textForm" name="MaxMoneyToLend" value="<%=jsonLend.MaxMoneyToLend.toFixed(0)%>">
+							<input type="number" style="width:95%;" class="textForm" name="MaxMoneyToLend" value="<%=jsonLend.MaxMoneyToLend.toFixed(0)%>" required="required">
 						<% } %>
 						&nbsp;元
 					</div>					
@@ -46,13 +46,13 @@
 				</br>
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						<h3 class="panel-title">最低欲借出年利率</h3>
+						<h3 class="panel-title">最低欲借出年利率<i style="color:red;">&nbsp;*</i></h3>
 					</div>
 					<div class="panel-body">
 						<% if(!jsonLend){ %>
-							<input type="text" style="width:95%;" class="textForm" name="InterestRate">
+							<input type="text" style="width:95%;" class="textForm" name="InterestRate" required="required">
 						<% }else{ %>
-							<input type="text" style="width:95%;" class="textForm" name="InterestRate" value="<%=(jsonLend.InterestRate*100).toFixed(2)%>">
+							<input type="text" style="width:95%;" class="textForm" name="InterestRate" value="<%=(jsonLend.InterestRate*100).toFixed(2)%>" required="required">
 						<% } %>
 						%
 					</div>
@@ -60,13 +60,13 @@
 				</br>
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						<h3 class="panel-title">最低欲借出期數（單位/月）</h3>
+						<h3 class="panel-title">最低欲借出期數（單位/月，最大36個月）<i style="color:red;">*</i></h3>
 					</div>
 					<div class="panel-body">
 						<% if(!jsonLend){ %>
-							<input type="number" style="width:95%;" class="textForm" name="MonthPeriod">
+							<input type="number" style="width:95%;" class="textForm" name="MonthPeriod" required="required">
 						<% }else{ %>
-							<input type="number" style="width:95%;" class="textForm" name="MonthPeriod" value="<%=jsonLend.MonthPeriod.toFixed(0)%>">
+							<input type="number" style="width:95%;" class="textForm" name="MonthPeriod" value="<%=jsonLend.MonthPeriod.toFixed(0)%>" required="required">
 						<% } %>
 						&nbsp;個月
 					</div>
@@ -306,32 +306,32 @@ function checkAndOpenModal(target,cntNumber,cntTail,flag){
 	var f=$("input[name='MinInterestInFutureMonth']").val();
 	var g=$("input[name='MinInterestInFutureMoneyMonth']").val();
 	var h=$("input[name='MinInterestInFutureDivMoney']").val();
-	var aa=parseFloat(a);
+	var aa=parseInt(a);
 	var bb=parseFloat(b);
-	var cc=parseFloat(c);
+	var cc=parseInt(c);
 	var dd;
 	if(d==''){
 		dd=1;
 	}else{
-		dd=parseFloat(d);
+		dd=parseInt(d);
 	}
 	var ee;
 	if(e==''){
 		ee=1;
 	}else{
-		ee=parseFloat(e);
+		ee=parseInt(e);
 	}
 	var ff;
 	if(f==''){
 		ff=1;
 	}else{
-		ff=parseFloat(f);
+		ff=parseInt(f);
 	}
 	var gg;
 	if(g==''){
 		gg=1;
 	}else{
-		gg=parseFloat(g);
+		gg=parseInt(g);
 	}
 	var hh;
 	if(h==''){
@@ -341,7 +341,7 @@ function checkAndOpenModal(target,cntNumber,cntTail,flag){
 	}
 	
 	if(flag){
-		if((a!='')&&(b!='')&&(c!='')&&(aa>0)&&(bb>0)&&(cc>0)&&(dd>=0)&&(ee>=0)&&(ff>=0)&&(gg>=0)&&(hh>=0)){
+		if((a!='')&&(b!='')&&(c!='')&&(aa>0)&&(bb>0)&&(cc>0)&&(cc<=36)&&(dd>=0)&&(ee>=0)&&(ff>=0)&&(gg>=0)&&(hh>=0)){
 			$(cntNumber).html('<br>'+cntTail+'<br><br>');
 			$(target).modal('show');
 		}else{

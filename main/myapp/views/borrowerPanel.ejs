@@ -9,10 +9,10 @@
   </div>
   <div class="chart textChart">
       <div style="font-size:3em;">已完成還款</div>
-      <div class="number" style="font-size:5em;">55%</div>
+      <div class="number" style="font-size:5em;">0%</div>
       <div style="font-size:2em;">剩餘金額
         <div class="number">
-          $45,000
+          $100,000
         </div>
       </div>
   </div>
@@ -36,23 +36,53 @@
       <tbody>
         <tr class="eachTrans">
           <td><div class="tdContent">01</div></td>
-          <td><div class="tdContent">$2,000</div></td>
+          <td><div class="tdContent">$2,699</div></td>
           <td><div class="tdContent">12</div></td>
-          <td><div class="tdContent">$24,000</div></td>
-          <td><div class="tdContent">10</div></td>
-          <td><div class="tdContent">$25,000</div></td>
-          <td><div class="tdContent">2015/05/12</div></td>
-          <td><div class="tdContent">2015/06/12</div></td>
+          <td><div class="tdContent">$32,000</div></td>
+          <td><div class="tdContent">12</div></td>
+          <td><div class="tdContent">$32,000</div></td>
+          <td><div class="tdContent">無</div></td>
+          <td><div class="tdContent">2015/06/30</div></td>
         </tr>
         <tr class="eachTrans">
-          <td><div class="tdContent">01</div></td>
-          <td><div class="tdContent">$2,000</div></td>
+          <td><div class="tdContent">02</div></td>
+          <td><div class="tdContent">$679</div></td>
+          <td><div class="tdContent">15</div></td>
+          <td><div class="tdContent">$10,000</div></td>
+          <td><div class="tdContent">15</div></td>
+          <td><div class="tdContent">$10,000</div></td>
+          <td><div class="tdContent">無</div></td>
+          <td><div class="tdContent">2015/06/30</div></td>
+        </tr>
+        <tr class="eachTrans">
+          <td><div class="tdContent">03</div></td>
+          <td><div class="tdContent">$1,223</div></td>
+          <td><div class="tdContent">15</div></td>
+          <td><div class="tdContent">$18,000</div></td>
+          <td><div class="tdContent">15</div></td>
+          <td><div class="tdContent">$18,000</div></td>
+          <td><div class="tdContent">無</div></td>
+          <td><div class="tdContent">2015/06/30</div></td>
+        </tr>
+        <tr class="eachTrans">
+          <td><div class="tdContent">04</div></td>
+          <td><div class="tdContent">$1,271</div></td>
           <td><div class="tdContent">12</div></td>
-          <td><div class="tdContent">$24,000</div></td>
-          <td><div class="tdContent">10</div></td>
+          <td><div class="tdContent">$15,000</div></td>
+          <td><div class="tdContent">15</div></td>
+          <td><div class="tdContent">$15,000</div></td>
+          <td><div class="tdContent">無</div></td>
+          <td><div class="tdContent">2015/06/30</div></td>
+        </tr>
+        <tr class="eachTrans">
+          <td><div class="tdContent">05</div></td>
+          <td><div class="tdContent">$1,288</div></td>
+          <td><div class="tdContent">20</div></td>
           <td><div class="tdContent">$25,000</div></td>
-          <td><div class="tdContent">2015/05/12</div></td>
-          <td><div class="tdContent">2015/06/12</div></td>
+          <td><div class="tdContent">15</div></td>
+          <td><div class="tdContent">$25,000</div></td>
+          <td><div class="tdContent">無</div></td>
+          <td><div class="tdContent">2015/06/30</div></td>
         </tr>
       </tbody>
     </table>
@@ -66,14 +96,14 @@
     //document.body.style['background-color'] = '#FEF2E8';
     var data = [
     {
-        value: 55,
-        color:"#E0E0E0",
+        value: 0,
+        color:"#666666",
         //highlight: "#FF5A5E",
         label: "已還清"
     },
     {
-        value: 45,
-        color: "#666666",
+        value: 100,
+        color: "#E0E0E0",
         //highlight: "#5AD3D1",
         label: "未還清"
     }];
@@ -85,4 +115,4 @@
         textCtx.fillText("已完成還款", 350, 350);
 
     </script>
-    <%- include('layout_footer',{imgSettingCode:"var ifLoadedCount=2;img1 = new Image;img1.onload = function(){ifLoadedCount-=1;};img1.src='/images/camera.png';img2 = new Image;img2.onload = function(){ifLoadedCount-=1;};img2.src='/images/like.png';",imgDrawingCode:"var offset1 = $('#intro1').offset();ctx.drawImage(img1,offset1.left,offset1.top,100,100);var offset2 = $('#intro3').offset();ctx.drawImage(img2,offset2.left,offset2.top,100,100);"}); -%>
+<%- include('layout_footer',{imgSettingCode:"var ifLoadedCount=0;",imgDrawingCode:""}); -%>
