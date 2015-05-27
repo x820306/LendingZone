@@ -111,7 +111,7 @@ function toLendSamePart(res,req,differentPart,outterPara){
 							}else if(nowMoney>maxMoney2){
 								res.redirect('/message?content='+encodeURIComponent('金額超過對方所需!'));
 							}else if(month>maxMonth){
-								res.redirect('/message?content='+encodeURIComponent('超過最大期數!'));
+								res.redirect('/message?content='+encodeURIComponent('超過對方可接受之最大期數!'));
 							}else if(rate>maxRate){
 								res.redirect('/message?content='+encodeURIComponent('超過期望利率上限!'));
 							}else{
@@ -134,7 +134,9 @@ function toLendCreatePart(res,req,borrow,lenderBankaccount,outterPara){
 			if(!borrowMessage){
 				var toCreate = new Messages();
 				toCreate.FromBorrowRequest=sanitizer.sanitize(req.body.FromBorrowRequest);
-				toCreate.Message=sanitizer.sanitize(req.body.Message);
+				if(sanitizer.sanitize(req.body.Message) != ''){
+					toCreate.Message=sanitizer.sanitize(req.body.Message);
+				}
 				toCreate.MoneyToLend=parseInt(sanitizer.sanitize(req.body.MoneyToLend));
 				toCreate.InterestRate=(parseFloat(sanitizer.sanitize(req.body.InterestRate))/100)+library.serviceChargeRate;//scr
 				toCreate.MonthPeriod=parseInt(sanitizer.sanitize(req.body.MonthPeriod));
@@ -344,7 +346,11 @@ function toLendCreatePart(res,req,borrow,lenderBankaccount,outterPara){
 }
 
 function toLendUpdatePart(res,req,innerPara,innerPara2,message){
-	message.Message=sanitizer.sanitize(req.body.Message);
+	if(sanitizer.sanitize(req.body.Message) != ''){
+		message.Message=sanitizer.sanitize(req.body.Message);
+	}else{
+		message.Message='無內容';
+	}
 	message.MoneyToLend=parseInt(sanitizer.sanitize(req.body.MoneyToLend));
 	message.InterestRate=(parseFloat(sanitizer.sanitize(req.body.InterestRate))/100)+library.serviceChargeRate;//scr
 	message.MonthPeriod=parseInt(sanitizer.sanitize(req.body.MonthPeriod));

@@ -41,7 +41,7 @@ var Lends = new Schema({
 
 var Messages = new Schema({
 	FromBorrowRequest: { type: Schema.Types.ObjectId, ref: 'Borrows' },
-	Message: { type: String, default:''},
+	Message: { type: String, default:'無內容'},
 	MoneyToLend: { type: Number, default: 0 },
 	InterestRate: { type: Number, default: 0 },
 	MonthPeriod: { type: Number, default: 1 },
