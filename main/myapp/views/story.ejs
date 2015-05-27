@@ -313,7 +313,7 @@
 										<span class="input-group-addon">元</span>
 									</div>
 									<br>
-								<form action="/Messages/toLendCreate" method="post">
+								<form action="/Messages/toLendCreate" method="post" onsubmit="disableButton();">
 									<h4>本次欲借出金額：<i style="color:red;">*</i></h4>
 									<div class="input-group">
 										<input type="number" class="form-control" name="MoneyToLend" required="required">
@@ -482,7 +482,7 @@
 										<span class="input-group-addon">元</span>
 									</div>
 									<br>
-								<form action="/Messages/toLendUpdate" method="post" id="formID">
+								<form action="/Messages/toLendUpdate" method="post" id="formID" onsubmit="disableButton();">
 									<h4>本次欲借出金額：<i style="color:red;">*</i></h4>
 									<div class="input-group">
 										<input type="number" class="form-control" name="MoneyToLend" value="<%=jsonMessage.MoneyToLend.toFixed(0)%>" required="required">
@@ -687,7 +687,7 @@
 									<%}%>
 								</div>
 								<br>
-							<form action="/Messages/confirmToBorrowMessageInStory" method="post" id="confirmFormID">
+							<form action="/Messages/confirmToBorrowMessageInStory" method="post" id="confirmFormID" onsubmit="disableButton();">
 								<h4>金額：<i style="color:red;">*</i></h4>
 								<div class="input-group">
 									<input type="number" class="form-control" name="MoneyToLend" value="<%=jsonBorrowMessage.MoneyToLend.toFixed(0)%>" required="required">
@@ -889,7 +889,10 @@
 			
 			if(flag){
 				if((a!='')&&(b!='')&&(c!='')&&(aa>0)&&(bb>0)&&(cc>0)&&(cc<=36)){
-					trueCnt='您確定要以金額 <div style="display:inline;color:red;">'+aa+'元</div> 、年利率 <div style="display:inline;color:red;">'+bb+'%</div> 、期數 <div style="display:inline;color:red;">'+cc+'個月</div> 為條件向 <div style="display:inline;color:red;">'+$("#aiteName").text()+'</div> '+cntTail;
+					$("input[name='MoneyToLend']").val(aa);
+					$("input[name='InterestRate']").val(bb);
+					$("input[name='MonthPeriod']").val(cc);
+					trueCnt='您確定要以金額 <div style="display:inline;color:red;">'+$("input[name='MoneyToLend']").val()+'元</div> 、年利率 <div style="display:inline;color:red;">'+$("input[name='InterestRate']").val()+'%</div> 、期數 <div style="display:inline;color:red;">'+$("input[name='MonthPeriod']").val()+'個月</div> 為條件向 <div style="display:inline;color:red;">'+$("#aiteName").text()+'</div> '+cntTail;
 					$(cntNumber).html('<br>'+trueCnt+'<br><br>');
 					$(target).modal('show');
 				}else{
@@ -1086,6 +1089,10 @@
 				<% if(!jsonMessage){ %>
 					<%if(json.IfReadable){ %>
 						function create(){
+							$('#chkModal1').modal('hide');
+						}
+						
+						function disableButton(){
 							var orig=$('#createBtnID').attr('class');
 							if(orig.search(' disabled')<0){
 								orig=orig+' disabled';
@@ -1096,17 +1103,8 @@
 				<%}else{%>
 					<%if((json.IfReadable)&&(jsonMessage.Status=='NotConfirmed')){ %>
 						function destroy(){
-							var orig=$('#destroyBtnID').attr('class');
-							if(orig.search(' disabled')<0){
-								orig=orig+' disabled';
-								$('#destroyBtnID').attr('class',orig);
-							}
-							
-							var orig=$('#updateBtnID').attr('class');
-							if(orig.search(' disabled')<0){
-								orig=orig+' disabled';
-								$('#updateBtnID').attr('class',orig);
-							}
+							$('#chkModal3').modal('hide');
+							disableButton();
 							
 							var form=document.getElementById('formID');
 							form.action="/Messages/destroy";
@@ -1114,13 +1112,17 @@
 						}
 						
 						function update(){
+							$('#chkModal2').modal('hide');
+						}
+						
+						function disableButton(){
 							var orig=$('#destroyBtnID').attr('class');
 							if(orig.search(' disabled')<0){
 								orig=orig+' disabled';
 								$('#destroyBtnID').attr('class',orig);
 							}
 							
-							var orig=$('#updateBtnID').attr('class');
+							orig=$('#updateBtnID').attr('class');
 							if(orig.search(' disabled')<0){
 								orig=orig+' disabled';
 								$('#updateBtnID').attr('class',orig);
@@ -1131,35 +1133,30 @@
 			<%}else{%>
 				<%if((json.IfReadable)&&(jsonBorrowMessage.Status=='NotConfirmed')){ %>
 					function agree(){
-						var orig=$('#argBtnID').attr('class');
-						if(orig.search(' disabled')<0){
-							orig=orig+' disabled';
-							$('#argBtnID').attr('class',orig);
-						}
-						
-						var orig=$('#rfsBtnID').attr('class');
-						if(orig.search(' disabled')<0){
-							orig=orig+' disabled';
-							$('#rfsBtnID').attr('class',orig);
-						}
+						$('#chkModal4').modal('hide');
 					}
 					
 					function refuse(){
-						var orig=$('#argBtnID').attr('class');
-						if(orig.search(' disabled')<0){
-							orig=orig+' disabled';
-							$('#argBtnID').attr('class',orig);
-						}
-						
-						var orig=$('#rfsBtnID').attr('class');
-						if(orig.search(' disabled')<0){
-							orig=orig+' disabled';
-							$('#rfsBtnID').attr('class',orig);
-						}
+						$('#chkModal5').modal('hide');
+						disableButton();
 						
 						var form=document.getElementById('confirmFormID');
 						form.action="/Messages/rejectToBorrowMessageInStory";
 						form.submit();
+					}
+					
+					function disableButton(){
+						var orig=$('#argBtnID').attr('class');
+						if(orig.search(' disabled')<0){
+							orig=orig+' disabled';
+							$('#argBtnID').attr('class',orig);
+						}
+						
+						orig=$('#rfsBtnID').attr('class');
+						if(orig.search(' disabled')<0){
+							orig=orig+' disabled';
+							$('#rfsBtnID').attr('class',orig);
+						}
 					}
 				<%}%>
 			<%}%>	

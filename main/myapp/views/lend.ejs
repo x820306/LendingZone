@@ -26,9 +26,9 @@
 				</div>
 				</br>
 		<% if(!jsonLend){ %>
-			<form action="/Lends/create" method="post" id="formID">
+			<form action="/Lends/create" method="post" id="formID" onsubmit="disableButton();">
 		<% }else{ %>
-			<form action="/Lends/update" method="post" id="formID">
+			<form action="/Lends/update" method="post" id="formID" onsubmit="disableButton();">
 		<% } %>
 				<div class="panel panel-default">
 					<div class="panel-heading">
@@ -134,9 +134,9 @@
 					</div>
 					<div class="panel-body">
 						<% if(!jsonLend){ %>
-							<input type="number" style="width:95%;" class="textForm" name="MinInterestInFutureDivMoney">
+							<input type="text" style="width:95%;" class="textForm" name="MinInterestInFutureDivMoney">
 						<% }else{ %>
-							<input type="number" style="width:95%;" class="textForm" name="MinInterestInFutureDivMoney" value="<%=(jsonLend.MinInterestInFutureDivMoney*100).toFixed(2)%>">
+							<input type="text" style="width:95%;" class="textForm" name="MinInterestInFutureDivMoney" value="<%=(jsonLend.MinInterestInFutureDivMoney*100).toFixed(2)%>">
 						<% } %>
 						&nbsp;%
 					</div>
@@ -218,7 +218,7 @@
 								<div id="mdlCnt1" class="modal-body">
 								</div>
 								<div class="modal-footer">
-									<button type="submit" class="btn btn-primary" id="createBtnID" onclick="create()">確定</button>
+									<button type="submit" class="btn btn-primary" id="createBtnID" onclick="create();">確定</button>
 									<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
 								</div>
 							</div>
@@ -248,7 +248,7 @@
 								<div id="mdlCnt2" class="modal-body">
 								</div>
 								<div class="modal-footer">
-									<button type="submit" class="btn btn-primary" id="updateBtnID" onclick="update()">確定</button>
+									<button type="submit" class="btn btn-primary" id="updateBtnID" onclick="update();">確定</button>
 									<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
 								</div>
 							</div>
@@ -342,6 +342,25 @@ function checkAndOpenModal(target,cntNumber,cntTail,flag){
 	
 	if(flag){
 		if((a!='')&&(b!='')&&(c!='')&&(aa>0)&&(bb>0)&&(cc>0)&&(cc<=36)&&(dd>=0)&&(ee>=0)&&(ff>=0)&&(gg>=0)&&(hh>=0)){
+			$("input[name='MaxMoneyToLend']").val(aa);
+			$("input[name='InterestRate']").val(bb);
+			$("input[name='MonthPeriod']").val(cc);
+			if(d!=''){
+				$("input[name='MinLevelAccepted']").val(dd);
+			}
+			if(e!=''){
+				$("input[name='MinInterestInFuture']").val(ee);
+			}
+			if(f!=''){
+				$("input[name='MinInterestInFutureMonth']").val(ff);
+			}
+			if(g!=''){
+				$("input[name='MinInterestInFutureMoneyMonth']").val(gg);
+			}
+			if(h!=''){
+				$("input[name='MinInterestInFutureDivMoney']").val(hh);
+			}
+			
 			$(cntNumber).html('<br>'+cntTail+'<br><br>');
 			$(target).modal('show');
 		}else{
@@ -355,6 +374,10 @@ function checkAndOpenModal(target,cntNumber,cntTail,flag){
 
 <% if(!jsonLend){ %>
 	function create(){
+		$('#chkModal1').modal('hide');
+	}
+	
+	function disableButton(){
 		var orig=$('#createBtnID').attr('class');
 		if(orig.search(' disabled')<0){
 			orig=orig+' disabled';
@@ -363,6 +386,11 @@ function checkAndOpenModal(target,cntNumber,cntTail,flag){
 	}
 <% }else{%>
 	function update(){
+		$('#chkModal2').modal('hide');
+	}
+	
+	function disableButton(){
+		alert('fuck');
 		var orig=$('#destroyBtnID').attr('class');
 		if(orig.search(' disabled')<0){
 			orig=orig+' disabled';
@@ -377,17 +405,8 @@ function checkAndOpenModal(target,cntNumber,cntTail,flag){
 	}
 	
 	function destroy(){
-		var orig=$('#destroyBtnID').attr('class');
-		if(orig.search(' disabled')<0){
-			orig=orig+' disabled';
-			$('#destroyBtnID').attr('class',orig);
-		}
-		
-		var orig=$('#updateBtnID').attr('class');
-		if(orig.search(' disabled')<0){
-			orig=orig+' disabled';
-			$('#updateBtnID').attr('class',orig);
-		}
+		$('#chkModal3').modal('hide');
+		disableButton();
 		
 		var form=document.getElementById('formID');
 		form.action="/Lends/destroy";

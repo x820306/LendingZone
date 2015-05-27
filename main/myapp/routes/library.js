@@ -262,9 +262,9 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																var minRate=parseFloat(lend.InterestRate);
 																var minMonth=parseInt(lend.MonthPeriod);
 																var minLevel=parseInt(lend.MinLevelAccepted);
-																var minInterestInFuture=parseFloat(lend.MinInterestInFuture);
-																var minInterestInFutureMonth=parseFloat(lend.MinInterestInFutureMonth);
-																var minInterestInFutureMoneyMonth=parseFloat(lend.MinInterestInFutureMoneyMonth);
+																var minInterestInFuture=parseInt(lend.MinInterestInFuture);
+																var minInterestInFutureMonth=parseInt(lend.MinInterestInFutureMonth);
+																var minInterestInFutureMoneyMonth=parseInt(lend.MinInterestInFutureMoneyMonth);
 																var minInterestInFutureDivMoney=parseFloat(lend.MinInterestInFutureDivMoney);
 																
 																var nowMoney2=parseInt(message.MoneyToLend);

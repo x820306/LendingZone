@@ -40,9 +40,9 @@ function samePart(res,req,differentPart,outterPara){
 				var rate=(parseFloat(sanitizer.sanitize(req.body.InterestRate))/100)+library.serviceChargeRate;//scr;
 				var month=parseInt(sanitizer.sanitize(req.body.MonthPeriod));
 				var level=parseInt(sanitizer.sanitize(req.body.MinLevelAccepted));
-				var MinInterestInFuture=parseFloat(sanitizer.sanitize(req.body.MinInterestInFuture));
-				var MinInterestInFutureMonth=parseFloat(sanitizer.sanitize(req.body.MinInterestInFutureMonth));
-				var MinInterestInFutureMoneyMonth=parseFloat(sanitizer.sanitize(req.body.MinInterestInFutureMoneyMonth));
+				var MinInterestInFuture=parseInt(sanitizer.sanitize(req.body.MinInterestInFuture));
+				var MinInterestInFutureMonth=parseInt(sanitizer.sanitize(req.body.MinInterestInFutureMonth));
+				var MinInterestInFutureMoneyMonth=parseInt(sanitizer.sanitize(req.body.MinInterestInFutureMoneyMonth));
 				var MinInterestInFutureDivMoney=parseFloat(sanitizer.sanitize(req.body.MinInterestInFutureDivMoney))/100;
 				
 				if((sanitizer.sanitize(req.body.MaxMoneyToLend)=='')||(sanitizer.sanitize(req.body.InterestRate)=='')||(sanitizer.sanitize(req.body.MonthPeriod)=='')){
@@ -68,13 +68,13 @@ function createPart(res,req,outterPara){
 		toCreate.MinLevelAccepted=parseInt(sanitizer.sanitize(req.body.MinLevelAccepted));
 	}
 	if(sanitizer.sanitize(req.body.MinInterestInFuture)!=''){
-		toCreate.MinInterestInFuture=parseFloat(sanitizer.sanitize(req.body.MinInterestInFuture));
+		toCreate.MinInterestInFuture=parseInt(sanitizer.sanitize(req.body.MinInterestInFuture));
 	}
 	if(sanitizer.sanitize(req.body.MinInterestInFutureMonth)!=''){
-		toCreate.MinInterestInFutureMonth=parseFloat(sanitizer.sanitize(req.body.MinInterestInFutureMonth));
+		toCreate.MinInterestInFutureMonth=parseInt(sanitizer.sanitize(req.body.MinInterestInFutureMonth));
 	}
 	if(sanitizer.sanitize(req.body.MinInterestInFutureMoneyMonth)!=''){
-		toCreate.MinInterestInFutureMoneyMonth=parseFloat(sanitizer.sanitize(req.body.MinInterestInFutureMoneyMonth));
+		toCreate.MinInterestInFutureMoneyMonth=parseInt(sanitizer.sanitize(req.body.MinInterestInFutureMoneyMonth));
 	}
 	if(sanitizer.sanitize(req.body.MinInterestInFutureDivMoney)!=''){
 		toCreate.MinInterestInFutureDivMoney=parseFloat(sanitizer.sanitize(req.body.MinInterestInFutureDivMoney))/100;
@@ -110,13 +110,13 @@ function updatePart(res,req,lend){
 		lend.MinLevelAccepted=parseInt(sanitizer.sanitize(req.body.MinLevelAccepted));
 	}
 	if(sanitizer.sanitize(req.body.MinInterestInFuture)!=''){
-		lend.MinInterestInFuture=parseFloat(sanitizer.sanitize(req.body.MinInterestInFuture));
+		lend.MinInterestInFuture=parseInt(sanitizer.sanitize(req.body.MinInterestInFuture));
 	}
 	if(sanitizer.sanitize(req.body.MinInterestInFutureMonth)!=''){
-		lend.MinInterestInFutureMonth=parseFloat(sanitizer.sanitize(req.body.MinInterestInFutureMonth));
+		lend.MinInterestInFutureMonth=parseInt(sanitizer.sanitize(req.body.MinInterestInFutureMonth));
 	}
 	if(sanitizer.sanitize(req.body.MinInterestInFutureMoneyMonth)!=''){
-		lend.MinInterestInFutureMoneyMonth=parseFloat(sanitizer.sanitize(req.body.MinInterestInFutureMoneyMonth));
+		lend.MinInterestInFutureMoneyMonth=parseInt(sanitizer.sanitize(req.body.MinInterestInFutureMoneyMonth));
 	}
 	if(sanitizer.sanitize(req.body.MinInterestInFutureDivMoney)!=''){
 		lend.MinInterestInFutureDivMoney=parseFloat(sanitizer.sanitize(req.body.MinInterestInFutureDivMoney))/100;
