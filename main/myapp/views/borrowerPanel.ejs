@@ -1,4 +1,4 @@
-<%- include('layout_header',{nav_cur:'index',actionDefault:'最新',keywordDefault:'',categoryDefault:'不分類'}); -%>
+<%- include('layout_header',{nav_cur:'borrowerPanel',actionDefault:'最新',keywordDefault:'',categoryDefault:'不分類'}); -%>
 <div class="borrowTableContainer">
 
 <div class="borrowContainerTitle">還款紀錄</div>
@@ -9,10 +9,10 @@
   </div>
   <div class="chart textChart">
       <div style="font-size:3em;">已完成還款</div>
-      <div class="number" style="font-size:5em;">55%</div>
+      <div class="number" style="font-size:5em;">0%</div>
       <div style="font-size:2em;">剩餘金額
         <div class="number">
-          $45,000
+          $100,000
         </div>
       </div>
   </div>
@@ -36,23 +36,53 @@
       <tbody>
         <tr class="eachTrans">
           <td><div class="tdContent">01</div></td>
-          <td><div class="tdContent">$2,000</div></td>
+          <td><div class="tdContent">$2,699</div></td>
           <td><div class="tdContent">12</div></td>
-          <td><div class="tdContent">$24,000</div></td>
-          <td><div class="tdContent">10</div></td>
-          <td><div class="tdContent">$25,000</div></td>
-          <td><div class="tdContent">2015/05/12</div></td>
-          <td><div class="tdContent">2015/06/12</div></td>
+          <td><div class="tdContent">$32,000</div></td>
+          <td><div class="tdContent">12</div></td>
+          <td><div class="tdContent">$32,000</div></td>
+          <td><div class="tdContent">無</div></td>
+          <td><div class="tdContent">2015/06/30</div></td>
         </tr>
         <tr class="eachTrans">
-          <td><div class="tdContent">01</div></td>
-          <td><div class="tdContent">$2,000</div></td>
+          <td><div class="tdContent">02</div></td>
+          <td><div class="tdContent">$679</div></td>
+          <td><div class="tdContent">15</div></td>
+          <td><div class="tdContent">$10,000</div></td>
+          <td><div class="tdContent">15</div></td>
+          <td><div class="tdContent">$10,000</div></td>
+          <td><div class="tdContent">無</div></td>
+          <td><div class="tdContent">2015/06/30</div></td>
+        </tr>
+        <tr class="eachTrans">
+          <td><div class="tdContent">03</div></td>
+          <td><div class="tdContent">$1,223</div></td>
+          <td><div class="tdContent">15</div></td>
+          <td><div class="tdContent">$18,000</div></td>
+          <td><div class="tdContent">15</div></td>
+          <td><div class="tdContent">$18,000</div></td>
+          <td><div class="tdContent">無</div></td>
+          <td><div class="tdContent">2015/06/30</div></td>
+        </tr>
+        <tr class="eachTrans">
+          <td><div class="tdContent">04</div></td>
+          <td><div class="tdContent">$1,271</div></td>
           <td><div class="tdContent">12</div></td>
-          <td><div class="tdContent">$24,000</div></td>
-          <td><div class="tdContent">10</div></td>
+          <td><div class="tdContent">$15,000</div></td>
+          <td><div class="tdContent">15</div></td>
+          <td><div class="tdContent">$15,000</div></td>
+          <td><div class="tdContent">無</div></td>
+          <td><div class="tdContent">2015/06/30</div></td>
+        </tr>
+        <tr class="eachTrans">
+          <td><div class="tdContent">05</div></td>
+          <td><div class="tdContent">$1,288</div></td>
+          <td><div class="tdContent">20</div></td>
           <td><div class="tdContent">$25,000</div></td>
-          <td><div class="tdContent">2015/05/12</div></td>
-          <td><div class="tdContent">2015/06/12</div></td>
+          <td><div class="tdContent">15</div></td>
+          <td><div class="tdContent">$25,000</div></td>
+          <td><div class="tdContent">無</div></td>
+          <td><div class="tdContent">2015/06/30</div></td>
         </tr>
       </tbody>
     </table>
@@ -66,18 +96,18 @@
     //document.body.style['background-color'] = '#FEF2E8';
     var data = [
     {
-        value: 55,
-        color:"#E0E0E0",
+        value: 0,
+        color:"#666666",
         //highlight: "#FF5A5E",
         label: "已還清"
     },
     {
-        value: 45,
-        color: "#666666",
+        value: 100,
+        color: "#E0E0E0",
         //highlight: "#5AD3D1",
         label: "未還清"
     }];
-//console.
+
         var pieCtx = document.getElementById("pieChart").getContext("2d");
         var PieChart = new Chart(pieCtx).Pie(data);
 

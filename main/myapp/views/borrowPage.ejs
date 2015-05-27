@@ -1,4 +1,4 @@
-<%- include('layout_header',{nav_cur:'index',actionDefault:'最新',keywordDefault:'',categoryDefault:'不分類'}); -%>
+<%- include('layout_header',{nav_cur:'borrowPage',actionDefault:'最新',keywordDefault:'',categoryDefault:'不分類'}); -%>
 <section class="topSection">
     <div class="topPic">
         <img src="/images/topPic.png" >
@@ -13,18 +13,20 @@
 </section>
 
 <section class="bottomSection">
-    <form style="margin-left:60px;" action="/borrows/create" method="post">
+    <form style="margin-left:60px;" action="borrowSborrowCreateuccess" method="post">
 
     <div class="borrowBlock">
       <div class="borrowBlockTitle">借款金額<i style="color:red;">*</i></div>
       <div>金額限制 $5,000~$150,000</div>
-      <input type="number" name="MoneyToBorrow" required>
+      <input type="number" name="MoneyToBorrow"onclick="{console.log(this);
+        this.value=100000; }" required>
     </div>
 
     <div class="borrowBlock">
       <div class="borrowBlockTitle">可接受利率上限<i style="color:red;">*</i></div>
       <div>最高5%</div>
-      <input type="number" name="MaxInterestRateAccepted" required>
+      <input type="text" name="MaxInterestRateAccepted" onclick="{console.log(this);
+        this.value=0.04; }" required>
     </div>
 
     <div class="borrowBlock">
@@ -72,48 +74,54 @@
 
     <div class="borrowBlock">
         <div class="borrowBlockTitle">標題</div>
-        <input name="StoryTitle" required>
+        <input name="StoryTitle" onclick="{console.log(this);
+        this.value='籌借結婚基金！父母說窮小子配不上我，我應該選擇更好的。但，我愛的就是那個窮小子！'; }" required>
     </div>
 
     <div class="borrowBlock">
         <div class="borrowBlockTitle">類別</div>
         <select name="Category">
-            <option value="家庭">家庭</option>
-            <option value="升學">升學</option>
+            <option value="general">一般</option>
+            <option value="education">教育</option>
+            <option value="family">家庭</option>
+            <option value="tour">旅遊</option>
         </select>
     </div>
 
     <div class="borrowBlock">
         <div class="borrowBlockTitle">借款原因/故事</div>
         <div>選擇性填寫，不限字數，也可附上相關網頁/影片連結</div>
-        <textarea name="Story"></textarea>
+        <textarea name="Story"  onclick="{console.log(this);
+        this.value='我和閃光已經交往五年了。\n家人說他只不過是個窮小子，配不上我。但我知道他只不過是還沒有成功。他是一個有夢想的人。\n我知道閃光一直想要跟我結婚。可是那個承諾卻是他的經濟能力所不能承擔的。我們一直都有計劃......\n..................\n..................\n..................\n..................\n..................\n..................'; }" ></textarea>
     </div>
 
     <div class="borrowBlock">
         <div class="borrowBlockTitle">媒合確定最晚期限</div>
         <div>系統預設為三天</div>
-        <input type="date" name="TimeLimit">
+        <input type="date" name="TimeLimit" required>
     </div>
 
     <div class="borrowBlock" >
+        <input type="hidden" name="CreatedBy" value="<%- createdBy -%>">
         <button type="reset"  id="buttonReset" class="buttonExit">重寫</button>
-        <button type="button" id="buttonCheck" class="buttonSubmit">確認</button>
+        <button type="submit"  class="buttonSubmit">確認</button>
     </div>
 
+<!--
     <div id="borrowDialog" class="borrowBlock"  style="display:none;">
         <div class="borrowBlockTitle dialogTitle">確認借出</div>
-        <input type="hidden" name="CreatedBy" value="<%- createdBy -%>">
+
         <p>確定送出借款要求嗎？</p>
         <p>檢查看看有沒有要修改的地方？</p>
         <p>祝您早日配對成功！</p>
         <button type="button"  id="buttonCancel"class="buttonExit">取消</button>
         <button type="submit"  class="buttonSubmit">確認送出</button>
     </div>
-
+-->
     </form>
 
 </section>
-
+<!--
 <div id="li" >
     <img id="liPic" src="/images/li.png">
     <div id="talkContent">
@@ -122,9 +130,9 @@
         <p>有助於借款喔！</p>
     </div>
 </div>
+-->
 
-
-
+<img width="65px" height="65px" src="/images/icon.png" class="hastip" title="把借款的故事或原因寫下來，<br>能幫助其他人暸解您的情況！<br>有助於借款喔！" style="position:fixed;"/>
 
 
     <script src="/javascripts/jquery-ui.js"></script>
@@ -151,11 +159,11 @@
                 'background-color': '#EEEEEE'
             });
         });
-        $( '#li' ).css({
-            'top': (window.pageYOffset+window.innerHeight/3).toString()+'px',
+        $( '.hastip' ).css({
+            'top': (window.innerHeight*0.8).toString()+'px',//window.pageYOffset+
             'left': '60%'
-        }).draggable();
-        $('#borrowDialog').draggable();
+        });
+        $('.hastip').draggable();
     </script>
 
 <%- include('layout_footer',{imgSettingCode:"var ifLoadedCount=2;img1 = new Image;img1.onload = function(){ifLoadedCount-=1;};img1.src='/images/camera.png';img2 = new Image;img2.onload = function(){ifLoadedCount-=1;};img2.src='/images/like.png';",imgDrawingCode:"var offset1 = $('#intro1').offset();ctx.drawImage(img1,offset1.left,offset1.top,100,100);var offset2 = $('#intro3').offset();ctx.drawImage(img2,offset2.left,offset2.top,100,100);"}); -%>

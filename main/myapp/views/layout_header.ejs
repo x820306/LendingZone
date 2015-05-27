@@ -4,7 +4,7 @@
 	<meta http-equiv="content-type" content="text/html; charset=utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Lending Zone</title>
-	
+
 	<!-- jquery js-->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 	<!-- bootstrap js-->
@@ -40,9 +40,12 @@
 				<!-- Collect the nav links, forms, and other content for toggling -->
 				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 					<ul class="nav navbar-nav navbar-left">
-						<li class="dropdown">
+						<li class="dropdown<% if((nav_cur=='borrowPage')||(nav_cur=='borrowerPanel')||(nav_cur=='borrowerConfirmedMatch')||(nav_cur=='checkMatch')){ %> active<% } %>">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">借入者 <span class="caret"></span></a>
 							<ul class="dropdown-menu" role="menu">
+								<li <% if(nav_cur=='borrowPage'){ %> class="active"<% } %>><a href="/borrower/borrowPage">我想借錢</a></li>
+								<li <% if(nav_cur=='borrowerPanel'){ %> class="active"<% } %>><a href="/borrower/borrowerPanel">還款紀錄</a></li>
+								<li <% if(nav_cur=='checkMatch'){ %> class="active"<% } %>><a href="/borrower/checkMatch">確認媒合</a></li>
 							</ul>
 						</li>
 						<li class="dropdown<% if((nav_cur=='lend')||(nav_cur=='lenderSendMessages')||(nav_cur=='lenderReceiveMessages')||(nav_cur=='lenderTransactionRecord')||(nav_cur=='lenderReturnRecord')||(nav_cur=='income')||(nav_cur=='search')||(nav_cur=='story')){ %> active<% } %>">
@@ -88,9 +91,9 @@
 										<li><a href="#" onclick="$('#searchActionSelected').html('');$('#searchActionSelected').html($('#searchAction7').text());$('#searchAction0').html($('#searchActionSelected').text());$('#searchActionSelected').append(' <span class=\'caret\'><\/span>');return false;" id="searchAction7">信用等級最高</a></li>
 									</ul>
 								</div>
-								<button type="button" style="height:32px;" class="btn btn-default" onclick="window.open('/lender/search?keyword='+encodeURIComponent($('#keywordIpt').val())+'&action='+encodeURIComponent($('#searchAction0').text())+'&category='+encodeURIComponent($('#category0').text())+'&filter='+encodeURIComponent('未選擇濾鏡')+'&lbound=&ubound=&page=1','_self');"><span class="glyphicon glyphicon-search"></span></button>	
+								<button type="button" style="height:32px;" class="btn btn-default" onclick="window.open('/lender/search?keyword='+encodeURIComponent($('#keywordIpt').val())+'&action='+encodeURIComponent($('#searchAction0').text())+'&category='+encodeURIComponent($('#category0').text())+'&filter='+encodeURIComponent('未選擇濾鏡')+'&lbound=&ubound=&page=1','_self');"><span class="glyphicon glyphicon-search"></span></button>
 							</span>
-						</div> 
+						</div>
 					</div>
 					<ul class="nav navbar-nav navbar-right">
 						<!--<li><a href="#" onclick="if(ifLoadedCount<=0){if(!ifDrawed){doneResizing();}$('#introCanvas').attr('style',$('#introCanvas').attr('style').replace(/display:none;/g, ''));}else{alert('請等候圖片載入完畢');}return false;">引導</a></li>%>-->
