@@ -104,7 +104,7 @@ function toLendSamePart(res,req,differentPart,outterPara){
 							
 							if((sanitizer.sanitize(req.body.MoneyToLend)=='')||(sanitizer.sanitize(req.body.InterestRate)=='')||(sanitizer.sanitize(req.body.MonthPeriod)=='')){
 								res.redirect('/message?content='+encodeURIComponent('必要參數未填!'));
-							}else if((month<=0)||(nowMoney<=0)||(rate<=(0+library.serviceChargeRate))||(rate>=(1+library.serviceChargeRate))){
+							}else if((month<=0)||(month>36)||(nowMoney<=0)||(rate<=(0+library.serviceChargeRate))||(rate>=(1+library.serviceChargeRate))){
 								res.redirect('/message?content='+encodeURIComponent('錯誤參數!'));//scr
 							}else if(nowMoney>maxMoney){
 								res.redirect('/message?content='+encodeURIComponent('金額超過您的銀行餘額!'));

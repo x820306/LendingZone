@@ -456,7 +456,7 @@ router.get('/lenderTransactionRecord/:oneid?/:filter?/:sorter?/:page?', library.
 	var Borrows  = mongoose.model('Borrows');
 	var Messages  = mongoose.model('Messages');
 	var Transactions  = mongoose.model('Transactions');
-	Transactions.find({$and:andFindCmdAry}).populate('Borrower', 'Username').populate('CreatedFrom', 'FromBorrowRequest').sort(sorterRec).exec( function (err, transactions, count){
+	Transactions.find({$and:andFindCmdAry}).populate('Borrower', 'Username').populate('CreatedFrom', 'FromBorrowRequest').populate('Return', 'PrincipalShouldPaid PrincipalNotPaid Created').sort(sorterRec).exec( function (err, transactions, count){
 		if (err) {
 			console.log(err);
 			res.redirect('/message?content='+encodeURIComponent('錯誤!'));
@@ -498,8 +498,21 @@ router.get('/lenderTransactionRecord/:oneid?/:filter?/:sorter?/:page?', library.
 							}else{
 								transactions[i].InterestInFutureMoneyMonth=0;
 							}
-							transactions[i].ReturnCount=transactions[i].Return.length;
 							selectedFeeAllIpt+=transactions[i].Principal*library.insuranceRate;
+							transactions[i].ReturnCount=0;
+							transactions[i].previousPayDate=null;
+							for(j=0;j<transactions[i].Return.length;j++){
+								if((transactions[i].Return[j].PrincipalShouldPaid-transactions[i].Return[j].PrincipalNotPaid)>0){
+									transactions[i].ReturnCount+=1;
+									if(!transactions[i].previousPayDate){
+										transactions[i].previousPayDate=transactions[i].Return[j].Created;
+									}
+								}
+							}
+							var tempDate=new Date(transactions[i].Created.getTime());
+							tempDate.setTime(tempDate.getTime()+1000*60*60*24*30*(transactions[i].MonthPeriodHasPast+1));
+							transactions[i].nextPayDate=tempDate;
+							
 						}
 						
 						if(sorter=='預計總利息最高'){
@@ -574,7 +587,7 @@ router.get('/lenderReturnRecord/:oneid?/:id?/:sorter?/:page?', library.ensureAut
 	}
 	
 	var Returns  = mongoose.model('Returns');
-	Returns.find({$and:andFindCmdAry}).populate('Borrower', 'Username').sort(sorterRec).exec( function (err, returns, count){
+	Returns.find({$and:andFindCmdAry,$where: function() { return (this.PrincipalShouldPaid-this.PrincipalNotPaid) > 0 }}).populate('Borrower', 'Username').sort(sorterRec).exec( function (err, returns, count){
 		if (err) {
 			console.log(err);
 			res.redirect('/message?content='+encodeURIComponent('錯誤!'));

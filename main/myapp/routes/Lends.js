@@ -47,7 +47,7 @@ function samePart(res,req,differentPart,outterPara){
 				
 				if((sanitizer.sanitize(req.body.MaxMoneyToLend)=='')||(sanitizer.sanitize(req.body.InterestRate)=='')||(sanitizer.sanitize(req.body.MonthPeriod)=='')){
 					res.redirect('/message?content='+encodeURIComponent('必要參數未填!'));
-				}else if((month<=0)||(nowMoney<=0)||(level<0)||(MinInterestInFuture<0)||(MinInterestInFutureMonth<0)||(MinInterestInFutureMoneyMonth<0)||(rate<=(0+library.serviceChargeRate))||(rate>=(1+library.serviceChargeRate))||(MinInterestInFutureDivMoney<0)||(MinInterestInFutureDivMoney>=1)){
+				}else if((month<=0)||(month>36)||(nowMoney<=0)||(level<0)||(MinInterestInFuture<0)||(MinInterestInFutureMonth<0)||(MinInterestInFutureMoneyMonth<0)||(rate<=(0+library.serviceChargeRate))||(rate>=(1+library.serviceChargeRate))||(MinInterestInFutureDivMoney<0)||(MinInterestInFutureDivMoney>=1)){
 					res.redirect('/message?content='+encodeURIComponent('錯誤參數!'));//scr
 				}else if(nowMoney>maxMoney){
 					res.redirect('/message?content='+encodeURIComponent('超過金額上限!'));

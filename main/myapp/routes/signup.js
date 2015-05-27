@@ -13,11 +13,7 @@ router.get('/',library.newMsgChecker, function (req, res) {
 	if(req.isAuthenticated()){
 		auRst=req.user.Username;
 	}
-	
-	//get data from database and process them here
-	
-	//pass what u get from database and send them into ejs in this line
-	res.render('ejsExample',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst});
+	res.redirect('/signup/success');
 });
 
 // this is the basic type when page no need to ensure authenticated. U can try this by /signup/signupExample

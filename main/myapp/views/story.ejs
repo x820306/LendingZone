@@ -280,7 +280,7 @@
 					</div>
 					<div class="modal-body">
 						<br>
-						必填欄位未填或數值小於等於0
+						必填欄位未填或已填欄位數值錯誤
 						<br>
 						<br>
 					</div>
@@ -314,21 +314,21 @@
 									</div>
 									<br>
 								<form action="/Messages/toLendCreate" method="post">
-									<h4>本次欲借出金額：</h4>
+									<h4>本次欲借出金額：<i style="color:red;">*</i></h4>
 									<div class="input-group">
-										<input type="number" class="form-control" name="MoneyToLend">
+										<input type="number" class="form-control" name="MoneyToLend" required="required">
 										<span class="input-group-addon">元</span>
 									</div>
 									<br>
-									<h4>本次欲借出年利率：</h4>
+									<h4>本次欲借出年利率：<i style="color:red;">*</i></h4>
 									<div class="input-group">	
-										<input type="text" class="form-control" name="InterestRate">
+										<input type="text" class="form-control" name="InterestRate" required="required">
 										<span class="input-group-addon">%</span>
 									</div>
 									<br>
-									<h4>本次欲借出期數（單位/月）：</h4>
+									<h4>本次欲借出期數（單位/月，最大36個月）：<i style="color:red;">*</i></h4>
 									<div class="input-group">
-										<input type="number" class="form-control" name="MonthPeriod">
+										<input type="number" class="form-control" name="MonthPeriod" required="required">
 										<span class="input-group-addon">個月</span>
 									</div>
 									<br>
@@ -483,21 +483,21 @@
 									</div>
 									<br>
 								<form action="/Messages/toLendUpdate" method="post" id="formID">
-									<h4>本次欲借出金額：</h4>
+									<h4>本次欲借出金額：<i style="color:red;">*</i></h4>
 									<div class="input-group">
-										<input type="number" class="form-control" name="MoneyToLend" value="<%=jsonMessage.MoneyToLend.toFixed(0)%>">
+										<input type="number" class="form-control" name="MoneyToLend" value="<%=jsonMessage.MoneyToLend.toFixed(0)%>" required="required">
 										<span class="input-group-addon">元</span>
 									</div>
 									<br>
-									<h4>本次欲借出年利率：</h4>
+									<h4>本次欲借出年利率：<i style="color:red;">*</i></h4>
 									<div class="input-group">
-										<input type="text" class="form-control" name="InterestRate" value="<%=(jsonMessage.InterestRate*100).toFixed(2)%>">
+										<input type="text" class="form-control" name="InterestRate" value="<%=(jsonMessage.InterestRate*100).toFixed(2)%>" required="required">
 										<span class="input-group-addon">%</span>
 									</div>
 									<br>
-									<h4>本次欲借出期數（單位/月）：</h4>
+									<h4>本次欲借出期數（單位/月，最大36個月）：<i style="color:red;">*</i></h4>
 									<div class="input-group">
-										<input type="number" class="form-control" name="MonthPeriod" value="<%=jsonMessage.MonthPeriod.toFixed(0)%>">
+										<input type="number" class="form-control" name="MonthPeriod" value="<%=jsonMessage.MonthPeriod.toFixed(0)%>" required="required">
 										<span class="input-group-addon">個月</span>
 									</div>
 									<br>
@@ -688,21 +688,21 @@
 								</div>
 								<br>
 							<form action="/Messages/confirmToBorrowMessageInStory" method="post" id="confirmFormID">
-								<h4>金額：</h4>
+								<h4>金額：<i style="color:red;">*</i></h4>
 								<div class="input-group">
-									<input type="number" class="form-control" name="MoneyToLend" value="<%=jsonBorrowMessage.MoneyToLend.toFixed(0)%>">
+									<input type="number" class="form-control" name="MoneyToLend" value="<%=jsonBorrowMessage.MoneyToLend.toFixed(0)%>" required="required">
 									<span class="input-group-addon">元</span>
 								</div>
 								<br>
-								<h4>年利率：</h4>
+								<h4>年利率：<i style="color:red;">*</i></h4>
 								<div class="input-group">
-									<input type="text" class="form-control" name="InterestRate" value="<%=(jsonBorrowMessage.InterestRate*100).toFixed(2)%>">
+									<input type="text" class="form-control" name="InterestRate" value="<%=(jsonBorrowMessage.InterestRate*100).toFixed(2)%>" required="required">
 									<span class="input-group-addon">%</span>
 								</div>
 								<br>
-								<h4>期數（單位/月）：</h4>
+								<h4>期數（單位/月，最大36個月）：<i style="color:red;">*</i></h4>
 								<div class="input-group">
-									<input type="number" class="form-control" name="MonthPeriod" value="<%=jsonBorrowMessage.MonthPeriod.toFixed(0)%>">
+									<input type="number" class="form-control" name="MonthPeriod" value="<%=jsonBorrowMessage.MonthPeriod.toFixed(0)%>" required="required">
 									<span class="input-group-addon">個月</span>
 								</div>
 								<br>
@@ -882,14 +882,14 @@
 			var a=$("input[name='MoneyToLend']").val();
 			var b=$("input[name='InterestRate']").val();
 			var c=$("input[name='MonthPeriod']").val();
-			var aa=parseFloat(a);
+			var aa=parseInt(a);
 			var bb=parseFloat(b);
-			var cc=parseFloat(c);
+			var cc=parseInt(c);
 			var trueCnt;
 			
 			if(flag){
-				if((a!='')&&(b!='')&&(c!='')&&(aa>0)&&(bb>0)&&(cc>0)){
-					trueCnt='您確定要以金額 <div style="display:inline;color:red;">'+$("input[name='MoneyToLend']").val()+'元</div> 、年利率 <div style="display:inline;color:red;">'+$("input[name='InterestRate']").val()+'%</div> 、期數 <div style="display:inline;color:red;">'+$("input[name='MonthPeriod']").val()+'個月</div> 為條件向 <div style="display:inline;color:red;">'+$("#aiteName").text()+'</div> '+cntTail;
+				if((a!='')&&(b!='')&&(c!='')&&(aa>0)&&(bb>0)&&(cc>0)&&(cc<=36)){
+					trueCnt='您確定要以金額 <div style="display:inline;color:red;">'+aa+'元</div> 、年利率 <div style="display:inline;color:red;">'+bb+'%</div> 、期數 <div style="display:inline;color:red;">'+cc+'個月</div> 為條件向 <div style="display:inline;color:red;">'+$("#aiteName").text()+'</div> '+cntTail;
 					$(cntNumber).html('<br>'+trueCnt+'<br><br>');
 					$(target).modal('show');
 				}else{

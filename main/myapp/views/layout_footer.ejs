@@ -16,18 +16,18 @@
 					<form action="/login" method="post" id="loginForm">
 						<div class="modal-body">
 							<div class="input-group">
-									<input type="text" class="form-control" name="Username" id="usernameID" placeholder="帳號">
+									<input type="text" class="form-control" name="Username" id="usernameID" placeholder="帳號" required="required">
 							</div>
 							<br>
 							<div class="input-group">
-									<input type="password" class="form-control" name="Password" id="passwordID" placeholder="密碼">
+									<input type="password" class="form-control" name="Password" id="passwordID" placeholder="密碼" required="required">
 							</div>
 							<br>
 							<input type="hidden" name="CaptchaIdfr" id="captchaIdfr" value="0">
 							<table>
 								<tr>
 									<td style="width:30%;">
-										<input type="text" class="form-control" name="CaptchaText" id="captchaText" placeholder="驗證碼">
+										<input type="text" class="form-control" name="CaptchaText" id="captchaText" placeholder="驗證碼" required="required">
 									</td>
 									<td>
 										&nbsp;&nbsp;&nbsp;&nbsp;<img id="captchaPic" width="100px" height="35px;" src="" />
