@@ -239,7 +239,7 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																
 																if((sanitizer.sanitize(req.body.MoneyToLend)=='')||(sanitizer.sanitize(req.body.InterestRate)=='')||(sanitizer.sanitize(req.body.MonthPeriod)=='')){
 																	returnSring='必要參數未填!';
-																}else if((month<=0)||(month>36)||(nowMoney<=0)||(rate<=(0+exports.serviceChargeRate))||(rate>=(1+exports.serviceChargeRate))){
+																}else if((month<1)||(month>36)||(nowMoney<1)||(rate<=(0+exports.serviceChargeRate))||(rate>=(1+exports.serviceChargeRate))){
 																	returnSring='錯誤參數!';
 																}else if(nowMoney>maxMoney){
 																	returnSring='金額超過您的銀行餘額!';
