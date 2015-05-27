@@ -341,7 +341,7 @@ function checkAndOpenModal(target,cntNumber,cntTail,flag){
 	}
 	
 	if(flag){
-		if((a!='')&&(b!='')&&(c!='')&&(aa>0)&&(bb>0)&&(cc>0)&&(cc<=36)&&(dd>=0)&&(ee>=0)&&(ff>=0)&&(gg>=0)&&(hh>=0)){
+		if((a!='')&&(b!='')&&(c!='')&&(aa>=1)&&(bb>0)&&(cc>=1)&&(cc<=36)&&(dd>=0)&&(ee>=0)&&(ff>=0)&&(gg>=0)&&(hh>=0)){
 			$("input[name='MaxMoneyToLend']").val(aa);
 			$("input[name='InterestRate']").val(bb);
 			$("input[name='MonthPeriod']").val(cc);
@@ -390,7 +390,6 @@ function checkAndOpenModal(target,cntNumber,cntTail,flag){
 	}
 	
 	function disableButton(){
-		alert('fuck');
 		var orig=$('#destroyBtnID').attr('class');
 		if(orig.search(' disabled')<0){
 			orig=orig+' disabled';

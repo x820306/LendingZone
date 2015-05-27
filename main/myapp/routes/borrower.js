@@ -40,7 +40,7 @@ router.post('/borrowCreate', library.ensureAuthenticated, function(req, res) {
 	var month=parseInt(sanitizer.sanitize(req.body.MonthPeriodAccepted));
 	if((sanitizer.sanitize(req.body.MoneyToBorrow)=='')||(sanitizer.sanitize(req.body.MaxInterestRateAccepted)=='')||(sanitizer.sanitize(req.body.MonthPeriodAccepted)=='')){
 		res.redirect('/message?content='+encodeURIComponent('必要參數未填!'));
-	}else if((month<=0)||(month>36)||(nowMoney<5000)||(nowMoney>150000)||(rate<=0)||(rate>=1)){
+	}else if((month<1)||(month>36)||(nowMoney<5000)||(nowMoney>150000)||(rate<=0)||(rate>=1)){
 		res.redirect('/message?content='+encodeURIComponent('錯誤參數!'));
 	}else{
 		var toCreate = new Borrows();
