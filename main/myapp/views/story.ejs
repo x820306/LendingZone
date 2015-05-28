@@ -853,12 +853,20 @@
 					}
 				});	
 				
+				$('#iptCtr').attr('onkeypress','');
+				$('#iptCtr').attr('readonly','readonly');
+				orig=$('#sendButton').attr('class');
+				if(orig.search(' disabled')<0){
+					orig=orig+' disabled';
+					$('#sendButton').attr('class',orig);
+				}
 				$.ajax({ 
 					url: '/Discussions/findDiscussions',
 					type: 'POST',
 					data:{_id:"<%=json._id%>"},
 					dataType: 'json',
 					success: function(Jdata) {
+						var origInner;
 						if(Jdata.success){
 							$('#discussionDiv').html('');
 							for(i=0;i<Jdata.result.length;i++){
@@ -869,10 +877,29 @@
 								$('#discussionDiv').append('<div style="display:inline;" class="myTitle">'+Jdata.result[i].CreatedBy.Username+'：</div><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+Jdata.result[i].Content+'<br><div style="display:inline;" class="myTitle">'+year+'/'+month+'/'+date+'</div><br><br>');
 							}
 							$('#iptCtr').val('');
+							$('#iptCtr').attr('onkeypress','if(event.keyCode==13){sendComment();}');
+							$('#iptCtr').removeAttr("readonly");
+							origInner=$('#sendButton').attr('class');
+							origInner=origInner.replace(/ disabled/g, '');
+							$('#sendButton').attr('class',origInner);
 						}else{
+							alert(Jdata.error);
+							$('#iptCtr').val('');
+							$('#iptCtr').attr('onkeypress','if(event.keyCode==13){sendComment();}');
+							$('#iptCtr').removeAttr("readonly");
+							origInner=$('#sendButton').attr('class');
+							origInner=origInner.replace(/ disabled/g, '');
+							$('#sendButton').attr('class',origInner);
 						}
 					},
 					error: function() {
+						alert('something wrong.');
+						$('#iptCtr').val('');
+						$('#iptCtr').attr('onkeypress','if(event.keyCode==13){sendComment();}');
+						$('#iptCtr').removeAttr("readonly");
+						var origInner=$('#sendButton').attr('class');
+						origInner=origInner.replace(/ disabled/g, '');
+						$('#sendButton').attr('class',origInner);
 					}
 				});	
 				
