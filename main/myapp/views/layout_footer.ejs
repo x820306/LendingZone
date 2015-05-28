@@ -13,7 +13,7 @@
 						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 						<h4 class="modal-title" id="myModalLabel"><img src="/images/login.png " height="30px" width="30px"/>&nbsp;登入</h4>
 					</div>
-					<form action="/login" method="post" id="loginForm">
+					<form action="/login" method="post" id="loginForm" onsubmit="disableButton();">
 						<div class="modal-body">
 							<div class="input-group">
 									<input type="text" class="form-control" name="Username" id="usernameID" placeholder="帳號" required="required">
@@ -52,7 +52,7 @@
 							</div>
 							<div class="btn-toolbar" role="toolbar">
 								<div class="btn-group" role="group">
-									<button type="submit" class="btn btn-info" onclick="save();">登入</button>
+									<button id="lgBtn" type="submit" class="btn btn-info" onclick="save();">登入</button>
 								</div>
 								<div class="btn-group" role="group">
 									<button type="button" class="btn btn-danger" data-dismiss="modal">關閉</button>
@@ -137,19 +137,26 @@
 	}
 	
 	<% if(!userName){ %>
+		var captchaFlag=false;
 		function ajaxCaptcha(){
-			$.ajax({ 
-				url: '/captcha?captchaIdfr='+$('#captchaIdfr').val(),
-				type: 'GET',
-				dataType: 'json',
-				success: function(Jdata) {
-					$('#captchaIdfr').val(Jdata.CaptchaIdfr);
-					$('#captchaPic').attr('src',Jdata.CaptchaPic);
-				},
-				error: function() {
-				}
-			});
-		
+			if(captchaFlag){
+				alert('正在處理中，請稍候');
+			}else{
+				captchaFlag=true;
+				$.ajax({ 
+					url: '/captcha?captchaIdfr='+$('#captchaIdfr').val(),
+					type: 'GET',
+					dataType: 'json',
+					success: function(Jdata) {
+						$('#captchaIdfr').val(Jdata.CaptchaIdfr);
+						$('#captchaPic').attr('src',Jdata.CaptchaPic);
+						captchaFlag=false;
+					},
+					error: function() {
+						captchaFlag=false;
+					}
+				});
+			}
 		}
 		
 		var forgettingFlag=false;
@@ -177,6 +184,16 @@
 					});	
 				}
 			}
+		}
+		
+		function disableButton(){
+			var orig=$('#lgBtn').attr('class');
+			if(orig.search(' disabled')<0){
+				orig=orig+' disabled';
+				$('#lgBtn').attr('class',orig);
+			}
+			forgettingFlag=true;
+			captchaFlag=true;
 		}
 		
 		function save() {
