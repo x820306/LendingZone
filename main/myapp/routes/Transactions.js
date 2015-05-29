@@ -46,153 +46,157 @@ router.post('/buyInsurance',library.ensureAuthenticated, function(req, res, next
 	var JSONobj=JSON.parse(req.body.JsonArrayString);
 	req.body.array=JSONobj.array;
 	if(req.body.array.length>0){
-		buyInsurance(0,req.body.array.length,null,req,res);
+		buyInsurance(0,req.body.array.length,null,req,res,0);
 	}
 });
 
 router.get('/buyInsuranceAll/:oneid?/:sorter?',library.ensureAuthenticated, function(req, res, next) {
-	var oneid=decodeURIComponent(req.query.oneid);
-	var sorter=decodeURIComponent(req.query.sorter);
-	
-	var sorterRec;
-	
-	if(sorter=='最新'){
-		sorterRec="-Updated";
-	}else if(sorter=='已獲利最多'){
-		sorterRec="-InterestCumulated";
-	}else if(sorter=='利率最高'){
-		sorterRec="-InterestRate";
-	}else if(sorter=='金額最大'){
-		sorterRec="-Principal";
-	}else if(sorter=='期數最多'){
-		sorterRec="-MonthPeriod";
-	}else if(sorter=='信用等級最高'){
-		sorterRec="-Level";
-	}else if(sorter=='預計總利息最高'){
-		sorterRec="-Updated";
-	}else if(sorter=='預計平均利息最高'){
-		sorterRec="-Updated";
-	}else if(sorter=='預計平均本利和最高'){
-		sorterRec="-Updated";
-	}else if(sorter=='預計利本比最高'){
-		sorterRec="-Updated";
-	}else if(sorter=='成交日期最晚'){
-		sorterRec="-Created";
-	}else if(sorter=='收款記錄最多'){
-		sorterRec="-Updated";
-	}else if(sorter=='保險所需費用最高'){
-		sorterRec="-Principal";
-	}
-	
-	var andFindCmdAry=[];
-	andFindCmdAry.push({"Lender": req.user._id});
-	andFindCmdAry.push({"InsuranceFeePaid":0});
-	if(mongoose.Types.ObjectId.isValid(oneid)){
-		var ObjID=mongoose.Types.ObjectId(oneid);
-		andFindCmdAry.push({"_id": ObjID});
-	}
-	
-	Transactions.find({$and:andFindCmdAry}).sort(sorterRec).exec(function (err, transactions){
-		if (err) {
-			console.log(err);
-			res.redirect('/message?content='+'錯誤!');
-		}else{
-			if(transactions.length==0){
+	if((typeof(req.query.oneid) !== "undefined")&&(typeof(req.query.sorter) !== "undefined")){
+		var oneid=decodeURIComponent(req.query.oneid);
+		var sorter=decodeURIComponent(req.query.sorter);
+		
+		var sorterRec;
+		
+		if(sorter=='最新'){
+			sorterRec="-Updated";
+		}else if(sorter=='已獲利最多'){
+			sorterRec="-InterestCumulated";
+		}else if(sorter=='利率最高'){
+			sorterRec="-InterestRate";
+		}else if(sorter=='金額最大'){
+			sorterRec="-Principal";
+		}else if(sorter=='期數最多'){
+			sorterRec="-MonthPeriod";
+		}else if(sorter=='信用等級最高'){
+			sorterRec="-Level";
+		}else if(sorter=='預計總利息最高'){
+			sorterRec="-Updated";
+		}else if(sorter=='預計平均利息最高'){
+			sorterRec="-Updated";
+		}else if(sorter=='預計平均本利和最高'){
+			sorterRec="-Updated";
+		}else if(sorter=='預計利本比最高'){
+			sorterRec="-Updated";
+		}else if(sorter=='成交日期最晚'){
+			sorterRec="-Created";
+		}else if(sorter=='收款記錄最多'){
+			sorterRec="-Updated";
+		}else if(sorter=='保險所需費用最高'){
+			sorterRec="-Principal";
+		}
+		
+		var andFindCmdAry=[];
+		andFindCmdAry.push({"Lender": req.user._id});
+		andFindCmdAry.push({"InsuranceFeePaid":0});
+		if(mongoose.Types.ObjectId.isValid(oneid)){
+			var ObjID=mongoose.Types.ObjectId(oneid);
+			andFindCmdAry.push({"_id": ObjID});
+		}
+		
+		Transactions.find({$and:andFindCmdAry}).sort(sorterRec).exec(function (err, transactions){
+			if (err) {
+				console.log(err);
 				res.redirect('/message?content='+'錯誤!');
 			}else{
-				if((sorter=='預計總利息最高')||(sorter=='預計利本比最高')||(sorter=='預計平均利息最高')||(sorter=='預計平均本利和最高')){
-					for(i=0;i<transactions.length;i++){
-						transactions[i].InterestRate-=library.serviceChargeRate;//scr
-						transactions[i].InterestInFuture=library.interestInFutureCalculator(transactions[i].Principal,transactions[i].InterestRate,transactions[i].MonthPeriod);
-						if(transactions[i].Principal>0){
-							transactions[i].InterestInFutureDivMoney=transactions[i].InterestInFuture/transactions[i].Principal;
-						}else{
-							transactions[i].InterestInFutureDivMoney=0;
+				if(transactions.length==0){
+					res.redirect('/message?content='+'錯誤!');
+				}else{
+					if((sorter=='預計總利息最高')||(sorter=='預計利本比最高')||(sorter=='預計平均利息最高')||(sorter=='預計平均本利和最高')){
+						for(i=0;i<transactions.length;i++){
+							transactions[i].InterestRate-=library.serviceChargeRate;//scr
+							transactions[i].InterestInFuture=library.interestInFutureCalculator(transactions[i].Principal,transactions[i].InterestRate,transactions[i].MonthPeriod);
+							if(transactions[i].Principal>0){
+								transactions[i].InterestInFutureDivMoney=transactions[i].InterestInFuture/transactions[i].Principal;
+							}else{
+								transactions[i].InterestInFutureDivMoney=0;
+							}
+							if(transactions[i].MonthPeriod>0){
+								transactions[i].InterestInFutureMonth=transactions[i].InterestInFuture/transactions[i].MonthPeriod;
+							}else{
+								transactions[i].InterestInFutureMonth=0;
+							}
+							if(transactions[i].MonthPeriod>0){
+								transactions[i].InterestInFutureMoneyMonth=(transactions[i].InterestInFuture+transactions[i].Principal)/transactions[i].MonthPeriod;
+							}else{
+								transactions[i].InterestInFutureMoneyMonth=0;
+							}
+							transactions[i].ReturnCount=transactions[i].Return.length;
 						}
-						if(transactions[i].MonthPeriod>0){
-							transactions[i].InterestInFutureMonth=transactions[i].InterestInFuture/transactions[i].MonthPeriod;
-						}else{
-							transactions[i].InterestInFutureMonth=0;
+						
+						if(sorter=='預計總利息最高'){
+							transactions.sort(function(a,b) { return parseFloat(b.InterestInFuture) - parseFloat(a.InterestInFuture)} );
+						}else if(sorter=='預計平均利息最高'){
+							transactions.sort(function(a,b) { return parseFloat(b.InterestInFutureMonth) - parseFloat(a.InterestInFutureMonth)} );
+						}else if(sorter=='預計平均本利和最高'){
+							transactions.sort(function(a,b) { return parseFloat(b.InterestInFutureMoneyMonth) - parseFloat(a.InterestInFutureMoneyMonth)} );
+						}else if(sorter=='預計利本比最高'){
+							transactions.sort(function(a,b) { return parseFloat(b.InterestInFutureDivMoney) - parseFloat(a.InterestInFutureDivMoney) } );
+						}else if(sorter=='收款記錄最多'){
+							transactions.sort(function(a,b) { return b.ReturnCount - a.ReturnCount } );
 						}
-						if(transactions[i].MonthPeriod>0){
-							transactions[i].InterestInFutureMoneyMonth=(transactions[i].InterestInFuture+transactions[i].Principal)/transactions[i].MonthPeriod;
-						}else{
-							transactions[i].InterestInFutureMoneyMonth=0;
-						}
-						transactions[i].ReturnCount=transactions[i].Return.length;
 					}
 					
-					if(sorter=='預計總利息最高'){
-						transactions.sort(function(a,b) { return parseFloat(b.InterestInFuture) - parseFloat(a.InterestInFuture)} );
-					}else if(sorter=='預計平均利息最高'){
-						transactions.sort(function(a,b) { return parseFloat(b.InterestInFutureMonth) - parseFloat(a.InterestInFutureMonth)} );
-					}else if(sorter=='預計平均本利和最高'){
-						transactions.sort(function(a,b) { return parseFloat(b.InterestInFutureMoneyMonth) - parseFloat(a.InterestInFutureMoneyMonth)} );
-					}else if(sorter=='預計利本比最高'){
-						transactions.sort(function(a,b) { return parseFloat(b.InterestInFutureDivMoney) - parseFloat(a.InterestInFutureDivMoney) } );
-					}else if(sorter=='收款記錄最多'){
-						transactions.sort(function(a,b) { return b.ReturnCount - a.ReturnCount } );
+					var arrayOp=[];
+					for(i=0;i<transactions.length;i++){
+						var temp={TransactionID:transactions[i]._id};
+						arrayOp.push(temp);
 					}
+					req.body.array=arrayOp;
+					buyInsurance(0,req.body.array.length,null,req,res,0);
 				}
-				
-				var arrayOp=[];
-				for(i=0;i<transactions.length;i++){
-					var temp={TransactionID:transactions[i]._id};
-					arrayOp.push(temp);
-				}
-				req.body.array=arrayOp;
-				buyInsurance(0,req.body.array.length,null,req,res);
 			}
-		}
-	});
+		});
+	}else{
+		res.redirect('/');
+	}
 });
 
-function buyInsurance(ctr,ctrTarget,returnSring,req,res){
+function buyInsurance(ctr,ctrTarget,returnSring,req,res,info){
 	Transactions.findById(req.body.array[ctr].TransactionID).exec(function (err, transaction){
 		if (err) {
 			console.log(err);
 			ctr++;
 			if(ctr<ctrTarget){
-				buyInsurance(ctr,ctrTarget,'有些交易因錯誤無法購買保險!',req,res);
+				buyInsurance(ctr,ctrTarget,'有些交易因錯誤無法購買保險!',req,res,info);
 			}else{
-				res.redirect('/message?content='+encodeURIComponent('有些交易因錯誤無法購買保險!'));
+				res.redirect('/message?content='+encodeURIComponent('有些交易因錯誤無法購買保險!')+'&infoB='+encodeURIComponent(info));
 			}
 		}else{
 			if(!transaction){
 				ctr++;
 				if(ctr<ctrTarget){
-					buyInsurance(ctr,ctrTarget,'有些交易因錯誤無法購買保險!',req,res);
+					buyInsurance(ctr,ctrTarget,'有些交易因錯誤無法購買保險!',req,res,info);
 				}else{
-					res.redirect('/message?content='+encodeURIComponent('有些交易因錯誤無法購買保險!'));
+					res.redirect('/message?content='+encodeURIComponent('有些交易因錯誤無法購買保險!')+'&infoB='+encodeURIComponent(info));
 				}
 			}else{
 				if(transaction.InsuranceFeePaid>0){
 					ctr++;
 					if(ctr<ctrTarget){
-						buyInsurance(ctr,ctrTarget,'有些交易因錯誤無法購買保險!',req,res);
+						buyInsurance(ctr,ctrTarget,'有些交易因錯誤無法購買保險!',req,res,info);
 					}else{
-						res.redirect('/message?content='+encodeURIComponent('有些交易因錯誤無法購買保險!'));
+						res.redirect('/message?content='+encodeURIComponent('有些交易因錯誤無法購買保險!')+'&infoB='+encodeURIComponent(info));
 					}
 				}else{
 					if(req.user._id!=transaction.Lender){
-						res.redirect('/message?content='+encodeURIComponent('認證錯誤!'));
+						res.redirect('/message?content='+encodeURIComponent('認證錯誤!')+'&infoB='+encodeURIComponent(info));
 					}else{
 						BankAccounts.findOne({"OwnedBy": transaction.Lender}).exec(function (err, lenderBankaccount){	
 							if (err) {
 								console.log(err);
 								ctr++;
 								if(ctr<ctrTarget){
-									buyInsurance(ctr,ctrTarget,'有些交易因錯誤無法購買保險!',req,res);
+									buyInsurance(ctr,ctrTarget,'有些交易因錯誤無法購買保險!',req,res,info);
 								}else{
-									res.redirect('/message?content='+encodeURIComponent('有些交易因錯誤無法購買保險!'));
+									res.redirect('/message?content='+encodeURIComponent('有些交易因錯誤無法購買保險!')+'&infoB='+encodeURIComponent(info));
 								}
 							}else{
 								if(!lenderBankaccount){
 									ctr++;
 									if(ctr<ctrTarget){
-										buyInsurance(ctr,ctrTarget,'有些交易因錯誤無法購買保險!',req,res);
+										buyInsurance(ctr,ctrTarget,'有些交易因錯誤無法購買保險!',req,res,info);
 									}else{
-										res.redirect('/message?content='+encodeURIComponent('有些交易因錯誤無法購買保險!'));
+										res.redirect('/message?content='+encodeURIComponent('有些交易因錯誤無法購買保險!')+'&infoB='+encodeURIComponent(info));
 									}
 								}else{
 									var insuranceFee=Math.round(transaction.Principal*library.insuranceRate);
@@ -200,9 +204,9 @@ function buyInsurance(ctr,ctrTarget,returnSring,req,res){
 									if(lenderBankaccount.MoneyInBankAccount<insuranceFee){
 										ctr++;
 										if(ctr<ctrTarget){
-											buyInsurance(ctr,ctrTarget,'有些交易因銀行存款不足無法購買保險!',req,res);
+											buyInsurance(ctr,ctrTarget,'有些交易因銀行存款不足無法購買保險!',req,res,info);
 										}else{
-											res.redirect('/message?content='+encodeURIComponent('有些交易因銀行存款不足無法購買保險!'));
+											res.redirect('/message?content='+encodeURIComponent('有些交易因銀行存款不足無法購買保險!')+'&infoB='+encodeURIComponent(info));
 										}
 									}else{
 										lenderBankaccount.MoneyInBankAccount-=insuranceFee;
@@ -212,9 +216,9 @@ function buyInsurance(ctr,ctrTarget,returnSring,req,res){
 												console.log(err);
 												ctr++;
 												if(ctr<ctrTarget){
-													buyInsurance(ctr,ctrTarget,'有些交易因錯誤無法購買保險!',req,res);
+													buyInsurance(ctr,ctrTarget,'有些交易因錯誤無法購買保險!',req,res,info);
 												}else{
-													res.redirect('/message?content='+encodeURIComponent('有些交易因錯誤無法購買保險!'));
+													res.redirect('/message?content='+encodeURIComponent('有些交易因錯誤無法購買保險!')+'&infoB='+encodeURIComponent(info));
 												}
 											}else{
 												transaction.InsuranceFeePaid+=insuranceFee;
@@ -224,27 +228,32 @@ function buyInsurance(ctr,ctrTarget,returnSring,req,res){
 														console.log(err);
 														ctr++;
 														if(ctr<ctrTarget){
-															buyInsurance(ctr,ctrTarget,'有些交易因錯誤無法購買保險!',req,res);
+															buyInsurance(ctr,ctrTarget,'有些交易因錯誤無法購買保險!',req,res,info);
 														}else{
-															res.redirect('/message?content='+encodeURIComponent('有些交易因錯誤無法購買保險!'));
+															res.redirect('/message?content='+encodeURIComponent('有些交易因錯誤無法購買保險!')+'&infoB='+encodeURIComponent(info));
 														}
 													}else{
+														info+=insuranceFee;
 														Lends.findOne({"CreatedBy": transaction.Lender}).exec(function (err, lend){
 															if(err) {
 																console.log(err);
 																ctr++;
 																if(ctr<ctrTarget){
-																	buyInsurance(ctr,ctrTarget,'有些交易因錯誤無法購買保險!',req,res);
+																	buyInsurance(ctr,ctrTarget,'有些交易因錯誤無法購買保險!',req,res,info);
 																}else{
-																	res.redirect('/message?content='+encodeURIComponent('有些交易因錯誤無法購買保險!'));
+																	res.redirect('/message?content='+encodeURIComponent('有些交易因錯誤無法購買保險!')+'&infoB='+encodeURIComponent(info));
 																}
 															}else{
 																if(!lend){
 																	ctr++;
 																	if(ctr<ctrTarget){
-																		buyInsurance(ctr,ctrTarget,returnSring,req,res)
+																		buyInsurance(ctr,ctrTarget,returnSring,req,res,info)
 																	}else{
-																		res.redirect('/lender/lenderTransactionRecord?filter='+encodeURIComponent('已保險')+'&sorter='+encodeURIComponent('最新')+'&page=1');
+																		if(returnSring){	
+																			res.redirect('/message?content='+encodeURIComponent(returnSring)+'&infoB='+encodeURIComponent(info));
+																		}else{
+																			res.redirect('/lender/lenderTransactionRecord?oneid=&filter='+encodeURIComponent('已保險')+'&sorter='+encodeURIComponent('最新')+'&page=1');
+																		}
 																	}
 																}else{
 																	if(lend.MaxMoneyToLend>updatedLenderBankaccount.MoneyInBankAccount){
@@ -255,25 +264,33 @@ function buyInsurance(ctr,ctrTarget,returnSring,req,res){
 																				console.log(err);
 																				ctr++;
 																				if(ctr<ctrTarget){
-																					buyInsurance(ctr,ctrTarget,'有些交易因錯誤無法購買保險!',req,res);
+																					buyInsurance(ctr,ctrTarget,'有些交易因錯誤無法購買保險!',req,res,info);
 																				}else{
-																					res.redirect('/message?content='+encodeURIComponent('有些交易因錯誤無法購買保險!'));
+																					res.redirect('/message?content='+encodeURIComponent('有些交易因錯誤無法購買保險!')+'&infoB='+encodeURIComponent(info));
 																				}
 																			}else{
 																				ctr++;
 																				if(ctr<ctrTarget){
-																					buyInsurance(ctr,ctrTarget,returnSring,req,res)
+																					buyInsurance(ctr,ctrTarget,returnSring,req,res,info)
 																				}else{
-																					res.redirect('/lender/lenderTransactionRecord?filter='+encodeURIComponent('已保險')+'&sorter='+encodeURIComponent('最新')+'&page=1');
+																					if(returnSring){	
+																						res.redirect('/message?content='+encodeURIComponent(returnSring)+'&infoB='+encodeURIComponent(info));
+																					}else{
+																						res.redirect('/lender/lenderTransactionRecord?oneid=&filter='+encodeURIComponent('已保險')+'&sorter='+encodeURIComponent('最新')+'&page=1');
+																					}
 																				}
 																			}
 																		});
 																	}else{
 																		ctr++;
 																		if(ctr<ctrTarget){
-																			buyInsurance(ctr,ctrTarget,returnSring,req,res)
+																			buyInsurance(ctr,ctrTarget,returnSring,req,res,info)
 																		}else{
-																			res.redirect('/lender/lenderTransactionRecord?filter='+encodeURIComponent('已保險')+'&sorter='+encodeURIComponent('最新')+'&page=1');
+																			if(returnSring){	
+																				res.redirect('/message?content='+encodeURIComponent(returnSring)+'&infoB='+encodeURIComponent(info));
+																			}else{
+																				res.redirect('/lender/lenderTransactionRecord?oneid=&filter='+encodeURIComponent('已保險')+'&sorter='+encodeURIComponent('最新')+'&page=1');
+																			}
 																		}
 																	}
 																}

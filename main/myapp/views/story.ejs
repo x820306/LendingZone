@@ -926,13 +926,11 @@
 						var origInner;
 						if(Jdata.success){
 							renderComments(Jdata);
-							$('#iptCtr').val('');
-							endRenderComments();
 						}else{
 							alert(Jdata.error);
-							$('#iptCtr').val('');
-							endRenderComments();
 						}
+						$('#iptCtr').val('');
+						endRenderComments();
 					},
 					error: function() {
 						alert('something wrong.');
@@ -1041,11 +1039,10 @@
 					success: function(Jdata) {
 						if(Jdata.success){
 							renderComments(Jdata);
-							endRenderComments();
 						}else{
 							alert(Jdata.error);
-							endRenderComments();
 						}
+						endRenderComments();
 					},
 					error: function() {
 						alert('something wrong.');
@@ -1076,11 +1073,10 @@
 						success: function(Jdata) {
 							if(Jdata.success){
 								renderComments(Jdata);
-								endRenderComments();
 							}else{
 								alert(Jdata.error);
-								endRenderComments();
 							}
+							endRenderComments();
 						},
 						error: function() {
 							alert('something wrong.');
@@ -1109,11 +1105,10 @@
 									  scrollTop: $("#discussionDiv")[0].scrollHeight
 									}, 800);
 									$('#iptCtr').val('');
-									endRenderComments();
 								}else{
 									alert(Jdata.error);
-									endRenderComments();
 								}
+								endRenderComments();
 							},
 							error: function() {
 								alert('something wrong.');

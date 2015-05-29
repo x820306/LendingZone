@@ -110,7 +110,11 @@
 									<div style="display:inline;" id="value4All"><%=value4AllDefault.toFixed(0)%></div><div style="display:inline;">元</div>
 									</td>
 									<td>
-									<div style="display:inline;" id="value5All"><%=(value2AllDefault/value1AllDefault*100).toFixed(2)%></div><div style="display:inline;">%</div>
+									<%if(value1AllDefault>0){%>
+										<div style="display:inline;" id="value5All"><%=(value2AllDefault/value1AllDefault*100).toFixed(2)%></div><div style="display:inline;">%</div>
+									<%}else{%>
+										<div style="display:inline;" id="value5All">0.00</div><div style="display:inline;">%</div>
+									<%}%>
 									</td>
 								</tr>
 							</tbody>
@@ -197,16 +201,16 @@
 							<tbody class="myTbody">
 								<tr>
 									<td>
-										<div style="display:inline;" id="value1">0</div><div style="display:inline;">元</div>
+										<div style="display:inline;" id="value1">0</div><div style="display:none;" id="value1R">0</div><div style="display:inline;">元</div>
 									</td>
 									<td>
-										<div style="display:inline;" id="value2">0</div><div style="display:inline;">元</div>
+										<div style="display:inline;" id="value2">0</div><div style="display:none;" id="value2R">0</div><div style="display:inline;">元</div>
 									</td>
 									<td>
-										<div style="display:inline;" id="value3">0</div><div style="display:inline;">元</div>
+										<div style="display:inline;" id="value3">0</div><div style="display:none;" id="value3R">0</div><div style="display:inline;">元</div>
 									</td>
 									<td>
-										<div style="display:inline;" id="value4">0</div><div style="display:inline;">元</div>
+										<div style="display:inline;" id="value4">0</div><div style="display:none;" id="value4R">0</div><div style="display:inline;">元</div>
 									</td>
 									<td>
 										<div style="display:inline;" id="value5">0.00</div><div style="display:inline;">%</div>
@@ -327,7 +331,7 @@
 									<tr>
 										<td>
 											<div>
-												&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;" id="value1<%=i%>"><%=jsonMessage[i].MoneyToLend.toFixed(0)%></div>元
+												&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:none;" id="value1<%=i%>"><%=jsonMessage[i].MoneyToLend%></div><%=jsonMessage[i].MoneyToLend.toFixed(0)%>元
 											</div>	
 										</td>
 									<tr>
@@ -387,7 +391,7 @@
 									<tr>
 										<td>
 											<div>
-												&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;" id="value2<%=i%>"><%=jsonMessage[i].InterestInFuture.toFixed(0)%></div>元
+												&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:none;" id="value2<%=i%>"><%=jsonMessage[i].InterestInFuture%></div><%=jsonMessage[i].InterestInFuture.toFixed(0)%>元
 											</div>	
 										</td>
 									<tr>
@@ -401,7 +405,7 @@
 									<tr>
 										<td>
 											<div>
-												&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;" id="value3<%=i%>"><%=jsonMessage[i].InterestInFutureMonth.toFixed(0)%></div>元
+												&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:none;" id="value3<%=i%>"><%=jsonMessage[i].InterestInFutureMonth%></div><%=jsonMessage[i].InterestInFutureMonth.toFixed(0)%>元
 											</div>	
 										</td>
 									<tr>
@@ -415,7 +419,7 @@
 									<tr>
 										<td>
 											<div>
-												&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;" id="value4<%=i%>"><%=jsonMessage[i].InterestInFutureMoneyMonth.toFixed(0)%></div>元
+												&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:none;" id="value4<%=i%>"><%=jsonMessage[i].InterestInFutureMoneyMonth%></div><%=jsonMessage[i].InterestInFutureMoneyMonth.toFixed(0)%>元
 											</div>	
 										</td>
 									<tr>
@@ -748,27 +752,31 @@ function selectAllFun(){
 		$("input[name='selectCheckBox']").each(function() {
 			$(this).prop("checked", true);
 		});
-		var value1=0;
-		var value2=0;
-		var value3=0;
-		var value4=0;
+		var value1R=0;
+		var value2R=0;
+		var value3R=0;
+		var value4R=0;
 		var value5;
 		for(i=0;i<<%=jsonMessage.length%>;i++){
-			value1+=parseInt($("#value1"+i).text());
-			value2+=parseInt($("#value2"+i).text());
-			value3+=parseInt($("#value3"+i).text());
-			value4+=parseInt($("#value4"+i).text());
+			value1R+=parseFloat($("#value1"+i).text());
+			value2R+=parseFloat($("#value2"+i).text());
+			value3R+=parseFloat($("#value3"+i).text());
+			value4R+=parseFloat($("#value4"+i).text());
 		}
 		
-		if(value1>0){
-			value5=value2/value1*100;
+		if(value1R>0){
+			value5=value2R/value1R*100;
 		}else{
 			value5=0;
 		}
-		$("#value1").text(value1.toFixed(0));
-		$("#value2").text(value2.toFixed(0));
-		$("#value3").text(value3.toFixed(0));
-		$("#value4").text(value4.toFixed(0));
+		$("#value1").text(value1R.toFixed(0));
+		$("#value2").text(value2R.toFixed(0));
+		$("#value3").text(value3R.toFixed(0));
+		$("#value4").text(value4R.toFixed(0));
+		$("#value1R").text(value1R);
+		$("#value2R").text(value2R);
+		$("#value3R").text(value3R);
+		$("#value4R").text(value4R);
 		$("#value5").text(value5.toFixed(2));
 	}else{
 		$("input[name='selectCheckBox']").each(function() {
@@ -777,37 +785,45 @@ function selectAllFun(){
 		$("#value1").text(0);
 		$("#value2").text(0);
 		$("#value3").text(0);
-		$("#value4").text(0);	
+		$("#value4").text(0);
+		$("#value1R").text(0);
+		$("#value2R").text(0);
+		$("#value3R").text(0);
+		$("#value4R").text(0);
 		$("#value5").text('0.00');		
 	}
 }
 
 function selectFun(index){
-	var value1=parseInt($("#value1").text());
-	var fee1=parseInt($("#value1"+index).text());
-	var value2=parseInt($("#value2").text());
-	var fee2=parseInt($("#value2"+index).text());
-	var value3=parseInt($("#value3").text());
-	var fee3=parseInt($("#value3"+index).text());
-	var value4=parseInt($("#value4").text());
-	var fee4=parseInt($("#value4"+index).text());
+	var value1R=parseFloat($("#value1R").text());
+	var fee1=parseFloat($("#value1"+index).text());
+	var value2R=parseFloat($("#value2R").text());
+	var fee2=parseFloat($("#value2"+index).text());
+	var value3R=parseFloat($("#value3R").text());
+	var fee3=parseFloat($("#value3"+index).text());
+	var value4R=parseFloat($("#value4R").text());
+	var fee4=parseFloat($("#value4"+index).text());
 	var value5;
 	
 	if($("#selectCheckBoxId"+index).prop("checked"))
 	{
-		value1+=fee1;
-		value2+=fee2;
-		value3+=fee3;
-		value4+=fee4;
-		if(value1>0){
-			value5=value2/value1*100;
+		value1R+=fee1;
+		value2R+=fee2;
+		value3R+=fee3;
+		value4R+=fee4;
+		if(value1R>0){
+			value5=value2R/value1R*100;
 		}else{
 			value5=0;
 		}
-		$("#value1").text(value1.toFixed(0));
-		$("#value2").text(value2.toFixed(0));
-		$("#value3").text(value3.toFixed(0));
-		$("#value4").text(value4.toFixed(0));
+		$("#value1").text(value1R.toFixed(0));
+		$("#value2").text(value2R.toFixed(0));
+		$("#value3").text(value3R.toFixed(0));
+		$("#value4").text(value4R.toFixed(0));
+		$("#value1R").text(value1R);
+		$("#value2R").text(value2R);
+		$("#value3R").text(value3R);
+		$("#value4R").text(value4R);
 		$("#value5").text(value5.toFixed(2));
 		
 		var ctr=0;
@@ -820,19 +836,23 @@ function selectFun(index){
 			$("#selectAll").prop("checked", true);
 		}
 	}else{
-		value1-=fee1;
-		value2-=fee2;
-		value3-=fee3;
-		value4-=fee4;
-		if(value1>0){
-			value5=value2/value1*100;
+		value1R-=fee1;
+		value2R-=fee2;
+		value3R-=fee3;
+		value4R-=fee4;
+		if(value1R>0){
+			value5=value2R/value1R*100;
 		}else{
 			value5=0;
 		}
-		$("#value1").text(value1.toFixed(0));
-		$("#value2").text(value2.toFixed(0));
-		$("#value3").text(value3.toFixed(0));
-		$("#value4").text(value4.toFixed(0));
+		$("#value1").text(value1R.toFixed(0));
+		$("#value2").text(value2R.toFixed(0));
+		$("#value3").text(value3R.toFixed(0));
+		$("#value4").text(value4R.toFixed(0));
+		$("#value1R").text(value1R);
+		$("#value2R").text(value2R);
+		$("#value3R").text(value3R);
+		$("#value4R").text(value4R);
 		$("#value5").text(value5.toFixed(2));
 
 		var ctr=0;

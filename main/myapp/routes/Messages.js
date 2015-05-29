@@ -412,7 +412,8 @@ router.post('/rejectToBorrowMessageInStory', library.ensureAuthenticated, functi
 });
 
 router.post('/confirmToBorrowMessageInStory', library.ensureAuthenticated, function(req, res, next) {
-	library.confirmToBorrowMessage(false,0,0,null,req,res,false,'/lender/story?id='+req.body.FromBorrowRequest,true);
+	var infoJson={info1:0,info2:0,info3:0,info4:0};
+	library.confirmToBorrowMessage(false,0,0,null,req,res,false,'/lender/story?id='+req.body.FromBorrowRequest,true,infoJson);
 });
 
 router.post('/rejectToBorrowMessageInLRM', library.ensureAuthenticated, function(req, res, next) {
@@ -427,232 +428,242 @@ router.post('/confirmToBorrowMessageInLRM', library.ensureAuthenticated, functio
 	var JSONobj=JSON.parse(req.body.JsonArrayString);
 	req.body.array=JSONobj.array;
 	if(req.body.array.length>0){
-		library.confirmToBorrowMessage(true,0,req.body.array.length,null,req,res,false,'/lender/lenderReceiveMessages?msgKeyword=&filter='+encodeURIComponent('已同意')+'&sorter='+encodeURIComponent('最新')+'&page=1',true);
+		var infoJson={info1:0,info2:0,info3:0,info4:0};
+		library.confirmToBorrowMessage(true,0,req.body.array.length,null,req,res,false,'/lender/lenderReceiveMessages?msgKeyword=&filter='+encodeURIComponent('已同意')+'&sorter='+encodeURIComponent('最新')+'&page=1',true,infoJson);
 	}
 });
 
 router.get('/rejectToBorrowMessageInLRMall/:msgKeyword?/:sorter?', library.ensureAuthenticated, function(req, res, next) {
-	var msgKeyword=decodeURIComponent(req.query.msgKeyword);
-	var sorter=decodeURIComponent(req.query.sorter);
-	var sorterRec;
-	if(sorter=='最新'){
-		sorterRec="-Updated";
-	}else if(sorter=='利率最高'){
-		sorterRec="-InterestRate";
-	}else if(sorter=='金額最高'){
-		sorterRec="-MoneyToLend";
-	}else if(sorter=='期數最多'){
-		sorterRec="-MonthPeriod";
-	}else if(sorter=='信用等級最高'){
-		sorterRec="-Level";
-	}else if(sorter=='預計總利息最高'){
-		sorterRec="-Updated";
-	}else if(sorter=='預計平均利息最高'){
-		sorterRec="-Updated";
-	}else if(sorter=='預計平均本利和最高'){
-		sorterRec="-Updated";
-	}else if(sorter=='預計利本比最高'){
-		sorterRec="-Updated";
-	}
-	
-	var reg=new RegExp(msgKeyword,'i');
-	var msgObjID=null;
-	if(mongoose.Types.ObjectId.isValid(msgKeyword)){
-		msgObjID=mongoose.Types.ObjectId(msgKeyword);
-	}
-	
-	Messages.find({$and:[{"SendTo": req.user._id},{"Type": "toBorrow"},{"Status": "NotConfirmed"}]}).populate('CreatedBy', 'Username').populate('FromBorrowRequest', 'StoryTitle').sort(sorterRec).exec(function (err, messages){
-		if (err) {
-			console.log(err);
-			res.redirect('/message?content='+'錯誤!');
-		}else{
-			if(messages.length==0){
+	if((typeof(req.query.msgKeyword) !== "undefined")&&(typeof(req.query.sorter) !== "undefined")){
+		var msgKeyword=decodeURIComponent(req.query.msgKeyword);
+		var sorter=decodeURIComponent(req.query.sorter);
+		var sorterRec;
+		if(sorter=='最新'){
+			sorterRec="-Updated";
+		}else if(sorter=='利率最高'){
+			sorterRec="-InterestRate";
+		}else if(sorter=='金額最高'){
+			sorterRec="-MoneyToLend";
+		}else if(sorter=='期數最多'){
+			sorterRec="-MonthPeriod";
+		}else if(sorter=='信用等級最高'){
+			sorterRec="-Level";
+		}else if(sorter=='預計總利息最高'){
+			sorterRec="-Updated";
+		}else if(sorter=='預計平均利息最高'){
+			sorterRec="-Updated";
+		}else if(sorter=='預計平均本利和最高'){
+			sorterRec="-Updated";
+		}else if(sorter=='預計利本比最高'){
+			sorterRec="-Updated";
+		}
+		
+		var reg=new RegExp(msgKeyword,'i');
+		var msgObjID=null;
+		if(mongoose.Types.ObjectId.isValid(msgKeyword)){
+			msgObjID=mongoose.Types.ObjectId(msgKeyword);
+		}
+		
+		Messages.find({$and:[{"SendTo": req.user._id},{"Type": "toBorrow"},{"Status": "NotConfirmed"}]}).populate('CreatedBy', 'Username').populate('FromBorrowRequest', 'StoryTitle').sort(sorterRec).exec(function (err, messages){
+			if (err) {
+				console.log(err);
 				res.redirect('/message?content='+'錯誤!');
 			}else{
-				if((sorter=='預計總利息最高')||(sorter=='預計利本比最高')||(sorter=='預計平均利息最高')||(sorter=='預計平均本利和最高')){
-					for(i=0;i<messages.length;i++){
-						messages[i].InterestRate-=library.serviceChargeRate;//scr
-						messages[i].InterestInFuture=library.interestInFutureCalculator(messages[i].MoneyToLend,messages[i].InterestRate,messages[i].MonthPeriod);
-						if(messages[i].MoneyToLend>0){
-							messages[i].InterestInFutureDivMoney=messages[i].InterestInFuture/messages[i].MoneyToLend;
-						}else{
-							messages[i].InterestInFutureDivMoney=0;
-						}
-						if(messages[i].MonthPeriod>0){
-							messages[i].InterestInFutureMonth=messages[i].InterestInFuture/messages[i].MonthPeriod;
-						}else{
-							messages[i].InterestInFutureMonth=0;
-						}
-						if(messages[i].MonthPeriod>0){
-							messages[i].InterestInFutureMoneyMonth=(messages[i].InterestInFuture+messages[i].MoneyToLend)/messages[i].MonthPeriod;
-						}else{
-							messages[i].InterestInFutureMoneyMonth=0;
-						}
-					}
-					
-					if(sorter=='預計總利息最高'){
-						messages.sort(function(a,b) { return parseFloat(b.InterestInFuture) - parseFloat(a.InterestInFuture)} );
-					}else if(sorter=='預計平均利息最高'){
-						messages.sort(function(a,b) { return parseFloat(b.InterestInFutureMonth) - parseFloat(a.InterestInFutureMonth)} );
-					}else if(sorter=='預計平均本利和最高'){
-						messages.sort(function(a,b) { return parseFloat(b.InterestInFutureMoneyMonth) - parseFloat(a.InterestInFutureMoneyMonth)} );
-					}else if(sorter=='預計利本比最高'){
-						messages.sort(function(a,b) { return parseFloat(b.InterestInFutureDivMoney) - parseFloat(a.InterestInFutureDivMoney) } );
-					}
-				}
-				
-				for(j=messages.length-1;j>-1;j--){
-					var localFlag=[];
-					localFlag[0]=false;
-					localFlag[1]=false;
-					localFlag[2]=false;
-					localFlag[3]=false;
-					if(msgObjID){
-						if(msgObjID.equals(messages[j]._id)){
-							localFlag[0]=true;
-						}
-					}
-					if(messages[j].Message.search(reg)>-1){
-						localFlag[1]=true;
-					}
-					if(messages[j].FromBorrowRequest.StoryTitle.search(reg)>-1){
-						localFlag[2]=true;
-					}
-					if(messages[j].CreatedBy.Username.search(reg)>-1){
-						localFlag[3]=true;
-					}
-					
-					if((!localFlag[0])&&(!localFlag[1])&&(!localFlag[2])&&(!localFlag[3])){
-						messages.splice(j, 1);
-					}
-				}
-				
 				if(messages.length==0){
 					res.redirect('/message?content='+'錯誤!');
 				}else{
-					var arrayOp=[];
-					for(i=0;i<messages.length;i++){
-						var temp={MessageID:messages[i]._id};
-						arrayOp.push(temp);
+					if((sorter=='預計總利息最高')||(sorter=='預計利本比最高')||(sorter=='預計平均利息最高')||(sorter=='預計平均本利和最高')){
+						for(i=0;i<messages.length;i++){
+							messages[i].InterestRate-=library.serviceChargeRate;//scr
+							messages[i].InterestInFuture=library.interestInFutureCalculator(messages[i].MoneyToLend,messages[i].InterestRate,messages[i].MonthPeriod);
+							if(messages[i].MoneyToLend>0){
+								messages[i].InterestInFutureDivMoney=messages[i].InterestInFuture/messages[i].MoneyToLend;
+							}else{
+								messages[i].InterestInFutureDivMoney=0;
+							}
+							if(messages[i].MonthPeriod>0){
+								messages[i].InterestInFutureMonth=messages[i].InterestInFuture/messages[i].MonthPeriod;
+							}else{
+								messages[i].InterestInFutureMonth=0;
+							}
+							if(messages[i].MonthPeriod>0){
+								messages[i].InterestInFutureMoneyMonth=(messages[i].InterestInFuture+messages[i].MoneyToLend)/messages[i].MonthPeriod;
+							}else{
+								messages[i].InterestInFutureMoneyMonth=0;
+							}
+						}
+						
+						if(sorter=='預計總利息最高'){
+							messages.sort(function(a,b) { return parseFloat(b.InterestInFuture) - parseFloat(a.InterestInFuture)} );
+						}else if(sorter=='預計平均利息最高'){
+							messages.sort(function(a,b) { return parseFloat(b.InterestInFutureMonth) - parseFloat(a.InterestInFutureMonth)} );
+						}else if(sorter=='預計平均本利和最高'){
+							messages.sort(function(a,b) { return parseFloat(b.InterestInFutureMoneyMonth) - parseFloat(a.InterestInFutureMoneyMonth)} );
+						}else if(sorter=='預計利本比最高'){
+							messages.sort(function(a,b) { return parseFloat(b.InterestInFutureDivMoney) - parseFloat(a.InterestInFutureDivMoney) } );
+						}
 					}
-					req.body.array=arrayOp;
-					library.rejectMessage(true,0,req.body.array.length,null,req,res,false,'/lender/lenderReceiveMessages?msgKeyword=&filter='+encodeURIComponent('已婉拒')+'&sorter='+encodeURIComponent('最新')+'&page=1');
+					
+					for(j=messages.length-1;j>-1;j--){
+						var localFlag=[];
+						localFlag[0]=false;
+						localFlag[1]=false;
+						localFlag[2]=false;
+						localFlag[3]=false;
+						if(msgObjID){
+							if(msgObjID.equals(messages[j]._id)){
+								localFlag[0]=true;
+							}
+						}
+						if(messages[j].Message.search(reg)>-1){
+							localFlag[1]=true;
+						}
+						if(messages[j].FromBorrowRequest.StoryTitle.search(reg)>-1){
+							localFlag[2]=true;
+						}
+						if(messages[j].CreatedBy.Username.search(reg)>-1){
+							localFlag[3]=true;
+						}
+						
+						if((!localFlag[0])&&(!localFlag[1])&&(!localFlag[2])&&(!localFlag[3])){
+							messages.splice(j, 1);
+						}
+					}
+					
+					if(messages.length==0){
+						res.redirect('/message?content='+'錯誤!');
+					}else{
+						var arrayOp=[];
+						for(i=0;i<messages.length;i++){
+							var temp={MessageID:messages[i]._id};
+							arrayOp.push(temp);
+						}
+						req.body.array=arrayOp;
+						library.rejectMessage(true,0,req.body.array.length,null,req,res,false,'/lender/lenderReceiveMessages?msgKeyword=&filter='+encodeURIComponent('已婉拒')+'&sorter='+encodeURIComponent('最新')+'&page=1');
+					}
 				}
 			}
-		}
-	});
+		});
+	}else{
+		res.redirect('/');
+	}
 });
 
 router.get('/confirmToBorrowMessageInLRMall/:msgKeyword?/:sorter?', library.ensureAuthenticated, function(req, res, next) {
-	var msgKeyword=decodeURIComponent(req.query.msgKeyword);
-	var sorter=decodeURIComponent(req.query.sorter);
-	var sorterRec;
-	if(sorter=='最新'){
-		sorterRec="-Updated";
-	}else if(sorter=='利率最高'){
-		sorterRec="-InterestRate";
-	}else if(sorter=='金額最高'){
-		sorterRec="-MoneyToLend";
-	}else if(sorter=='期數最多'){
-		sorterRec="-MonthPeriod";
-	}else if(sorter=='信用等級最高'){
-		sorterRec="-Level";
-	}else if(sorter=='預計總利息最高'){
-		sorterRec="-Updated";
-	}else if(sorter=='預計平均利息最高'){
-		sorterRec="-Updated";
-	}else if(sorter=='預計平均本利和最高'){
-		sorterRec="-Updated";
-	}else if(sorter=='預計利本比最高'){
-		sorterRec="-Updated";
-	}
-	
-	var reg=new RegExp(msgKeyword,'i');
-	var msgObjID=null;
-	if(mongoose.Types.ObjectId.isValid(msgKeyword)){
-		msgObjID=mongoose.Types.ObjectId(msgKeyword);
-	}
-	
-	Messages.find({$and:[{"SendTo": req.user._id},{"Type": "toBorrow"},{"Status": "NotConfirmed"}]}).populate('CreatedBy', 'Username').populate('FromBorrowRequest', 'StoryTitle').sort(sorterRec).exec(function (err, messages){
-		if (err) {
-			console.log(err);
-			res.redirect('/message?content='+'錯誤!');
-		}else{
-			if(messages.length==0){
+	if((typeof(req.query.msgKeyword) !== "undefined")&&(typeof(req.query.sorter) !== "undefined")){
+		var msgKeyword=decodeURIComponent(req.query.msgKeyword);
+		var sorter=decodeURIComponent(req.query.sorter);
+		var sorterRec;
+		if(sorter=='最新'){
+			sorterRec="-Updated";
+		}else if(sorter=='利率最高'){
+			sorterRec="-InterestRate";
+		}else if(sorter=='金額最高'){
+			sorterRec="-MoneyToLend";
+		}else if(sorter=='期數最多'){
+			sorterRec="-MonthPeriod";
+		}else if(sorter=='信用等級最高'){
+			sorterRec="-Level";
+		}else if(sorter=='預計總利息最高'){
+			sorterRec="-Updated";
+		}else if(sorter=='預計平均利息最高'){
+			sorterRec="-Updated";
+		}else if(sorter=='預計平均本利和最高'){
+			sorterRec="-Updated";
+		}else if(sorter=='預計利本比最高'){
+			sorterRec="-Updated";
+		}
+		
+		var reg=new RegExp(msgKeyword,'i');
+		var msgObjID=null;
+		if(mongoose.Types.ObjectId.isValid(msgKeyword)){
+			msgObjID=mongoose.Types.ObjectId(msgKeyword);
+		}
+		
+		Messages.find({$and:[{"SendTo": req.user._id},{"Type": "toBorrow"},{"Status": "NotConfirmed"}]}).populate('CreatedBy', 'Username').populate('FromBorrowRequest', 'StoryTitle').sort(sorterRec).exec(function (err, messages){
+			if (err) {
+				console.log(err);
 				res.redirect('/message?content='+'錯誤!');
 			}else{
-				if((sorter=='預計總利息最高')||(sorter=='預計利本比最高')||(sorter=='預計平均利息最高')||(sorter=='預計平均本利和最高')){
-					for(i=0;i<messages.length;i++){
-						messages[i].InterestRate-=library.serviceChargeRate;//scr
-						messages[i].InterestInFuture=library.interestInFutureCalculator(messages[i].MoneyToLend,messages[i].InterestRate,messages[i].MonthPeriod);
-						if(messages[i].MoneyToLend>0){
-							messages[i].InterestInFutureDivMoney=messages[i].InterestInFuture/messages[i].MoneyToLend;
-						}else{
-							messages[i].InterestInFutureDivMoney=0;
-						}
-						if(messages[i].MonthPeriod>0){
-							messages[i].InterestInFutureMonth=messages[i].InterestInFuture/messages[i].MonthPeriod;
-						}else{
-							messages[i].InterestInFutureMonth=0;
-						}
-						if(messages[i].MonthPeriod>0){
-							messages[i].InterestInFutureMoneyMonth=(messages[i].InterestInFuture+messages[i].MoneyToLend)/messages[i].MonthPeriod;
-						}else{
-							messages[i].InterestInFutureMoneyMonth=0;
-						}
-					}
-					
-					if(sorter=='預計總利息最高'){
-						messages.sort(function(a,b) { return parseFloat(b.InterestInFuture) - parseFloat(a.InterestInFuture)} );
-					}else if(sorter=='預計平均利息最高'){
-						messages.sort(function(a,b) { return parseFloat(b.InterestInFutureMonth) - parseFloat(a.InterestInFutureMonth)} );
-					}else if(sorter=='預計平均本利和最高'){
-						messages.sort(function(a,b) { return parseFloat(b.InterestInFutureMoneyMonth) - parseFloat(a.InterestInFutureMoneyMonth)} );
-					}else if(sorter=='預計利本比最高'){
-						messages.sort(function(a,b) { return parseFloat(b.InterestInFutureDivMoney) - parseFloat(a.InterestInFutureDivMoney) } );
-					}
-				}
-				
-				for(j=messages.length-1;j>-1;j--){
-					var localFlag=[];
-					localFlag[0]=false;
-					localFlag[1]=false;
-					localFlag[2]=false;
-					localFlag[3]=false;
-					if(msgObjID){
-						if(msgObjID.equals(messages[j]._id)){
-							localFlag[0]=true;
-						}
-					}
-					if(messages[j].Message.search(reg)>-1){
-						localFlag[1]=true;
-					}
-					if(messages[j].FromBorrowRequest.StoryTitle.search(reg)>-1){
-						localFlag[2]=true;
-					}
-					if(messages[j].CreatedBy.Username.search(reg)>-1){
-						localFlag[3]=true;
-					}
-					
-					if((!localFlag[0])&&(!localFlag[1])&&(!localFlag[2])&&(!localFlag[3])){
-						messages.splice(j, 1);
-					}
-				}
-				
 				if(messages.length==0){
 					res.redirect('/message?content='+'錯誤!');
 				}else{
-					var arrayOp=[];
-					for(i=0;i<messages.length;i++){
-						var temp={FromBorrowRequest:messages[i].FromBorrowRequest,MessageID:messages[i]._id};
-						arrayOp.push(temp);
+					if((sorter=='預計總利息最高')||(sorter=='預計利本比最高')||(sorter=='預計平均利息最高')||(sorter=='預計平均本利和最高')){
+						for(i=0;i<messages.length;i++){
+							messages[i].InterestRate-=library.serviceChargeRate;//scr
+							messages[i].InterestInFuture=library.interestInFutureCalculator(messages[i].MoneyToLend,messages[i].InterestRate,messages[i].MonthPeriod);
+							if(messages[i].MoneyToLend>0){
+								messages[i].InterestInFutureDivMoney=messages[i].InterestInFuture/messages[i].MoneyToLend;
+							}else{
+								messages[i].InterestInFutureDivMoney=0;
+							}
+							if(messages[i].MonthPeriod>0){
+								messages[i].InterestInFutureMonth=messages[i].InterestInFuture/messages[i].MonthPeriod;
+							}else{
+								messages[i].InterestInFutureMonth=0;
+							}
+							if(messages[i].MonthPeriod>0){
+								messages[i].InterestInFutureMoneyMonth=(messages[i].InterestInFuture+messages[i].MoneyToLend)/messages[i].MonthPeriod;
+							}else{
+								messages[i].InterestInFutureMoneyMonth=0;
+							}
+						}
+						
+						if(sorter=='預計總利息最高'){
+							messages.sort(function(a,b) { return parseFloat(b.InterestInFuture) - parseFloat(a.InterestInFuture)} );
+						}else if(sorter=='預計平均利息最高'){
+							messages.sort(function(a,b) { return parseFloat(b.InterestInFutureMonth) - parseFloat(a.InterestInFutureMonth)} );
+						}else if(sorter=='預計平均本利和最高'){
+							messages.sort(function(a,b) { return parseFloat(b.InterestInFutureMoneyMonth) - parseFloat(a.InterestInFutureMoneyMonth)} );
+						}else if(sorter=='預計利本比最高'){
+							messages.sort(function(a,b) { return parseFloat(b.InterestInFutureDivMoney) - parseFloat(a.InterestInFutureDivMoney) } );
+						}
 					}
-					req.body.array=arrayOp;
-					library.confirmToBorrowMessage(true,0,req.body.array.length,null,req,res,false,'/lender/lenderReceiveMessages?msgKeyword=&filter='+encodeURIComponent('已同意')+'&sorter='+encodeURIComponent('最新')+'&page=1',true);
+					
+					for(j=messages.length-1;j>-1;j--){
+						var localFlag=[];
+						localFlag[0]=false;
+						localFlag[1]=false;
+						localFlag[2]=false;
+						localFlag[3]=false;
+						if(msgObjID){
+							if(msgObjID.equals(messages[j]._id)){
+								localFlag[0]=true;
+							}
+						}
+						if(messages[j].Message.search(reg)>-1){
+							localFlag[1]=true;
+						}
+						if(messages[j].FromBorrowRequest.StoryTitle.search(reg)>-1){
+							localFlag[2]=true;
+						}
+						if(messages[j].CreatedBy.Username.search(reg)>-1){
+							localFlag[3]=true;
+						}
+						
+						if((!localFlag[0])&&(!localFlag[1])&&(!localFlag[2])&&(!localFlag[3])){
+							messages.splice(j, 1);
+						}
+					}
+					
+					if(messages.length==0){
+						res.redirect('/message?content='+'錯誤!');
+					}else{
+						var arrayOp=[];
+						for(i=0;i<messages.length;i++){
+							var temp={FromBorrowRequest:messages[i].FromBorrowRequest,MessageID:messages[i]._id};
+							arrayOp.push(temp);
+						}
+						req.body.array=arrayOp;
+						var infoJson={info1:0,info2:0,info3:0,info4:0};
+						library.confirmToBorrowMessage(true,0,req.body.array.length,null,req,res,false,'/lender/lenderReceiveMessages?msgKeyword=&filter='+encodeURIComponent('已同意')+'&sorter='+encodeURIComponent('最新')+'&page=1',true,infoJson);
+					}
 				}
 			}
-		}
-	});
+		});
+	}else{
+		res.redirect('/');
+	}
 });
 
 router.post('/toLendCreate', library.ensureAuthenticated, function(req, res, next) {

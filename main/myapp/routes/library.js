@@ -45,7 +45,7 @@ exports.setCaptchaTimer = function(){
 	captchaTimer=setInterval( function(){exports.captchaTextArray=[];},600000);
 }
 
-exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,req,res,ifAuto,resAddress,ifLenderSide){
+exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,req,res,ifAuto,resAddress,ifLenderSide,infoJson){
 	var FBR;
 	if(!ifRecursive){
 		FBR=req.body.FromBorrowRequest;
@@ -58,10 +58,10 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 			if(ifRecursive){
 				ctr++;
 				if(ctr<ctrTarget){
-					exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide);
+					exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide,infoJson);
 				}else{
 					if(!ifAuto){
-						res.redirect('/message?content='+encodeURIComponent('有些訊息因錯誤無法被同意!'));
+						res.redirect('/message?content='+encodeURIComponent('有些訊息因錯誤無法被同意!')+'&info1='+encodeURIComponent(infoJson.info1)+'&info2='+encodeURIComponent(infoJson.info2)+'&info3='+encodeURIComponent(infoJson.info3)+'&info4='+encodeURIComponent(infoJson.info4));
 					}
 				}
 			}else{
@@ -74,10 +74,10 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 				if(ifRecursive){
 					ctr++;
 					if(ctr<ctrTarget){
-						exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide);
+						exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide,infoJson);
 					}else{
 						if(!ifAuto){
-							res.redirect('/message?content='+encodeURIComponent('有些訊息因錯誤無法被同意!'));
+							res.redirect('/message?content='+encodeURIComponent('有些訊息因錯誤無法被同意!')+'&info1='+encodeURIComponent(infoJson.info1)+'&info2='+encodeURIComponent(infoJson.info2)+'&info3='+encodeURIComponent(infoJson.info3)+'&info4='+encodeURIComponent(infoJson.info4));
 						}
 					}
 				}else{
@@ -98,10 +98,10 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 						if(ifRecursive){
 							ctr++;
 							if(ctr<ctrTarget){
-								exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide);
+								exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide,infoJson);
 							}else{
 								if(!ifAuto){
-									res.redirect('/message?content='+encodeURIComponent('有些訊息因錯誤無法被同意!'));
+									res.redirect('/message?content='+encodeURIComponent('有些訊息因錯誤無法被同意!')+'&info1='+encodeURIComponent(infoJson.info1)+'&info2='+encodeURIComponent(infoJson.info2)+'&info3='+encodeURIComponent(infoJson.info3)+'&info4='+encodeURIComponent(infoJson.info4));
 								}
 							}
 						}else{
@@ -114,10 +114,10 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 							if(ifRecursive){
 								ctr++;
 								if(ctr<ctrTarget){
-									exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide);
+									exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide,infoJson);
 								}else{
 									if(!ifAuto){
-										res.redirect('/message?content='+encodeURIComponent('有些訊息因錯誤無法被同意!'));
+										res.redirect('/message?content='+encodeURIComponent('有些訊息因錯誤無法被同意!')+'&info1='+encodeURIComponent(infoJson.info1)+'&info2='+encodeURIComponent(infoJson.info2)+'&info3='+encodeURIComponent(infoJson.info3)+'&info4='+encodeURIComponent(infoJson.info4));
 									}
 								}
 							}else{
@@ -130,10 +130,10 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 								if(ifRecursive){
 									ctr++;
 									if(ctr<ctrTarget){
-										exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide);
+										exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide,infoJson);
 									}else{
 										if(!ifAuto){
-											res.redirect('/message?content='+encodeURIComponent('有些訊息因錯誤無法被同意!'));
+											res.redirect('/message?content='+encodeURIComponent('有些訊息因錯誤無法被同意!')+'&info1='+encodeURIComponent(infoJson.info1)+'&info2='+encodeURIComponent(infoJson.info2)+'&info3='+encodeURIComponent(infoJson.info3)+'&info4='+encodeURIComponent(infoJson.info4));
 										}
 									}
 								}else{
@@ -148,7 +148,7 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 									if(req.user._id!=message.SendTo._id){
 										if(!ifAuto){
 											authResult=false;
-											res.redirect('/message?content='+encodeURIComponent('認證錯誤!'));
+											res.redirect('/message?content='+encodeURIComponent('認證錯誤!')+'&info1='+encodeURIComponent(infoJson.info1)+'&info2='+encodeURIComponent(infoJson.info2)+'&info3='+encodeURIComponent(infoJson.info3)+'&info4='+encodeURIComponent(infoJson.info4));
 										}
 									}
 								}else{
@@ -167,10 +167,10 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 											if(ifRecursive){
 												ctr++;
 												if(ctr<ctrTarget){
-													exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide);
+													exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide,infoJson);
 												}else{
 													if(!ifAuto){
-														res.redirect('/message?content='+encodeURIComponent('有些訊息因錯誤無法被同意!'));
+														res.redirect('/message?content='+encodeURIComponent('有些訊息因錯誤無法被同意!')+'&info1='+encodeURIComponent(infoJson.info1)+'&info2='+encodeURIComponent(infoJson.info2)+'&info3='+encodeURIComponent(infoJson.info3)+'&info4='+encodeURIComponent(infoJson.info4));
 													}
 												}
 											}else{
@@ -183,10 +183,10 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 												if(ifRecursive){
 													ctr++;
 													if(ctr<ctrTarget){
-														exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide);
+														exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide,infoJson);
 													}else{
 														if(!ifAuto){
-															res.redirect('/message?content='+encodeURIComponent('有些訊息因錯誤無法被同意!'));
+															res.redirect('/message?content='+encodeURIComponent('有些訊息因錯誤無法被同意!')+'&info1='+encodeURIComponent(infoJson.info1)+'&info2='+encodeURIComponent(infoJson.info2)+'&info3='+encodeURIComponent(infoJson.info3)+'&info4='+encodeURIComponent(infoJson.info4));
 														}
 													}
 												}else{
@@ -201,10 +201,10 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 														if(ifRecursive){
 															ctr++;
 															if(ctr<ctrTarget){
-																exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide);
+																exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide,infoJson);
 															}else{
 																if(!ifAuto){
-																	res.redirect('/message?content='+encodeURIComponent('有些訊息因錯誤無法被同意!'));
+																	res.redirect('/message?content='+encodeURIComponent('有些訊息因錯誤無法被同意!')+'&info1='+encodeURIComponent(infoJson.info1)+'&info2='+encodeURIComponent(infoJson.info2)+'&info3='+encodeURIComponent(infoJson.info3)+'&info4='+encodeURIComponent(infoJson.info4));
 																}
 															}
 														}else{
@@ -217,10 +217,10 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 															if(ifRecursive){
 																ctr++;
 																if(ctr<ctrTarget){
-																	exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'找不到自動出借設定，待其重新設定後再嘗試',req,res,ifAuto,resAddress,ifLenderSide);
+																	exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'找不到自動出借設定，待其重新設定後再嘗試',req,res,ifAuto,resAddress,ifLenderSide,infoJson);
 																}else{
 																	if(!ifAuto){
-																		res.redirect('/message?content='+encodeURIComponent('找不到自動出借設定，待其重新設定後再嘗試'));
+																		res.redirect('/message?content='+encodeURIComponent('找不到自動出借設定，待其重新設定後再嘗試')+'&info1='+encodeURIComponent(infoJson.info1)+'&info2='+encodeURIComponent(infoJson.info2)+'&info3='+encodeURIComponent(infoJson.info3)+'&info4='+encodeURIComponent(infoJson.info4));
 																	}
 																}
 															}else{
@@ -236,6 +236,7 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 															var finalMoneyToLend=null;
 															var finalInterestRate=null;
 															var finalMonthPeriod=null;
+															var returnSringNow=null;
 															if(!ifRecursive){
 																var minMoney=parseInt(message.MoneyToLend);
 																var maxMonth=parseInt(message.MonthPeriod);
@@ -246,25 +247,35 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																var month=parseInt(sanitizer.sanitize(req.body.MonthPeriod.trim()));
 																
 																if((sanitizer.sanitize(req.body.MoneyToLend.trim())=='')||(sanitizer.sanitize(req.body.InterestRate.trim())=='')||(sanitizer.sanitize(req.body.MonthPeriod.trim())=='')){
-																	returnSring='必要參數未填!';
+																	returnSringNow='必要參數未填!';
+																	returnSring=returnSringNow;
 																}else if((isNaN(month))||(isNaN(nowMoney))||(isNaN(rate))){
-																	res.redirect('/message?content='+encodeURIComponent('非數字參數!'));
+																	returnSringNow='非數字參數!';
+																	returnSring=returnSringNow;
 																}else if((month<1)||(month>36)||(nowMoney<1)||(rate<=(0+exports.serviceChargeRate))||(rate>=(1+exports.serviceChargeRate))){
-																	returnSring='錯誤參數!';
+																	returnSringNow='錯誤參數!';
+																	returnSring=returnSringNow;
 																}else if(nowMoney>maxMoney){
-																	returnSring='金額超過您的銀行餘額!';
+																	returnSringNow='金額超過您的銀行餘額!';
+																	returnSring=returnSringNow;
 																}else if(nowMoney>maxMoney2){
-																	returnSring='金額超過對方所需!';
+																	returnSringNow='金額超過對方所需!';
+																	returnSring=returnSringNow;
 																}else if(nowMoney>maxMoney3){
-																	returnSring='金額超過您所設定之自動借款餘額!您可調高後再嘗試';
+																	returnSringNow='金額超過您所設定之自動借款餘額!您可調高後再嘗試';
+																	returnSring=returnSringNow;
 																}else if(nowMoney<minMoney){
-																	returnSring='金額少於對方期望!';
+																	returnSringNow='金額少於對方期望!';
+																	returnSring=returnSringNow;
 																}else if(month>maxMonth){
-																	returnSring='超過該訊息希望期數!';
+																	returnSringNow='超過該訊息希望期數!';
+																	returnSring=returnSringNow;
 																}else if(rate>maxRate){
-																	returnSring='超過該訊息期望利率上限!';
+																	returnSringNow='超過該訊息期望利率上限!';
+																	returnSring=returnSringNow;
 																}else if(!borrow.IfReadable){
-																	returnSring='有些訊息因借入方已不需要借款而無法被同意，它們已被自動婉拒';
+																	returnSringNow='有些訊息因借入方已不需要借款而無法被同意，它們已被自動婉拒';
+																	returnSring=returnSringNow;
 																}else{
 																	finalMoneyToLend=parseInt(sanitizer.sanitize(req.body.MoneyToLend.trim()));
 																	finalInterestRate=(parseFloat(sanitizer.sanitize(req.body.InterestRate.trim()))/100)+exports.serviceChargeRate;//scr
@@ -289,10 +300,12 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																var interestInFutureDivMoney2=interestInFuture2/nowMoney2;
 																
 																if(nowMoney2>maxMoney){
-																	returnSring='有訊息因借款金額超過借出方銀行帳戶內的餘額而無法被同意';
+																	returnSringNow='有訊息因借款金額超過借出方銀行帳戶內的餘額而無法被同意';
+																	returnSring=returnSringNow;
 																}else if(nowMoney2>maxMoney2){
 																	if(maxMoney2==0){
-																		returnSring='有些訊息因借入方已不需要借款或其條件不合您現在的自動出借設定而無法被同意，它們已被自動婉拒';
+																		returnSringNow='有些訊息因借入方已不需要借款或其條件不合您現在的自動出借設定而無法被同意，它們已被自動婉拒';
+																		returnSring=returnSringNow;
 																	}else{
 																		finalMoneyToLend=maxMoney2;
 																		finalInterestRate=message.InterestRate;
@@ -300,43 +313,52 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																	}
 																}else if(nowMoney2>maxMoney3){
 																	if(maxMoney3==0){
-																		returnSring='有些訊息因借出方所設定之自動借款額度已用盡而無法被同意';
+																		returnSringNow='有些訊息因借出方所設定之自動借款額度已用盡而無法被同意';
+																		returnSring=returnSringNow;
 																	}else{
 																		finalMoneyToLend=maxMoney3;
 																		finalInterestRate=message.InterestRate;
 																		finalMonthPeriod=message.MonthPeriod;
 																	}
 																}else if(rate2<minRate){
-																	returnSring='有些訊息因借入方已不需要借款或其條件不合您現在的自動出借設定而無法被同意，它們已被自動婉拒';
+																	returnSringNow='有些訊息因借入方已不需要借款或其條件不合您現在的自動出借設定而無法被同意，它們已被自動婉拒';
+																	returnSring=returnSringNow;
 																}else if(month2<minMonth){
-																	returnSring='有些訊息因借入方已不需要借款或其條件不合您現在的自動出借設定而無法被同意，它們已被自動婉拒';
+																	returnSringNow='有些訊息因借入方已不需要借款或其條件不合您現在的自動出借設定而無法被同意，它們已被自動婉拒';
+																	returnSring=returnSringNow;
 																}else if(level2<minLevel){
-																	returnSring='有些訊息因借入方已不需要借款或其條件不合您現在的自動出借設定而無法被同意，它們已被自動婉拒';
+																	returnSringNow='有些訊息因借入方已不需要借款或其條件不合您現在的自動出借設定而無法被同意，它們已被自動婉拒';
+																	returnSring=returnSringNow;
 																}else if(interestInFuture2<minInterestInFuture){
-																	returnSring='有些訊息因借入方已不需要借款或其條件不合您現在的自動出借設定而無法被同意，它們已被自動婉拒';
+																	returnSringNow='有些訊息因借入方已不需要借款或其條件不合您現在的自動出借設定而無法被同意，它們已被自動婉拒';
+																	returnSring=returnSringNow;
 																}else if(interestInFutureMonth2<minInterestInFutureMonth){
-																	returnSring='有些訊息因借入方已不需要借款或其條件不合您現在的自動出借設定而無法被同意，它們已被自動婉拒';
+																	returnSringNow='有些訊息因借入方已不需要借款或其條件不合您現在的自動出借設定而無法被同意，它們已被自動婉拒';
+																	returnSring=returnSringNow;
 																}else if(interestInFutureMoneyMonth2<minInterestInFutureMoneyMonth){
-																	returnSring='有些訊息因借入方已不需要借款或其條件不合您現在的自動出借設定而無法被同意，它們已被自動婉拒';
+																	returnSringNow='有些訊息因借入方已不需要借款或其條件不合您現在的自動出借設定而無法被同意，它們已被自動婉拒';
+																	returnSring=returnSringNow;
 																}else if(interestInFutureDivMoney2<minInterestInFutureDivMoney){
-																	returnSring='有些訊息因借入方已不需要借款或其條件不合您現在的自動出借設定而無法被同意，它們已被自動婉拒';
+																	returnSringNow='有些訊息因借入方已不需要借款或其條件不合您現在的自動出借設定而無法被同意，它們已被自動婉拒';
+																	returnSring=returnSringNow;
 																}else if(!borrow.IfReadable){
-																	returnSring='有些訊息因借入方已不需要借款或其條件不合您現在的自動出借設定而無法被同意，它們已被自動婉拒';
+																	returnSringNow='有些訊息因借入方已不需要借款或其條件不合您現在的自動出借設定而無法被同意，它們已被自動婉拒';
+																	returnSring=returnSringNow;
 																}else{
 																	finalMoneyToLend=message.MoneyToLend;
 																	finalInterestRate=message.InterestRate;
 																	finalMonthPeriod=message.MonthPeriod;
 																}
 															}
-															if((returnSring)||(!finalMoneyToLend)||(!finalInterestRate)||(!finalMonthPeriod)){
-																if((returnSring!='有些訊息因借入方已不需要借款或其條件不合您現在的自動出借設定而無法被同意，它們已被自動婉拒')&&(returnSring!='有些訊息因借入方已不需要借款而無法被同意，它們已被自動婉拒')){
+															if((returnSringNow)||(!finalMoneyToLend)||(!finalInterestRate)||(!finalMonthPeriod)){
+																if((returnSringNow!='有些訊息因借入方已不需要借款或其條件不合您現在的自動出借設定而無法被同意，它們已被自動婉拒')&&(returnSringNow!='有些訊息因借入方已不需要借款而無法被同意，它們已被自動婉拒')){
 																	if(ifRecursive){
 																		ctr++;
 																		if(ctr<ctrTarget){
-																			exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,returnSring,req,res,ifAuto,resAddress,ifLenderSide);
+																			exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,returnSring,req,res,ifAuto,resAddress,ifLenderSide,infoJson);
 																		}else{
 																			if(!ifAuto){
-																				res.redirect('/message?content='+encodeURIComponent(returnSring));
+																				res.redirect('/message?content='+encodeURIComponent(returnSring)+'&info1='+encodeURIComponent(infoJson.info1)+'&info2='+encodeURIComponent(infoJson.info2)+'&info3='+encodeURIComponent(infoJson.info3)+'&info4='+encodeURIComponent(infoJson.info4));
 																			}
 																		}
 																	}else{
@@ -353,10 +375,10 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																			if(ifRecursive){
 																				ctr++;
 																				if(ctr<ctrTarget){
-																					exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide);
+																					exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide,infoJson);
 																				}else{
 																					if(!ifAuto){
-																						res.redirect('/message?content='+encodeURIComponent('有些訊息因錯誤無法被同意!'));
+																						res.redirect('/message?content='+encodeURIComponent('有些訊息因錯誤無法被同意!')+'&info1='+encodeURIComponent(infoJson.info1)+'&info2='+encodeURIComponent(infoJson.info2)+'&info3='+encodeURIComponent(infoJson.info3)+'&info4='+encodeURIComponent(infoJson.info4));
 																					}
 																				}
 																			}else{
@@ -370,12 +392,12 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																				if(ctr<ctrTarget){
 																					mailReject(message,newUpdate)
 																					
-																					exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,returnSring,req,res,ifAuto,resAddress,ifLenderSide);
+																					exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,returnSring,req,res,ifAuto,resAddress,ifLenderSide,infoJson);
 																				}else{
 																					mailReject(message,newUpdate)
 																					
 																					if(!ifAuto){
-																						res.redirect('/message?content='+encodeURIComponent(returnSring));
+																						res.redirect('/message?content='+encodeURIComponent(returnSring)+'&info1='+encodeURIComponent(infoJson.info1)+'&info2='+encodeURIComponent(infoJson.info2)+'&info3='+encodeURIComponent(infoJson.info3)+'&info4='+encodeURIComponent(infoJson.info4));
 																					}
 																				}
 																			}else{
@@ -404,10 +426,10 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																		if(ifRecursive){
 																			ctr++;
 																			if(ctr<ctrTarget){
-																				exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide);
+																				exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide,infoJson);
 																			}else{
 																				if(!ifAuto){
-																					res.redirect('/message?content='+encodeURIComponent('有些訊息因錯誤無法被同意!'));
+																					res.redirect('/message?content='+encodeURIComponent('有些訊息因錯誤無法被同意!')+'&info1='+encodeURIComponent(infoJson.info1)+'&info2='+encodeURIComponent(infoJson.info2)+'&info3='+encodeURIComponent(infoJson.info3)+'&info4='+encodeURIComponent(infoJson.info4));
 																				}
 																			}
 																		}else{
@@ -422,10 +444,10 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																				if(ifRecursive){
 																					ctr++;
 																					if(ctr<ctrTarget){
-																						exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide);
+																						exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide,infoJson);
 																					}else{
 																						if(!ifAuto){
-																							res.redirect('/message?content='+encodeURIComponent('有些訊息因錯誤無法被同意!'));
+																							res.redirect('/message?content='+encodeURIComponent('有些訊息因錯誤無法被同意!')+'&info1='+encodeURIComponent(infoJson.info1)+'&info2='+encodeURIComponent(infoJson.info2)+'&info3='+encodeURIComponent(infoJson.info3)+'&info4='+encodeURIComponent(infoJson.info4));
 																						}
 																					}
 																				}else{
@@ -438,10 +460,10 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																					if(ifRecursive){
 																						ctr++;
 																						if(ctr<ctrTarget){
-																							exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide);
+																							exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide,infoJson);
 																						}else{
 																							if(!ifAuto){
-																								res.redirect('/message?content='+encodeURIComponent('有些訊息因錯誤無法被同意!'));
+																								res.redirect('/message?content='+encodeURIComponent('有些訊息因錯誤無法被同意!')+'&info1='+encodeURIComponent(infoJson.info1)+'&info2='+encodeURIComponent(infoJson.info2)+'&info3='+encodeURIComponent(infoJson.info3)+'&info4='+encodeURIComponent(infoJson.info4));
 																							}
 																						}
 																					}else{
@@ -458,10 +480,10 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																							if(ifRecursive){
 																								ctr++;
 																								if(ctr<ctrTarget){
-																									exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide);
+																									exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide,infoJson);
 																								}else{
 																									if(!ifAuto){
-																										res.redirect('/message?content='+encodeURIComponent('有些訊息因錯誤無法被同意!'));
+																										res.redirect('/message?content='+encodeURIComponent('有些訊息因錯誤無法被同意!')+'&info1='+encodeURIComponent(infoJson.info1)+'&info2='+encodeURIComponent(infoJson.info2)+'&info3='+encodeURIComponent(infoJson.info3)+'&info4='+encodeURIComponent(infoJson.info4));
 																									}
 																								}
 																							}else{
@@ -478,10 +500,10 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																									if(ifRecursive){
 																										ctr++;
 																										if(ctr<ctrTarget){
-																											exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide);
+																											exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide,infoJson);
 																										}else{
 																											if(!ifAuto){
-																												res.redirect('/message?content='+encodeURIComponent('有些訊息因錯誤無法被同意!'));
+																												res.redirect('/message?content='+encodeURIComponent('有些訊息因錯誤無法被同意!')+'&info1='+encodeURIComponent(infoJson.info1)+'&info2='+encodeURIComponent(infoJson.info2)+'&info3='+encodeURIComponent(infoJson.info3)+'&info4='+encodeURIComponent(infoJson.info4));
 																											}
 																										}
 																									}else{
@@ -501,10 +523,10 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																											if(ifRecursive){
 																												ctr++;
 																												if(ctr<ctrTarget){
-																													exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide);
+																													exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide,infoJson);
 																												}else{
 																													if(!ifAuto){
-																														res.redirect('/message?content='+encodeURIComponent('有些訊息因錯誤無法被同意!'));
+																														res.redirect('/message?content='+encodeURIComponent('有些訊息因錯誤無法被同意!')+'&info1='+encodeURIComponent(infoJson.info1)+'&info2='+encodeURIComponent(infoJson.info2)+'&info3='+encodeURIComponent(infoJson.info3)+'&info4='+encodeURIComponent(infoJson.info4));
 																													}
 																												}
 																											}else{
@@ -512,7 +534,12 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																													res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 																												}
 																											}
-																										}else{				
+																										}else{
+																											if(!updatedBorrow.IfReadable){
+																												var brwObjID=mongoose.Types.ObjectId(updatedBorrow._id.toString());
+																												exports.rejectMessageWhenNotReadable(res,true,'/',brwObjID);
+																											}
+																											
 																											lend.MaxMoneyToLend-=newCreateTransaction.Principal;
 																											if(lend.MaxMoneyToLend<0){
 																												lend.MaxMoneyToLend=0;
@@ -524,10 +551,10 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																													if(ifRecursive){
 																														ctr++;
 																														if(ctr<ctrTarget){
-																															exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide);
+																															exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide,infoJson);
 																														}else{
 																															if(!ifAuto){
-																																res.redirect('/message?content='+encodeURIComponent('有些訊息因錯誤無法被同意!'));
+																																res.redirect('/message?content='+encodeURIComponent('有些訊息因錯誤無法被同意!')+'&info1='+encodeURIComponent(infoJson.info1)+'&info2='+encodeURIComponent(infoJson.info2)+'&info3='+encodeURIComponent(infoJson.info3)+'&info4='+encodeURIComponent(infoJson.info4));
 																															}
 																														}
 																													}else{
@@ -545,10 +572,10 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																															if(ifRecursive){
 																																ctr++;
 																																if(ctr<ctrTarget){
-																																	exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide);
+																																	exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide,infoJson);
 																																}else{
 																																	if(!ifAuto){
-																																		res.redirect('/message?content='+encodeURIComponent('有些訊息因錯誤無法被同意!'));
+																																		res.redirect('/message?content='+encodeURIComponent('有些訊息因錯誤無法被同意!')+'&info1='+encodeURIComponent(infoJson.info1)+'&info2='+encodeURIComponent(infoJson.info2)+'&info3='+encodeURIComponent(infoJson.info3)+'&info4='+encodeURIComponent(infoJson.info4));
 																																	}
 																																}
 																															}else{
@@ -557,16 +584,34 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																																}
 																															}
 																														}else{
+																															infoJson.info1+=newCreateUpdated.MoneyToLend;
+																															var tempRate=newCreateUpdated.InterestRate-exports.serviceChargeRate;//scr
+																															var temp1=exports.interestInFutureCalculator(newCreateUpdated.MoneyToLend,tempRate,newCreateUpdated.MonthPeriod);
+																															var temp2;
+																															if(newCreateUpdated.MonthPeriod>0){
+																																temp2=temp1/newCreateUpdated.MonthPeriod;
+																															}else{
+																																temp2=0;
+																															}
+																															var temp3;
+																															if(newCreateUpdated.MonthPeriod>0){
+																																temp3=(temp1+newCreateUpdated.MoneyToLend)/newCreateUpdated.MonthPeriod;
+																															}else{
+																																temp3=0;
+																															}
+																															infoJson.info2+=temp1;
+																															infoJson.info3+=temp2;
+																															infoJson.info4+=temp3;
 																															if(ifRecursive){
 																																ctr++;
 																																if(ctr<ctrTarget){
 																																	mailAgree(message,newCreateUpdated);
-																																	exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,returnSring,req,res,ifAuto,resAddress,ifLenderSide);
+																																	exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,returnSring,req,res,ifAuto,resAddress,ifLenderSide,infoJson);
 																																}else{
 																																	mailAgree(message,newCreateUpdated);
 																																	if(!ifAuto){
 																																		if(returnSring){	
-																																			res.redirect('/message?content='+encodeURIComponent(returnSring));
+																																			res.redirect('/message?content='+encodeURIComponent(returnSring)+'&info1='+encodeURIComponent(infoJson.info1)+'&info2='+encodeURIComponent(infoJson.info2)+'&info3='+encodeURIComponent(infoJson.info3)+'&info4='+encodeURIComponent(infoJson.info4));
 																																		}else{
 																																			res.redirect(resAddress);
 																																		}
@@ -695,7 +740,7 @@ exports.rejectMessage=function (ifRecursive,ctr,ctrTarget,returnSring,req,res,if
 								if(ifRecursive){
 									ctr++;
 									if(ctr<ctrTarget){
-										mailReject(message,newUpdate)
+										mailReject(message,newUpdate);
 										
 										exports.rejectMessage(ifRecursive,ctr,ctrTarget,returnSring,req,res,ifAuto,resAddress);
 									}else{
@@ -719,6 +764,101 @@ exports.rejectMessage=function (ifRecursive,ctr,ctrTarget,returnSring,req,res,if
 							}
 						});
 					}
+				}
+			}
+		}
+	});
+}
+
+exports.rejectMessageWhenNotReadable=function (res,ifAuto,resAddress,borrowID){
+	Borrows.findById(borrowID).populate('Message', 'Status').exec(function (err, borrow){
+		if (err){
+			if(!ifAuto){
+				res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+			}	
+		}else{
+			if (!borrow){
+				if(!ifAuto){
+					res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+				}	
+			}else{
+				var jsonArray=[];
+				for(i=0;i<borrow.Message.length;i++){
+					if(borrow.Message[i].Status=='NotConfirmed'){
+						jsonArray.push({MsgID:borrow.Message[i]._id});
+					}
+				}
+				if(jsonArray.length>0){
+					rejectMessageWhenNotReadableRecursivePart(0,jsonArray.length,res,ifAuto,resAddress,jsonArray,null);
+				}else{
+					if(!ifAuto){
+						res.redirect(resAddress);
+					}	
+				}
+			}
+		}
+	});
+}
+
+function rejectMessageWhenNotReadableRecursivePart(ctr,ctrTarget,res,ifAuto,resAddress,array,returnSring){
+	Messages.findById(array[ctr].MsgID).exec(function (err, message){
+		if (err) {
+			ctr++;
+			if(ctr<ctrTarget){
+				rejectMessageWhenNotReadableRecursivePart(ctr,ctrTarget,res,ifAuto,resAddress,array,'錯誤!')
+			}else{
+				if(!ifAuto){
+					res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+				}
+			}			
+		}else{
+			if(!message){
+				ctr++;
+				if(ctr<ctrTarget){
+					rejectMessageWhenNotReadableRecursivePart(ctr,ctrTarget,res,ifAuto,resAddress,array,'錯誤!')
+				}else{
+					if(!ifAuto){
+						res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+					}
+				}		
+			}else{
+				if(message.Status!=="NotConfirmed"){
+					ctr++;
+					if(ctr<ctrTarget){
+						rejectMessageWhenNotReadableRecursivePart(ctr,ctrTarget,res,ifAuto,resAddress,array,'錯誤!')
+					}else{
+						if(!ifAuto){
+							res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+						}
+					}		
+				}else{
+					message.Status="Rejected";
+					message.Updated = Date.now();
+					message.save(function (err,newUpdate) {
+						if(err){
+							ctr++;
+							if(ctr<ctrTarget){
+								rejectMessageWhenNotReadableRecursivePart(ctr,ctrTarget,res,ifAuto,resAddress,array,'錯誤!')
+							}else{
+								if(!ifAuto){
+									res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+								}
+							}		
+						}else{
+							ctr++;
+							if(ctr<ctrTarget){
+								rejectMessageWhenNotReadableRecursivePart(ctr,ctrTarget,res,ifAuto,resAddress,array,returnSring)
+							}else{
+								if(!ifAuto){
+									if(returnSring){
+										res.redirect('/message?content='+encodeURIComponent(returnSring));
+									}else{
+										res.redirect(resAddress);
+									}
+								}
+							}		
+						}
+					});
 				}
 			}
 		}

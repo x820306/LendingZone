@@ -148,8 +148,10 @@
 					type: 'GET',
 					dataType: 'json',
 					success: function(Jdata) {
-						$('#captchaIdfr').val(Jdata.CaptchaIdfr);
-						$('#captchaPic').attr('src',Jdata.CaptchaPic);
+						if(Jdata.success){
+							$('#captchaIdfr').val(Jdata.CaptchaIdfr);
+							$('#captchaPic').attr('src',Jdata.CaptchaPic);
+						}
 						captchaFlag=false;
 					},
 					error: function() {
