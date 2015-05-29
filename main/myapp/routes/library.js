@@ -263,6 +263,8 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																	returnSring='超過該訊息希望期數!';
 																}else if(rate>maxRate){
 																	returnSring='超過該訊息期望利率上限!';
+																}else if(!borrow.IfReadable){
+																	returnSring='有些訊息因借入方已不需要借款而無法被同意，它們已被自動婉拒';
 																}else{
 																	finalMoneyToLend=parseInt(sanitizer.sanitize(req.body.MoneyToLend.trim()));
 																	finalInterestRate=(parseFloat(sanitizer.sanitize(req.body.InterestRate.trim()))/100)+exports.serviceChargeRate;//scr
@@ -318,6 +320,8 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																	returnSring='有些訊息因借入方已不需要借款或其條件不合您現在的自動出借設定而無法被同意，它們已被自動婉拒';
 																}else if(interestInFutureDivMoney2<minInterestInFutureDivMoney){
 																	returnSring='有些訊息因借入方已不需要借款或其條件不合您現在的自動出借設定而無法被同意，它們已被自動婉拒';
+																}else if(!borrow.IfReadable){
+																	returnSring='有些訊息因借入方已不需要借款或其條件不合您現在的自動出借設定而無法被同意，它們已被自動婉拒';
 																}else{
 																	finalMoneyToLend=message.MoneyToLend;
 																	finalInterestRate=message.InterestRate;
@@ -325,7 +329,7 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																}
 															}
 															if((returnSring)||(!finalMoneyToLend)||(!finalInterestRate)||(!finalMonthPeriod)){
-																if(returnSring!='有些訊息因借入方已不需要借款或其條件不合您現在的自動出借設定而無法被同意，它們已被自動婉拒'){
+																if((returnSring!='有些訊息因借入方已不需要借款或其條件不合您現在的自動出借設定而無法被同意，它們已被自動婉拒')&&(returnSring!='有些訊息因借入方已不需要借款而無法被同意，它們已被自動婉拒')){
 																	if(ifRecursive){
 																		ctr++;
 																		if(ctr<ctrTarget){
