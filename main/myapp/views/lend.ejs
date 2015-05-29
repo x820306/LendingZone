@@ -298,14 +298,14 @@
 </div>
 <script>
 function checkAndOpenModal(target,cntNumber,cntTail,flag){
-	var a=$("input[name='MaxMoneyToLend']").val();
-	var b=$("input[name='InterestRate']").val();
-	var c=$("input[name='MonthPeriod']").val();
-	var d=$("input[name='MinLevelAccepted']").val();
-	var e=$("input[name='MinInterestInFuture']").val();
-	var f=$("input[name='MinInterestInFutureMonth']").val();
-	var g=$("input[name='MinInterestInFutureMoneyMonth']").val();
-	var h=$("input[name='MinInterestInFutureDivMoney']").val();
+	var a=$("input[name='MaxMoneyToLend']").val().trim();
+	var b=$("input[name='InterestRate']").val().trim();
+	var c=$("input[name='MonthPeriod']").val().trim();
+	var d=$("input[name='MinLevelAccepted']").val().trim();
+	var e=$("input[name='MinInterestInFuture']").val().trim();
+	var f=$("input[name='MinInterestInFutureMonth']").val().trim();
+	var g=$("input[name='MinInterestInFutureMoneyMonth']").val().trim();
+	var h=$("input[name='MinInterestInFutureDivMoney']").val().trim();
 	var aa=parseInt(a);
 	var bb=parseFloat(b);
 	var cc=parseInt(c);

@@ -158,6 +158,7 @@ app.get('/captcha/:captchaIdfr?', function (req, res) {
 	
 	var base64=ary[1].toString('base64');
 	var base64='data:image/bmp;base64,'+base64;
+	library.setCaptchaTimer();
 	res.json({CaptchaIdfr:library.captchaIdfrCtr,CaptchaPic:base64});
 });
 

@@ -8,10 +8,10 @@ var router = express.Router();
 
 router.post('/create', function(req, res, next) {
 	var toCreate = new BankAccounts(req.body);
-	toCreate.BankAccountNumber=sanitizer.sanitize(req.body.BankAccountNumber);
-	toCreate.BankAccountPassword=sanitizer.sanitize(req.body.BankAccountPassword);
-	toCreate.MoneyInBankAccount=sanitizer.sanitize(req.body.MoneyInBankAccount);
-	toCreate.OwnedBy=sanitizer.sanitize(req.body.OwnedBy);
+	toCreate.BankAccountNumber=sanitizer.sanitize(req.body.BankAccountNumber.trim());
+	toCreate.BankAccountPassword=sanitizer.sanitize(req.body.BankAccountPassword.trim());
+	toCreate.MoneyInBankAccount=sanitizer.sanitize(req.body.MoneyInBankAccount.trim());
+	toCreate.OwnedBy=sanitizer.sanitize(req.body.OwnedBy.trim());
 	
 	toCreate.save(function (err,newCreate) {
 		if (err){

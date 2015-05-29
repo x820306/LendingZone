@@ -27,7 +27,7 @@ var express = require('express');
 var router = express.Router();
 
 router.post('/createTest', function(req, res, next) {
-	var id=sanitizer.sanitize(req.body.FromBorrowRequest);
+	var id=sanitizer.sanitize(req.body.FromBorrowRequest.trim());
 	
 	Borrows.findById(id).exec(function (err, borrow){
 		if (err) {
@@ -38,14 +38,14 @@ router.post('/createTest', function(req, res, next) {
 				res.json({error: 'no such borrow'}, 500);
 			}else{
 				var toCreate = new Messages();
-				toCreate.FromBorrowRequest=sanitizer.sanitize(req.body.FromBorrowRequest);
-				toCreate.Message=sanitizer.sanitize(req.body.Message);
-				toCreate.MoneyToLend=sanitizer.sanitize(req.body.MoneyToLend);
-				toCreate.InterestRate=sanitizer.sanitize(req.body.InterestRate);
-				toCreate.MonthPeriod=sanitizer.sanitize(req.body.MonthPeriod);
-				toCreate.SendTo=sanitizer.sanitize(req.body.SendTo);
-				toCreate.CreatedBy=sanitizer.sanitize(req.body.CreatedBy);
-				toCreate.Type=sanitizer.sanitize(req.body.Type);
+				toCreate.FromBorrowRequest=sanitizer.sanitize(req.body.FromBorrowRequest.trim());
+				toCreate.Message=sanitizer.sanitize(req.body.Message.trim());
+				toCreate.MoneyToLend=sanitizer.sanitize(req.body.MoneyToLend.trim());
+				toCreate.InterestRate=sanitizer.sanitize(req.body.InterestRate.trim());
+				toCreate.MonthPeriod=sanitizer.sanitize(req.body.MonthPeriod.trim());
+				toCreate.SendTo=sanitizer.sanitize(req.body.SendTo.trim());
+				toCreate.CreatedBy=sanitizer.sanitize(req.body.CreatedBy.trim());
+				toCreate.Type=sanitizer.sanitize(req.body.Type.trim());
 				toCreate.Level=borrow.Level;
 				
 				toCreate.save(function (err,newCreate) {
@@ -98,12 +98,14 @@ function toLendSamePart(res,req,differentPart,outterPara){
 							var maxMonth=parseInt(borrow.MonthPeriodAccepted);
 							var maxRate=parseFloat(borrow.MaxInterestRateAccepted);
 							
-							var nowMoney=parseInt(sanitizer.sanitize(req.body.MoneyToLend));
-							var rate=(parseFloat(sanitizer.sanitize(req.body.InterestRate))/100)+library.serviceChargeRate;//scr
-							var month=parseInt(sanitizer.sanitize(req.body.MonthPeriod));
+							var nowMoney=parseInt(sanitizer.sanitize(req.body.MoneyToLend.trim()));
+							var rate=(parseFloat(sanitizer.sanitize(req.body.InterestRate.trim()))/100)+library.serviceChargeRate;//scr
+							var month=parseInt(sanitizer.sanitize(req.body.MonthPeriod.trim()));
 							
-							if((sanitizer.sanitize(req.body.MoneyToLend)=='')||(sanitizer.sanitize(req.body.InterestRate)=='')||(sanitizer.sanitize(req.body.MonthPeriod)=='')){
+							if((sanitizer.sanitize(req.body.MoneyToLend.trim())=='')||(sanitizer.sanitize(req.body.InterestRate.trim())=='')||(sanitizer.sanitize(req.body.MonthPeriod.trim())=='')){
 								res.redirect('/message?content='+encodeURIComponent('必要參數未填!'));
+							}else if((isNaN(month))||(isNaN(nowMoney))||(isNaN(rate))){
+								res.redirect('/message?content='+encodeURIComponent('非數字參數!'));
 							}else if((month<1)||(month>36)||(nowMoney<1)||(rate<=(0+library.serviceChargeRate))||(rate>=(1+library.serviceChargeRate))){
 								res.redirect('/message?content='+encodeURIComponent('錯誤參數!'));//scr
 							}else if(nowMoney>maxMoney){
@@ -133,13 +135,13 @@ function toLendCreatePart(res,req,borrow,lenderBankaccount,outterPara){
 		}else{
 			if(!borrowMessage){
 				var toCreate = new Messages();
-				toCreate.FromBorrowRequest=sanitizer.sanitize(req.body.FromBorrowRequest);
-				if(sanitizer.sanitize(req.body.Message) != ''){
-					toCreate.Message=sanitizer.sanitize(req.body.Message);
+				toCreate.FromBorrowRequest=sanitizer.sanitize(req.body.FromBorrowRequest.trim());
+				if(sanitizer.sanitize(req.body.Message.trim()) != ''){
+					toCreate.Message=sanitizer.sanitize(req.body.Message.trim());
 				}
-				toCreate.MoneyToLend=parseInt(sanitizer.sanitize(req.body.MoneyToLend));
-				toCreate.InterestRate=(parseFloat(sanitizer.sanitize(req.body.InterestRate))/100)+library.serviceChargeRate;//scr
-				toCreate.MonthPeriod=parseInt(sanitizer.sanitize(req.body.MonthPeriod));
+				toCreate.MoneyToLend=parseInt(sanitizer.sanitize(req.body.MoneyToLend.trim()));
+				toCreate.InterestRate=(parseFloat(sanitizer.sanitize(req.body.InterestRate.trim()))/100)+library.serviceChargeRate;//scr
+				toCreate.MonthPeriod=parseInt(sanitizer.sanitize(req.body.MonthPeriod.trim()));
 				toCreate.CreatedBy= req.user._id
 				toCreate.SendTo=borrow.CreatedBy;
 				toCreate.Type='toLend';
@@ -346,14 +348,14 @@ function toLendCreatePart(res,req,borrow,lenderBankaccount,outterPara){
 }
 
 function toLendUpdatePart(res,req,innerPara,innerPara2,message){
-	if(sanitizer.sanitize(req.body.Message) != ''){
-		message.Message=sanitizer.sanitize(req.body.Message);
+	if(sanitizer.sanitize(req.body.Message.trim()) != ''){
+		message.Message=sanitizer.sanitize(req.body.Message.trim());
 	}else{
 		message.Message='無內容';
 	}
-	message.MoneyToLend=parseInt(sanitizer.sanitize(req.body.MoneyToLend));
-	message.InterestRate=(parseFloat(sanitizer.sanitize(req.body.InterestRate))/100)+library.serviceChargeRate;//scr
-	message.MonthPeriod=parseInt(sanitizer.sanitize(req.body.MonthPeriod));
+	message.MoneyToLend=parseInt(sanitizer.sanitize(req.body.MoneyToLend.trim()));
+	message.InterestRate=(parseFloat(sanitizer.sanitize(req.body.InterestRate.trim()))/100)+library.serviceChargeRate;//scr
+	message.MonthPeriod=parseInt(sanitizer.sanitize(req.body.MonthPeriod.trim()));
 	message.Updated = Date.now();
 	
 	message.save(function (err,newUpdate) {
@@ -693,35 +695,39 @@ router.post('/destroy', library.ensureAuthenticated, function(req, res, next) {
 							console.log(err);
 							res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 						}else{
-							var ctr = -1;
-							for (i = 0; i < borrow.Message.length; i++) {
-								if (borrow.Message[i].toString() === message._id.toString()) {
-									ctr=i;
-									break;
+							if(!borrow){
+								res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+							}else{
+								var ctr = -1;
+								for (i = 0; i < borrow.Message.length; i++) {
+									if (borrow.Message[i].toString() === message._id.toString()) {
+										ctr=i;
+										break;
+									}
+								};
+								if(ctr>-1){
+									borrow.Message.splice(ctr, 1);
 								}
-							};
-							if(ctr>-1){
-								borrow.Message.splice(ctr, 1);
-							}
-							borrow.save(function (err,updatedBorrow) {
-								if (err){
-									console.log(err);
-									res.redirect('/message?content='+encodeURIComponent('錯誤!'));
-								}else{	
-									message.remove(function (err,removedItem) {
-										if (err){
-											console.log(err);
-											res.redirect('/message?content='+encodeURIComponent('刪除失敗!'));
-										}else{
-											if(removedItem.Type=='toLend'){
-												res.redirect('/lender/story?id='+req.body.FromBorrowRequest);
-											}else if(removedItem.Type=='toBorrow'){
-												res.redirect('/');
+								borrow.save(function (err,updatedBorrow) {
+									if (err){
+										console.log(err);
+										res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+									}else{	
+										message.remove(function (err,removedItem) {
+											if (err){
+												console.log(err);
+												res.redirect('/message?content='+encodeURIComponent('刪除失敗!'));
+											}else{
+												if(removedItem.Type=='toLend'){
+													res.redirect('/lender/story?id='+req.body.FromBorrowRequest);
+												}else if(removedItem.Type=='toBorrow'){
+													res.redirect('/');
+												}
 											}
-										}
-									});
-								}
-							});
+										});
+									}
+								});
+							}
 						}
 					});
 				}

@@ -9,7 +9,7 @@ var router = express.Router();
 
 //for test, u have to write one like this to achieve what u want.
 router.post('/createTest', function(req, res, next) {
-	var id=sanitizer.sanitize(req.body.CreatedBy);
+	var id=sanitizer.sanitize(req.body.CreatedBy.trim());
 	
 	Users.findById(id).exec(function (err, user){
 		if (err) {
@@ -20,18 +20,18 @@ router.post('/createTest', function(req, res, next) {
 				res.json({error: 'no such user'}, 500);
 			}else{
 				var toCreate = new Borrows();
-				toCreate.MoneyToBorrow=sanitizer.sanitize(req.body.MoneyToBorrow);
-				toCreate.MaxInterestRateAccepted=sanitizer.sanitize(req.body.MaxInterestRateAccepted);
-				toCreate.MonthPeriodAccepted=sanitizer.sanitize(req.body.MonthPeriodAccepted);
-				toCreate.TimeLimit=sanitizer.sanitize(req.body.TimeLimit);
-				toCreate.Category=sanitizer.sanitize(req.body.Category);
-				if(sanitizer.sanitize(req.body.StoryTitle)!=''){
-					toCreate.StoryTitle=sanitizer.sanitize(req.body.StoryTitle);
+				toCreate.MoneyToBorrow=sanitizer.sanitize(req.body.MoneyToBorrow.trim());
+				toCreate.MaxInterestRateAccepted=sanitizer.sanitize(req.body.MaxInterestRateAccepted.trim());
+				toCreate.MonthPeriodAccepted=sanitizer.sanitize(req.body.MonthPeriodAccepted.trim());
+				toCreate.TimeLimit=sanitizer.sanitize(req.body.TimeLimit.trim());
+				toCreate.Category=sanitizer.sanitize(req.body.Category.trim());
+				if(sanitizer.sanitize(req.body.StoryTitle.trim())!=''){
+					toCreate.StoryTitle=sanitizer.sanitize(req.body.StoryTitle.trim());
 				}
-				if(sanitizer.sanitize(req.body.Story)!=''){
-					toCreate.Story=sanitizer.sanitize(req.body.Story);
+				if(sanitizer.sanitize(req.body.Story.trim())!=''){
+					toCreate.Story=sanitizer.sanitize(req.body.Story.trim());
 				}
-				toCreate.CreatedBy=sanitizer.sanitize(req.body.CreatedBy);
+				toCreate.CreatedBy=sanitizer.sanitize(req.body.CreatedBy.trim());
 				toCreate.Level=user.Level;
 				
 				toCreate.save(function (err,newCreate) {
@@ -48,7 +48,7 @@ router.post('/createTest', function(req, res, next) {
 });
 
 router.post('/like', library.ensureAuthenticated, function(req, res, next) {
-	Borrows.findById(sanitizer.sanitize(req.body._id)).exec(function (err, borrow){
+	Borrows.findById(req.body._id).exec(function (err, borrow){
 		if (err) {
 			console.log(err);
 			res.json({error: "something wrong",success:false}, 500);
@@ -75,7 +75,7 @@ router.post('/like', library.ensureAuthenticated, function(req, res, next) {
 							console.log(err);
 							res.json({error: err.name,success:false},500);
 						}
-						res.json({success:true,result:newborrow.LikeNumber});
+						res.json({success:true,result:newborrow.LikeNumber,date:newborrow.Updated});
 					})
 				}
 			}
@@ -83,8 +83,35 @@ router.post('/like', library.ensureAuthenticated, function(req, res, next) {
 	});
 });
 
+router.post('/readable', library.ensureAuthenticated, function(req, res, next) {
+	Borrows.findById(req.body.borrowID).exec(function (err, borrow){
+		if (err) {
+			console.log(err);
+			res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+		}else{
+			if(!borrow){
+				res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+			}else{
+				if(borrow.CreatedBy!=req.user._id){
+					res.redirect('/message?content='+encodeURIComponent('認證錯誤!'));
+				}else{
+					borrow.IfReadable=false;
+					borrow.Updated=Date.now();
+					borrow.save(function (err,updatedBorrow) {
+						if (err){
+							res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+						}else{
+							res.redirect('/lender/story?id='+req.body.borrowID);
+						}
+					});
+				}
+			}
+		}
+	});
+});
+
 router.post('/unlike', library.ensureAuthenticated, function(req, res, next) {
-	Borrows.findById(sanitizer.sanitize(req.body._id)).exec(function (err, borrow){
+	Borrows.findById(req.body._id).exec(function (err, borrow){
 		if (err) {
 			console.log(err);
 			res.json({error: "something wrong",success:false}, 500);
@@ -111,7 +138,7 @@ router.post('/unlike', library.ensureAuthenticated, function(req, res, next) {
 							console.log(err);
 							res.json({error: err.name,success:false},500);
 						}
-						res.json({success:true,result:newborrow.LikeNumber});
+						res.json({success:true,result:newborrow.LikeNumber,date:newborrow.Updated});
 					})
 				}
 			}
@@ -120,7 +147,7 @@ router.post('/unlike', library.ensureAuthenticated, function(req, res, next) {
 });
 
 router.post('/iflike', function(req, res, next) {
-	Borrows.findById(sanitizer.sanitize(req.body._id)).exec(function (err, borrow){
+	Borrows.findById(req.body._id).exec(function (err, borrow){
 		if (err) {
 			console.log(err);
 			res.json({error: "something wrong",success:false}, 500);

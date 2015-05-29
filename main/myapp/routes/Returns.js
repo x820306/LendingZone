@@ -28,8 +28,8 @@ var express = require('express');
 var router = express.Router();
 
 router.post('/pay', function(req, res, next) {
-	var ToTransaction=sanitizer.sanitize(req.body.ToTransaction);
-	var MoneyPaid=parseFloat(sanitizer.sanitize(req.body.MoneyPaid));
+	var ToTransaction=sanitizer.sanitize(req.body.ToTransaction.trim());
+	var MoneyPaid=parseFloat(sanitizer.sanitize(req.body.MoneyPaid.trim()));
 
 	Transactions.findById(ToTransaction).populate('Lender', 'Username Email').populate('Borrower', 'Username Email').populate('CreatedFrom', 'FromBorrowRequest').exec(function (err, transaction){
 		if (err) {

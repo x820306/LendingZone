@@ -163,7 +163,7 @@ router.get('/signupExample2',library.ensureAuthenticated,library.newMsgChecker, 
 });
 
 function userCreator(req,res,callback){
-	var temp=sanitizer.sanitize(req.body.Username);
+	var temp=sanitizer.sanitize(req.body.Username.trim());
 	Users.findOne({Username:temp}).exec(function (err, user){
 		if (err) {
 			console.log(err);
@@ -173,15 +173,15 @@ function userCreator(req,res,callback){
 				res.redirect('/message?content='+encodeURIComponent('此帳號已存在!'));
 			}else{
 				var toCreate = new Users();
-				toCreate.Username=sanitizer.sanitize(req.body.Username);
-				toCreate.Password=sanitizer.sanitize(req.body.Password);
-				toCreate.Name=sanitizer.sanitize(req.body.Name);
-				toCreate.Email=sanitizer.sanitize(req.body.Email);
-				toCreate.Gender=sanitizer.sanitize(req.body.Gender);
-				toCreate.BirthDay=sanitizer.sanitize(req.body.BirthDay);
-				toCreate.IdCardNumber=sanitizer.sanitize(req.body.IdCardNumber);
-				toCreate.Phone=sanitizer.sanitize(req.body.Phone);
-				toCreate.Address=sanitizer.sanitize(req.body.Address);
+				toCreate.Username=sanitizer.sanitize(req.body.Username.trim());
+				toCreate.Password=sanitizer.sanitize(req.body.Password.trim());
+				toCreate.Name=sanitizer.sanitize(req.body.Name.trim());
+				toCreate.Email=sanitizer.sanitize(req.body.Email.trim());
+				toCreate.Gender=sanitizer.sanitize(req.body.Gender.trim());
+				toCreate.BirthDay=sanitizer.sanitize(req.body.BirthDay.trim());
+				toCreate.IdCardNumber=sanitizer.sanitize(req.body.IdCardNumber.trim());
+				toCreate.Phone=sanitizer.sanitize(req.body.Phone.trim());
+				toCreate.Address=sanitizer.sanitize(req.body.Address.trim());
 				
 				toCreate.IdCardType=req.body.IdCardType;
 				toCreate.SecondCardType=req.body.SecondCardType;
@@ -194,8 +194,8 @@ function userCreator(req,res,callback){
 						res.redirect('/message?content='+encodeURIComponent('錯誤'));
 					}else{
 						var toCreateInner = new BankAccounts();
-						toCreateInner.BankAccountNumber=sanitizer.sanitize(req.body.BankAccountNumber);
-						toCreateInner.BankAccountPassword=sanitizer.sanitize(req.body.BankAccountPassword);
+						toCreateInner.BankAccountNumber=sanitizer.sanitize(req.body.BankAccountNumber.trim());
+						toCreateInner.BankAccountPassword=sanitizer.sanitize(req.body.BankAccountPassword.trim());
 						toCreateInner.MoneyInBankAccount=500000;
 						toCreateInner.OwnedBy=newCreate._id;
 				

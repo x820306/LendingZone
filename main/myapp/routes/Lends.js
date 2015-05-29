@@ -10,10 +10,10 @@ var router = express.Router();
 
 router.post('/createTest', function(req, res, next) {
 	var toCreate = new Lends();
-	toCreate.MaxMoneyToLend=sanitizer.sanitize(req.body.MaxMoneyToLend);
-	toCreate.InterestRate=sanitizer.sanitize(req.body.InterestRate);
-	toCreate.MonthPeriod=sanitizer.sanitize(req.body.MonthPeriod);
-	toCreate.CreatedBy=sanitizer.sanitize(req.body.CreatedBy);
+	toCreate.MaxMoneyToLend=sanitizer.sanitize(req.body.MaxMoneyToLend.trim());
+	toCreate.InterestRate=sanitizer.sanitize(req.body.InterestRate.trim());
+	toCreate.MonthPeriod=sanitizer.sanitize(req.body.MonthPeriod.trim());
+	toCreate.CreatedBy=sanitizer.sanitize(req.body.CreatedBy.trim());
 	
 	toCreate.save(function (err,newCreate) {
 		if (err){
@@ -36,17 +36,44 @@ function samePart(res,req,differentPart,outterPara){
 				res.redirect('/message?content='+encodeURIComponent('無銀行帳戶!'));
 			}else{
 				var maxMoney=parseInt(bankaccount.MoneyInBankAccount);
-				var nowMoney=parseInt(sanitizer.sanitize(req.body.MaxMoneyToLend));
-				var rate=(parseFloat(sanitizer.sanitize(req.body.InterestRate))/100)+library.serviceChargeRate;//scr;
-				var month=parseInt(sanitizer.sanitize(req.body.MonthPeriod));
-				var level=parseInt(sanitizer.sanitize(req.body.MinLevelAccepted));
-				var MinInterestInFuture=parseInt(sanitizer.sanitize(req.body.MinInterestInFuture));
-				var MinInterestInFutureMonth=parseInt(sanitizer.sanitize(req.body.MinInterestInFutureMonth));
-				var MinInterestInFutureMoneyMonth=parseInt(sanitizer.sanitize(req.body.MinInterestInFutureMoneyMonth));
-				var MinInterestInFutureDivMoney=parseFloat(sanitizer.sanitize(req.body.MinInterestInFutureDivMoney))/100;
+				var nowMoney=parseInt(sanitizer.sanitize(req.body.MaxMoneyToLend.trim()));
+				var rate=(parseFloat(sanitizer.sanitize(req.body.InterestRate.trim()))/100)+library.serviceChargeRate;//scr;
+				var month=parseInt(sanitizer.sanitize(req.body.MonthPeriod.trim()));
+				var level;
+				if(sanitizer.sanitize(req.body.MinLevelAccepted.trim())==''){
+					level=1;
+				}else{
+					level=parseInt(sanitizer.sanitize(req.body.MinLevelAccepted.trim()));
+				}
+				var MinInterestInFuture;
+				if(sanitizer.sanitize(req.body.MinInterestInFuture.trim())==''){
+					MinInterestInFuture=1;
+				}else{
+					MinInterestInFuture=parseInt(sanitizer.sanitize(req.body.MinInterestInFuture.trim()));
+				}
+				var MinInterestInFutureMonth;
+				if(sanitizer.sanitize(req.body.MinInterestInFutureMonth.trim())==''){
+					MinInterestInFutureMonth=1;
+				}else{
+					MinInterestInFutureMonth=parseInt(sanitizer.sanitize(req.body.MinInterestInFutureMonth.trim()));
+				}
+				var MinInterestInFutureMoneyMonth;
+				if(sanitizer.sanitize(req.body.MinInterestInFutureMoneyMonth.trim())==''){
+					MinInterestInFutureMoneyMonth=1;
+				}else{
+					MinInterestInFutureMoneyMonth=parseInt(sanitizer.sanitize(req.body.MinInterestInFutureMoneyMonth.trim()));
+				}
+				var MinInterestInFutureDivMoney;
+				if(sanitizer.sanitize(req.body.MinInterestInFutureDivMoney.trim())==''){
+					MinInterestInFutureDivMoney=0.05;
+				}else{
+					MinInterestInFutureDivMoney=parseFloat(sanitizer.sanitize(req.body.MinInterestInFutureDivMoney.trim()))/100;
+				}
 				
-				if((sanitizer.sanitize(req.body.MaxMoneyToLend)=='')||(sanitizer.sanitize(req.body.InterestRate)=='')||(sanitizer.sanitize(req.body.MonthPeriod)=='')){
+				if((sanitizer.sanitize(req.body.MaxMoneyToLend.trim())=='')||(sanitizer.sanitize(req.body.InterestRate.trim())=='')||(sanitizer.sanitize(req.body.MonthPeriod.trim())=='')){
 					res.redirect('/message?content='+encodeURIComponent('必要參數未填!'));
+				}else if((isNaN(month))||(isNaN(nowMoney))||(isNaN(level))||(isNaN(MinInterestInFuture))||(isNaN(MinInterestInFutureMonth))||(isNaN(MinInterestInFutureMoneyMonth))||(isNaN(rate))||(isNaN(MinInterestInFutureDivMoney))){
+					res.redirect('/message?content='+encodeURIComponent('非數字參數!'));
 				}else if((month<1)||(month>36)||(nowMoney<1)||(level<0)||(MinInterestInFuture<0)||(MinInterestInFutureMonth<0)||(MinInterestInFutureMoneyMonth<0)||(rate<=(0+library.serviceChargeRate))||(rate>=(1+library.serviceChargeRate))||(MinInterestInFutureDivMoney<0)||(MinInterestInFutureDivMoney>=1)){
 					res.redirect('/message?content='+encodeURIComponent('錯誤參數!'));//scr
 				}else if(nowMoney>maxMoney){
@@ -61,30 +88,30 @@ function samePart(res,req,differentPart,outterPara){
 
 function createPart(res,req,outterPara){
 	var toCreate = new Lends();
-	toCreate.MaxMoneyToLend=parseInt(sanitizer.sanitize(req.body.MaxMoneyToLend));
-	toCreate.InterestRate=(parseFloat(sanitizer.sanitize(req.body.InterestRate))/100)+library.serviceChargeRate;//scr
-	toCreate.MonthPeriod=parseInt(sanitizer.sanitize(req.body.MonthPeriod));
-	if(sanitizer.sanitize(req.body.MinLevelAccepted)!=''){
-		toCreate.MinLevelAccepted=parseInt(sanitizer.sanitize(req.body.MinLevelAccepted));
+	toCreate.MaxMoneyToLend=parseInt(sanitizer.sanitize(req.body.MaxMoneyToLend.trim()));
+	toCreate.InterestRate=(parseFloat(sanitizer.sanitize(req.body.InterestRate.trim()))/100)+library.serviceChargeRate;//scr
+	toCreate.MonthPeriod=parseInt(sanitizer.sanitize(req.body.MonthPeriod.trim()));
+	if(sanitizer.sanitize(req.body.MinLevelAccepted.trim())!=''){
+		toCreate.MinLevelAccepted=parseInt(sanitizer.sanitize(req.body.MinLevelAccepted.trim()));
 	}
-	if(sanitizer.sanitize(req.body.MinInterestInFuture)!=''){
-		toCreate.MinInterestInFuture=parseInt(sanitizer.sanitize(req.body.MinInterestInFuture));
+	if(sanitizer.sanitize(req.body.MinInterestInFuture.trim())!=''){
+		toCreate.MinInterestInFuture=parseInt(sanitizer.sanitize(req.body.MinInterestInFuture.trim()));
 	}
-	if(sanitizer.sanitize(req.body.MinInterestInFutureMonth)!=''){
-		toCreate.MinInterestInFutureMonth=parseInt(sanitizer.sanitize(req.body.MinInterestInFutureMonth));
+	if(sanitizer.sanitize(req.body.MinInterestInFutureMonth.trim())!=''){
+		toCreate.MinInterestInFutureMonth=parseInt(sanitizer.sanitize(req.body.MinInterestInFutureMonth.trim()));
 	}
-	if(sanitizer.sanitize(req.body.MinInterestInFutureMoneyMonth)!=''){
-		toCreate.MinInterestInFutureMoneyMonth=parseInt(sanitizer.sanitize(req.body.MinInterestInFutureMoneyMonth));
+	if(sanitizer.sanitize(req.body.MinInterestInFutureMoneyMonth.trim())!=''){
+		toCreate.MinInterestInFutureMoneyMonth=parseInt(sanitizer.sanitize(req.body.MinInterestInFutureMoneyMonth.trim()));
 	}
-	if(sanitizer.sanitize(req.body.MinInterestInFutureDivMoney)!=''){
-		toCreate.MinInterestInFutureDivMoney=parseFloat(sanitizer.sanitize(req.body.MinInterestInFutureDivMoney))/100;
+	if(sanitizer.sanitize(req.body.MinInterestInFutureDivMoney.trim())!=''){
+		toCreate.MinInterestInFutureDivMoney=parseFloat(sanitizer.sanitize(req.body.MinInterestInFutureDivMoney.trim()))/100;
 	}
 	
-	toCreate.AutoComfirmToBorrowMsgPeriod=sanitizer.sanitize(req.body.AutoComfirmToBorrowMsgPeriod);
+	toCreate.AutoComfirmToBorrowMsgPeriod=sanitizer.sanitize(req.body.AutoComfirmToBorrowMsgPeriod.trim());
 	if(!req.body.AutoComfirmToBorrowMsgSorter){
 		toCreate.AutoComfirmToBorrowMsgSorter="invalid";
 	}else{
-		toCreate.AutoComfirmToBorrowMsgSorter=sanitizer.sanitize(req.body.AutoComfirmToBorrowMsgSorter);
+		toCreate.AutoComfirmToBorrowMsgSorter=sanitizer.sanitize(req.body.AutoComfirmToBorrowMsgSorter.trim());
 	}
 	toCreate.CreatedBy=req.user._id;
 	
@@ -103,30 +130,30 @@ function createPart(res,req,outterPara){
 }
 
 function updatePart(res,req,lend){
-	lend.MaxMoneyToLend=parseInt(sanitizer.sanitize(req.body.MaxMoneyToLend));
-	lend.InterestRate=(parseFloat(sanitizer.sanitize(req.body.InterestRate))/100)+library.serviceChargeRate;//scr
-	lend.MonthPeriod=parseInt(sanitizer.sanitize(req.body.MonthPeriod));
-	if(sanitizer.sanitize(req.body.MinLevelAccepted)!=''){
-		lend.MinLevelAccepted=parseInt(sanitizer.sanitize(req.body.MinLevelAccepted));
+	lend.MaxMoneyToLend=parseInt(sanitizer.sanitize(req.body.MaxMoneyToLend.trim()));
+	lend.InterestRate=(parseFloat(sanitizer.sanitize(req.body.InterestRate.trim()))/100)+library.serviceChargeRate;//scr
+	lend.MonthPeriod=parseInt(sanitizer.sanitize(req.body.MonthPeriod.trim()));
+	if(sanitizer.sanitize(req.body.MinLevelAccepted.trim())!=''){
+		lend.MinLevelAccepted=parseInt(sanitizer.sanitize(req.body.MinLevelAccepted.trim()));
 	}
-	if(sanitizer.sanitize(req.body.MinInterestInFuture)!=''){
-		lend.MinInterestInFuture=parseInt(sanitizer.sanitize(req.body.MinInterestInFuture));
+	if(sanitizer.sanitize(req.body.MinInterestInFuture.trim())!=''){
+		lend.MinInterestInFuture=parseInt(sanitizer.sanitize(req.body.MinInterestInFuture.trim()));
 	}
-	if(sanitizer.sanitize(req.body.MinInterestInFutureMonth)!=''){
-		lend.MinInterestInFutureMonth=parseInt(sanitizer.sanitize(req.body.MinInterestInFutureMonth));
+	if(sanitizer.sanitize(req.body.MinInterestInFutureMonth.trim())!=''){
+		lend.MinInterestInFutureMonth=parseInt(sanitizer.sanitize(req.body.MinInterestInFutureMonth.trim()));
 	}
-	if(sanitizer.sanitize(req.body.MinInterestInFutureMoneyMonth)!=''){
-		lend.MinInterestInFutureMoneyMonth=parseInt(sanitizer.sanitize(req.body.MinInterestInFutureMoneyMonth));
+	if(sanitizer.sanitize(req.body.MinInterestInFutureMoneyMonth.trim())!=''){
+		lend.MinInterestInFutureMoneyMonth=parseInt(sanitizer.sanitize(req.body.MinInterestInFutureMoneyMonth.trim()));
 	}
-	if(sanitizer.sanitize(req.body.MinInterestInFutureDivMoney)!=''){
-		lend.MinInterestInFutureDivMoney=parseFloat(sanitizer.sanitize(req.body.MinInterestInFutureDivMoney))/100;
+	if(sanitizer.sanitize(req.body.MinInterestInFutureDivMoney.trim())!=''){
+		lend.MinInterestInFutureDivMoney=parseFloat(sanitizer.sanitize(req.body.MinInterestInFutureDivMoney.trim()))/100;
 	}
 	
-	lend.AutoComfirmToBorrowMsgPeriod=sanitizer.sanitize(req.body.AutoComfirmToBorrowMsgPeriod);
+	lend.AutoComfirmToBorrowMsgPeriod=sanitizer.sanitize(req.body.AutoComfirmToBorrowMsgPeriod.trim());
 	if(!req.body.AutoComfirmToBorrowMsgSorter){
 		lend.AutoComfirmToBorrowMsgSorter="invalid";
 	}else{
-		lend.AutoComfirmToBorrowMsgSorter=sanitizer.sanitize(req.body.AutoComfirmToBorrowMsgSorter);
+		lend.AutoComfirmToBorrowMsgSorter=sanitizer.sanitize(req.body.AutoComfirmToBorrowMsgSorter.trim());
 	}
 	lend.Updated = Date.now();
 	

@@ -35,31 +35,33 @@ router.get('/borrowPage', library.ensureAuthenticated, library.newMsgChecker, fu
 });
 
 router.post('/borrowCreate', library.ensureAuthenticated, function(req, res) {
-	var nowMoney=parseInt(sanitizer.sanitize(req.body.MoneyToBorrow));
-	var rate=parseFloat(sanitizer.sanitize(req.body.MaxInterestRateAccepted))/100;
-	var month=parseInt(sanitizer.sanitize(req.body.MonthPeriodAccepted));
-	if((sanitizer.sanitize(req.body.MoneyToBorrow)=='')||(sanitizer.sanitize(req.body.MaxInterestRateAccepted)=='')||(sanitizer.sanitize(req.body.MonthPeriodAccepted)=='')){
+	var nowMoney=parseInt(sanitizer.sanitize(req.body.MoneyToBorrow.trim()));
+	var rate=parseFloat(sanitizer.sanitize(req.body.MaxInterestRateAccepted.trim()))/100;
+	var month=parseInt(sanitizer.sanitize(req.body.MonthPeriodAccepted.trim()));
+	if((sanitizer.sanitize(req.body.MoneyToBorrow.trim())=='')||(sanitizer.sanitize(req.body.MaxInterestRateAccepted.trim())=='')||(sanitizer.sanitize(req.body.MonthPeriodAccepted.trim())=='')){
 		res.redirect('/message?content='+encodeURIComponent('必要參數未填!'));
+	}else if((isNaN(month))||(isNaN(nowMoney))||(isNaN(rate))){
+		res.redirect('/message?content='+encodeURIComponent('非數字參數!'));
 	}else if((month<1)||(month>36)||(nowMoney<5000)||(nowMoney>150000)||(rate<=0)||(rate>=1)){
 		res.redirect('/message?content='+encodeURIComponent('錯誤參數!'));
 	}else{
 		var toCreate = new Borrows();
-		toCreate.MoneyToBorrow = parseInt(sanitizer.sanitize(req.body.MoneyToBorrow));
-		toCreate.MaxInterestRateAccepted = parseFloat(sanitizer.sanitize(req.body.MaxInterestRateAccepted))/100;
-		toCreate.MonthPeriodAccepted = parseInt(sanitizer.sanitize(req.body.MonthPeriodAccepted));
-		if(sanitizer.sanitize(req.body.TimeLimit)!=''){
-			toCreate.TimeLimit = sanitizer.sanitize(req.body.TimeLimit);
+		toCreate.MoneyToBorrow = parseInt(sanitizer.sanitize(req.body.MoneyToBorrow.trim()));
+		toCreate.MaxInterestRateAccepted = parseFloat(sanitizer.sanitize(req.body.MaxInterestRateAccepted.trim()))/100;
+		toCreate.MonthPeriodAccepted = parseInt(sanitizer.sanitize(req.body.MonthPeriodAccepted.trim()));
+		if(sanitizer.sanitize(req.body.TimeLimit.trim())!=''){
+			toCreate.TimeLimit = sanitizer.sanitize(req.body.TimeLimit.trim());
 		}else{
 			var tempDate=new Date();
 			tempDate.setTime(tempDate.getTime()+1000*60*60*24*3);
 			toCreate.TimeLimit = tempDate;
 		}
-		toCreate.Category = sanitizer.sanitize(req.body.Category);
-		if (sanitizer.sanitize(req.body.StoryTitle) != '') {
-			toCreate.StoryTitle = sanitizer.sanitize(req.body.StoryTitle);
+		toCreate.Category = sanitizer.sanitize(req.body.Category.trim());
+		if (sanitizer.sanitize(req.body.StoryTitle.trim()) != '') {
+			toCreate.StoryTitle = sanitizer.sanitize(req.body.StoryTitle.trim());
 		}
-		if (sanitizer.sanitize(req.body.Story) != '') {
-			toCreate.Story = sanitizer.sanitize(req.body.Story);
+		if (sanitizer.sanitize(req.body.Story.trim()) != '') {
+			toCreate.Story = sanitizer.sanitize(req.body.Story.trim());
 		}
 		toCreate.CreatedBy =req.user._id;
 		toCreate.Level = req.user.Level;

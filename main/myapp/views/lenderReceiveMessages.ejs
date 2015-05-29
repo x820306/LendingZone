@@ -6,7 +6,7 @@
 				<div style="font-size:20pt;">&nbsp;<%=totalResultNum%> result</div>
 				<br>
 				<div class="input-group">
-					<input type="text" style="height:40px;" class="form-control" id="msgKeywordIpt" placeholder="搜尋訊息內容、故事標題或用戶名稱" value="<%=msgKeywordDefault%>" onkeypress="if(event.keyCode==13){ window.open('/lender/lenderReceiveMessages?msgKeyword='+encodeURIComponent($('#msgKeywordIpt').val())+'&filter='+encodeURIComponent($('#filter0').text())+'&sorter='+encodeURIComponent($('#sorter0').text())+'&page=1','_self');}">
+					<input type="text" style="height:40px;" class="form-control" id="msgKeywordIpt" placeholder="搜尋訊息內容、故事標題或用戶名稱" value="<%=msgKeywordDefault%>" onkeypress="if(event.keyCode==13){ window.open('/lender/lenderReceiveMessages?msgKeyword='+encodeURIComponent($('#msgKeywordIpt').val().trim())+'&filter='+encodeURIComponent($('#filter0').text())+'&sorter='+encodeURIComponent($('#sorter0').text())+'&page=1','_self');}">
 					<span class="input-group-btn">
 						<div class="btn-group">
 							<button type="button" style="height:40px;" class="btn btn-default dropdown-toggle" data-toggle="dropdown" id="filterSelected">
@@ -47,7 +47,7 @@
 								<%}%>
 							</ul>
 						</div>
-						<button type="button" style="height:40px;" class="btn btn-default" onclick="window.open('/lender/lenderReceiveMessages?msgKeyword='+encodeURIComponent($('#msgKeywordIpt').val())+'&filter='+encodeURIComponent($('#filter0').text())+'&sorter='+encodeURIComponent($('#sorter0').text())+'&page=1','_self');">Go!</button>
+						<button type="button" style="height:40px;" class="btn btn-default" onclick="window.open('/lender/lenderReceiveMessages?msgKeyword='+encodeURIComponent($('#msgKeywordIpt').val().trim())+'&filter='+encodeURIComponent($('#filter0').text())+'&sorter='+encodeURIComponent($('#sorter0').text())+'&page=1','_self');">Go!</button>
 					</span>
 				</div> 
 				<% if(totalResultNum>0){ %>
@@ -307,11 +307,11 @@
 							<div style="font-size:25px;display:inline;">來自 </div>
 							<div style="font-size:25px;display:inline;" class="myTitle"><%=jsonMessage[i].CreatedBy.Username%></div>
 							<br>
-							在 <a style="font-size:15px;" href="/lender/story?id=<%=jsonMessage[i].FromBorrowRequest._id%>"><%=jsonMessage[i].FromBorrowRequest.StoryTitle%></a>
+							在 <a style="font-size:15px;" href="/lender/story?id=<%=jsonMessage[i].FromBorrowRequest._id%>"><%-jsonMessage[i].FromBorrowRequest.StoryTitle.replace(new RegExp(' ','g'),'&nbsp;')%></a>
 							<br>
 							<br>
 							<div>	
-								<%-jsonMessage[i].Message.replace(new RegExp('\n','g'),'<br>')%>
+								<%-jsonMessage[i].Message.replace(new RegExp('\n','g'),'<br>').replace(new RegExp(' ','g'),'&nbsp;')%>
 							</div>
 						</div>
 						<div class="tab-pane" id="tab2<%=i%>">

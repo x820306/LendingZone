@@ -84,14 +84,15 @@ router.get('/search/:keyword?/:action?/:page?',library.newMsgChecker, function (
 	if(categoryRec){
 		andFindCmdAry.push({"Category": categoryRec});
 	}
+	
 	var jsonTemp={};
-	if((filter!='未選擇濾鏡')&&(lbound!='')&&(ubound!='')&&(lboundRec)&&(uboundRec)&&(filterRec)&&(filterRec!='')&&(lboundRec!='')&&(uboundRec!='')){
+	if((filter!='未選擇濾鏡')&&(lbound!='')&&(ubound!='')&&(lboundRec)&&(uboundRec)&&(filterRec)&&(filterRec!='')&&(lboundRec!='')&&(uboundRec!='')&&(!isNaN(lboundRec))&&(!isNaN(uboundRec))){
 		jsonTemp[filterRec]={"$gte": lboundRec, "$lt": uboundRec};
 		andFindCmdAry.push(jsonTemp);
-	}else if((filter!='未選擇濾鏡')&&(filterRec)&&(filterRec!='')&&(lbound!='')&&(lboundRec)&&(lboundRec!='')){
+	}else if((filter!='未選擇濾鏡')&&(filterRec)&&(filterRec!='')&&(lbound!='')&&(lboundRec)&&(lboundRec!='')&&(!isNaN(lboundRec))){
 		jsonTemp[filterRec]={"$gte": lboundRec};
 		andFindCmdAry.push(jsonTemp);
-	}else if((filter!='未選擇濾鏡')&&(filterRec)&&(filterRec!='')&&(ubound!='')&&(uboundRec)&&(uboundRec!='')){
+	}else if((filter!='未選擇濾鏡')&&(filterRec)&&(filterRec!='')&&(ubound!='')&&(uboundRec)&&(uboundRec!='')&&(!isNaN(uboundRec))){
 		jsonTemp[filterRec]={"$lt": uboundRec};
 		andFindCmdAry.push(jsonTemp);
 	}

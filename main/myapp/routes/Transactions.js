@@ -10,7 +10,7 @@ var express = require('express');
 var router = express.Router();
 
 router.post('/createTest', function(req, res, next) {
-	var id=sanitizer.sanitize(req.body.CreatedFrom);
+	var id=sanitizer.sanitize(req.body.CreatedFrom.trim());
 	
 	Messages.findById(id).exec(function (err, message){
 		if (err) {
@@ -21,12 +21,12 @@ router.post('/createTest', function(req, res, next) {
 				res.json({error: 'no such message'}, 500);
 			}else{
 				var toCreate = new Transactions();
-				toCreate.Principal=sanitizer.sanitize(req.body.Principal);
-				toCreate.InterestRate=sanitizer.sanitize(req.body.InterestRate);
-				toCreate.MonthPeriod=sanitizer.sanitize(req.body.MonthPeriod);
-				toCreate.CreatedFrom=sanitizer.sanitize(req.body.CreatedFrom);
-				toCreate.Borrower=sanitizer.sanitize(req.body.Borrower);
-				toCreate.Lender=sanitizer.sanitize(req.body.Lender);
+				toCreate.Principal=sanitizer.sanitize(req.body.Principal.trim());
+				toCreate.InterestRate=sanitizer.sanitize(req.body.InterestRate.trim());
+				toCreate.MonthPeriod=sanitizer.sanitize(req.body.MonthPeriod.trim());
+				toCreate.CreatedFrom=sanitizer.sanitize(req.body.CreatedFrom.trim());
+				toCreate.Borrower=sanitizer.sanitize(req.body.Borrower.trim());
+				toCreate.Lender=sanitizer.sanitize(req.body.Lender.trim());
 				toCreate.Level=message.Level;
 				
 				toCreate.save(function (err,newCreate) {
