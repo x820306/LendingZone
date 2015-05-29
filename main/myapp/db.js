@@ -1,4 +1,5 @@
 var mongoose = require( 'mongoose' );
+var async = require( 'async' );
 var Schema   = mongoose.Schema;
 
 var Borrows = new Schema({
@@ -126,12 +127,86 @@ var Returns = new Schema({
 	Created: { type: Date, default: Date.now }
 });
 
-mongoose.model( 'Users', Users );
-mongoose.model( 'Borrows', Borrows );
-mongoose.model( 'Lends', Lends );
-mongoose.model( 'Messages', Messages );
-mongoose.model( 'BankAccounts', BankAccounts );
-mongoose.model( 'Transactions', Transactions );
-mongoose.model( 'Discussions', Discussions );
 mongoose.model( 'Returns', Returns );
+var ReturnsModal  = mongoose.model('Returns');
+
+Transactions.pre('remove', function (next) {
+	console.log('level-3');
+	async.each(this.Return, function(id, callback) {
+		ReturnsModal.findById(id).exec(function (err, returnFound){
+			if(err){
+				callback();
+			}else{
+				if(!returnFound){
+					callback();
+				}else{
+					returnFound.remove(function (err,removed) {
+						callback();
+					});
+				}
+			}
+		});
+	},function(err){
+		if(err) throw err;
+		next();
+	});	
+});
+mongoose.model( 'Transactions', Transactions );
+var TransactionsModal  = mongoose.model('Transactions');
+
+Messages.pre('remove', function (next) {
+	console.log('level-2');
+	async.each(this.Transaction, function(id, callback) {
+		TransactionsModal.findById(id).exec(function (err, transaction){
+			if(err){
+				callback();
+			}else{
+				if(!transaction){
+					callback();
+				}else{
+					transaction.remove(function (err,removed) {
+						callback();
+					});
+				}
+			}
+		});
+	},function(err){
+		if(err) throw err;
+		next();
+	});	
+});
+mongoose.model( 'Messages', Messages );
+var MessagesModal  = mongoose.model('Messages');
+
+mongoose.model( 'Discussions', Discussions );
+var DiscussionsModal  = mongoose.model('Discussions');
+
+Borrows.pre('remove', function (next) {
+	console.log('level-1');
+	DiscussionsModal.remove({BelongTo: this._id}).exec();
+	async.each(this.Message, function(id, callback) {
+		MessagesModal.findById(id).exec(function (err, message){
+			if(err){
+				callback();
+			}else{
+				if(!message){
+					callback();
+				}else{
+					message.remove(function (err,removed) {
+						callback();
+					});
+				}
+			}
+		});
+	},function(err){
+		if(err) throw err;
+		next();
+	});	
+});
+mongoose.model( 'Borrows', Borrows );
+
+mongoose.model( 'Users', Users );
+mongoose.model( 'Lends', Lends );
+mongoose.model( 'BankAccounts', BankAccounts );
+
 mongoose.connect( 'mongodb://lendingZone:lendingZone@ds031972.mongolab.com:31972/lending' );
