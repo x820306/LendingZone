@@ -47,6 +47,59 @@ router.post('/createTest', function(req, res, next) {
 	});
 });
 
+//for test
+router.post('/destroyTest', function(req, res, next) {
+	var id=sanitizer.sanitize(req.body.BorrowID.trim());
+	
+	Borrows.findById(id).exec(function (err, borrow){
+		if (err) {
+			console.log(err);
+			res.json({error: err.name}, 500);
+		}else{
+			if(!borrow){
+				res.json({error: 'no such borrow'}, 500);
+			}else{
+				borrow.remove(function (err,removedBorrow) {
+					if (err){
+						console.log(err);
+						res.json({error: err.name}, 500);
+					}else{
+						res.json(removedBorrow);
+					}
+				});
+			}
+		}
+	});
+});
+
+router.post('/readable', library.ensureAuthenticated, function(req, res, next) {
+	Borrows.findById(req.body.borrowID).exec(function (err, borrow){
+		if (err) {
+			console.log(err);
+			res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+		}else{
+			if(!borrow){
+				res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+			}else{
+				if(borrow.CreatedBy!=req.user._id){
+					res.redirect('/message?content='+encodeURIComponent('認證錯誤!'));
+				}else{
+					borrow.IfReadable=false;
+					borrow.Updated=Date.now();
+					borrow.save(function (err,updatedBorrow) {
+						if (err){
+							res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+						}else{
+							var objID=mongoose.Types.ObjectId(updatedBorrow._id.toString());
+							library.rejectMessageWhenNotReadable(res,false,'/lender/story?id='+req.body.borrowID,objID);
+						}
+					});
+				}
+			}
+		}
+	});
+});
+
 router.post('/like', library.ensureAuthenticated, function(req, res, next) {
 	Borrows.findById(req.body._id).exec(function (err, borrow){
 		if (err) {
@@ -77,34 +130,6 @@ router.post('/like', library.ensureAuthenticated, function(req, res, next) {
 						}
 						res.json({success:true,result:newborrow.LikeNumber,date:newborrow.Updated});
 					})
-				}
-			}
-		}
-	});
-});
-
-router.post('/readable', library.ensureAuthenticated, function(req, res, next) {
-	Borrows.findById(req.body.borrowID).exec(function (err, borrow){
-		if (err) {
-			console.log(err);
-			res.redirect('/message?content='+encodeURIComponent('錯誤!'));
-		}else{
-			if(!borrow){
-				res.redirect('/message?content='+encodeURIComponent('錯誤!'));
-			}else{
-				if(borrow.CreatedBy!=req.user._id){
-					res.redirect('/message?content='+encodeURIComponent('認證錯誤!'));
-				}else{
-					borrow.IfReadable=false;
-					borrow.Updated=Date.now();
-					borrow.save(function (err,updatedBorrow) {
-						if (err){
-							res.redirect('/message?content='+encodeURIComponent('錯誤!'));
-						}else{
-							var objID=mongoose.Types.ObjectId(updatedBorrow._id.toString());
-							library.rejectMessageWhenNotReadable(res,false,'/lender/story?id='+req.body.borrowID,objID);
-						}
-					});
 				}
 			}
 		}
