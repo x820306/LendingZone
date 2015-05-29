@@ -651,8 +651,20 @@
 								<textarea class="form-control" name="Message" rows="3" readonly="readonly"><%=jsonBorrowMessage.Message%></textarea>
 								<br>
 							</div>
+							<%if(jsonBorrowMessage.Status=='NotConfirmed'){%>
+							<form action="/Messages/rejectToBorrowMessageInStory" method="post">
+							<input type="hidden" name="FromBorrowRequest" value="<%=json._id%>">
+							<input type="hidden" name="MessageID" value="<%=jsonBorrowMessage._id%>">
+							<%}%>
 							<div class="modal-footer">
 								<div class="btn-toolbar" role="toolbar">
+									<%if(jsonBorrowMessage.Status=='NotConfirmed'){%>
+									<div class="btn-group" role="group">
+										<button type="button" class="btn btn-danger" onclick="checkAndOpenModal(chkModal6,mdlCnt6,'您確定要婉拒此借款請求嗎?',false);">
+											婉拒
+										</button>
+									</div>
+									<%}%>
 									<div class="btn-group" role="group">
 										<button type="button" class="btn btn-default" data-dismiss="modal">關閉</button>
 									</div>
@@ -661,6 +673,25 @@
 						</div>
 					</div>
 				</div>
+				<%if(jsonBorrowMessage.Status=='NotConfirmed'){%>
+				<div class="modal fade" id="chkModal6">
+					<div class="modal-dialog modal-sm"">
+						<div class="modal-content">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+								<h4 class="modal-title">再次確認</h4>
+							</div>
+							<div id="mdlCnt6" class="modal-body">
+							</div>
+							<div class="modal-footer">
+								<button type="submit" class="btn btn-danger" onclick="refuse();" id="rfsBtnID">確定</button>
+								<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+							</div>
+						</div>
+					</div>
+				</div>
+				</form>
+				<%}%>
 			<%}else{%>
 				<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 					<div class="modal-dialog modal-md">
@@ -1282,6 +1313,15 @@
 							$('#argBtnID').attr('class',orig);
 						}
 						
+						orig=$('#rfsBtnID').attr('class');
+						if(orig.search(' disabled')<0){
+							orig=orig+' disabled';
+							$('#rfsBtnID').attr('class',orig);
+						}
+					}
+				<%}else if((!json.IfReadable)&&(jsonBorrowMessage.Status=='NotConfirmed')){%>
+					function refuse(){
+						$('#chkModal6').modal('hide');
 						orig=$('#rfsBtnID').attr('class');
 						if(orig.search(' disabled')<0){
 							orig=orig+' disabled';
