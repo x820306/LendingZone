@@ -109,14 +109,28 @@ app.get('/',library.newMsgChecker, function (req, res) {
 	res.render('index',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst});
 });
 
-app.get('/message/:content?',library.newMsgChecker, function (req, res) {
-	var temp=decodeURIComponent(req.query.content);
-	var auRst=null;
-	if(req.isAuthenticated()){
-		auRst=req.user.Username;
+app.get('/message/:content?/:info1?/:info2?/:info3?/:info4?/:infoB?',library.newMsgChecker, function (req, res) {
+	if(typeof(req.query.content) !== "undefined"){
+		var temp=decodeURIComponent(req.query.content);
+		var auRst=null;
+		if(req.isAuthenticated()){
+			auRst=req.user.Username;
+		}
+		var info1=parseFloat(decodeURIComponent(req.query.info1));
+		var info2=parseFloat(decodeURIComponent(req.query.info2));
+		var info3=parseFloat(decodeURIComponent(req.query.info3));
+		var info4=parseFloat(decodeURIComponent(req.query.info4));
+		var infoB=parseFloat(decodeURIComponent(req.query.infoB));
+		if((typeof(req.query.info1) !== "undefined")&&(typeof(req.query.info2) !== "undefined")&&(typeof(req.query.info3) !== "undefined")&&(typeof(req.query.info4) !== "undefined")&&(typeof(req.query.infoB) === "undefined")){
+			res.render('message',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,content:temp,if1:info1,if2:info2,if3:info3,if4:info4,ifB:null});
+		}else if((typeof(req.query.info1) === "undefined")&&(typeof(req.query.info2) === "undefined")&&(typeof(req.query.info3) === "undefined")&&(typeof(req.query.info4) === "undefined")&&(typeof(req.query.infoB) !== "undefined")){
+			res.render('message',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,content:temp,if1:null,if2:null,if3:null,if4:null,ifB:infoB});
+		}else{
+			res.render('message',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst, content:temp,if1:null,if2:null,if3:null,if4:null,ifB:null});
+		}
+	}else{
+		res.redirect('/');
 	}
-	
-	res.render('message',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst, content:temp});
 });
 
 app.get('/profile', library.ensureAuthenticated,library.newMsgChecker, function (req, res) {
@@ -137,29 +151,33 @@ app.post('/login',captchaChecker, passport.authenticate('local', { failureRedire
 });
 
 app.get('/captcha/:captchaIdfr?', function (req, res) {
-   console.log('captcha');
-	var captchaIdfr=parseInt(req.query.captchaIdfr);
-	
-	if(captchaIdfr>0){
-		var ctr = -1;
-		for(i=0;i<library.captchaTextArray.length;i++){
-			if(captchaIdfr==library.captchaTextArray[i].Idfr){
-				ctr=i;
-				break;
+	if(typeof(req.query.captchaIdfr) !== "undefined"){
+		console.log('captcha');
+		var captchaIdfr=parseInt(req.query.captchaIdfr);
+		
+		if(captchaIdfr>0){
+			var ctr = -1;
+			for(i=0;i<library.captchaTextArray.length;i++){
+				if(captchaIdfr==library.captchaTextArray[i].Idfr){
+					ctr=i;
+					break;
+				}
+			}
+			if(ctr>-1){
+				library.captchaTextArray.splice(ctr, 1);
 			}
 		}
-		if(ctr>-1){
-			library.captchaTextArray.splice(ctr, 1);
-		}
+		var ary = captcha.get();
+		library.captchaIdfrCtr+=1;
+		library.captchaTextArray.push({Idfr:library.captchaIdfrCtr,Text:ary[0]});
+		
+		var base64=ary[1].toString('base64');
+		var base64='data:image/bmp;base64,'+base64;
+		library.setCaptchaTimer();
+		res.json({CaptchaIdfr:library.captchaIdfrCtr,CaptchaPic:base64,success:true});
+	}else{
+		res.json({success:false});
 	}
-	var ary = captcha.get();
-	library.captchaIdfrCtr+=1;
-	library.captchaTextArray.push({Idfr:library.captchaIdfrCtr,Text:ary[0]});
-	
-	var base64=ary[1].toString('base64');
-	var base64='data:image/bmp;base64,'+base64;
-	library.setCaptchaTimer();
-	res.json({CaptchaIdfr:library.captchaIdfrCtr,CaptchaPic:base64});
 });
 
 app.get('/logout', function (req, res) {

@@ -123,7 +123,7 @@
 							<tbody class="myTbody">
 								<tr>
 									<td>
-										<div style="display:inline;" id="selectedFee">0</div><div style="display:inline;">元</div>
+										<div style="display:inline;" id="selectedFee">0</div><div style="display:none;" id="selectedFeeR">0</div><div style="display:inline;">元</div>
 									</td>
 								</tr>
 							</tbody>
@@ -404,7 +404,7 @@
 										<tr>
 											<td>
 												<div>
-													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;" id="value1<%=i%>"><%=(jsonTransaction[i].Principal*insuranceRate).toFixed(0)%></div>元
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:none;" id="value1<%=i%>"><%=(jsonTransaction[i].Principal*insuranceRate)%></div><%=(jsonTransaction[i].Principal*insuranceRate).toFixed(0)%>元
 												</div>	
 											</td>
 										<tr>
@@ -546,27 +546,30 @@ function selectAllFun(){
 		$("input[name='selectCheckBox']").each(function() {
 			$(this).prop("checked", true);
 		});
-		var value=0;
+		var valueR=0;
 		for(i=0;i<<%=jsonTransaction.length%>;i++){
-			value+=parseInt($("#value1"+i).text());
+			valueR+=parseFloat($("#value1"+i).text());
 		}
-		$("#selectedFee").text(value.toFixed(0));
+		$("#selectedFee").text(valueR.toFixed(0));
+		$("#selectedFeeR").text(valueR);
 	}else{
 		$("input[name='selectCheckBox']").each(function() {
 			$(this).prop("checked", false);
 		});
-		$("#selectedFee").text(0);		
+		$("#selectedFee").text(0);	
+		$("#selectedFeeR").text(0);		
 	}
 }
 
 function selectFun(index){
-	var value=parseInt($("#selectedFee").text());
-	var fee=parseInt($("#value1"+index).text());
+	var valueR=parseFloat($("#selectedFeeR").text());
+	var fee=parseFloat($("#value1"+index).text());
 	
 	if($("#selectCheckBoxId"+index).prop("checked"))
 	{
-		value+=fee;
-		$("#selectedFee").text(value.toFixed(0));
+		valueR+=fee;
+		$("#selectedFee").text(valueR.toFixed(0));
+		$("#selectedFeeR").text(valueR);
 		
 		var ctr=0;
 		$("input[name='selectCheckBox']").each(function() {
@@ -578,8 +581,9 @@ function selectFun(index){
 			$("#selectAll").prop("checked", true);
 		}
 	}else{
-		value-=fee;
-		$("#selectedFee").text(value.toFixed(0));
+		valueR-=fee;
+		$("#selectedFee").text(valueR.toFixed(0));
+		$("#selectedFeeR").text(valueR);
 
 		var ctr=0;
 		$("input[name='selectCheckBox']").each(function() {

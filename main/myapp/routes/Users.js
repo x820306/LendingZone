@@ -95,27 +95,35 @@ router.get('/find/:id?', function(req, res, next) {
 });
 
 router.get('/IdCard/:id?', function(req, res, next) {
-	Users.findById(req.query.id).exec(function (err, user){
-		if (err) {
-			console.log(err);
-			res.json({error: err.name}, 500);
-		}else{
-			res.setHeader('content-type', user.IdCardType);
-			res.end(user.IdCard, "binary");
-		}
-	});
+	if(typeof(req.query.id) !== "undefined"){
+		Users.findById(req.query.id).exec(function (err, user){
+			if (err) {
+				console.log(err);
+				res.json({error: err.name}, 500);
+			}else{
+				res.setHeader('content-type', user.IdCardType);
+				res.end(user.IdCard, "binary");
+			}
+		});
+	}else{
+		res.redirect('/');
+	}
 });
 
 router.get('/SecondCard/:id?', function(req, res, next) {
-	Users.findById(req.query.id).exec(function (err, user){
-		if (err) {
-			console.log(err);
-			res.json({error: err.name}, 500);
-		}else{
-			res.setHeader('content-type', user.SecondCardType);
-			res.end(user.SecondCard, "binary");
-		}
-	});
+	if(typeof(req.query.id) !== "undefined"){
+		Users.findById(req.query.id).exec(function (err, user){
+			if (err) {
+				console.log(err);
+				res.json({error: err.name}, 500);
+			}else{
+				res.setHeader('content-type', user.SecondCardType);
+				res.end(user.SecondCard, "binary");
+			}
+		});
+	}else{
+		res.redirect('/');
+	}
 });
 
 router.post('/levelSetter', function(req, res, next) {

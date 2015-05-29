@@ -246,7 +246,8 @@ function autoConfirm(req,res,sorter,lendID){
 								}
 								delete req.body.array;
 								req.body.array=arrayOp;
-								library.confirmToBorrowMessage(true,0,req.body.array.length,null,req,res,true,'/',true);
+								var infoJson={info1:0,info2:0,info3:0,info4:0};
+								library.confirmToBorrowMessage(true,0,req.body.array.length,null,req,res,true,'/',true,infoJson);
 							}
 						}
 					});
