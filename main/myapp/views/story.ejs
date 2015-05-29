@@ -1010,7 +1010,7 @@
 			var trueCnt;
 			
 			if(flag){
-				if((a!='')&&(b!='')&&(c!='')&&(aa>=1)&&(bb>0)&&(cc>=1)&&(cc<=36)){
+				if((a!='')&&(b!='')&&(c!='')&&(aa>=1)&&(bb>0)&&(bb<100)&&(cc>=1)&&(cc<=36)){
 					$("input[name='MoneyToLend']").val(aa);
 					$("input[name='InterestRate']").val(bb);
 					$("input[name='MonthPeriod']").val(cc);
@@ -1187,57 +1187,65 @@
 			}
 			
 			function interestInFutureCalculator(){
-				if(($("input[name='MoneyToLend']").val()!='')&&($("input[name='InterestRate']").val()!='')&&($("input[name='MonthPeriod']").val()!='')){
-					var money=parseInt($("input[name='MoneyToLend']").val());
-					var rate=parseFloat($("input[name='InterestRate']").val())/100/12;
-					var month=parseInt($("input[name='MonthPeriod']").val());
-					
-					var interestFuture=0;
-					var tempMoney=money;
-					var tempMonth=month;
-					for(i=0;i<month;i++){
-						if(tempMoney>0){
-							interestFuture+=Math.round(tempMoney*rate);
-							var monthlyPaid=Math.floor(tempMoney/tempMonth);
-							if(tempMonth>1){
-								tempMoney-=monthlyPaid;
-							}else{
-								tempMoney-=tempMoney;
-							}
-							tempMonth-=1;
-							if(tempMoney<0){
-								tempMoney=0;
+				if(($("input[name='MoneyToLend']").val().trim()!='')&&($("input[name='InterestRate']").val().trim()!='')&&($("input[name='MonthPeriod']").val().trim()!='')){
+					var money=parseInt($("input[name='MoneyToLend']").val().trim());
+					var rate=parseFloat($("input[name='InterestRate']").val().trim());
+					var month=parseInt($("input[name='MonthPeriod']").val().trim());
+					if((!isNaN(month))&&(!isNaN(money))&&(!isNaN(rate))&&(month>=1)&&(month<=36)&&(money>=1)&&(rate>0)&&(rate<100)){
+						rate/=100;
+						rate/=12;
+						var interestFuture=0;
+						var tempMoney=money;
+						var tempMonth=month;
+						for(i=0;i<month;i++){
+							if(tempMoney>0){
+								interestFuture+=Math.round(tempMoney*rate);
+								var monthlyPaid=Math.floor(tempMoney/tempMonth);
+								if(tempMonth>1){
+									tempMoney-=monthlyPaid;
+								}else{
+									tempMoney-=tempMoney;
+								}
+								tempMonth-=1;
+								if(tempMoney<0){
+									tempMoney=0;
+								}
 							}
 						}
-					}
-					var interestFutureDivMoney
-					if(money>0){
-						interestFutureDivMoney=interestFuture/money*100;
+						var interestFutureDivMoney
+						if(money>0){
+							interestFutureDivMoney=interestFuture/money*100;
+						}else{
+							interestFutureDivMoney=0;
+						}
+						var interestFutureMonth;
+						if(month>0){
+							interestFutureMonth=interestFuture/month;
+						}else{
+							interestFutureMonth=0;
+						}
+						var interestFutureMoneyMonth;
+						if(month>0){
+							interestFutureMoneyMonth=(interestFuture+money)/month;
+						}else{
+							interestFutureMoneyMonth=0;
+						}
+						
+						$("#interestFuture").val(interestFuture.toFixed(0));
+						$("#interestFutureMonth").val(interestFutureMonth.toFixed(0));
+						$("#interestFutureMoneyMonth").val(interestFutureMoneyMonth.toFixed(0));
+						$("#interestFutureDivMoney").val(interestFutureDivMoney.toFixed(2));
 					}else{
-						interestFutureDivMoney=0;
-					}
-					var interestFutureMonth;
-					if(month>0){
-						interestFutureMonth=interestFuture/month;
-					}else{
-						interestFutureMonth=0;
-					}
-					var interestFutureMoneyMonth;
-					if(month>0){
-						interestFutureMoneyMonth=(interestFuture+money)/month;
-					}else{
-						interestFutureMoneyMonth=0;
-					}
-					
-					$("#interestFuture").val(interestFuture.toFixed(0));
-					$("#interestFutureMonth").val(interestFutureMonth.toFixed(0));
-					$("#interestFutureMoneyMonth").val(interestFutureMoneyMonth.toFixed(0));
-					$("#interestFutureDivMoney").val(interestFutureDivMoney.toFixed(2));					
+						$("#interestFuture").val('錯誤參數，無法進行試算!');
+						$("#interestFutureMonth").val('錯誤參數，無法進行試算!');
+						$("#interestFutureMoneyMonth").val('錯誤參數，無法進行試算!');
+						$("#interestFutureDivMoney").val('錯誤參數，無法進行試算!');
+					}					
 				}else{
-					$("#interestFuture").val('必要參數未填，無法進行試算!');
-					$("#interestFutureMonth").val('必要參數未填，無法進行試算!');
-					$("#interestFutureMoneyMonth").val('必要參數未填，無法進行試算!');
-					$("#interestFutureDivMoney").val('必要參數未填，無法進行試算!');
+					$("#interestFuture").val('錯誤參數，無法進行試算!');
+					$("#interestFutureMonth").val('錯誤參數，無法進行試算!');
+					$("#interestFutureMoneyMonth").val('錯誤參數，無法進行試算!');
+					$("#interestFutureDivMoney").val('錯誤參數，無法進行試算!');
 				}
 			}
 			
