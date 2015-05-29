@@ -6,7 +6,7 @@
 				<div style="font-size:20pt;">&nbsp;<%=totalResultNum%> result</div>
 				<br>
 				<div class="input-group">
-					<input type="text" style="height:40px;" class="form-control" id="msgKeywordIpt" placeholder="搜尋訊息內容、故事標題或用戶名稱" value="<%=msgKeywordDefault%>" onkeypress="if(event.keyCode==13){ window.open('/lender/lenderSendMessages?msgKeyword='+encodeURIComponent($('#msgKeywordIpt').val())+'&filter='+encodeURIComponent($('#filter0').text())+'&sorter='+encodeURIComponent($('#sorter0').text())+'&page=1','_self');}">
+					<input type="text" style="height:40px;" class="form-control" id="msgKeywordIpt" placeholder="搜尋訊息內容、故事標題或用戶名稱" value="<%=msgKeywordDefault%>" onkeypress="if(event.keyCode==13){ window.open('/lender/lenderSendMessages?msgKeyword='+encodeURIComponent($('#msgKeywordIpt').val().trim())+'&filter='+encodeURIComponent($('#filter0').text())+'&sorter='+encodeURIComponent($('#sorter0').text())+'&page=1','_self');}">
 					<span class="input-group-btn">
 						<div class="btn-group">
 							<button type="button" style="height:40px;" class="btn btn-default dropdown-toggle" data-toggle="dropdown" id="filterSelected">
@@ -34,7 +34,7 @@
 								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter9').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter9">預計利本比最高</a></li>
 							</ul>
 						</div>
-						<button type="button" style="height:40px;" class="btn btn-default" onclick="window.open('/lender/lenderSendMessages?msgKeyword='+encodeURIComponent($('#msgKeywordIpt').val())+'&filter='+encodeURIComponent($('#filter0').text())+'&sorter='+encodeURIComponent($('#sorter0').text())+'&page=1','_self');">Go!</button>
+						<button type="button" style="height:40px;" class="btn btn-default" onclick="window.open('/lender/lenderSendMessages?msgKeyword='+encodeURIComponent($('#msgKeywordIpt').val().trim())+'&filter='+encodeURIComponent($('#filter0').text())+'&sorter='+encodeURIComponent($('#sorter0').text())+'&page=1','_self');">Go!</button>
 					</span>
 				</div> 
 				<br>
@@ -54,11 +54,11 @@
 							<div style="font-size:25px;display:inline;">送往 </div>
 							<div style="font-size:25px;display:inline;" class="myTitle"><%=jsonMessage[i].SendTo.Username%></div>
 							<br>
-							在 <a style="font-size:15px;" href="/lender/story?id=<%=jsonMessage[i].FromBorrowRequest._id%>"><%=jsonMessage[i].FromBorrowRequest.StoryTitle%></a>
+							在 <a style="font-size:15px;" href="/lender/story?id=<%=jsonMessage[i].FromBorrowRequest._id%>"><%-jsonMessage[i].FromBorrowRequest.StoryTitle.replace(new RegExp(' ','g'),'&nbsp;')%></a>
 							<br>
 							<br>
 							<div>
-								<%-jsonMessage[i].Message.replace(new RegExp('\n','g'),'<br>')%>
+								<%-jsonMessage[i].Message.replace(new RegExp('\n','g'),'<br>').replace(new RegExp(' ','g'),'&nbsp;')%>
 							</div>
 						</div>
 						<div class="tab-pane" id="tab2<%=i%>">

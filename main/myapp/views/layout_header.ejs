@@ -63,7 +63,7 @@
 					</ul>
 					<div class="navbar-form navbar-left" role="search">
 						<div class="input-group">
-							<input type="text" style="height:32px;" class="form-control" id="keywordIpt" placeholder="搜尋借入者的名稱或故事標題、內容" value="<%=keywordDefault%>" onkeypress="if(event.keyCode==13){ window.open('/lender/search?keyword='+encodeURIComponent($('#keywordIpt').val())+'&action='+encodeURIComponent($('#searchAction0').text())+'&category='+encodeURIComponent($('#category0').text())+'&filter='+encodeURIComponent('未選擇濾鏡')+'&lbound=&ubound=&page=1','_self');}">
+							<input type="text" style="height:32px;" class="form-control" id="keywordIpt" placeholder="搜尋借入者的名稱或故事標題、內容" value="<%=keywordDefault%>" onkeypress="if(event.keyCode==13){ window.open('/lender/search?keyword='+encodeURIComponent($('#keywordIpt').val().trim())+'&action='+encodeURIComponent($('#searchAction0').text())+'&category='+encodeURIComponent($('#category0').text())+'&filter='+encodeURIComponent('未選擇濾鏡')+'&lbound=&ubound=&page=1','_self');}">
 							<span class="input-group-btn">
 								<div class="btn-group">
 									<button type="button" style="height:32px;" class="btn btn-default dropdown-toggle" data-toggle="dropdown" id="categorySelected">
@@ -91,7 +91,7 @@
 										<li><a href="#" onclick="$('#searchActionSelected').html('');$('#searchActionSelected').html($('#searchAction7').text());$('#searchAction0').html($('#searchActionSelected').text());$('#searchActionSelected').append(' <span class=\'caret\'><\/span>');return false;" id="searchAction7">信用等級最高</a></li>
 									</ul>
 								</div>
-								<button type="button" style="height:32px;" class="btn btn-default" onclick="window.open('/lender/search?keyword='+encodeURIComponent($('#keywordIpt').val())+'&action='+encodeURIComponent($('#searchAction0').text())+'&category='+encodeURIComponent($('#category0').text())+'&filter='+encodeURIComponent('未選擇濾鏡')+'&lbound=&ubound=&page=1','_self');"><span class="glyphicon glyphicon-search"></span></button>
+								<button type="button" style="height:32px;" class="btn btn-default" onclick="window.open('/lender/search?keyword='+encodeURIComponent($('#keywordIpt').val().trim())+'&action='+encodeURIComponent($('#searchAction0').text())+'&category='+encodeURIComponent($('#category0').text())+'&filter='+encodeURIComponent('未選擇濾鏡')+'&lbound=&ubound=&page=1','_self');"><span class="glyphicon glyphicon-search"></span></button>
 							</span>
 						</div>
 					</div>

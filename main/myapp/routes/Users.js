@@ -28,7 +28,7 @@ var express = require('express');
 var router = express.Router();
 
 router.post('/createTest', function(req, res, next) {
-	var temp=sanitizer.sanitize(req.body.Username);
+	var temp=sanitizer.sanitize(req.body.Username.trim());
 	Users.findOne({Username:temp}).exec(function (err, user){
 		if (err) {
 			console.log(err);
@@ -38,15 +38,15 @@ router.post('/createTest', function(req, res, next) {
 				res.redirect('/message?content='+encodeURIComponent('此帳號已存在!'));
 			}else{
 				var toCreate = new Users();
-				toCreate.Username=sanitizer.sanitize(req.body.Username);
-				toCreate.Password=sanitizer.sanitize(req.body.Password);
-				toCreate.Name=sanitizer.sanitize(req.body.Name);
-				toCreate.Email=sanitizer.sanitize(req.body.Email);
-				toCreate.Gender=sanitizer.sanitize(req.body.Gender);
-				toCreate.BirthDay=sanitizer.sanitize(req.body.BirthDay);
-				toCreate.IdCardNumber=sanitizer.sanitize(req.body.IdCardNumber);
-				toCreate.Phone=sanitizer.sanitize(req.body.Phone);
-				toCreate.Address=sanitizer.sanitize(req.body.Address);
+				toCreate.Username=sanitizer.sanitize(req.body.Username.trim());
+				toCreate.Password=sanitizer.sanitize(req.body.Password.trim());
+				toCreate.Name=sanitizer.sanitize(req.body.Name.trim());
+				toCreate.Email=sanitizer.sanitize(req.body.Email.trim());
+				toCreate.Gender=sanitizer.sanitize(req.body.Gender.trim());
+				toCreate.BirthDay=sanitizer.sanitize(req.body.BirthDay.trim());
+				toCreate.IdCardNumber=sanitizer.sanitize(req.body.IdCardNumber.trim());
+				toCreate.Phone=sanitizer.sanitize(req.body.Phone.trim());
+				toCreate.Address=sanitizer.sanitize(req.body.Address.trim());
 				
 				toCreate.IdCardType=req.files.IdCard.mimetype;
 				toCreate.SecondCardType=req.files.SecondCard.mimetype;
@@ -59,9 +59,9 @@ router.post('/createTest', function(req, res, next) {
 						res.redirect('/message?content='+encodeURIComponent('錯誤'));
 					}else{
 						var toCreateInner = new BankAccounts();
-						toCreateInner.BankAccountNumber=sanitizer.sanitize(req.body.BankAccountNumber);
-						toCreateInner.BankAccountPassword=sanitizer.sanitize(req.body.BankAccountPassword);
-						toCreateInner.MoneyInBankAccount=sanitizer.sanitize(req.body.MoneyInBankAccount);
+						toCreateInner.BankAccountNumber=sanitizer.sanitize(req.body.BankAccountNumber.trim());
+						toCreateInner.BankAccountPassword=sanitizer.sanitize(req.body.BankAccountPassword.trim());
+						toCreateInner.MoneyInBankAccount=sanitizer.sanitize(req.body.MoneyInBankAccount.trim());
 						toCreateInner.OwnedBy=newCreate._id;
 				
 						toCreateInner.save(function (err,newCreateInner) {
@@ -119,8 +119,8 @@ router.get('/SecondCard/:id?', function(req, res, next) {
 });
 
 router.post('/levelSetter', function(req, res, next) {
-	Uid=sanitizer.sanitize(req.body.Uid);
-	Level=sanitizer.sanitize(req.body.Level);
+	Uid=sanitizer.sanitize(req.body.Uid.trim());
+	Level=sanitizer.sanitize(req.body.Level.trim());
 	
 	userLevelSetter(res,Uid,Level);
 	//for setting user's level
@@ -133,7 +133,7 @@ router.post('/levelSetter', function(req, res, next) {
 });
 
 router.post('/forgetPW', function(req, res, next) {
-	var temp=sanitizer.sanitize(req.body.Username);
+	var temp=sanitizer.sanitize(req.body.Username.trim());
 	if(temp==''){
 		res.json({response:'請輸入帳號供查詢'});
 	}else{

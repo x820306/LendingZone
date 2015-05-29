@@ -4,7 +4,7 @@ var Schema   = mongoose.Schema;
 var Borrows = new Schema({
 	MoneyToBorrow: { type: Number, default: 0 },//想借多少錢
 	MoneyToBorrowCumulated: { type: Number, default: 0 },//已經借到多少錢，以上前者減後者可得還需要多少錢
-	MaxInterestRateAccepted: { type: Number, default: 0 },
+	MaxInterestRateAccepted: { type: Number, default: 0.01 },
 	MonthPeriodAccepted: { type: Number, default: 1 },
 	TimeLimit: { type: Date, default: Date.now },
 	StoryTitle: { type: String, default:'無標題'},
@@ -43,7 +43,7 @@ var Messages = new Schema({
 	FromBorrowRequest: { type: Schema.Types.ObjectId, ref: 'Borrows' },
 	Message: { type: String, default:'無內容'},
 	MoneyToLend: { type: Number, default: 0 },
-	InterestRate: { type: Number, default: 0 },
+	InterestRate: { type: Number, default: 0.01 },
 	MonthPeriod: { type: Number, default: 1 },
 	Status: { type: String, default:'NotConfirmed' },// 'NotConfirmed' or 'Confirmed' or 'Rejected'
 	Type: {type: String, default:'NoType'},// 'toLend' or 'toBorrow'
@@ -88,7 +88,7 @@ var Transactions = new Schema({
 	Principal: { type: Number, default: 0 },//未還本金
 	PrincipalReturnedCumulated: { type: Number, default: 0 },//已還本金，以上兩者相加可得原始本金
 	InterestCumulated: { type: Number, default: 0 },//已繳利息
-	InterestRate: { type: Number, default: 0 },
+	InterestRate: { type: Number, default: 0.01 },
 	MonthPeriod: { type: Number, default: 1 },//剩下期數
 	MonthPeriodHasPast: { type: Number, default: 0 },//已過期數
 	Level:{ type: Number, default: 0 },//Have to be copied from Messages, for sorting convenience

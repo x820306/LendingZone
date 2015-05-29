@@ -28,6 +28,7 @@ var serviceChargeRate=0.01;
 var ifMail=false;
 var captchaIdfrCtr=0;
 var captchaTextArray=[];
+var captchaTimer=null;
 
 exports.autoComfirmToBorrowMsgArray=autoComfirmToBorrowMsgArray;
 exports.insuranceRate=insuranceRate;
@@ -35,7 +36,14 @@ exports.serviceChargeRate=serviceChargeRate;
 exports.ifMail=ifMail;
 exports.captchaIdfrCtr=captchaIdfrCtr;
 exports.captchaTextArray=captchaTextArray;
-setInterval( function(){exports.captchaTextArray=[];},600000);
+
+exports.setCaptchaTimer = function(){
+	if(captchaTimer){
+		clearInterval(captchaTimer);
+		captchaTimer=null;
+	}
+	captchaTimer=setInterval( function(){exports.captchaTextArray=[];},600000);
+}
 
 exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,req,res,ifAuto,resAddress,ifLenderSide){
 	var FBR;
@@ -233,12 +241,14 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																var maxMonth=parseInt(message.MonthPeriod);
 																var maxRate=parseFloat(message.InterestRate);
 																
-																var nowMoney=parseInt(sanitizer.sanitize(req.body.MoneyToLend));
-																var rate=(parseFloat(sanitizer.sanitize(req.body.InterestRate))/100)+exports.serviceChargeRate;//scr
-																var month=parseInt(sanitizer.sanitize(req.body.MonthPeriod));
+																var nowMoney=parseInt(sanitizer.sanitize(req.body.MoneyToLend.trim()));
+																var rate=(parseFloat(sanitizer.sanitize(req.body.InterestRate.trim()))/100)+exports.serviceChargeRate;//scr
+																var month=parseInt(sanitizer.sanitize(req.body.MonthPeriod.trim()));
 																
-																if((sanitizer.sanitize(req.body.MoneyToLend)=='')||(sanitizer.sanitize(req.body.InterestRate)=='')||(sanitizer.sanitize(req.body.MonthPeriod)=='')){
+																if((sanitizer.sanitize(req.body.MoneyToLend.trim())=='')||(sanitizer.sanitize(req.body.InterestRate.trim())=='')||(sanitizer.sanitize(req.body.MonthPeriod.trim())=='')){
 																	returnSring='必要參數未填!';
+																}else if((isNaN(month))||(isNaN(nowMoney))||(isNaN(rate))){
+																	res.redirect('/message?content='+encodeURIComponent('非數字參數!'));
 																}else if((month<1)||(month>36)||(nowMoney<1)||(rate<=(0+exports.serviceChargeRate))||(rate>=(1+exports.serviceChargeRate))){
 																	returnSring='錯誤參數!';
 																}else if(nowMoney>maxMoney){
@@ -254,9 +264,9 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																}else if(rate>maxRate){
 																	returnSring='超過該訊息期望利率上限!';
 																}else{
-																	finalMoneyToLend=parseInt(sanitizer.sanitize(req.body.MoneyToLend));
-																	finalInterestRate=(parseFloat(sanitizer.sanitize(req.body.InterestRate))/100)+exports.serviceChargeRate;//scr
-																	finalMonthPeriod=parseInt(sanitizer.sanitize(req.body.MonthPeriod));
+																	finalMoneyToLend=parseInt(sanitizer.sanitize(req.body.MoneyToLend.trim()));
+																	finalInterestRate=(parseFloat(sanitizer.sanitize(req.body.InterestRate.trim()))/100)+exports.serviceChargeRate;//scr
+																	finalMonthPeriod=parseInt(sanitizer.sanitize(req.body.MonthPeriod.trim()));
 																}
 															}else{
 																var minRate=parseFloat(lend.InterestRate);

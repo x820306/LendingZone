@@ -5,7 +5,7 @@
 			<table width="100%">
 				<tr>
 					<td style="width:90%;">
-						<div style="font-size:30px;" <%if(json.TitleColor=="default"){%>class="default"<%}else if(json.TitleColor=="color1"){%>class="color1"<%}else if(json.TitleColor=="color3"){%>class="color3"<%}else if(json.TitleColor=="color2"){%>class="color2"<%}else if(json.TitleColor=="color4"){%>class="color4"<%}%>>[<%if(json.Category=='general'){%>一般<%}else if(json.Category=='education'){%>教育<%}else if(json.Category=='family'){%>家庭<%}else if(json.Category=='tour'){%>旅遊<%}%>]&nbsp;&nbsp;<%=json.StoryTitle%></div>
+						<div style="font-size:30px;" <%if(json.TitleColor=="default"){%>class="default"<%}else if(json.TitleColor=="color1"){%>class="color1"<%}else if(json.TitleColor=="color3"){%>class="color3"<%}else if(json.TitleColor=="color2"){%>class="color2"<%}else if(json.TitleColor=="color4"){%>class="color4"<%}%>>[<%if(json.Category=='general'){%>一般<%}else if(json.Category=='education'){%>教育<%}else if(json.Category=='family'){%>家庭<%}else if(json.Category=='tour'){%>旅遊<%}%>]&nbsp;&nbsp;<%-json.StoryTitle.replace(new RegExp(' ','g'),'&nbsp;')%></div>
 						<div style="font-size:20px;"> by <div id="aiteName" style="display:inline;"><%=json.CreatedBy.Username%></div></div>
 					</td>
 					<td align="right">
@@ -44,7 +44,7 @@
             </ul>
             <div class="tab-content my-tab-content">
 				<div class="tab-pane active" id="tab1">
-					<%-json.Story.replace(new RegExp('\n','g'),'<br>')%>
+					<%-json.Story.replace(new RegExp('\n','g'),'<br>').replace(new RegExp(' ','g'),'&nbsp;')%>
 				</div>
 				<div class="tab-pane" id="tab2">
 					<table width="100%" height="275px">
@@ -153,7 +153,7 @@
 						<%for(i=0;i<json.Discussion.length;i++){%>
 							<div style="display:inline;" class="myTitle"><%=json.Discussion[i].CreatedBy.Username%>：</div>
 							<br>
-							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=json.Discussion[i].Content%>
+							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%-json.Discussion[i].Content.replace(new RegExp('\n','g'),'<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;').replace(new RegExp(' ','g'),'&nbsp;')%>
 							<br>
 							<div style="display:inline;" class="myTitle"><%=json.Discussion[i].Updated.getFullYear()%>/<%=json.Discussion[i].Updated.getMonth()+1%>/<%=json.Discussion[i].Updated.getDate()%></div>
 							<br>
@@ -162,14 +162,14 @@
 					</div>
 					<div class="input-group my_discussion_ipt">
 						<%if(!userName){ %>
-							<input style="height:35px;" type="text" placeholder="留言..." class="form-control" onkeypress="if(event.keyCode==13){$('#myModal').modal('show');}">
+							<textarea style="height:35px;" placeholder="留言...Enter送出，Shift+Enter換行" class="form-control" onkeypress="if(event.keyCode==13){$('#myModal').modal('show');}"></textarea>
 							<span class="input-group-btn">
 								<button style="height:35px;" class="btn btn-default" type="button" id="sendButton" data-toggle="modal" data-target="#myModal">
 									<span class="glyphicon glyphicon-comment myTitle2"></span>
 								</button>
 							</span>
 						<% }else{ %>
-							<input id="iptCtr" style="height:35px;" type="text" placeholder="留言..." class="form-control" onkeypress="if(event.keyCode==13){sendComment();}">
+							<textarea id="iptCtr" style="height:35px;" placeholder="留言...Enter送出，Shift+Enter換行" class="form-control" onkeypress="if(event.keyCode==13){if(!event.shiftKey){sendComment();}}"></textarea>
 							<span class="input-group-btn">
 								<button style="height:35px;" onclick="sendComment();" class="btn btn-default" type="button" id="sendButton">
 									<span class="glyphicon glyphicon-comment myTitle2"></span>
@@ -243,9 +243,15 @@
 									<%}%>
 								<%}%>
 							<%}else{%>
-								<button class="btn btn-default disabled">
-										<span class="myTitle2">此故事為您所有</span>
-								</button>
+								<%if(json.IfReadable){ %>
+									<button class="btn btn-default"  data-toggle="modal" data-target="#readableModal">
+										<span class="myTitle2">此故事為您所有，點擊可進行封存</span>
+									</button>
+								<%}else{%>
+									<button class="btn btn-default disabled">
+										<span class="myTitle2">此故事為您所有，且已經封存</span>
+									</button>
+								<%}%>
 							<%}%>
 						<%}%>
 					</td>
@@ -794,7 +800,33 @@
 				</form>
 			<%}%>
 		<%}%>
-	<%}%>		
+	<%}else{%>
+		<%if(json.IfReadable){%>
+			<div class="modal fade" id="readableModal">
+				<div class="modal-dialog modal-sm"">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+							<h4 class="modal-title">再次確認</h4>
+						</div>
+						<div class="modal-body">
+							<br>
+							您確定要封存此借款故事？
+							<br>
+							<br>
+						</div>
+						<div class="modal-footer">
+						<form action="/Borrows/readable" method="post">
+							<input type="hidden" name="borrowID" value="<%=json._id%>">
+							<button type="submit" class="btn btn-danger" onclick="readable();" id="readableBtnID">確定</button>
+							<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+						</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		<%}%>
+	<%}%>
 <%}%>			
 <script>
 	<%if(userName){%>
@@ -853,13 +885,7 @@
 					}
 				});	
 				
-				$('#iptCtr').attr('onkeypress','');
-				$('#iptCtr').attr('readonly','readonly');
-				orig=$('#sendButton').attr('class');
-				if(orig.search(' disabled')<0){
-					orig=orig+' disabled';
-					$('#sendButton').attr('class',orig);
-				}
+				startRenderComments();
 				$.ajax({ 
 					url: '/Discussions/findDiscussions',
 					type: 'POST',
@@ -868,47 +894,87 @@
 					success: function(Jdata) {
 						var origInner;
 						if(Jdata.success){
-							$('#discussionDiv').html('');
-							for(i=0;i<Jdata.result.length;i++){
-								var dateObj=new Date(Jdata.result[i].Updated);
-								var year=dateObj.getFullYear();
-								var month=dateObj.getMonth()+1;
-								var date=dateObj.getDate();
-								$('#discussionDiv').append('<div style="display:inline;" class="myTitle">'+Jdata.result[i].CreatedBy.Username+'：</div><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+Jdata.result[i].Content+'<br><div style="display:inline;" class="myTitle">'+year+'/'+month+'/'+date+'</div><br><br>');
-							}
+							renderComments(Jdata);
 							$('#iptCtr').val('');
-							$('#iptCtr').attr('onkeypress','if(event.keyCode==13){sendComment();}');
-							$('#iptCtr').removeAttr("readonly");
-							origInner=$('#sendButton').attr('class');
-							origInner=origInner.replace(/ disabled/g, '');
-							$('#sendButton').attr('class',origInner);
+							endRenderComments();
 						}else{
 							alert(Jdata.error);
 							$('#iptCtr').val('');
-							$('#iptCtr').attr('onkeypress','if(event.keyCode==13){sendComment();}');
-							$('#iptCtr').removeAttr("readonly");
-							origInner=$('#sendButton').attr('class');
-							origInner=origInner.replace(/ disabled/g, '');
-							$('#sendButton').attr('class',origInner);
+							endRenderComments();
 						}
 					},
 					error: function() {
 						alert('something wrong.');
 						$('#iptCtr').val('');
-						$('#iptCtr').attr('onkeypress','if(event.keyCode==13){sendComment();}');
-						$('#iptCtr').removeAttr("readonly");
-						var origInner=$('#sendButton').attr('class');
-						origInner=origInner.replace(/ disabled/g, '');
-						$('#sendButton').attr('class',origInner);
+						endRenderComments();
 					}
 				});	
 				
 		});
 		
+		function startRenderComments(){
+			$('#iptCtr').attr('onkeypress','');
+			$('#iptCtr').attr('readonly','readonly');
+			var orig=$('#sendButton').attr('class');
+			if(orig.search(' disabled')<0){
+				orig=orig+' disabled';
+				$('#sendButton').attr('class',orig);
+			}
+			$(".actionTa").each(function() {
+				$(this).attr('readonly','readonly');
+			});
+			$(".actionLi").each(function() {
+				orig=$(this).attr('class');
+				if(orig.search(' disabled')<0){
+					orig=orig+' disabled';
+					$(this).attr('class',orig);
+				}
+			});
+			dcFlag=true;
+			ecFlag=true;
+			scFlag=true;
+		}
+		
+		function renderComments(Jdata){
+			var dateObj=new Date(Jdata.date);
+			$('#updatedDate').html(dateObj.getFullYear()+'/'+(dateObj.getMonth()+1)+'/'+dateObj.getDate());
+			$('#discussionDiv').html('');
+			for(i=0;i<Jdata.result.length;i++){
+				var dateObj2=new Date(Jdata.result[i].Updated);
+				var year=dateObj2.getFullYear();
+				var month=dateObj2.getMonth()+1;
+				var date=dateObj2.getDate();
+				if(!Jdata.CreatedByViewer[i]){
+					$('#discussionDiv').append('<div style="display:inline;" class="myTitle">'+Jdata.result[i].CreatedBy.Username+'：</div><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+Jdata.result[i].Content+'<br><div style="display:inline;" class="myTitle">'+year+'/'+month+'/'+date+'</div><br><br>');
+				}else{
+					$('#discussionDiv').append('<table width="95%"><tr><td><div style="display:inline;" class="myTitle">'+Jdata.result[i].CreatedBy.Username+'：</div><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;" id="cntIptDiv'+i+'">'+Jdata.result[i].Content.replace(new RegExp('\n','g'),'<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;').replace(new RegExp(' ','g'),'&nbsp;')+'</div><br><div style="display:inline;" class="myTitle">'+year+'/'+month+'/'+date+'</div></td><td align="right"><div class="btn-group"><button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-pencil myTitle2"></span> <span class="caret myTitle2"></span></button><ul style="width:75px;min-width:75px;" class="dropdown-menu" role="menu"><li class="actionLi"><a href="#" onclick="startEdit('+i+');return false;">編輯</a></li><li class="actionLi"><a href="#" onclick="deleteComment('+i+');return false;">刪除</a></li></ul></div></td></tr></table><input type="hidden" id="hdIpt'+i+'" value="'+Jdata.result[i]._id+'"><input type="hidden" id="hdIpt2'+i+'" value="'+Jdata.result[i].Content+'"><input type="hidden" id="hdIpt3'+i+'" value="'+Jdata.result[i].Content.replace(new RegExp('\n','g'),'<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;').replace(new RegExp(' ','g'),'&nbsp;')+'"><br>');
+				}	
+			}
+		}
+		
+		function endRenderComments(){
+			$('#iptCtr').attr('onkeypress','if(event.keyCode==13){if(!event.shiftKey){sendComment();}}');
+			$('#iptCtr').removeAttr("readonly");
+			var orig=$('#sendButton').attr('class');
+			orig=orig.replace(/ disabled/g, '');
+			$('#sendButton').attr('class',orig);
+			$(".actionTa").each(function() {
+				$(this).removeAttr("readonly");
+			});
+			$(".actionLi").each(function() {
+				orig=$(this).attr('class');
+				orig=orig.replace(/ disabled/g, '');
+				$(this).attr('class',orig);
+			});
+			dcFlag=false;
+			ecFlag=false;
+			scFlag=false;
+		}
+		
 		function checkAndOpenModal(target,cntNumber,cntTail,flag){
-			var a=$("input[name='MoneyToLend']").val();
-			var b=$("input[name='InterestRate']").val();
-			var c=$("input[name='MonthPeriod']").val();
+			var a=$("input[name='MoneyToLend']").val().trim();
+			var b=$("input[name='InterestRate']").val().trim();
+			var c=$("input[name='MonthPeriod']").val().trim();
 			var aa=parseInt(a);
 			var bb=parseFloat(b);
 			var cc=parseInt(c);
@@ -932,61 +998,98 @@
 			}
 		}
 		
-		function sendComment(){
-			if($('#iptCtr').val()!==''){
-				$('#iptCtr').attr('onkeypress','');
-				$('#iptCtr').attr('readonly','readonly');
-				var orig=$('#sendButton').attr('class');
-				if(orig.search(' disabled')<0){
-					orig=orig+' disabled';
-					$('#sendButton').attr('class',orig);
-				}
-				
+		var dcFlag=false;
+		function deleteComment(index){
+			if(!dcFlag){
+				startRenderComments();
 				$.ajax({ 
-						url: '/Discussions/create',
+					url: '/Discussions/destroy',
+					type: 'POST',
+					data:{_id:$('#hdIpt'+index).val()},
+					dataType: 'json',
+					success: function(Jdata) {
+						if(Jdata.success){
+							renderComments(Jdata);
+							endRenderComments();
+						}else{
+							alert(Jdata.error);
+							endRenderComments();
+						}
+					},
+					error: function() {
+						alert('something wrong.');
+						endRenderComments();
+					}
+				});
+			}
+		}
+		
+		function startEdit(index){
+			$('#cntIptDiv'+index).html('<textarea id="actionTa'+index+'" class="actionTa form-control" style="display:inline;width:70%;height:35px;" placeholder="ESC鍵可取消編輯" onkeypress="if(event.keyCode==13){if(!event.shiftKey){editComment('+index+');}}" onkeyup="if(event.keyCode==27){endEdit('+index+');}">'+$('#hdIpt2'+index).val()+'</textarea>');
+		}
+		
+		function endEdit(index){
+			$('#cntIptDiv'+index).html($('#hdIpt3'+index).val());
+		}
+		
+		var ecFlag=false;
+		function editComment(index){
+			if(!ecFlag){
+				if($('#actionTa'+index).val().trim()!=''){
+					startRenderComments();
+					$.ajax({ 
+						url: '/Discussions/edit',
 						type: 'POST',
-						data:{Content:$('#iptCtr').val(),BelongTo:"<%=json._id%>"},
+						data:{_id:$('#hdIpt'+index).val(),Content:$('#actionTa'+index).val()},
 						dataType: 'json',
 						success: function(Jdata) {
-							var origInner;
 							if(Jdata.success){
-								var td=new Date();
-								$('#updatedDate').html(td.getFullYear()+'/'+(td.getMonth()+1)+'/'+td.getDate());
-								$('#discussionDiv').html('');
-								for(i=0;i<Jdata.result.length;i++){
-									var dateObj=new Date(Jdata.result[i].Updated);
-									var year=dateObj.getFullYear();
-									var month=dateObj.getMonth()+1;
-									var date=dateObj.getDate();
-									$('#discussionDiv').append('<div style="display:inline;" class="myTitle">'+Jdata.result[i].CreatedBy.Username+'：</div><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+Jdata.result[i].Content+'<br><div style="display:inline;" class="myTitle">'+year+'/'+month+'/'+date+'</div><br><br>');
-								}
-								$('#discussionDiv').stop().animate({
-								  scrollTop: $("#discussionDiv")[0].scrollHeight
-								}, 800);
-								$('#iptCtr').val('');
-								$('#iptCtr').attr('onkeypress','if(event.keyCode==13){sendComment();}');
-								$('#iptCtr').removeAttr("readonly");
-								origInner=$('#sendButton').attr('class');
-								origInner=origInner.replace(/ disabled/g, '');
-								$('#sendButton').attr('class',origInner);
+								renderComments(Jdata);
+								endRenderComments();
 							}else{
 								alert(Jdata.error);
-								$('#iptCtr').attr('onkeypress','if(event.keyCode==13){sendComment();}');
-								$('#iptCtr').removeAttr("readonly");
-								origInner=$('#sendButton').attr('class');
-								origInner=origInner.replace(/ disabled/g, '');
-								$('#sendButton').attr('class',origInner);
+								endRenderComments();
 							}
 						},
 						error: function() {
 							alert('something wrong.');
-							$('#iptCtr').attr('onkeypress','if(event.keyCode==13){sendComment();}');
-							$('#iptCtr').removeAttr("readonly");
-							var origInner=$('#sendButton').attr('class');
-							origInner=origInner.replace(/ disabled/g, '');
-							$('#sendButton').attr('class',origInner);
+							endRenderComments();
 						}
-				});	
+					});
+				}
+			}
+		}
+		
+		var scFlag=false;
+		function sendComment(){
+			if(!scFlag){
+				if($('#iptCtr').val().trim()!=''){
+					startRenderComments();
+					$.ajax({ 
+							url: '/Discussions/create',
+							type: 'POST',
+							data:{Content:$('#iptCtr').val().trim(),BelongTo:"<%=json._id%>"},
+							dataType: 'json',
+							success: function(Jdata) {
+								var origInner;
+								if(Jdata.success){
+									renderComments(Jdata);
+									$('#discussionDiv').stop().animate({
+									  scrollTop: $("#discussionDiv")[0].scrollHeight
+									}, 800);
+									$('#iptCtr').val('');
+									endRenderComments();
+								}else{
+									alert(Jdata.error);
+									endRenderComments();
+								}
+							},
+							error: function() {
+								alert('something wrong.');
+								endRenderComments();
+							}
+					});	
+				}
 			}
 		}
 
@@ -1004,8 +1107,8 @@
 						dataType: 'json',
 						success: function(Jdata) {
 							if(Jdata.success){
-								var td=new Date();
-								$('#updatedDate').html(td.getFullYear()+'/'+(td.getMonth()+1)+'/'+td.getDate());
+								var dateObj=new Date(Jdata.date);
+								$('#updatedDate').html(dateObj.getFullYear()+'/'+(dateObj.getMonth()+1)+'/'+dateObj.getDate());
 								$('#likeBtn').html('<button class="btn btn-default" onclick="unlike();" id="btnID"><span class="glyphicon glyphicon-remove myTitle2"></span></button>');
 								$('#likeNum').html('&nbsp;'+Jdata.result);
 							}else{
@@ -1037,8 +1140,8 @@
 						dataType: 'json',
 						success: function(Jdata) {
 							if(Jdata.success){
-								var td=new Date();
-								$('#updatedDate').html(td.getFullYear()+'/'+(td.getMonth()+1)+'/'+td.getDate());
+								var dateObj=new Date(Jdata.date);
+								$('#updatedDate').html(dateObj.getFullYear()+'/'+(dateObj.getMonth()+1)+'/'+dateObj.getDate());
 								$('#likeBtn').html('<button class="btn btn-default" onclick="like();" id="btnID"><span class="glyphicon glyphicon-thumbs-up myTitle2"></span></button>');
 								$('#likeNum').html('&nbsp;'+Jdata.result);
 							}else{
@@ -1187,6 +1290,18 @@
 					}
 				<%}%>
 			<%}%>	
+		<%}else{%>
+			<%if(json.IfReadable){ %>
+				function readable(){
+					$('#readableModal').modal('hide');
+					
+					var orig=$('#readableBtnID').attr('class');
+					if(orig.search(' disabled')<0){
+						orig=orig+' disabled';
+						$('#readableBtnID').attr('class',orig);
+					}
+				}
+			<%}%>
 		<%}%>
 	<%}%>
 </script>

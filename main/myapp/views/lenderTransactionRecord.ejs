@@ -188,7 +188,7 @@
 								<div style="font-size:25px;display:inline;">借給 </div>
 								<div style="font-size:25px;display:inline;" class="myTitle"><%=jsonTransaction[i].Borrower.Username%></div>
 								<br>
-								在 <a style="font-size:15px;" href="/lender/story?id=<%=jsonTransaction[i].CreatedFrom.FromBorrowRequest._id%>"><%=jsonTransaction[i].CreatedFrom.FromBorrowRequest.StoryTitle%></a>
+								在 <a style="font-size:15px;" href="/lender/story?id=<%=jsonTransaction[i].CreatedFrom.FromBorrowRequest._id%>"><%-jsonTransaction[i].CreatedFrom.FromBorrowRequest.StoryTitle.replace(new RegExp(' ','g'),'&nbsp;')%></a>
 								<br>
 								<br>
 								<div class="col-md-6">
