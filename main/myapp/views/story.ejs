@@ -1010,7 +1010,7 @@
 			var trueCnt;
 			
 			if(flag){
-				if((a!='')&&(b!='')&&(c!='')&&(aa>=1)&&(bb>0)&&(bb<100)&&(cc>=1)&&(cc<=36)){
+				if((a!='')&&(b!='')&&(c!='')&&(aa>=1)&&(bb>=0.01)&&(bb<=99)&&(cc>=1)&&(cc<=36)){
 					$("input[name='MoneyToLend']").val(aa);
 					$("input[name='InterestRate']").val(bb);
 					$("input[name='MonthPeriod']").val(cc);
@@ -1191,7 +1191,7 @@
 					var money=parseInt($("input[name='MoneyToLend']").val().trim());
 					var rate=parseFloat($("input[name='InterestRate']").val().trim());
 					var month=parseInt($("input[name='MonthPeriod']").val().trim());
-					if((!isNaN(month))&&(!isNaN(money))&&(!isNaN(rate))&&(month>=1)&&(month<=36)&&(money>=1)&&(rate>0)&&(rate<100)){
+					if((!isNaN(month))&&(!isNaN(money))&&(!isNaN(rate))&&(month>=1)&&(month<=36)&&(money>=1)&&(rate>=0.01)&&(rate<=99)){
 						rate/=100;
 						rate/=12;
 						var interestFuture=0;

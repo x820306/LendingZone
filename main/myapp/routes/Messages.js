@@ -106,7 +106,7 @@ function toLendSamePart(res,req,differentPart,outterPara){
 								res.redirect('/message?content='+encodeURIComponent('必要參數未填!'));
 							}else if((isNaN(month))||(isNaN(nowMoney))||(isNaN(rate))){
 								res.redirect('/message?content='+encodeURIComponent('非數字參數!'));
-							}else if((month<1)||(month>36)||(nowMoney<1)||(rate<=(0+library.serviceChargeRate))||(rate>=(1+library.serviceChargeRate))){
+							}else if((month<1)||(month>36)||(nowMoney<1)||(rate<(0.0001+library.serviceChargeRate))||(rate>(0.99+library.serviceChargeRate))){
 								res.redirect('/message?content='+encodeURIComponent('錯誤參數!'));//scr
 							}else if(nowMoney>maxMoney){
 								res.redirect('/message?content='+encodeURIComponent('金額超過您的銀行餘額!'));

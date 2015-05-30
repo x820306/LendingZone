@@ -42,7 +42,7 @@ router.post('/borrowCreate', library.ensureAuthenticated, function(req, res) {
 		res.redirect('/message?content='+encodeURIComponent('必要參數未填!'));
 	}else if((isNaN(month))||(isNaN(nowMoney))||(isNaN(rate))){
 		res.redirect('/message?content='+encodeURIComponent('非數字參數!'));
-	}else if((month<1)||(month>36)||(nowMoney<5000)||(nowMoney>150000)||(rate<=0)||(rate>=1)){
+	}else if((month<1)||(month>36)||(nowMoney<5000)||(nowMoney>150000)||(rate<0.0001)||(rate>0.99)){
 		res.redirect('/message?content='+encodeURIComponent('錯誤參數!'));
 	}else{
 		var toCreate = new Borrows();
