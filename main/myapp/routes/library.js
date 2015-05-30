@@ -252,7 +252,7 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																}else if((isNaN(month))||(isNaN(nowMoney))||(isNaN(rate))){
 																	returnSringNow='非數字參數!';
 																	returnSring=returnSringNow;
-																}else if((month<1)||(month>36)||(nowMoney<1)||(rate<=(0+exports.serviceChargeRate))||(rate>=(1+exports.serviceChargeRate))){
+																}else if((month<1)||(month>36)||(nowMoney<1)||(rate<(0.0001+exports.serviceChargeRate))||(rate>(0.99+exports.serviceChargeRate))){
 																	returnSringNow='錯誤參數!';
 																	returnSring=returnSringNow;
 																}else if(nowMoney>maxMoney){

@@ -74,7 +74,7 @@ function samePart(res,req,differentPart,outterPara){
 					res.redirect('/message?content='+encodeURIComponent('必要參數未填!'));
 				}else if((isNaN(month))||(isNaN(nowMoney))||(isNaN(level))||(isNaN(MinInterestInFuture))||(isNaN(MinInterestInFutureMonth))||(isNaN(MinInterestInFutureMoneyMonth))||(isNaN(rate))||(isNaN(MinInterestInFutureDivMoney))){
 					res.redirect('/message?content='+encodeURIComponent('非數字參數!'));
-				}else if((month<1)||(month>36)||(nowMoney<1)||(level<0)||(MinInterestInFuture<0)||(MinInterestInFutureMonth<0)||(MinInterestInFutureMoneyMonth<0)||(rate<=(0+library.serviceChargeRate))||(rate>=(1+library.serviceChargeRate))||(MinInterestInFutureDivMoney<0)||(MinInterestInFutureDivMoney>=1)){
+				}else if((month<1)||(month>36)||(nowMoney<1)||(level<0)||(MinInterestInFuture<0)||(MinInterestInFutureMonth<0)||(MinInterestInFutureMoneyMonth<0)||(rate<(0.0001+library.serviceChargeRate))||(rate>(0.99+library.serviceChargeRate))||(MinInterestInFutureDivMoney<0)||(MinInterestInFutureDivMoney>0.99)){
 					res.redirect('/message?content='+encodeURIComponent('錯誤參數!'));//scr
 				}else if(nowMoney>maxMoney){
 					res.redirect('/message?content='+encodeURIComponent('超過金額上限!'));
