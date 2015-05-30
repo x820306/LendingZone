@@ -769,15 +769,15 @@ function selectAllFun(){
 		}else{
 			value5=0;
 		}
-		$("#value1").text(value1R.toFixed(0));
-		$("#value2").text(value2R.toFixed(0));
-		$("#value3").text(value3R.toFixed(0));
-		$("#value4").text(value4R.toFixed(0));
+		$("#value1").text(Math.round(value1R).toFixed(0));
+		$("#value2").text(Math.round(value2R).toFixed(0));
+		$("#value3").text(Math.round(value3R).toFixed(0));
+		$("#value4").text(Math.round(value4R).toFixed(0));
 		$("#value1R").text(value1R);
 		$("#value2R").text(value2R);
 		$("#value3R").text(value3R);
 		$("#value4R").text(value4R);
-		$("#value5").text(value5.toFixed(2));
+		$("#value5").text((Math.round(value5*100)/100).toFixed(2));
 	}else{
 		$("input[name='selectCheckBox']").each(function() {
 			$(this).prop("checked", false);
@@ -816,15 +816,15 @@ function selectFun(index){
 		}else{
 			value5=0;
 		}
-		$("#value1").text(value1R.toFixed(0));
-		$("#value2").text(value2R.toFixed(0));
-		$("#value3").text(value3R.toFixed(0));
-		$("#value4").text(value4R.toFixed(0));
+		$("#value1").text(Math.round(value1R).toFixed(0));
+		$("#value2").text(Math.round(value2R).toFixed(0));
+		$("#value3").text(Math.round(value3R).toFixed(0));
+		$("#value4").text(Math.round(value4R).toFixed(0));
 		$("#value1R").text(value1R);
 		$("#value2R").text(value2R);
 		$("#value3R").text(value3R);
 		$("#value4R").text(value4R);
-		$("#value5").text(value5.toFixed(2));
+		$("#value5").text((Math.round(value5*100)/100).toFixed(2));
 		
 		var ctr=0;
 		$("input[name='selectCheckBox']").each(function() {
@@ -845,15 +845,15 @@ function selectFun(index){
 		}else{
 			value5=0;
 		}
-		$("#value1").text(value1R.toFixed(0));
-		$("#value2").text(value2R.toFixed(0));
-		$("#value3").text(value3R.toFixed(0));
-		$("#value4").text(value4R.toFixed(0));
+		$("#value1").text(Math.round(value1R).toFixed(0));
+		$("#value2").text(Math.round(value2R).toFixed(0));
+		$("#value3").text(Math.round(value3R).toFixed(0));
+		$("#value4").text(Math.round(value4R).toFixed(0));
 		$("#value1R").text(value1R);
 		$("#value2R").text(value2R);
 		$("#value3R").text(value3R);
 		$("#value4R").text(value4R);
-		$("#value5").text(value5.toFixed(2));
+		$("#value5").text((Math.round(value5*100)/100).toFixed(2));
 
 		var ctr=0;
 		$("input[name='selectCheckBox']").each(function() {
