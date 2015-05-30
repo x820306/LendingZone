@@ -550,7 +550,7 @@ function selectAllFun(){
 		for(i=0;i<<%=jsonTransaction.length%>;i++){
 			valueR+=parseFloat($("#value1"+i).text());
 		}
-		$("#selectedFee").text(valueR.toFixed(0));
+		$("#selectedFee").text(Math.round(valueR).toFixed(0));
 		$("#selectedFeeR").text(valueR);
 	}else{
 		$("input[name='selectCheckBox']").each(function() {
@@ -568,7 +568,7 @@ function selectFun(index){
 	if($("#selectCheckBoxId"+index).prop("checked"))
 	{
 		valueR+=fee;
-		$("#selectedFee").text(valueR.toFixed(0));
+		$("#selectedFee").text(Math.round(valueR).toFixed(0));
 		$("#selectedFeeR").text(valueR);
 		
 		var ctr=0;
@@ -582,7 +582,7 @@ function selectFun(index){
 		}
 	}else{
 		valueR-=fee;
-		$("#selectedFee").text(valueR.toFixed(0));
+		$("#selectedFee").text(Math.round(valueR).toFixed(0));
 		$("#selectedFeeR").text(valueR);
 
 		var ctr=0;
