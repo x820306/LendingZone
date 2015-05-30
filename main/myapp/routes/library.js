@@ -390,18 +390,18 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																			if(ifRecursive){
 																				ctr++;
 																				if(ctr<ctrTarget){
-																					mailReject(message,newUpdate)
+																					mailReject(message,newUpdate);
 																					
 																					exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,returnSring,req,res,ifAuto,resAddress,ifLenderSide,infoJson);
 																				}else{
-																					mailReject(message,newUpdate)
+																					mailReject(message,newUpdate);
 																					
 																					if(!ifAuto){
 																						res.redirect('/message?content='+encodeURIComponent(returnSring)+'&info1='+encodeURIComponent(infoJson.info1)+'&info2='+encodeURIComponent(infoJson.info2)+'&info3='+encodeURIComponent(infoJson.info3)+'&info4='+encodeURIComponent(infoJson.info4));
 																					}
 																				}
 																			}else{
-																				mailReject(message,newUpdate)
+																				mailReject(message,newUpdate);
 																				
 																				if(!ifAuto){
 																					res.redirect('/message?content='+encodeURIComponent(returnSring));
@@ -744,7 +744,7 @@ exports.rejectMessage=function (ifRecursive,ctr,ctrTarget,returnSring,req,res,if
 										
 										exports.rejectMessage(ifRecursive,ctr,ctrTarget,returnSring,req,res,ifAuto,resAddress);
 									}else{
-										mailReject(message,newUpdate)
+										mailReject(message,newUpdate);
 										
 										if(!ifAuto){
 											if(returnSring){
@@ -755,7 +755,7 @@ exports.rejectMessage=function (ifRecursive,ctr,ctrTarget,returnSring,req,res,if
 										}
 									}
 								}else{
-									mailReject(message,newUpdate)
+									mailReject(message,newUpdate);
 									
 									if(!ifAuto){	
 										res.redirect(resAddress);
@@ -801,7 +801,7 @@ exports.rejectMessageWhenNotReadable=function (res,ifAuto,resAddress,borrowID){
 }
 
 function rejectMessageWhenNotReadableRecursivePart(ctr,ctrTarget,res,ifAuto,resAddress,array,returnSring){
-	Messages.findById(array[ctr].MsgID).exec(function (err, message){
+	Messages.findById(array[ctr].MsgID).populate('CreatedBy', 'Username Email').populate('SendTo', 'Username Email').populate('FromBorrowRequest', 'StoryTitle').exec(function (err, message){
 		if (err) {
 			ctr++;
 			if(ctr<ctrTarget){
@@ -847,8 +847,18 @@ function rejectMessageWhenNotReadableRecursivePart(ctr,ctrTarget,res,ifAuto,resA
 						}else{
 							ctr++;
 							if(ctr<ctrTarget){
+								if(newUpdate.Type==='toBorrow'){
+									mailReject(message,newUpdate);
+								}else if(newUpdate.Type==='toLend'){
+									mailRejectLend(message,newUpdate);
+								}
 								rejectMessageWhenNotReadableRecursivePart(ctr,ctrTarget,res,ifAuto,resAddress,array,returnSring)
 							}else{
+								if(newUpdate.Type==='toBorrow'){
+									mailReject(message,newUpdate);
+								}else if(newUpdate.Type==='toLend'){
+									mailRejectLend(message,newUpdate);
+								}
 								if(!ifAuto){
 									if(returnSring){
 										res.redirect('/message?content='+encodeURIComponent(returnSring));
@@ -1005,6 +1015,40 @@ function mailReject(message,newUpdate){
 			subject:'您婉拒了'+ message.CreatedBy.Username+'先前送來的借款請求!', // Subject line
 			text: '親愛的 '+message.SendTo.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+'您婉拒了 '+message.CreatedBy.Username+' 先前在「'+message.FromBorrowRequest.StoryTitle+'("http://lendingzone.herokuapp.com/lender/story?id='+message.FromBorrowRequest._id+'")」送來的借款請求！'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看:'+String.fromCharCode(10)+'"http://lendingzone.herokuapp.com/lender/lenderReceiveMessages?msgKeyword='+newUpdate._id+'&filter='+encodeURIComponent('已婉拒')+'&sorter='+encodeURIComponent('最新')+'&page=1"', // plaintext body
 			html: '親愛的 '+message.SendTo.Username+' 您好：<br><br>您婉拒了 '+message.CreatedBy.Username+' 先前在「<a href="http://lendingzone.herokuapp.com/lender/story?id='+message.FromBorrowRequest._id+'">'+message.FromBorrowRequest.StoryTitle+'</a>」送來的借款請求！<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://lendingzone.herokuapp.com/lender/lenderReceiveMessages?msgKeyword='+newUpdate._id+'&filter='+encodeURIComponent('已婉拒')+'&sorter='+encodeURIComponent('最新')+'&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看</span></a></td></tr></table>' 
+			// html body
+		};
+		
+		transporter.sendMail(mailOptions2, function(error, info){
+			if(error){
+				console.log(error);
+			}
+		});
+	}
+}
+
+function mailRejectLend(message,newUpdate){
+	if(exports.ifMail){
+		var mailOptions = {
+			from: 'LendingZone <lendingzonesystem@gmail.com>', // sender address
+			to: message.CreatedBy.Username+' <'+message.CreatedBy.Email+'>', // list of receivers
+			subject: message.SendTo.Username+'婉拒了您先前送出的欲借出訊息!', // Subject line
+			text: '親愛的 '+message.CreatedBy.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+message.SendTo.Username+' 婉拒了您先前在「'+message.FromBorrowRequest.StoryTitle+'("http://lendingzone.herokuapp.com/lender/story?id='+message.FromBorrowRequest._id+'")」送出的欲借出訊息！'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看:'+String.fromCharCode(10)+'"http://lendingzone.herokuapp.com/lender/lenderSendMessages?msgKeyword='+newUpdate._id+'&filter='+encodeURIComponent('已被婉拒')+'&sorter='+encodeURIComponent('最新')+'&page=1"', // plaintext body
+			html: '親愛的 '+message.CreatedBy.Username+' 您好：<br><br>'+message.SendTo.Username+' 婉拒了您先前在「<a href="http://lendingzone.herokuapp.com/lender/story?id='+message.FromBorrowRequest._id+'">'+message.FromBorrowRequest.StoryTitle+'</a>」送出的欲借出訊息！<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://lendingzone.herokuapp.com/lender/lenderSendMessages?msgKeyword='+newUpdate._id+'&filter='+encodeURIComponent('已被婉拒')+'&sorter='+encodeURIComponent('最新')+'&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看</span></a></td></tr></table>' 
+			// html body
+		};
+		
+		transporter.sendMail(mailOptions, function(error, info){
+			if(error){
+				console.log(error);
+			}
+		});
+		
+		var mailOptions2 = {
+			from: 'LendingZone <lendingzonesystem@gmail.com>', // sender address
+			to: message.SendTo.Username+' <'+message.SendTo.Email+'>', // list of receivers
+			subject:'您婉拒了'+ message.CreatedBy.Username+'先前送來的欲借出訊息!', // Subject line
+			text: '親愛的 '+message.SendTo.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+'您婉拒了 '+message.CreatedBy.Username+' 先前在「'+message.FromBorrowRequest.StoryTitle+'("http://lendingzone.herokuapp.com/lender/story?id='+message.FromBorrowRequest._id+'")」送來的欲借出訊息！'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看:'+String.fromCharCode(10)+'"http://lendingzone.herokuapp.com/lender/lenderSendMessages?msgKeyword='+newUpdate._id+'&filter='+encodeURIComponent('已被婉拒')+'&sorter='+encodeURIComponent('最新')+'&page=1"', // plaintext body
+			html: '親愛的 '+message.SendTo.Username+' 您好：<br><br>您婉拒了 '+message.CreatedBy.Username+' 先前在「<a href="http://lendingzone.herokuapp.com/lender/story?id='+message.FromBorrowRequest._id+'">'+message.FromBorrowRequest.StoryTitle+'</a>」送來的欲借出訊息！<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://lendingzone.herokuapp.com/lender/lenderSendMessages?msgKeyword='+newUpdate._id+'&filter='+encodeURIComponent('已被婉拒')+'&sorter='+encodeURIComponent('最新')+'&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看</span></a></td></tr></table>' 
 			// html body
 		};
 		
