@@ -163,55 +163,59 @@ router.get('/signupExample2',library.ensureAuthenticated,library.newMsgChecker, 
 });
 
 function userCreator(req,res,callback){
-	var temp=sanitizer.sanitize(req.body.Username.trim());
-	Users.findOne({Username:temp}).exec(function (err, user){
-		if (err) {
-			console.log(err);
-			res.redirect('/message?content='+encodeURIComponent('錯誤'));
-		}else{
-			if(user){
-				res.redirect('/message?content='+encodeURIComponent('此帳號已存在!'));
+	if((sanitizer.sanitize(req.body.Username.trim())!='')&&(sanitizer.sanitize(req.body.Password.trim())!='')&&(sanitizer.sanitize(req.body.Name.trim())!='')&&(sanitizer.sanitize(req.body.Email.trim())!='')&&(sanitizer.sanitize(req.body.Gender.trim())!='')&&(sanitizer.sanitize(req.body.BirthDay.trim())!='')&&(sanitizer.sanitize(req.body.IdCardNumber.trim())!='')&&(sanitizer.sanitize(req.body.Phone.trim())!='')&&(sanitizer.sanitize(req.body.Address.trim())!='')&&(sanitizer.sanitize(req.body.IdCardType.trim())!='')&&(sanitizer.sanitize(req.body.SecondCardType.trim())!='')&&(req.body.IdCard!='')&&(req.body.SecondCard!='')&&(sanitizer.sanitize(req.body.BankAccountNumber.trim())!='')&&(sanitizer.sanitize(req.body.BankAccountPassword.trim())!='')){
+		var temp=sanitizer.sanitize(req.body.Username.trim());
+		Users.findOne({Username:temp}).exec(function (err, user){
+			if (err) {
+				console.log(err);
+				res.redirect('/message?content='+encodeURIComponent('錯誤'));
 			}else{
-				var toCreate = new Users();
-				toCreate.Username=sanitizer.sanitize(req.body.Username.trim());
-				toCreate.Password=sanitizer.sanitize(req.body.Password.trim());
-				toCreate.Name=sanitizer.sanitize(req.body.Name.trim());
-				toCreate.Email=sanitizer.sanitize(req.body.Email.trim());
-				toCreate.Gender=sanitizer.sanitize(req.body.Gender.trim());
-				toCreate.BirthDay=sanitizer.sanitize(req.body.BirthDay.trim());
-				toCreate.IdCardNumber=sanitizer.sanitize(req.body.IdCardNumber.trim());
-				toCreate.Phone=sanitizer.sanitize(req.body.Phone.trim());
-				toCreate.Address=sanitizer.sanitize(req.body.Address.trim());
-				
-				toCreate.IdCardType=req.body.IdCardType;
-				toCreate.SecondCardType=req.body.SecondCardType;
-				toCreate.IdCard=new Buffer(req.body.IdCard, 'base64');
-				toCreate.SecondCard=new Buffer(req.body.SecondCard, 'base64');
-				
-				toCreate.save(function (err,newCreate) {
-					if (err){
-						console.log(err);
-						res.redirect('/message?content='+encodeURIComponent('錯誤'));
-					}else{
-						var toCreateInner = new BankAccounts();
-						toCreateInner.BankAccountNumber=sanitizer.sanitize(req.body.BankAccountNumber.trim());
-						toCreateInner.BankAccountPassword=sanitizer.sanitize(req.body.BankAccountPassword.trim());
-						toCreateInner.MoneyInBankAccount=500000;
-						toCreateInner.OwnedBy=newCreate._id;
-				
-						toCreateInner.save(function (err,newCreateInner) {
-							if (err){
-								console.log(err);
-								res.redirect('/message?content='+encodeURIComponent('錯誤'));
-							}else{
-								callback();
-							}
-						});
-					}
-				});
+				if(user){
+					res.redirect('/message?content='+encodeURIComponent('此帳號已存在!'));
+				}else{
+					var toCreate = new Users();
+					toCreate.Username=sanitizer.sanitize(req.body.Username.trim());
+					toCreate.Password=sanitizer.sanitize(req.body.Password.trim());
+					toCreate.Name=sanitizer.sanitize(req.body.Name.trim());
+					toCreate.Email=sanitizer.sanitize(req.body.Email.trim());
+					toCreate.Gender=sanitizer.sanitize(req.body.Gender.trim());
+					toCreate.BirthDay=sanitizer.sanitize(req.body.BirthDay.trim());
+					toCreate.IdCardNumber=sanitizer.sanitize(req.body.IdCardNumber.trim());
+					toCreate.Phone=sanitizer.sanitize(req.body.Phone.trim());
+					toCreate.Address=sanitizer.sanitize(req.body.Address.trim());
+					
+					toCreate.IdCardType=sanitizer.sanitize(req.body.IdCardType.trim());
+					toCreate.SecondCardType=sanitizer.sanitize(req.body.SecondCardType.trim());
+					toCreate.IdCard=new Buffer(req.body.IdCard, 'base64');
+					toCreate.SecondCard=new Buffer(req.body.SecondCard, 'base64');
+					
+					toCreate.save(function (err,newCreate) {
+						if (err){
+							console.log(err);
+							res.redirect('/message?content='+encodeURIComponent('錯誤'));
+						}else{
+							var toCreateInner = new BankAccounts();
+							toCreateInner.BankAccountNumber=sanitizer.sanitize(req.body.BankAccountNumber.trim());
+							toCreateInner.BankAccountPassword=sanitizer.sanitize(req.body.BankAccountPassword.trim());
+							toCreateInner.MoneyInBankAccount=500000;
+							toCreateInner.OwnedBy=newCreate._id;
+					
+							toCreateInner.save(function (err,newCreateInner) {
+								if (err){
+									console.log(err);
+									res.redirect('/message?content='+encodeURIComponent('錯誤'));
+								}else{
+									callback();
+								}
+							});
+						}
+					});
+				}
 			}
-		}
-	});
+		});
+	}else{
+		res.redirect('/message?content='+encodeURIComponent('資料填寫不全！'));
+	}
 }
 
 module.exports = router;
