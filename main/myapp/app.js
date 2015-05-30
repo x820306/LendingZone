@@ -143,7 +143,7 @@ app.post('/login',captchaChecker, passport.authenticate('local', { failureRedire
 	var subString=stringArray[stringArray.length-1];
 	var subStringArray=subString.split('?');
 	var target=subStringArray[0];
-	if(target=='message'){
+	if((target=='message')||(target=='borrowCreate')||(target=='readable')||(target=='buyInsurance')||(target=='rejectToBorrowMessageInStory')||(target=='confirmToBorrowMessageInStory')||(target=='rejectToBorrowMessageInLRM')||(target=='confirmToBorrowMessageInLRM')||(target=='toLendCreate')||(target=='toLendUpdate')||(target=='destroy')||(target=='create')||(target=='update')){
 		res.redirect('/');
 	}else{
 		res.redirect(req.get('referer'));
