@@ -98,10 +98,14 @@ router.get('/search/:keyword?/:action?/:category?/:filter?/:lbound?/:ubound?/:pa
 			andFindCmdAry.push(jsonTemp);
 		}
 		
-		var reg=new RegExp(keyword,'i');
+		var stringArray=keyword.replace(/\s\s+/g,' ').split(' ');
+		var kewwordArray=[];
+		for(i=0;i<stringArray.length;i++){
+			kewwordArray.push(new RegExp(stringArray[i],'i'));
+		}
 		var keyObjID=null;
-		if(mongoose.Types.ObjectId.isValid(keyword)){
-			keyObjID=mongoose.Types.ObjectId(keyword);
+		if(mongoose.Types.ObjectId.isValid(stringArray[0])){
+			keyObjID=mongoose.Types.ObjectId(stringArray[0]);
 		}
 		
 		var Borrows  = mongoose.model('Borrows');
@@ -119,22 +123,45 @@ router.get('/search/:keyword?/:action?/:category?/:filter?/:lbound?/:ubound?/:pa
 				}else{
 					for(j=borrows.length-1;j>-1;j--){
 						var localFlag=[];
+						var ctr;
 						localFlag[0]=false;
 						localFlag[1]=false;
 						localFlag[2]=false;
 						localFlag[3]=false;
+						
 						if(keyObjID){
 							if(keyObjID.equals(borrows[j]._id)){
 								localFlag[0]=true;
 							}
 						}
-						if(borrows[j].StoryTitle.search(reg)>-1){
+						
+						ctr=0;
+						for(k=0;k<kewwordArray.length;k++){
+							if(borrows[j].StoryTitle.search(kewwordArray[k])>-1){
+								ctr++;
+							}
+						}
+						if(ctr==kewwordArray.length){
 							localFlag[1]=true;
 						}
-						if(borrows[j].Story.search(reg)>-1){
+						
+						ctr=0;
+						for(k=0;k<kewwordArray.length;k++){
+							if(borrows[j].Story.search(kewwordArray[k])>-1){
+								ctr++;
+							}
+						}
+						if(ctr==kewwordArray.length){
 							localFlag[2]=true;
 						}
-						if(borrows[j].CreatedBy.Username.search(reg)>-1){
+						
+						ctr=0;
+						for(k=0;k<kewwordArray.length;k++){
+							if(borrows[j].CreatedBy.Username.search(kewwordArray[k])>-1){
+								ctr++;
+							}
+						}
+						if(ctr==kewwordArray.length){
 							localFlag[3]=true;
 						}
 						
@@ -775,10 +802,14 @@ router.get('/lenderSendMessages/:msgKeyword?/:filter?/:sorter?/:page?', library.
 			sorterRec="-Updated";
 		}
 		
-		var reg=new RegExp(msgKeyword,'i');
+		var stringArray=msgKeyword.replace(/\s\s+/g,' ').split(' ');
+		var kewwordArray=[];
+		for(i=0;i<stringArray.length;i++){
+			kewwordArray.push(new RegExp(stringArray[i],'i'));
+		}
 		var msgObjID=null;
-		if(mongoose.Types.ObjectId.isValid(msgKeyword)){
-			msgObjID=mongoose.Types.ObjectId(msgKeyword);
+		if(mongoose.Types.ObjectId.isValid(stringArray[0])){
+			msgObjID=mongoose.Types.ObjectId(stringArray[0]);
 		}
 		
 		var Messages  = mongoose.model('Messages');
@@ -846,22 +877,45 @@ router.get('/lenderSendMessages/:msgKeyword?/:filter?/:sorter?/:page?', library.
 					
 					for(j=messages.length-1;j>-1;j--){
 						var localFlag=[];
+						var ctr;
 						localFlag[0]=false;
 						localFlag[1]=false;
 						localFlag[2]=false;
 						localFlag[3]=false;
+						
 						if(msgObjID){
 							if(msgObjID.equals(messages[j]._id)){
 								localFlag[0]=true;
 							}
 						}
-						if(messages[j].Message.search(reg)>-1){
+						
+						ctr=0;
+						for(k=0;k<kewwordArray.length;k++){
+							if(messages[j].Message.search(kewwordArray[k])>-1){
+								ctr++;
+							}
+						}
+						if(ctr==kewwordArray.length){
 							localFlag[1]=true;
 						}
-						if(messages[j].FromBorrowRequest.StoryTitle.search(reg)>-1){
+						
+						ctr=0;
+						for(k=0;k<kewwordArray.length;k++){
+							if(messages[j].FromBorrowRequest.StoryTitle.search(kewwordArray[k])>-1){
+								ctr++;
+							}
+						}
+						if(ctr==kewwordArray.length){
 							localFlag[2]=true;
 						}
-						if(messages[j].SendTo.Username.search(reg)>-1){
+						
+						ctr=0;
+						for(k=0;k<kewwordArray.length;k++){
+							if(messages[j].SendTo.Username.search(kewwordArray[k])>-1){
+								ctr++;
+							}
+						}
+						if(ctr==kewwordArray.length){
 							localFlag[3]=true;
 						}
 						
@@ -952,10 +1006,14 @@ router.get('/lenderReceiveMessages/:msgKeyword?/:filter?/:sorter?/:page?', libra
 			sorterRec="-Updated";
 		}
 		
-		var reg=new RegExp(msgKeyword,'i');
+		var stringArray=msgKeyword.replace(/\s\s+/g,' ').split(' ');
+		var kewwordArray=[];
+		for(i=0;i<stringArray.length;i++){
+			kewwordArray.push(new RegExp(stringArray[i],'i'));
+		}
 		var msgObjID=null;
-		if(mongoose.Types.ObjectId.isValid(msgKeyword)){
-			msgObjID=mongoose.Types.ObjectId(msgKeyword);
+		if(mongoose.Types.ObjectId.isValid(stringArray[0])){
+			msgObjID=mongoose.Types.ObjectId(stringArray[0]);
 		}
 		
 		var Lends = mongoose.model('Lends');
@@ -1024,22 +1082,45 @@ router.get('/lenderReceiveMessages/:msgKeyword?/:filter?/:sorter?/:page?', libra
 					
 					for(j=messages.length-1;j>-1;j--){
 						var localFlag=[];
+						var ctr;
 						localFlag[0]=false;
 						localFlag[1]=false;
 						localFlag[2]=false;
 						localFlag[3]=false;
+						
 						if(msgObjID){
 							if(msgObjID.equals(messages[j]._id)){
 								localFlag[0]=true;
 							}
 						}
-						if(messages[j].Message.search(reg)>-1){
+						
+						ctr=0;
+						for(k=0;k<kewwordArray.length;k++){
+							if(messages[j].Message.search(kewwordArray[k])>-1){
+								ctr++;
+							}
+						}
+						if(ctr==kewwordArray.length){
 							localFlag[1]=true;
 						}
-						if(messages[j].FromBorrowRequest.StoryTitle.search(reg)>-1){
+						
+						ctr=0;
+						for(k=0;k<kewwordArray.length;k++){
+							if(messages[j].FromBorrowRequest.StoryTitle.search(kewwordArray[k])>-1){
+								ctr++;
+							}
+						}
+						if(ctr==kewwordArray.length){
 							localFlag[2]=true;
 						}
-						if(messages[j].CreatedBy.Username.search(reg)>-1){
+						
+						ctr=0;
+						for(k=0;k<kewwordArray.length;k++){
+							if(messages[j].CreatedBy.Username.search(kewwordArray[k])>-1){
+								ctr++;
+							}
+						}
+						if(ctr==kewwordArray.length){
 							localFlag[3]=true;
 						}
 						
