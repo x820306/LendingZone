@@ -1,6 +1,8 @@
 var mongoose = require( 'mongoose' );
 var async = require( 'async' );
 var Schema   = mongoose.Schema;
+var bcrypt = require('bcrypt');
+var SALT_WORK_FACTOR = 10;
 
 var Borrows = new Schema({
 	MoneyToBorrow: { type: Number, default: 0 },//想借多少錢
@@ -57,8 +59,8 @@ var Messages = new Schema({
 });
 
 var Users = new Schema({
-    Username: { type: String},
-	Password: { type: String},
+    Username: { type: String, required: true, index: { unique: true } },
+	Password: { type: String, required: true},
 	Name: { type: String},
 	Email: { type: String},
 	Gender: { type: String},
@@ -73,7 +75,9 @@ var Users = new Schema({
 	Level: { type: Number, default: 0 },
 	MaxTotalMoneyCanBorrow: { type: Number, default: 0 },
 	Updated: { type: Date, default: Date.now },
-	Created: { type: Date, default: Date.now }
+	Created: { type: Date, default: Date.now },
+	resetPasswordToken: { type: String},
+	resetPasswordExpires: { type: Date}
 });
 
 var BankAccounts = new Schema({
@@ -204,6 +208,43 @@ Borrows.pre('remove', function (next) {
 	});	
 });
 mongoose.model( 'Borrows', Borrows );
+
+Users.pre('save', function(next) {
+    var user = this;
+
+    // only hash the password if it has been modified (or is new)
+    if (!user.isModified('Password')){
+		return next();
+	}else{
+		// generate a salt
+		bcrypt.genSalt(SALT_WORK_FACTOR, function(err, salt) {
+			if (err){
+				return next(err);
+			}else{
+				// hash the password along with our new salt
+				bcrypt.hash(user.Password, salt, function(err, hash) {
+					if (err){
+						return next(err);
+					}else{
+						// override the cleartext password with the hashed one
+						user.Password = hash;
+						next();
+					}
+				});
+			}
+		});
+	}
+});
+
+Users.methods.comparePassword = function(candidatePassword, cb) {
+    bcrypt.compare(candidatePassword, this.Password, function(err, isMatch) {
+        if (err){
+			return cb(err);
+		}else{
+			cb(null, isMatch);
+		}
+    });
+};
 
 mongoose.model( 'Users', Users );
 mongoose.model( 'Lends', Lends );

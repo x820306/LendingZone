@@ -1,3 +1,104 @@
 <%- include('layout_header',{nav_cur:'profile',actionDefault:'最新',keywordDefault:'',categoryDefault:'不分類'}); -%>
-
+<div class="container">
+	<div class="row">
+		<center>
+			<form enctype="multipart/form-data" method="post" action="/signup/changeData" onsubmit="disableButton();">
+				<h3>查看/修改個人資料<br></h3>
+				<table class="table table-hover myTbody" style="width:70%">
+				<tr>
+					<td align = "right" style = "width:15%">姓名</td>
+					<td><input type="text" class="form-control" id="nameIpt" name="Name" placeholder="姓名" required="required" value="<%=user.Name%>"></td>
+				</tr>
+				<tr>
+					<td align = "right" style = "width:15%">性別</td>
+					<td><label class="radio-inline">
+					<input type="radio" name="Gender" id="inlineRadio1" value="Male" required="required"<%if(user.Gender=='Male'){%> checked="true"<%}%>> 男性</label>
+					<label class="radio-inline">
+					<input type="radio" name="Gender" id="inlineRadio2" value="Female" required="required"<%if(user.Gender=='Female'){%> checked="true"<%}%>> 女性</label></td>
+				</tr>
+				<tr>
+					<td align = "right" style = "width:15%">生日</td>
+					<td><input type="date" class="form-control" id="birthIpt" name="BirthDay" placeholder="生日" required="required" value="<%=user.BirthDay.getFullYear()%>-<%if(user.BirthDay.getMonth()<9){%>0<%}%><%=user.BirthDay.getMonth()+1%>-<%if(user.BirthDay.getDate()<10){%>0<%}%><%=user.BirthDay.getDate()%>"></td>
+				</tr>
+				<tr>
+					<td align = "right" style = "width:15%">身分證字號</td>
+					<td><input type="text" class="form-control" id="ssnIpt" name="IdCardNumber" placeholder="身分證字號" required="required" value="<%=user.IdCardNumber%>"></td>
+				</tr>
+				<tr>
+					<td align = "right" style="width:15%">身分證圖檔</td>
+					<td>
+						<table>
+							<tr>
+								<td>
+									<img style="width:100%;max-width:120px;" src="/Users/IdCard?id=<%=user._id%>">
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<br>
+									<input type="file" id="ssnImg" name="IdCard" accept="image/*">
+									<p class="help-block">如您需要修改請重新選擇檔案</p>
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<td align = "right" style = "width:15%">第二證件圖檔</td>
+					<td>
+						<table>
+							<tr>
+								<td>
+									<img style="width:100%;max-width:120px;" src="/Users/SecondCard?id=<%=user._id%>">
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<br>
+									<input type="file" id="cerImg" name="SecondCard" accept="image/*">
+									<p class="help-block">如您需要修改請重新選擇檔案</p>
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<td align = "right" style = "width:15%">行動電話</td>
+					<td><input type="text" class="form-control" id="telIpt" name="Phone" placeholder="行動電話" required="required" value="<%=user.Phone%>"></td>
+				</tr>
+				<tr>
+					<td align = "right" style = "width:15%">E-mail</td>
+					<td><input type="email" class="form-control" id="emailIpt" name="Email" placeholder="E-mail" required="required" value="<%=user.Email%>"></td>
+				</tr>
+				<tr>
+					<td align = "right" style = "width:15%">住址</td>
+					<td><input type="text" class="form-control" id="addrIpt" name="Address" placeholder="住址" required="required" value="<%=user.Address%>"></td>
+				</tr>
+				<tr>
+					<td align = "right" style = "width:15%">卡片卡號</td>
+					<td><input type="text" class="form-control" id="cardIpt" name="BankAccountNumber" placeholder="欲使用卡片之卡號" required="required" value="<%=account.BankAccountNumber%>"></td>
+				</tr>
+				<tr>
+					<td align = "right" style = "width:15%">卡片密碼</td>
+					<td><input type="password" class="form-control" id="cardPwdIpt" name="BankAccountPassword" placeholder="卡片密碼" required="required" value="<%=account.BankAccountPassword%>"></td>
+				</tr>
+				</table>
+				<div class="btn-toolbar" role="toolbar" style = "margin-top: 10px;">
+					<button type="submit" class="btn btn-primary btn-lg" id="sbmtBtn">
+					  <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> 更新
+					</button>
+				</div>
+			</form>		
+		</center>
+	</div>
+</div>
+<script>
+	function disableButton(){
+		var orig=$('#sbmtBtn').attr('class');
+		if(orig.search(' disabled')<0){
+			orig=orig+' disabled';
+			$('#sbmtBtn').attr('class',orig);
+		}
+	}
+</script>
 <%- include('layout_footer',{imgSettingCode:"var ifLoadedCount=0;",imgDrawingCode:""}); -%>
