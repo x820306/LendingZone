@@ -227,25 +227,29 @@ router.post('/forgetPW', function(req, res, next) {
 });
 
 router.get('/resetPWpage/:token?', library.newMsgChecker, function(req, res, next) {
-	var auRst=null;
-	if(req.isAuthenticated()){
-		auRst=req.user.Username;
-	}
-	Users.findOne({ resetPasswordToken: req.query.token, resetPasswordExpires: { $gt: Date.now() } }, function(err, user) {
-		if(err){
-			res.redirect('/message?content='+encodeURIComponent('錯誤!'));
-		}else{
-			if (!user) {
-				res.redirect('/message?content='+encodeURIComponent('token過期或無效！!'));
-			}else{
-				res.render('resetPWpage',{newlrmNum: req.newlrmNumber,newlsmNum: req.newlsmNumber,userName: auRst,tk:req.query.token});
-			}
+	if(typeof(req.query.token) !== "undefined"){
+		var auRst=null;
+		if(req.isAuthenticated()){
+			auRst=req.user.Username;
 		}
-	});
+		Users.findOne({ resetPasswordToken: req.query.token, resetPasswordExpires: { $gt: Date.now() } }, function(err, user) {
+			if(err){
+				res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+			}else{
+				if (!user) {
+					res.redirect('/message?content='+encodeURIComponent('token過期或無效！!'));
+				}else{
+					res.render('resetPWpage',{newlrmNum: req.newlrmNumber,newlsmNum: req.newlsmNumber,userName: auRst,tk:req.query.token});
+				}
+			}
+		});
+	}else{
+		res.redirect('/');
+	}
 });
 
 router.post('/resetPW', function(req, res, next) {
-	Users.findOne({ resetPasswordToken: req.body.Token, resetPasswordExpires: { $gt: Date.now() } }, function(err, user) {
+	Users.findOne({ resetPasswordToken: sanitizer.sanitize(req.body.Token.trim()), resetPasswordExpires: { $gt: Date.now() } }, function(err, user) {
 		if(err){
 			console.log(err);
 			res.redirect('/message?content='+encodeURIComponent('錯誤!'));
@@ -253,17 +257,21 @@ router.post('/resetPW', function(req, res, next) {
 			if (!user) {
 				res.redirect('/message?content='+encodeURIComponent('token過期或無效！!'));
 			}else{
-				user.Password = req.body.Password;
-				user.resetPasswordToken = undefined;
-				user.resetPasswordExpires = undefined;
-				user.save(function (err,newUpdated){
-					if (err){
-						console.log(err);
-						res.redirect('/message?content='+encodeURIComponent('錯誤!'));
-					}else{
-						res.redirect('/message?content='+encodeURIComponent('您的密碼已重設成功!'));
-					}
-				});
+				if(sanitizer.sanitize(req.body.Password.trim())!=''){
+					user.Password = sanitizer.sanitize(req.body.Password.trim());;
+					user.resetPasswordToken = undefined;
+					user.resetPasswordExpires = undefined;
+					user.save(function (err,newUpdated){
+						if (err){
+							console.log(err);
+							res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+						}else{
+							res.redirect('/message?content='+encodeURIComponent('您的密碼已重設成功!'));
+						}
+					});
+				}else{
+					res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+				}
 			}
 		}
 	});
