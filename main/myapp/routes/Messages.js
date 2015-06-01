@@ -458,10 +458,14 @@ router.get('/rejectToBorrowMessageInLRMall/:msgKeyword?/:sorter?', library.ensur
 			sorterRec="-Updated";
 		}
 		
-		var reg=new RegExp(msgKeyword,'i');
+		var stringArray=msgKeyword.replace(/\s\s+/g,' ').split(' ');
+		var kewwordArray=[];
+		for(i=0;i<stringArray.length;i++){
+			kewwordArray.push(new RegExp(stringArray[i],'i'));
+		}
 		var msgObjID=null;
-		if(mongoose.Types.ObjectId.isValid(msgKeyword)){
-			msgObjID=mongoose.Types.ObjectId(msgKeyword);
+		if(mongoose.Types.ObjectId.isValid(stringArray[0])){
+			msgObjID=mongoose.Types.ObjectId(stringArray[0]);
 		}
 		
 		Messages.find({$and:[{"SendTo": req.user._id},{"Type": "toBorrow"},{"Status": "NotConfirmed"}]}).populate('CreatedBy', 'Username').populate('FromBorrowRequest', 'StoryTitle').sort(sorterRec).exec(function (err, messages){
@@ -506,22 +510,45 @@ router.get('/rejectToBorrowMessageInLRMall/:msgKeyword?/:sorter?', library.ensur
 					
 					for(j=messages.length-1;j>-1;j--){
 						var localFlag=[];
+						var ctr;
 						localFlag[0]=false;
 						localFlag[1]=false;
 						localFlag[2]=false;
 						localFlag[3]=false;
+						
 						if(msgObjID){
 							if(msgObjID.equals(messages[j]._id)){
 								localFlag[0]=true;
 							}
 						}
-						if(messages[j].Message.search(reg)>-1){
+						
+						ctr=0;
+						for(k=0;k<kewwordArray.length;k++){
+							if(messages[j].Message.search(kewwordArray[k])>-1){
+								ctr++;
+							}
+						}
+						if(ctr==kewwordArray.length){
 							localFlag[1]=true;
 						}
-						if(messages[j].FromBorrowRequest.StoryTitle.search(reg)>-1){
+						
+						ctr=0;
+						for(k=0;k<kewwordArray.length;k++){
+							if(messages[j].FromBorrowRequest.StoryTitle.search(kewwordArray[k])>-1){
+								ctr++;
+							}
+						}
+						if(ctr==kewwordArray.length){
 							localFlag[2]=true;
 						}
-						if(messages[j].CreatedBy.Username.search(reg)>-1){
+						
+						ctr=0;
+						for(k=0;k<kewwordArray.length;k++){
+							if(messages[j].CreatedBy.Username.search(kewwordArray[k])>-1){
+								ctr++;
+							}
+						}
+						if(ctr==kewwordArray.length){
 							localFlag[3]=true;
 						}
 						
@@ -574,10 +601,14 @@ router.get('/confirmToBorrowMessageInLRMall/:msgKeyword?/:sorter?', library.ensu
 			sorterRec="-Updated";
 		}
 		
-		var reg=new RegExp(msgKeyword,'i');
+		var stringArray=msgKeyword.replace(/\s\s+/g,' ').split(' ');
+		var kewwordArray=[];
+		for(i=0;i<stringArray.length;i++){
+			kewwordArray.push(new RegExp(stringArray[i],'i'));
+		}
 		var msgObjID=null;
-		if(mongoose.Types.ObjectId.isValid(msgKeyword)){
-			msgObjID=mongoose.Types.ObjectId(msgKeyword);
+		if(mongoose.Types.ObjectId.isValid(stringArray[0])){
+			msgObjID=mongoose.Types.ObjectId(stringArray[0]);
 		}
 		
 		Messages.find({$and:[{"SendTo": req.user._id},{"Type": "toBorrow"},{"Status": "NotConfirmed"}]}).populate('CreatedBy', 'Username').populate('FromBorrowRequest', 'StoryTitle').sort(sorterRec).exec(function (err, messages){
@@ -622,22 +653,45 @@ router.get('/confirmToBorrowMessageInLRMall/:msgKeyword?/:sorter?', library.ensu
 					
 					for(j=messages.length-1;j>-1;j--){
 						var localFlag=[];
+						var ctr;
 						localFlag[0]=false;
 						localFlag[1]=false;
 						localFlag[2]=false;
 						localFlag[3]=false;
+						
 						if(msgObjID){
 							if(msgObjID.equals(messages[j]._id)){
 								localFlag[0]=true;
 							}
 						}
-						if(messages[j].Message.search(reg)>-1){
+						
+						ctr=0;
+						for(k=0;k<kewwordArray.length;k++){
+							if(messages[j].Message.search(kewwordArray[k])>-1){
+								ctr++;
+							}
+						}
+						if(ctr==kewwordArray.length){
 							localFlag[1]=true;
 						}
-						if(messages[j].FromBorrowRequest.StoryTitle.search(reg)>-1){
+						
+						ctr=0;
+						for(k=0;k<kewwordArray.length;k++){
+							if(messages[j].FromBorrowRequest.StoryTitle.search(kewwordArray[k])>-1){
+								ctr++;
+							}
+						}
+						if(ctr==kewwordArray.length){
 							localFlag[2]=true;
 						}
-						if(messages[j].CreatedBy.Username.search(reg)>-1){
+						
+						ctr=0;
+						for(k=0;k<kewwordArray.length;k++){
+							if(messages[j].CreatedBy.Username.search(kewwordArray[k])>-1){
+								ctr++;
+							}
+						}
+						if(ctr==kewwordArray.length){
 							localFlag[3]=true;
 						}
 						
