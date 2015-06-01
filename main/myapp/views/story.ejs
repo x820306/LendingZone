@@ -319,7 +319,7 @@
 										<span class="input-group-addon">元</span>
 									</div>
 									<br>
-								<form action="/Messages/toLendCreate" method="post" onsubmit="disableButton();">
+								<form action="/Messages/toLendCreate" method="post" onsubmit="return disableButton();">
 									<h4>本次欲借出金額：<i style="color:red;">*</i></h4>
 									<div class="input-group">
 										<input type="number" class="form-control" name="MoneyToLend" required="required">
@@ -488,7 +488,7 @@
 										<span class="input-group-addon">元</span>
 									</div>
 									<br>
-								<form action="/Messages/toLendUpdate" method="post" id="formID" onsubmit="disableButton();">
+								<form action="/Messages/toLendUpdate" method="post" id="formID" onsubmit="return disableButton();">
 									<h4>本次欲借出金額：<i style="color:red;">*</i></h4>
 									<div class="input-group">
 										<input type="number" class="form-control" name="MoneyToLend" value="<%=jsonMessage.MoneyToLend.toFixed(0)%>" required="required">
@@ -652,7 +652,7 @@
 								<br>
 							</div>
 							<%if(jsonBorrowMessage.Status=='NotConfirmed'){%>
-							<form action="/Messages/rejectToBorrowMessageInStory" method="post">
+							<form action="/Messages/rejectToBorrowMessageInStory" method="post" onsubmit="return disableButton();">
 							<input type="hidden" name="FromBorrowRequest" value="<%=json._id%>">
 							<input type="hidden" name="MessageID" value="<%=jsonBorrowMessage._id%>">
 							<%}%>
@@ -724,7 +724,7 @@
 									<%}%>
 								</div>
 								<br>
-							<form action="/Messages/confirmToBorrowMessageInStory" method="post" id="confirmFormID" onsubmit="disableButton();">
+							<form action="/Messages/confirmToBorrowMessageInStory" method="post" id="confirmFormID" onsubmit="return disableButton();">
 								<h4>金額：<i style="color:red;">*</i></h4>
 								<div class="input-group">
 									<input type="number" class="form-control" name="MoneyToLend" value="<%=jsonBorrowMessage.MoneyToLend.toFixed(0)%>" required="required">
@@ -847,7 +847,7 @@
 							<br>
 						</div>
 						<div class="modal-footer">
-						<form action="/Borrows/readable" method="post">
+						<form action="/Borrows/readable" method="post" onsubmit="return disableButton();">
 							<input type="hidden" name="borrowID" value="<%=json._id%>">
 							<button type="submit" class="btn btn-danger" onclick="readable();" id="readableBtnID">確定</button>
 							<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
@@ -1256,11 +1256,18 @@
 							$('#chkModal1').modal('hide');
 						}
 						
+						var submitFlag=false;
 						function disableButton(){
-							var orig=$('#createBtnID').attr('class');
-							if(orig.search(' disabled')<0){
-								orig=orig+' disabled';
-								$('#createBtnID').attr('class',orig);
+							if(!submitFlag){
+								var orig=$('#createBtnID').attr('class');
+								if(orig.search(' disabled')<0){
+									orig=orig+' disabled';
+									$('#createBtnID').attr('class',orig);
+								}
+								submitFlag=true;
+								return true;
+							}else{
+								return false;
 							}
 						}
 					<%}%>
@@ -1279,17 +1286,24 @@
 							$('#chkModal2').modal('hide');
 						}
 						
+						var submitFlag=false;
 						function disableButton(){
-							var orig=$('#destroyBtnID').attr('class');
-							if(orig.search(' disabled')<0){
-								orig=orig+' disabled';
-								$('#destroyBtnID').attr('class',orig);
-							}
-							
-							orig=$('#updateBtnID').attr('class');
-							if(orig.search(' disabled')<0){
-								orig=orig+' disabled';
-								$('#updateBtnID').attr('class',orig);
+							if(!submitFlag){
+								var orig=$('#destroyBtnID').attr('class');
+								if(orig.search(' disabled')<0){
+									orig=orig+' disabled';
+									$('#destroyBtnID').attr('class',orig);
+								}
+								
+								orig=$('#updateBtnID').attr('class');
+								if(orig.search(' disabled')<0){
+									orig=orig+' disabled';
+									$('#updateBtnID').attr('class',orig);
+								}
+								submitFlag=true;
+								return true;
+							}else{
+								return false;
 							}
 						}
 					<%}%>
@@ -1309,26 +1323,43 @@
 						form.submit();
 					}
 					
+					var submitFlag=false;
 					function disableButton(){
-						var orig=$('#argBtnID').attr('class');
-						if(orig.search(' disabled')<0){
-							orig=orig+' disabled';
-							$('#argBtnID').attr('class',orig);
-						}
-						
-						orig=$('#rfsBtnID').attr('class');
-						if(orig.search(' disabled')<0){
-							orig=orig+' disabled';
-							$('#rfsBtnID').attr('class',orig);
+						if(!submitFlag){
+							var orig=$('#argBtnID').attr('class');
+							if(orig.search(' disabled')<0){
+								orig=orig+' disabled';
+								$('#argBtnID').attr('class',orig);
+							}
+							
+							orig=$('#rfsBtnID').attr('class');
+							if(orig.search(' disabled')<0){
+								orig=orig+' disabled';
+								$('#rfsBtnID').attr('class',orig);
+							}
+							submitFlag=true;
+							return true;
+						}else{
+							return false;
 						}
 					}
 				<%}else if((!json.IfReadable)&&(jsonBorrowMessage.Status=='NotConfirmed')){%>
 					function refuse(){
 						$('#chkModal6').modal('hide');
-						orig=$('#rfsBtnID').attr('class');
-						if(orig.search(' disabled')<0){
-							orig=orig+' disabled';
-							$('#rfsBtnID').attr('class',orig);
+					}
+					
+					var submitFlag=false;
+					function disableButton(){
+						if(!submitFlag){
+							var orig=$('#rfsBtnID').attr('class');
+							if(orig.search(' disabled')<0){
+								orig=orig+' disabled';
+								$('#rfsBtnID').attr('class',orig);
+							}
+							submitFlag=true;
+							return true;
+						}else{
+							return false;
 						}
 					}
 				<%}%>
@@ -1337,11 +1368,20 @@
 			<%if(json.IfReadable){ %>
 				function readable(){
 					$('#readableModal').modal('hide');
-					
-					var orig=$('#readableBtnID').attr('class');
-					if(orig.search(' disabled')<0){
-						orig=orig+' disabled';
-						$('#readableBtnID').attr('class',orig);
+				}
+				
+				var submitFlag=false;
+				function disableButton(){
+					if(!submitFlag){
+						var orig=$('#readableBtnID').attr('class');
+						if(orig.search(' disabled')<0){
+							orig=orig+' disabled';
+							$('#readableBtnID').attr('class',orig);
+						}
+						submitFlag=true;
+						return true;
+					}else{
+						return false;
 					}
 				}
 			<%}%>

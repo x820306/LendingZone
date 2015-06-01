@@ -13,7 +13,7 @@
 </section>
 
 <section class="bottomSection">
-    <form style="margin-left:60px;" action="/borrower/borrowCreate" method="post">
+    <form style="margin-left:60px;" action="/borrower/borrowCreate" method="post" onsubmit="return disableButton();">
 
     <div class="borrowBlock">
       <div class="borrowBlockTitle">借款金額<i style="color:red;">*</i></div>
@@ -23,7 +23,7 @@
 
     <div class="borrowBlock">
       <div class="borrowBlockTitle">可接受利率上限<i style="color:red;">*</i></div>
-      <div>單位為%</div>
+      <div>單位為%，須大於<%=(scr*100).toFixed(2)%>%</div>
       <input type="text" name="MaxInterestRateAccepted" required>
     </div>
 
@@ -99,8 +99,13 @@
     </div>
 
     <div class="borrowBlock" >
-        <button type="reset"  id="buttonReset" class="buttonExit">重寫</button>
-        <button type="submit"  class="buttonSubmit">確認</button>
+		<button type="reset" id="buttonReset" class="btn btn-danger">
+			重寫
+		</button>
+		&nbsp;
+		<button type="submit" id="btnSbmt" class="btn btn-primary">
+			確認
+		</button>
     </div>
 
 <!--
@@ -134,6 +139,26 @@
     <script src="/javascripts/jquery-ui.js"></script>
     <link rel="stylesheet" href="/stylesheets/borrower.css">
     <script>
+		var submitFlag=false;
+		function disableButton(){
+			if(!submitFlag){
+				var orig=$('#buttonReset').attr('class');
+				if(orig.search(' disabled')<0){
+					orig=orig+' disabled';
+					$('#buttonReset').attr('class',orig);
+				}
+				var orig=$('#btnSbmt').attr('class');
+				if(orig.search(' disabled')<0){
+					orig=orig+' disabled';
+					$('#btnSbmt').attr('class',orig);
+				}
+				submitFlag=true;
+				return true;
+			}else{
+				return false;
+			}
+		}
+	
         document.body.style['background-color']='#FFE4A3';
 
         $('#buttonCancel').click(function(){
