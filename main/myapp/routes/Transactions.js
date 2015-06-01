@@ -170,7 +170,7 @@ function buyInsurance(ctr,ctrTarget,returnSring,req,res,info){
 					res.redirect('/message?content='+encodeURIComponent('有些交易因錯誤無法購買保險!')+'&infoB='+encodeURIComponent(info));
 				}
 			}else{
-				if(transaction.InsuranceFeePaid>0){
+				if(transaction.InsuranceFeePaid!==0){
 					ctr++;
 					if(ctr<ctrTarget){
 						buyInsurance(ctr,ctrTarget,'有些交易因錯誤無法購買保險!',req,res,info);
