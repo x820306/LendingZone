@@ -266,6 +266,20 @@ router.post('/resetPW', function(req, res, next) {
 							console.log(err);
 							res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 						}else{
+							var mailOptions = {
+								from: 'LendingZone <lendingzonesystem@gmail.com>', // sender address
+								to: newUpdated.Username+' <'+newUpdated.Email+'>', // list of receivers
+								subject: '您於Lending Zone的密碼已經變更', // Subject line
+								text: '您於Lending Zone的密碼已經變更', // plaintext body
+								html: '您於Lending Zone的密碼已經變更'
+							};
+							
+							transporter.sendMail(mailOptions, function(error, info){
+								if(error){
+									console.log(error);
+								}
+							});
+							
 							res.redirect('/message?content='+encodeURIComponent('您的密碼已重設成功!'));
 						}
 					});
