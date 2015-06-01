@@ -26,9 +26,9 @@
 				</div>
 				</br>
 		<% if(!jsonLend){ %>
-			<form action="/Lends/create" method="post" id="formID" onsubmit="disableButton();">
+			<form action="/Lends/create" method="post" id="formID" onsubmit="return disableButton();">
 		<% }else{ %>
-			<form action="/Lends/update" method="post" id="formID" onsubmit="disableButton();">
+			<form action="/Lends/update" method="post" id="formID" onsubmit="return disableButton();">
 		<% } %>
 				<div class="panel panel-default">
 					<div class="panel-heading">
@@ -377,11 +377,18 @@ function checkAndOpenModal(target,cntNumber,cntTail,flag){
 		$('#chkModal1').modal('hide');
 	}
 	
+	var submitFlag=false;
 	function disableButton(){
-		var orig=$('#createBtnID').attr('class');
-		if(orig.search(' disabled')<0){
-			orig=orig+' disabled';
-			$('#createBtnID').attr('class',orig);
+		if(!submitFlag){
+			var orig=$('#createBtnID').attr('class');
+			if(orig.search(' disabled')<0){
+				orig=orig+' disabled';
+				$('#createBtnID').attr('class',orig);
+			}
+			submitFlag=true;
+			return true;
+		}else{
+			return false;
 		}
 	}
 <% }else{%>
@@ -389,17 +396,24 @@ function checkAndOpenModal(target,cntNumber,cntTail,flag){
 		$('#chkModal2').modal('hide');
 	}
 	
+	var submitFlag=false;
 	function disableButton(){
-		var orig=$('#destroyBtnID').attr('class');
-		if(orig.search(' disabled')<0){
-			orig=orig+' disabled';
-			$('#destroyBtnID').attr('class',orig);
-		}
-		
-		var orig=$('#updateBtnID').attr('class');
-		if(orig.search(' disabled')<0){
-			orig=orig+' disabled';
-			$('#updateBtnID').attr('class',orig);
+		if(!submitFlag){
+			var orig=$('#destroyBtnID').attr('class');
+			if(orig.search(' disabled')<0){
+				orig=orig+' disabled';
+				$('#destroyBtnID').attr('class',orig);
+			}
+			
+			var orig=$('#updateBtnID').attr('class');
+			if(orig.search(' disabled')<0){
+				orig=orig+' disabled';
+				$('#updateBtnID').attr('class',orig);
+			}
+			submitFlag=true;
+			return true;
+		}else{
+			return false;
 		}
 	}
 	

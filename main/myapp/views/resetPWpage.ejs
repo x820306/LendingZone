@@ -2,7 +2,7 @@
 <div class="container">
 	<div class="row">
 		<center>
-			<form method = "post" action= "/Users/resetPW">
+			<form method = "post" action= "/Users/resetPW" onsubmit="return disableButton();">
 				<h3>重設密碼<br></h3>
 				<div class="input-group">
 					<label for="nPwdIpt">密碼</label>
@@ -27,6 +27,21 @@
 	</div>
 </div>
 <script>
+	var submitFlag=false;
+	function disableButton(){
+		if(!submitFlag){
+			var orig=$('#subBtnID').attr('class');
+			if(orig.search(' disabled')<0){
+				orig=orig+' disabled';
+				$('#subBtnID').attr('class',orig);
+			}
+			submitFlag=true;
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
 	function checkPwd()
 	{
 	    var pwd1 = $('#PwdIpt').val();

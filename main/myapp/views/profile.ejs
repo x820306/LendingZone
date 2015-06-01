@@ -2,7 +2,7 @@
 <div class="container">
 	<div class="row">
 		<center>
-			<form enctype="multipart/form-data" method="post" action="/signup/changeData" onsubmit="disableButton();">
+			<form enctype="multipart/form-data" method="post" action="/signup/changeData" onsubmit="return disableButton();">
 				<h3>查看/修改個人資料<br></h3>
 				<table class="table table-hover myTbody" style="width:70%">
 				<tr>
@@ -93,11 +93,18 @@
 	</div>
 </div>
 <script>
+	var submitFlag=false;
 	function disableButton(){
-		var orig=$('#sbmtBtn').attr('class');
-		if(orig.search(' disabled')<0){
-			orig=orig+' disabled';
-			$('#sbmtBtn').attr('class',orig);
+		if(!submitFlag){
+			var orig=$('#sbmtBtn').attr('class');
+			if(orig.search(' disabled')<0){
+				orig=orig+' disabled';
+				$('#sbmtBtn').attr('class',orig);
+			}
+			submitFlag=true;
+			return true;
+		}else{
+			return false;
 		}
 	}
 </script>
