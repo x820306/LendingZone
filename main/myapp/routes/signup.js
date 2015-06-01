@@ -16,6 +16,95 @@ router.get('/',library.newMsgChecker, function (req, res) {
 	res.redirect('/signup/success');
 });
 
+router.get('/profile', library.ensureAuthenticated,library.newMsgChecker, function (req, res) {
+	Users.findById(req.user._id).exec(function (err, foundUser){
+		if (err) {
+			console.log(err);
+			res.redirect('/message?content='+encodeURIComponent('錯誤'));
+		}else{
+			if(!foundUser){
+				res.redirect('/message?content='+encodeURIComponent('錯誤'));
+			}else{
+				BankAccounts.findOne({OwnedBy:req.user._id}).exec(function (err, foundAccount){
+					if (err) {
+						console.log(err);
+						res.redirect('/message?content='+encodeURIComponent('錯誤'));
+					}else{
+						if(!foundAccount){
+							res.redirect('/message?content='+encodeURIComponent('錯誤'));
+						}else{
+							res.render('profile',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,user:foundUser,account:foundAccount});
+						}
+					}
+				});
+			}
+		}
+	});
+});
+
+router.post('/changeData', library.ensureAuthenticated, function (req, res) {
+	if((sanitizer.sanitize(req.body.Name.trim())!='')&&(sanitizer.sanitize(req.body.Email.trim())!='')&&(sanitizer.sanitize(req.body.Gender.trim())!='')&&(sanitizer.sanitize(req.body.BirthDay.trim())!='')&&(sanitizer.sanitize(req.body.IdCardNumber.trim())!='')&&(sanitizer.sanitize(req.body.Phone.trim())!='')&&(sanitizer.sanitize(req.body.Address.trim())!='')&&(sanitizer.sanitize(req.body.BankAccountNumber.trim())!='')&&(sanitizer.sanitize(req.body.BankAccountPassword.trim())!='')){
+		Users.findById(req.user._id).exec(function (err, user){
+			if (err) {
+				console.log(err);
+				res.redirect('/message?content='+encodeURIComponent('錯誤'));
+			}else{
+				if(!user){
+					res.redirect('/message?content='+encodeURIComponent('錯誤'));
+				}else{
+					user.Name=sanitizer.sanitize(req.body.Name.trim());
+					user.Email=sanitizer.sanitize(req.body.Email.trim());
+					user.Gender=sanitizer.sanitize(req.body.Gender.trim());
+					user.BirthDay=sanitizer.sanitize(req.body.BirthDay.trim());
+					user.IdCardNumber=sanitizer.sanitize(req.body.IdCardNumber.trim());
+					user.Phone=sanitizer.sanitize(req.body.Phone.trim());
+					user.Address=sanitizer.sanitize(req.body.Address.trim());
+					
+					if(req.files.IdCard){
+						user.IdCardType=req.files.IdCard.mimetype;
+						user.IdCard=req.files.IdCard.buffer;
+					}
+					if(req.files.SecondCard){
+						user.SecondCardType=req.files.SecondCard.mimetype;
+						user.SecondCard=req.files.SecondCard.buffer;
+					}
+					
+					user.save(function (err,newUpdated) {
+						if (err){
+							console.log(err);
+							res.redirect('/message?content='+encodeURIComponent('錯誤'));
+						}else{
+							BankAccounts.findOne({OwnedBy:newUpdated._id}).exec(function (err, account){
+								if (err) {
+									console.log(err);
+									res.redirect('/message?content='+encodeURIComponent('錯誤'));
+								}else{
+									if(!account){
+										res.redirect('/message?content='+encodeURIComponent('錯誤'));
+									}else{
+										account.BankAccountNumber=sanitizer.sanitize(req.body.BankAccountNumber.trim());
+										account.BankAccountPassword=sanitizer.sanitize(req.body.BankAccountPassword.trim());
+										account.save(function (err,newUpdatedInner) {
+											if (err){
+												console.log(err);
+												res.redirect('/message?content='+encodeURIComponent('錯誤'));
+											}else{
+												res.redirect('/signup/profile');
+											}
+										});
+									}
+								}
+							});
+						}
+					});
+				}
+			}
+		});
+	}else{
+		res.redirect('/message?content='+encodeURIComponent('資料填寫不全！'));
+	}
+});
+
 // this is the basic type when page no need to ensure authenticated. U can try this by /signup/signupExample
 router.get('/cardData',library.newMsgChecker, function (req, res) {
 	var auRst=null;

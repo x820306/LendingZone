@@ -91,7 +91,7 @@ router.post('/readable', library.ensureAuthenticated, function(req, res, next) {
 							res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 						}else{
 							var objID=mongoose.Types.ObjectId(updatedBorrow._id.toString());
-							library.rejectMessageWhenNotReadable(res,false,'/lender/story?id='+req.body.borrowID,objID);
+							library.rejectMessageWhenNotReadable(res,false,'/lender/story?id='+req.body.borrowID,objID,req);
 						}
 					});
 				}

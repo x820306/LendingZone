@@ -63,30 +63,36 @@ passport.use('local', new LocalStrategy({
 		Users.findOne({"Username": Username}).exec(function (err, user){
 			if (err) {
 				console.log(err);
-				res.json({error: err.name}, 500);
+				return done(null, false);
 			}else{
 				if(!user){
 					console.log('Incorrect Username.');
 					return done(null, false);
 				}else{
-					if(user.Password!=Password){
-						console.log('Incorrect Password.');
-						return done(null, false);
-					}else{
-						console.log('Login Success.');
-						var smaller_user={
-							_id: user._id,
-							Username: user.Username,
-							Name: user.Name,
-							Gender: user.Gender,
-							BirthDay: user.BirthDay,
-							Phone: user.Phone,
-							Address: user.Address,
-							Level: user.Level,
-							Created: user.Created
+					user.comparePassword(Password, function(err, isMatch) {
+						if(err){
+							return done(null, false);
+						}else{
+							if(!isMatch){
+								console.log('Incorrect Password.');
+								return done(null, false);
+							}else{
+								console.log('Login Success.');
+								var smaller_user={
+									_id: user._id,
+									Username: user.Username,
+									Name: user.Name,
+									Gender: user.Gender,
+									BirthDay: user.BirthDay,
+									Phone: user.Phone,
+									Address: user.Address,
+									Level: user.Level,
+									Created: user.Created
+								}
+								return done(null, smaller_user);
+							}
 						}
-						return done(null, smaller_user);
-					}
+					});
 				}
 			}
 		});
@@ -133,17 +139,13 @@ app.get('/message/:content?/:info1?/:info2?/:info3?/:info4?/:infoB?',library.new
 	}
 });
 
-app.get('/profile', library.ensureAuthenticated,library.newMsgChecker, function (req, res) {
-	res.render('profile',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username});
-});
-
 app.post('/login',captchaChecker, passport.authenticate('local', { failureRedirect: '/message?content='+encodeURIComponent('帳號或密碼錯誤！')}),function (req, res) {
 	var origString=req.get('referer');
 	var stringArray=origString.split('/');
 	var subString=stringArray[stringArray.length-1];
 	var subStringArray=subString.split('?');
 	var target=subStringArray[0];
-	if((target=='message')||(target=='borrowCreate')||(target=='readable')||(target=='buyInsurance')||(target=='rejectToBorrowMessageInStory')||(target=='confirmToBorrowMessageInStory')||(target=='rejectToBorrowMessageInLRM')||(target=='confirmToBorrowMessageInLRM')||(target=='toLendCreate')||(target=='toLendUpdate')||(target=='destroy')||(target=='create')||(target=='update')){
+	if((target=='message')||(target=='borrowCreate')||(target=='readable')||(target=='buyInsurance')||(target=='rejectToBorrowMessageInStory')||(target=='confirmToBorrowMessageInStory')||(target=='rejectToBorrowMessageInLRM')||(target=='confirmToBorrowMessageInLRM')||(target=='toLendCreate')||(target=='toLendUpdate')||(target=='destroy')||(target=='create')||(target=='update')||(target=='changeData')){
 		res.redirect('/');
 	}else{
 		res.redirect(req.get('referer'));

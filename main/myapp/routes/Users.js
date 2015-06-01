@@ -6,6 +6,7 @@ var Returns  = mongoose.model('Returns');
 var Messages  = mongoose.model('Messages');
 var Transactions  = mongoose.model('Transactions');
 var BankAccounts  = mongoose.model('BankAccounts');
+var crypto = require('crypto');
 var sanitizer = require('sanitizer'); 
 var nodemailer = require('nodemailer');
 var generator = require('xoauth2').createXOAuth2Generator({
@@ -101,8 +102,12 @@ router.get('/IdCard/:id?', function(req, res, next) {
 				console.log(err);
 				res.json({error: err.name}, 500);
 			}else{
-				res.setHeader('content-type', user.IdCardType);
-				res.end(user.IdCard, "binary");
+				if(user){
+					res.setHeader('content-type', user.IdCardType);
+					res.end(user.IdCard, "binary");
+				}else{
+					res.redirect('/');
+				}
 			}
 		});
 	}else{
@@ -117,8 +122,12 @@ router.get('/SecondCard/:id?', function(req, res, next) {
 				console.log(err);
 				res.json({error: err.name}, 500);
 			}else{
-				res.setHeader('content-type', user.SecondCardType);
-				res.end(user.SecondCard, "binary");
+				if(user){
+					res.setHeader('content-type', user.SecondCardType);
+					res.end(user.SecondCard, "binary");
+				}else{
+					res.redirect('/');
+				}
 			}
 		});
 	}else{
@@ -140,39 +149,124 @@ router.post('/levelSetter', function(req, res, next) {
 	//for adding a new field into existed documents 
 });
 
+router.post('/changePassword', function(req, res, next) {
+	Username=sanitizer.sanitize(req.body.Username.trim());
+	Password=sanitizer.sanitize(req.body.Password.trim());
+	
+	Users.findOne({"Username": Username}).exec(function (err, user){
+			if (err) {
+				console.log(err);
+				res.end('error!');
+			}else{
+				if(!user){
+					res.end('error!');
+				}else{
+					user.Password=Password;
+					user.save(function (err,newUpdated){
+						if (err){
+							console.log(err);
+							res.end('error!');
+						}else{
+							res.end('success!');
+						}
+					});
+				}
+			}
+	});
+});
+
 router.post('/forgetPW', function(req, res, next) {
 	var temp=sanitizer.sanitize(req.body.Username.trim());
 	if(temp==''){
 		res.json({response:'請輸入帳號供查詢'});
 	}else{
-		Users.findOne({Username:temp}).exec(function (err, user){
-			if (err) {
+		crypto.randomBytes(20, function(err, buf) {
+			if(err){
 				console.log(err);
 				res.json({response:'錯誤'});
 			}else{
-				if(!user){
-					res.json({response:'無法找到對應帳號'});
-				}else{
-					var mailOptions = {
-						from: 'LendingZone <lendingzonesystem@gmail.com>', // sender address
-						to: user.Username+' <'+user.Email+'>', // list of receivers
-						subject: '您於Lending Zone忘記的密碼', // Subject line
-						text: user.Password, // plaintext body
-						html: user.Password // html body
-					};
-					
-					transporter.sendMail(mailOptions, function(error, info){
-						if(error){
-							console.log(error);
-							res.json({response:'電子郵件發送失敗'});
+				var token = buf.toString('hex');
+				Users.findOne({Username:temp}).exec(function (err, user){
+					if (err) {
+						console.log(err);
+						res.json({response:'錯誤'});
+					}else{
+						if(!user){
+							res.json({response:'無法找到對應帳號'});
 						}else{
-							res.json({response:'您的密碼已發送至您的信箱，請前往確認，謝謝!'});
+							user.resetPasswordToken = token;
+							user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
+							user.save(function(err,newUpdated) {
+								if(err){
+									res.json({response:'錯誤'});
+								}else{
+									var mailOptions = {
+										from: 'LendingZone <lendingzonesystem@gmail.com>', // sender address
+										to: newUpdated.Username+' <'+newUpdated.Email+'>', // list of receivers
+										subject: '重設您於Lending Zone忘記的密碼', // Subject line
+										text: '點擊以下連結重設您在LendingZone的密碼：'+String.fromCharCode(10)+String.fromCharCode(10)+'"http://'+req.headers.host+'/Users/resetPWpage?token='+token+'"', // plaintext body
+										html: '點擊以下連結重設您在LendingZone的密碼：<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://'+req.headers.host+'/Users/resetPWpage?token='+token+'" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往重設</span></a></td></tr></table>'
+									};
+									
+									transporter.sendMail(mailOptions, function(error, info){
+										if(error){
+											console.log(error);
+											res.json({response:'電子郵件發送失敗'});
+										}else{
+											res.json({response:'您的密碼已發送至您的信箱，請前往確認，謝謝!'});
+										}
+									});
+								}
+							});
 						}
-					});
-				}
+					}
+				});
 			}
 		});
 	}
+});
+
+router.get('/resetPWpage/:token?', library.newMsgChecker, function(req, res, next) {
+	var auRst=null;
+	if(req.isAuthenticated()){
+		auRst=req.user.Username;
+	}
+	Users.findOne({ resetPasswordToken: req.query.token, resetPasswordExpires: { $gt: Date.now() } }, function(err, user) {
+		if(err){
+			res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+		}else{
+			if (!user) {
+				res.redirect('/message?content='+encodeURIComponent('token過期或無效！!'));
+			}else{
+				res.render('resetPWpage',{newlrmNum: req.newlrmNumber,newlsmNum: req.newlsmNumber,userName: auRst,tk:req.query.token});
+			}
+		}
+	});
+});
+
+router.post('/resetPW', function(req, res, next) {
+	Users.findOne({ resetPasswordToken: req.body.Token, resetPasswordExpires: { $gt: Date.now() } }, function(err, user) {
+		if(err){
+			console.log(err);
+			res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+		}else{
+			if (!user) {
+				res.redirect('/message?content='+encodeURIComponent('token過期或無效！!'));
+			}else{
+				user.Password = req.body.Password;
+				user.resetPasswordToken = undefined;
+				user.resetPasswordExpires = undefined;
+				user.save(function (err,newUpdated){
+					if (err){
+						console.log(err);
+						res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+					}else{
+						res.redirect('/message?content='+encodeURIComponent('您的密碼已重設成功!'));
+					}
+				});
+			}
+		}
+	});
 });
 
 module.exports = router;
