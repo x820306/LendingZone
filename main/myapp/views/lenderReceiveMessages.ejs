@@ -1,5 +1,5 @@
 <%- include('layout_header',{nav_cur:'lenderReceiveMessages',actionDefault:'最新',keywordDefault:'',categoryDefault:'不分類'}); -%>
-<div class="container"><div class="container">
+<div class="container">
 	<div class="row">
 		<div class="col-md-9">
 			<div style="font-size:30pt;">借出者收到之訊息 - <%=filterDefault%></div>
@@ -124,24 +124,25 @@
 							同意全部收到之請求
 						</button>
 						<div class="modal fade" id="chkModal1">
-							<div class="modal-dialog modal-sm"">
+							<div class="modal-dialog modal-sm">
 								<div class="modal-content">
-									<div class="modal-header">
+									<div class="modal-header" style="text-align: center;">
 										<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 										<h4 class="modal-title">再次確認</h4>
 									</div>
-									<div class="modal-body">
+									<div class="modal-body" style="text-align: center;">
 										<br>
 										您確定要同意全部收到之請求嗎?
 										<br>
 										<br>
 									</div>
-									<div class="modal-footer">
+									<div class="modal-footer" style="text-align: center;">
 										<a href="/Messages/confirmToBorrowMessageInLRMall?msgKeyword=<%=encodeURIComponent(msgKeywordDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>" id="cAll">
 											<button class="btn btn-primary" id="confirmAllBtn" onclick="confirmAll();">
 												確定
 											</button>
 										</a>
+										&nbsp;
 										<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
 									</div>
 								</div>
@@ -152,24 +153,25 @@
 							婉拒全部收到之請求
 						</button>
 						<div class="modal fade" id="chkModal2">
-							<div class="modal-dialog modal-sm"">
+							<div class="modal-dialog modal-sm">
 								<div class="modal-content">
-									<div class="modal-header">
+									<div class="modal-header" style="text-align: center;">
 										<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 										<h4 class="modal-title">再次確認</h4>
 									</div>
-									<div class="modal-body">
+									<div class="modal-body" style="text-align: center;">
 										<br>
 										您確定要婉拒全部收到之請求嗎?
 										<br>
 										<br>
 									</div>
-									<div class="modal-footer">
+									<div class="modal-footer" style="text-align: center;">
 										<a href="/Messages/rejectToBorrowMessageInLRMall?msgKeyword=<%=encodeURIComponent(msgKeywordDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>" id="rAll">
 											<button class="btn btn-danger" id="rejectAllBtn" onclick="rejectAll();">
 												確定
 											</button>
 										</a>
+										&nbsp;
 										<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
 									</div>
 								</div>
@@ -224,19 +226,19 @@
 							同意
 						</button>
 						<div class="modal fade" id="chkModal3">
-							<div class="modal-dialog modal-sm"">
+							<div class="modal-dialog modal-sm">
 								<div class="modal-content">
-									<div class="modal-header">
+									<div class="modal-header" style="text-align: center;">
 										<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 										<h4 class="modal-title">再次確認</h4>
 									</div>
-									<div class="modal-body">
+									<div class="modal-body" style="text-align: center;">
 										<br>
 										您確定要同意已選之請求嗎?
 										<br>
 										<br>
 									</div>
-									<div class="modal-footer">
+									<div class="modal-footer" style="text-align: center;">
 										<button class="btn btn-primary" id="confirmBtn" onclick="confirm();">
 											確定
 										</button>
@@ -250,19 +252,19 @@
 							婉拒
 						</button>
 						<div class="modal fade" id="chkModal4">
-							<div class="modal-dialog modal-sm"">
+							<div class="modal-dialog modal-sm">
 								<div class="modal-content">
-									<div class="modal-header">
+									<div class="modal-header" style="text-align: center;">
 										<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 										<h4 class="modal-title">再次確認</h4>
 									</div>
-									<div class="modal-body">
+									<div class="modal-body" style="text-align: center;">
 										<br>
 										您確定要婉拒已選之請求嗎?
 										<br>
 										<br>
 									</div>
-									<div class="modal-footer">
+									<div class="modal-footer" style="text-align: center;">
 										<button class="btn btn-danger" id="rejectBtn" onclick="reject();">
 											確定
 										</button>
@@ -275,19 +277,19 @@
 						<br>
 						<br>
 						<div class="modal fade" id="msgModal">
-							<div class="modal-dialog modal-sm"">
+							<div class="modal-dialog modal-sm">
 								<div class="modal-content">
-									<div class="modal-header">
+									<div class="modal-header" style="text-align: center;">
 										<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 										<h4 class="modal-title">訊息</h4>
 									</div>
-									<div class="modal-body">
+									<div class="modal-body" style="text-align: center;">
 										<br>
 										您未選擇訊息！
 										<br>
 										<br>
 									</div>
-									<div class="modal-footer">
+									<div class="modal-footer" style="text-align: center;">
 										<button type="button" class="btn btn-default" data-dismiss="modal">關閉</button>
 									</div>
 								</div>
@@ -306,12 +308,12 @@
 						<li><a href="#tab3<%=i%>" data-toggle="tab">交易紀錄</a></li>
 						<% }%>
 					</ul>
-					<div style="height:310px;" class="tab-content my-tab-content">
+					<div style="height:340px;" class="tab-content my-tab-content">
 						<div class="tab-pane active" id="tab1<%=i%>">
 							<div style="font-size:25px;display:inline;">來自 </div>
 							<div style="font-size:25px;display:inline;" class="myTitle"><%=jsonMessage[i].CreatedBy.Username%></div>
 							<br>
-							在 <a style="font-size:15px;" href="/lender/story?id=<%=jsonMessage[i].FromBorrowRequest._id%>"><%-jsonMessage[i].FromBorrowRequest.StoryTitle.replace(new RegExp(' ','g'),'&nbsp;')%></a>
+							&nbsp;&nbsp;在 <a style="font-size:15px;" href="/lender/story?id=<%=jsonMessage[i].FromBorrowRequest._id%>"><%-jsonMessage[i].FromBorrowRequest.StoryTitle.replace(new RegExp(' ','g'),'&nbsp;')%></a>
 							<br>
 							<br>
 							<div>	
@@ -320,7 +322,7 @@
 						</div>
 						<div class="tab-pane" id="tab2<%=i%>">
 							<div class="col-md-6">
-								<table width="100%" height="270px">
+								<table width="100%" height="310px">
 									<tr>
 										<td>
 											<div  class="myTitle">
@@ -380,7 +382,7 @@
 								</table>	
 							</div>
 							<div class="col-md-6">
-								<table width="100%" height="270px">	
+								<table width="100%" height="310px">	
 									<tr>
 										<td>
 											<div class="myTitle">
@@ -528,10 +530,6 @@
 												</div>	
 											</td>
 										<tr>
-									</table>
-								</div>
-								<div class="col-md-6">
-									<table width="100%" height="275px">
 										<tr>
 											<td>
 												<div class="myTitle">
@@ -560,6 +558,10 @@
 												</div>	
 											</td>
 										<tr>
+									</table>
+								</div>
+								<div class="col-md-6">
+									<table width="100%" height="270px">
 										<tr>
 											<td>
 												<div class="myTitle">
@@ -605,6 +607,34 @@
 										<tr>
 											<td>
 												<div class="myTitle">
+													 上次成功收款日期:
+												</div>
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;<%if(jsonMessage[i].Transaction[0].previousPayDate){%><%=jsonMessage[i].Transaction[0].previousPayDate.getFullYear()%>/<%=jsonMessage[i].Transaction[0].previousPayDate.getMonth()+1%>/<%=jsonMessage[i].Transaction[0].previousPayDate.getDate()%><%}else{%>無收款記錄<%}%>
+												</div>	
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div class="myTitle">
+													下次應收款日期：
+												</div>
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;<%if(jsonMessage[i].Transaction[0].nextPayDate){%><%=jsonMessage[i].Transaction[0].nextPayDate.getFullYear()%>/<%=jsonMessage[i].Transaction[0].nextPayDate.getMonth()+1%>/<%=jsonMessage[i].Transaction[0].nextPayDate.getDate()%><%}else{%>已還清<%}%>
+												</div>	
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div class="myTitle">
 													保險所需費用：
 												</div>
 											</td>
@@ -612,7 +642,7 @@
 										<tr>
 											<td>
 												<div>
-													&nbsp;&nbsp;&nbsp;&nbsp;<%=(jsonMessage[i].Transaction[0].Principal*insuranceRate).toFixed(0)%>元
+													&nbsp;&nbsp;&nbsp;&nbsp;<%if(jsonMessage[i].Transaction[0].Principal*insuranceRate<1){%>1<%}else{%><%=(jsonMessage[i].Transaction[0].Principal*insuranceRate).toFixed(0)%><%}%>元
 												</div>	
 											</td>
 										<tr>
@@ -627,6 +657,20 @@
 											<td>
 												<div>
 													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].InsuranceFeePaid.toFixed(0)%>元
+												</div>	
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div class="myTitle">
+													已收款次數：
+												</div>
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].ReturnCount.toFixed(0)%>次
 												</div>	
 											</td>
 										<tr>
