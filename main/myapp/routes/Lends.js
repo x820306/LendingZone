@@ -194,6 +194,9 @@ function autoConfirm(req,res,sorter,lendID){
 		sorter='-Updated';
 	}else if(sorter=='-SpecialD'){
 		sorter='-Updated';
+	}else{
+		sorterReserve='-InterestRate';
+		sorter='-InterestRate';
 	}
 	
 	Lends.findById(lendID).exec(function (err, lend){

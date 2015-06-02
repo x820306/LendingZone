@@ -39,6 +39,9 @@ router.get('/search/:keyword?/:action?/:category?/:filter?/:lbound?/:ubound?/:pa
 				actionRec="-MonthPeriodAccepted";
 			}else if(action=='信用等級最高'){
 				actionRec="-Level";
+			}else{
+				action='最新';
+				actionRec="-Created";
 			}
 			
 			var categoryRec=null;
@@ -51,6 +54,10 @@ router.get('/search/:keyword?/:action?/:category?/:filter?/:lbound?/:ubound?/:pa
 				categoryRec="family";
 			}else if(category=='旅遊'){
 				categoryRec="tour";
+			}else if(category=='不分類'){
+				categoryRec=null;
+			}else{
+				category='不分類';
 			}
 			
 			var filterRec=null;
@@ -65,6 +72,8 @@ router.get('/search/:keyword?/:action?/:category?/:filter?/:lbound?/:ubound?/:pa
 				filterRec="Level";
 			}else if(filter=='未選擇濾鏡'){
 				filterRec=null;
+			}else{
+				filter='未選擇濾鏡';
 			}
 			
 			var lboundRec=null;
@@ -451,7 +460,7 @@ router.get('/lenderTransactionRecord/:oneid?/:filter?/:sorter?/:page?', library.
 			var totalResultNumber=0;
 			var selectedFeeAllIpt=0;
 			
-			var sorterRec;
+			var sorterRec=null;
 			
 			if(sorter=='最新'){
 				sorterRec="-Updated";
@@ -489,6 +498,9 @@ router.get('/lenderTransactionRecord/:oneid?/:filter?/:sorter?/:page?', library.
 				sorterRec="-Principal";
 			}else if(sorter=='已付保險費用最高'){
 				sorterRec="-InsuranceFeePaid";
+			}else{
+				sorter='最新';
+				sorterRec="-Updated";
 			}
 			
 			var andFindCmdAry=[];
@@ -497,6 +509,9 @@ router.get('/lenderTransactionRecord/:oneid?/:filter?/:sorter?/:page?', library.
 				andFindCmdAry.push({"InsuranceFeePaid": 0});
 			}else if(filter=='已保險'){
 				andFindCmdAry.push({"InsuranceFeePaid": {'$ne': 0 }});
+			}else{
+				filter='未保險';
+				andFindCmdAry.push({"InsuranceFeePaid": 0});
 			}
 
 			var stringArray=oneid.replace(/\s\s+/g,' ').split(' ');
@@ -686,7 +701,7 @@ router.get('/lenderReturnRecord/:oneid?/:id?/:sorter?/:page?', library.ensureAut
 			var pageNum=0
 			var totalResultNumber=0;
 			
-			var sorterRec;
+			var sorterRec=null;
 			
 			if(sorter=='最新'){
 				sorterRec="-Updated";
@@ -714,6 +729,9 @@ router.get('/lenderReturnRecord/:oneid?/:id?/:sorter?/:page?', library.ensureAut
 				sorterRec="-InterestNotPaid";
 			}else if(sorter=='超收利息最多'){
 				sorterRec="InterestNotPaid";
+			}else{
+				sorter='最新';
+				sorterRec="-Updated";
 			}
 			
 			var andFindCmdAry=[];
@@ -885,7 +903,7 @@ router.get('/lendsList/:oneid?/:sorter?/:page?', library.ensureAuthenticated, li
 			var pageNum=0
 			var totalResultNumber=0;
 			
-			var sorterRec;
+			var sorterRec=null;
 			
 			if(sorter=='最新'){
 				sorterRec="-Updated";
@@ -905,6 +923,9 @@ router.get('/lendsList/:oneid?/:sorter?/:page?', library.ensureAuthenticated, li
 				sorterRec="-MinInterestInFutureMoneyMonth";
 			}else if(sorter=='可接受利本比最高'){
 				sorterRec="-MinInterestInFutureDivMoney";
+			}else{
+				sorter='最新';
+				sorterRec="-Updated";
 			}
 			
 			var stringArray=oneid.replace(/\s\s+/g,' ').split(' ');
@@ -1006,7 +1027,7 @@ router.get('/lenderSendMessages/:msgKeyword?/:filter?/:sorter?/:page?', library.
 			var pageNum=0
 			var totalResultNumber=0;
 			
-			var filterRec;
+			var filterRec=null;
 			
 			if(filter=='未被確認'){
 				filterRec="NotConfirmed";
@@ -1014,9 +1035,12 @@ router.get('/lenderSendMessages/:msgKeyword?/:filter?/:sorter?/:page?', library.
 				filterRec="Confirmed";
 			}else if(filter=='已被婉拒'){
 				filterRec="Rejected";
+			}else{
+				filter='未被確認';
+				filterRec="NotConfirmed";
 			}
 			
-			var sorterRec;
+			var sorterRec=null;
 			
 			if(sorter=='最新'){
 				sorterRec="-Updated";
@@ -1035,6 +1059,9 @@ router.get('/lenderSendMessages/:msgKeyword?/:filter?/:sorter?/:page?', library.
 			}else if(sorter=='預計平均本利和最高'){
 				sorterRec="-Updated";
 			}else if(sorter=='預計利本比最高'){
+				sorterRec="-Updated";
+			}else{
+				sorter='最新';
 				sorterRec="-Updated";
 			}
 			
@@ -1245,7 +1272,7 @@ router.get('/lenderReceiveMessages/:msgKeyword?/:filter?/:sorter?/:page?', libra
 			var value3ALL=0;
 			var value4ALL=0;
 			
-			var filterRec;
+			var filterRec=null;
 			
 			if(filter=='未確認'){
 				filterRec="NotConfirmed";
@@ -1253,9 +1280,12 @@ router.get('/lenderReceiveMessages/:msgKeyword?/:filter?/:sorter?/:page?', libra
 				filterRec="Confirmed";
 			}else if(filter=='已婉拒'){
 				filterRec="Rejected";
+			}else{
+				filter='未確認';
+				filterRec="NotConfirmed";
 			}
 			
-			var sorterRec;
+			var sorterRec=null;
 			
 			if(sorter=='最新'){
 				sorterRec="-Updated";
@@ -1274,6 +1304,9 @@ router.get('/lenderReceiveMessages/:msgKeyword?/:filter?/:sorter?/:page?', libra
 			}else if(sorter=='預計平均本利和最高'){
 				sorterRec="-Updated";
 			}else if(sorter=='預計利本比最高'){
+				sorterRec="-Updated";
+			}else{
+				sorter='最新';
 				sorterRec="-Updated";
 			}
 			

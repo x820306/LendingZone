@@ -430,7 +430,7 @@ router.get('/rejectToBorrowMessageInLRMall/:msgKeyword?/:sorter?', library.ensur
 	if((typeof(req.query.msgKeyword) !== "undefined")&&(typeof(req.query.sorter) !== "undefined")){
 		var msgKeyword=decodeURIComponent(req.query.msgKeyword);
 		var sorter=decodeURIComponent(req.query.sorter);
-		var sorterRec;
+		var sorterRec=null;
 		if(sorter=='最新'){
 			sorterRec="-Updated";
 		}else if(sorter=='利率最高'){
@@ -448,6 +448,9 @@ router.get('/rejectToBorrowMessageInLRMall/:msgKeyword?/:sorter?', library.ensur
 		}else if(sorter=='預計平均本利和最高'){
 			sorterRec="-Updated";
 		}else if(sorter=='預計利本比最高'){
+			sorterRec="-Updated";
+		}else{
+			sorter='最新';
 			sorterRec="-Updated";
 		}
 		
@@ -573,7 +576,7 @@ router.get('/confirmToBorrowMessageInLRMall/:msgKeyword?/:sorter?', library.ensu
 	if((typeof(req.query.msgKeyword) !== "undefined")&&(typeof(req.query.sorter) !== "undefined")){
 		var msgKeyword=decodeURIComponent(req.query.msgKeyword);
 		var sorter=decodeURIComponent(req.query.sorter);
-		var sorterRec;
+		var sorterRec=null;
 		if(sorter=='最新'){
 			sorterRec="-Updated";
 		}else if(sorter=='利率最高'){
@@ -591,6 +594,9 @@ router.get('/confirmToBorrowMessageInLRMall/:msgKeyword?/:sorter?', library.ensu
 		}else if(sorter=='預計平均本利和最高'){
 			sorterRec="-Updated";
 		}else if(sorter=='預計利本比最高'){
+			sorterRec="-Updated";
+		}else{
+			sorter='最新';
 			sorterRec="-Updated";
 		}
 		
