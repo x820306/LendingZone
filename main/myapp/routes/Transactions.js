@@ -114,7 +114,7 @@ router.get('/buyInsuranceAll/:oneid?/:sorter?',library.ensureAuthenticated, func
 		var oneid=decodeURIComponent(req.query.oneid);
 		var sorter=decodeURIComponent(req.query.sorter);
 		
-		var sorterRec;
+		var sorterRec=null;
 		
 		if(sorter=='最新'){
 			sorterRec="-Updated";
@@ -150,6 +150,9 @@ router.get('/buyInsuranceAll/:oneid?/:sorter?',library.ensureAuthenticated, func
 			sorterRec="-Updated";
 		}else if(sorter=='保險所需費用最高'){
 			sorterRec="-Principal";
+		}else{
+			sorter='最新';
+			sorterRec="-Updated";
 		}
 		
 		var andFindCmdAry=[];
