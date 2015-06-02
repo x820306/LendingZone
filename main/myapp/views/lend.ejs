@@ -201,7 +201,7 @@
 				</div>
 				</br>
 				<% if(!jsonLend){ %>
-					<div class="btn-toolbar" role="toolbar">
+					<div style="width:100%;text-align: center;">
 						<div class="btn-group" role="group">
 							<button type="button" class="btn btn-info" onclick="checkAndOpenModal(chkModal1,mdlCnt1,'您確定要新建自動出借設定嗎?',true);">
 								新建
@@ -211,13 +211,13 @@
 					<div class="modal fade" id="chkModal1">
 						<div class="modal-dialog modal-sm"">
 							<div class="modal-content">
-								<div class="modal-header">
+								<div class="modal-header" style="text-align: center;">
 									<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 									<h4 class="modal-title">再次確認</h4>
 								</div>
-								<div id="mdlCnt1" class="modal-body">
+								<div id="mdlCnt1" class="modal-body" style="text-align: center;">
 								</div>
-								<div class="modal-footer">
+								<div class="modal-footer" style="text-align: center;">
 									<button type="submit" class="btn btn-primary" id="createBtnID" onclick="create();">確定</button>
 									<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
 								</div>
@@ -226,12 +226,13 @@
 					</div>
 				<% }else{ %>
 					<input type="hidden" name="_id" value="<%=jsonLend._id%>">
-					<div class="btn-toolbar" role="toolbar">
+					<div style="width:100%;text-align: center;">
 						<div class="btn-group" role="group">
 							<button type="button" class="btn btn-info" onclick="checkAndOpenModal(chkModal2,mdlCnt2,'您確定要更新自動出借設定嗎?',true);">
 								更新
 							</button>
 						</div>
+						&nbsp;
 						<div class="btn-group" role="group">
 							<button type="button" class="btn btn-danger" onclick="checkAndOpenModal(chkModal3,mdlCnt3,'您確定要刪除自動出借設定嗎?',false);">
 								刪除
@@ -241,13 +242,13 @@
 					<div class="modal fade" id="chkModal2">
 						<div class="modal-dialog modal-sm"">
 							<div class="modal-content">
-								<div class="modal-header">
+								<div class="modal-header" style="text-align: center;">
 									<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 									<h4 class="modal-title">再次確認</h4>
 								</div>
-								<div id="mdlCnt2" class="modal-body">
+								<div id="mdlCnt2" class="modal-body" style="text-align: center;">
 								</div>
-								<div class="modal-footer">
+								<div class="modal-footer" style="text-align: center;">
 									<button type="submit" class="btn btn-primary" id="updateBtnID" onclick="update();">確定</button>
 									<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
 								</div>
@@ -257,13 +258,13 @@
 					<div class="modal fade" id="chkModal3">
 						<div class="modal-dialog modal-sm"">
 							<div class="modal-content">
-								<div class="modal-header">
+								<div class="modal-header" style="text-align: center;">
 									<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 									<h4 class="modal-title">再次確認</h4>
 								</div>
-								<div id="mdlCnt3" class="modal-body">
+								<div id="mdlCnt3" class="modal-body" style="text-align: center;">
 								</div>
-								<div class="modal-footer">
+								<div class="modal-footer" style="text-align: center;">
 									<button type="button" class="btn btn-danger" id="destroyBtnID" onclick="destroy();">確定</button>
 									<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
 								</div>
@@ -275,17 +276,17 @@
 			<div class="modal fade" id="msgModal">
 				<div class="modal-dialog modal-sm"">
 					<div class="modal-content">
-						<div class="modal-header">
+						<div class="modal-header" style="text-align: center;">
 							<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 							<h4 class="modal-title">錯誤</h4>
 						</div>
-						<div class="modal-body">
+						<div class="modal-body" style="text-align: center;">
 							<br>
 							必填欄位未填或已填欄位數值錯誤
 							<br>
 							<br>
 						</div>
-						<div class="modal-footer">
+						<div class="modal-footer" style="text-align: center;">
 							<button type="button" class="btn btn-default" data-dismiss="modal">關閉</button>
 						</div>
 					</div>
