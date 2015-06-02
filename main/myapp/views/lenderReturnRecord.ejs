@@ -5,31 +5,55 @@
 			<div style="font-size:30pt;"><%if(idDefault!=''){%>單筆交易<%}%>收款紀錄</div>
 				<div style="font-size:20pt;">&nbsp;<%=totalResultNum%> result</div>
 				<br>
-				<div class="btn-group">
+				<%if(idDefault!=''){%>
 					<div class="btn-group">
-						<button type="button" style="height:40px;" class="btn btn-default dropdown-toggle" data-toggle="dropdown" id="sorterSelected">
-							<%=sorterDefault%> <span class="caret"></span>
-						</button>
-						<ul class="dropdown-menu">
-							<li style="display:none"><a href="#" id="sorter0"><%=sorterDefault%></a></li>
-							<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter1').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter1">最新</a></li>
-							<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter2').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter2">實收金額最多</a></li>
-							<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter3').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter3">應收金額最多</a></li>
-							<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter4').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter4">未收金額最多</a></li>
-							<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter5').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter5">超收金額最多</a></li>
-						</ul>
+				<%}else{%>
+				<div class="input-group">
+					<input type="text" style="height:40px;" class="form-control" id="oneidIpt" placeholder="搜尋故事標題或用戶名稱" value="<%=oneidDefault%>" onkeypress="if(event.keyCode==13){window.open('/lender/lenderReturnRecord?oneid='+encodeURIComponent($('#oneidIpt').val())+'&id=<%=encodeURIComponent(idDefault)%>&sorter='+encodeURIComponent($('#sorter0').text())+'&page=1','_self');}">	
+					<span class="input-group-btn">
+				<%}%>
+						<div class="btn-group">
+							<button type="button" style="height:40px;" class="btn btn-default dropdown-toggle" data-toggle="dropdown" id="sorterSelected">
+								<%=sorterDefault%> <span class="caret"></span>
+							</button>
+							<ul class="dropdown-menu">
+								<li style="display:none"><a href="#" id="sorter0"><%=sorterDefault%></a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter1').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter1">最新</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter2').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter2">實收金額最多</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter3').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter3">應收金額最多</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter4').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter4">未收金額最多</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter5').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter5">超收金額最多</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter6').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter6">實收本金最多</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter7').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter7">應收本金最多</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter8').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter8">未收本金最多</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter9').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter9">超收本金最多</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter10').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter10">實收利息最多</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter11').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter11">應收利息最多</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter12').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter12">未收利息最多</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter13').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter13">超收利息最多</a></li>
+							</ul>
+						</div>
+						<%if(idDefault!=''){%>
+							<button type="button" style="height:40px;" class="btn btn-default" onclick="window.open('/lender/lenderReturnRecord?oneid=<%=encodeURIComponent(oneidDefault)%>&id=<%=encodeURIComponent(idDefault)%>&sorter='+encodeURIComponent($('#sorter0').text())+'&page=1','_self');">Go!</button>
+						<%}else{%>
+							<button type="button" style="height:40px;" class="btn btn-default" onclick="window.open('/lender/lenderReturnRecord?oneid='+encodeURIComponent($('#oneidIpt').val())+'&id=<%=encodeURIComponent(idDefault)%>&sorter='+encodeURIComponent($('#sorter0').text())+'&page=1','_self');">Go!</button>
+						<%}%>	
+				<%if(idDefault!=''){%>
 					</div>
-					<button type="button" style="height:40px;" class="btn btn-default" onclick="window.open('/lender/lenderReturnRecord?oneid=<%=oneidDefault%>&id=<%=idDefault%>&sorter='+encodeURIComponent($('#sorter0').text())+'&page=1','_self');">Go!</button>
+				<%}else{%>
+					</span>
 				</div>
-				<br>
+				<%}%>
 				<br>
 				<br>
 				<% if(totalResultNum!=0){ %>
 					<% for(var i=0; i<jsonReturns.length; i++) { %>
-						<div style="height: 335px;" class="panel panel-default pd">
+						<div style="height: 350px;" class="panel panel-default pd">
 							<div class="panel-body">
 								<div style="font-size:25px;display:inline;">來自 </div>
 								<div style="font-size:25px;display:inline;" class="myTitle"><%=jsonReturns[i].Borrower.Username%></div>
+								<br>
+								&nbsp;&nbsp;在 <a style="font-size:15px;" href="/lender/story?id=<%=jsonReturns[i].ToTransaction.CreatedFrom.FromBorrowRequest._id%>"><%-jsonReturns[i].ToTransaction.CreatedFrom.FromBorrowRequest.StoryTitle.replace(new RegExp(' ','g'),'&nbsp;')%></a>
 								<br>
 								<br>
 								<div class="col-md-6">
@@ -234,7 +258,7 @@
 									<%}%>
 								>
 								<% if(targetPageNumber!=1){%>
-									<a href="/lender/lenderReturnRecord?oneid=<%=oneidDefault%>&id=<%=idDefault%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=targetPageNumber-1%>">
+									<a href="/lender/lenderReturnRecord?oneid=<%=encodeURIComponent(oneidDefault)%>&id=<%=encodeURIComponent(idDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=targetPageNumber-1%>">
 								<%}else{%>
 									<a href="#" onclick="return false;">
 								<%}%>
@@ -245,7 +269,7 @@
 											<% if(targetPageNumber==j){%>
 												class="active"
 											<%}%>
-										><a href="/lender/lenderReturnRecord?oneid=<%=oneidDefault%>&id=<%=idDefault%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=j%>"><%=j%></a></li>
+										><a href="/lender/lenderReturnRecord?oneid=<%=encodeURIComponent(oneidDefault)%>&id=<%=encodeURIComponent(idDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=j%>"><%=j%></a></li>
 									<%}%>
 								<% }else{%>
 									<% if(targetPageNumber>=pageNumber-3){%>
@@ -254,7 +278,7 @@
 											<% if(targetPageNumber==j){%>
 												class="active"
 											<%}%>
-										><a href="/lender/lenderReturnRecord?oneid=<%=oneidDefault%>&id=<%=idDefault%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=j%>"><%=j%></a></li>
+										><a href="/lender/lenderReturnRecord?oneid=<%=encodeURIComponent(oneidDefault)%>&id=<%=encodeURIComponent(idDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=j%>"><%=j%></a></li>
 										<%}%>
 									<%}else if(targetPageNumber<=5){%>
 										<% for(var j=1; j<=10; j++) { %>
@@ -262,15 +286,15 @@
 											<% if(targetPageNumber==j){%>
 												class="active"
 											<%}%>
-										><a href="/lender/lenderReturnRecord?oneid=<%=oneidDefault%>&id=<%=idDefault%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=j%>"><%=j%></a></li>
+										><a href="/lender/lenderReturnRecord?oneid=<%=encodeURIComponent(oneidDefault)%>&id=<%=encodeURIComponent(idDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=j%>"><%=j%></a></li>
 										<%}%>
 									<%}else{%>
 										<% for(var j=targetPageNumber-5; j<targetPageNumber; j++) { %>
-										<li><a href="/lender/lenderReturnRecord?oneid=<%=oneidDefault%>&id=<%=idDefault%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=j%>"><%=j%></a></li>
+										<li><a href="/lender/lenderReturnRecord?oneid=<%=encodeURIComponent(oneidDefault)%>&id=<%=encodeURIComponent(idDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=j%>"><%=j%></a></li>
 										<%}%>
-										<li class="active"><a href="/lender/lenderReturnRecord?oneid=<%=oneidDefault%>&id=<%=idDefault%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=targetPageNumber%>"><%=targetPageNumber%></a></li>
+										<li class="active"><a href="/lender/lenderReturnRecord?oneid=<%=encodeURIComponent(oneidDefault)%>&id=<%=encodeURIComponent(idDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=targetPageNumber%>"><%=targetPageNumber%></a></li>
 										<% for(var j=targetPageNumber+1; j<=targetPageNumber+4; j++) { %>
-										<li><a href="/lender/lenderReturnRecord?oneid=<%=oneidDefault%>&id=<%=idDefault%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=j%>"><%=j%></a></li>
+										<li><a href="/lender/lenderReturnRecord?oneid=<%=encodeURIComponent(oneidDefault)%>&id=<%=encodeURIComponent(idDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=j%>"><%=j%></a></li>
 										<%}%>
 									<%}%>
 								<%}%>
@@ -280,7 +304,7 @@
 									<%}%>
 								>	
 								<% if(targetPageNumber!=pageNumber){%>
-									<a href="/lender/lenderReturnRecord?oneid=<%=oneidDefault%>&id=<%=idDefault%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=targetPageNumber+1%>">
+									<a href="/lender/lenderReturnRecord?oneid=<%=encodeURIComponent(oneidDefault)%>&id=<%=encodeURIComponent(idDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=targetPageNumber+1%>">
 								<%}else{%>
 									<a href="#" onclick="return false;">
 								<%}%>

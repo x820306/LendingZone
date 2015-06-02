@@ -49,12 +49,12 @@
 						<li><a href="#tab3<%=i%>" data-toggle="tab">交易紀錄</a></li>
 						<% }%>
 					</ul>
-					<div style="height:310px;" class="tab-content my-tab-content">
+					<div style="height:340px;" class="tab-content my-tab-content">
 						<div class="tab-pane active" id="tab1<%=i%>">
 							<div style="font-size:25px;display:inline;">送往 </div>
 							<div style="font-size:25px;display:inline;" class="myTitle"><%=jsonMessage[i].SendTo.Username%></div>
 							<br>
-							在 <a style="font-size:15px;" href="/lender/story?id=<%=jsonMessage[i].FromBorrowRequest._id%>"><%-jsonMessage[i].FromBorrowRequest.StoryTitle.replace(new RegExp(' ','g'),'&nbsp;')%></a>
+							&nbsp;&nbsp;在 <a style="font-size:15px;" href="/lender/story?id=<%=jsonMessage[i].FromBorrowRequest._id%>"><%-jsonMessage[i].FromBorrowRequest.StoryTitle.replace(new RegExp(' ','g'),'&nbsp;')%></a>
 							<br>
 							<br>
 							<div>
@@ -63,7 +63,7 @@
 						</div>
 						<div class="tab-pane" id="tab2<%=i%>">
 							<div class="col-md-6">
-								<table width="100%" height="270px">
+								<table width="100%" height="310px">
 									<tr>
 										<td>
 											<div class="myTitle">
@@ -123,7 +123,7 @@
 								</table>	
 							</div>
 							<div class="col-md-6">
-								<table width="100%" height="270px">	
+								<table width="100%" height="310px">	
 									<tr>
 										<td>
 											<div class="myTitle">
@@ -271,10 +271,6 @@
 												</div>	
 											</td>
 										<tr>
-									</table>
-								</div>
-								<div class="col-md-6">
-									<table width="100%" height="275px">
 										<tr>
 											<td>
 												<div class="myTitle">
@@ -303,6 +299,10 @@
 												</div>	
 											</td>
 										<tr>
+									</table>
+								</div>
+								<div class="col-md-6">
+									<table width="100%" height="270px">
 										<tr>
 											<td>
 												<div class="myTitle">
@@ -348,6 +348,34 @@
 										<tr>
 											<td>
 												<div class="myTitle">
+													 上次成功收款日期:
+												</div>
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;<%if(jsonMessage[i].Transaction[0].previousPayDate){%><%=jsonMessage[i].Transaction[0].previousPayDate.getFullYear()%>/<%=jsonMessage[i].Transaction[0].previousPayDate.getMonth()+1%>/<%=jsonMessage[i].Transaction[0].previousPayDate.getDate()%><%}else{%>無收款記錄<%}%>
+												</div>	
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div class="myTitle">
+													下次應收款日期：
+												</div>
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;<%if(jsonMessage[i].Transaction[0].nextPayDate){%><%=jsonMessage[i].Transaction[0].nextPayDate.getFullYear()%>/<%=jsonMessage[i].Transaction[0].nextPayDate.getMonth()+1%>/<%=jsonMessage[i].Transaction[0].nextPayDate.getDate()%><%}else{%>已還清<%}%>
+												</div>	
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div class="myTitle">
 													保險所需費用：
 												</div>
 											</td>
@@ -355,7 +383,7 @@
 										<tr>
 											<td>
 												<div>
-													&nbsp;&nbsp;&nbsp;&nbsp;<%=(jsonMessage[i].Transaction[0].Principal*insuranceRate).toFixed(0)%>元
+													&nbsp;&nbsp;&nbsp;&nbsp;<%if(jsonMessage[i].Transaction[0].Principal*insuranceRate<1){%>1<%}else{%><%=(jsonMessage[i].Transaction[0].Principal*insuranceRate).toFixed(0)%><%}%>元
 												</div>	
 											</td>
 										<tr>
@@ -370,6 +398,20 @@
 											<td>
 												<div>
 													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].InsuranceFeePaid.toFixed(0)%>元
+												</div>	
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div class="myTitle">
+													已收款次數：
+												</div>
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].ReturnCount.toFixed(0)%>次
 												</div>	
 											</td>
 										<tr>
