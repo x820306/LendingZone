@@ -457,12 +457,12 @@
 									<textarea class="form-control" name="Message" rows="3" readonly="readonly"><%=jsonMessage.Message%></textarea>
 									<br>
 								</div>
-								<div class="modal-footer">
-									<div class="btn-toolbar" role="toolbar">
-										<div class="btn-group" role="group">
-											<button type="button" class="btn btn-default" data-dismiss="modal">關閉</button>
-										</div>
-									</div>
+								<div class="modal-footer" style="text-align: left;">
+									<a href="/lender/lenderSendMessages?msgKeyword=<%=jsonMessage._id%>&filter=<%if(jsonMessage.Status=="NotConfirmed"){%><%=encodeURIComponent('未被確認')%><%}else if(jsonMessage.Status=="Confirmed"){%><%=encodeURIComponent('已被同意')%><%}else if(jsonMessage.Status=="Rejected"){%><%=encodeURIComponent('已被婉拒')%><%}%>&sorter=<%=encodeURIComponent('最新')%>&page=1">
+										<button type="button" class="btn btn-default">於列表查看</button>
+									</a>
+									&nbsp;
+									<button type="button" class="btn btn-default" data-dismiss="modal">關閉</button>
 								</div>
 							</div>
 						</div>
@@ -552,9 +552,10 @@
 										</div>
 									</div>
 									<div style="float:right;">
-										<div class="btn-group" role="group">
-											<button type="button" class="btn btn-default" data-dismiss="modal">關閉</button>
-										</div>
+										<a href="/lender/lenderSendMessages?msgKeyword=<%=jsonMessage._id%>&filter=<%if(jsonMessage.Status=="NotConfirmed"){%><%=encodeURIComponent('未被確認')%><%}else if(jsonMessage.Status=="Confirmed"){%><%=encodeURIComponent('已被同意')%><%}else if(jsonMessage.Status=="Rejected"){%><%=encodeURIComponent('已被婉拒')%><%}%>&sorter=<%=encodeURIComponent('最新')%>&page=1">
+											<button type="button" class="btn btn-default">於列表查看</button>
+										</a>
+										<button type="button" class="btn btn-default" data-dismiss="modal">關閉</button>
 									</div>
 								</div>
 							</div>
@@ -656,19 +657,18 @@
 							<input type="hidden" name="FromBorrowRequest" value="<%=json._id%>">
 							<input type="hidden" name="MessageID" value="<%=jsonBorrowMessage._id%>">
 							<%}%>
-							<div class="modal-footer">
-								<div class="btn-toolbar" role="toolbar">
-									<%if(jsonBorrowMessage.Status=='NotConfirmed'){%>
-									<div class="btn-group" role="group">
-										<button type="button" class="btn btn-danger" onclick="checkAndOpenModal(chkModal6,mdlCnt6,'您確定要婉拒此借款請求嗎?',false);">
-											婉拒
-										</button>
-									</div>
-									<%}%>
-									<div class="btn-group" role="group">
-										<button type="button" class="btn btn-default" data-dismiss="modal">關閉</button>
-									</div>
-								</div>
+							<div class="modal-footer" style="text-align: left;">
+								<%if(jsonBorrowMessage.Status=='NotConfirmed'){%>
+									<button type="button" class="btn btn-danger" onclick="checkAndOpenModal(chkModal6,mdlCnt6,'您確定要婉拒此借款請求嗎?',false);">
+										婉拒
+									</button>
+									&nbsp;
+								<%}%>
+								<a href="/lender/lenderReceiveMessages?msgKeyword=<%=jsonBorrowMessage._id%>&filter=<%if(jsonBorrowMessage.Status=="NotConfirmed"){%><%=encodeURIComponent('未確認')%><%}else if(jsonBorrowMessage.Status=="Confirmed"){%><%=encodeURIComponent('已同意')%><%}else if(jsonBorrowMessage.Status=="Rejected"){%><%=encodeURIComponent('已婉拒')%><%}%>&sorter=<%=encodeURIComponent('最新')%>&page=1">
+									<button type="button" class="btn btn-default">於列表查看</button>
+								</a>
+								&nbsp;
+								<button type="button" class="btn btn-default" data-dismiss="modal">關閉</button>
 							</div>
 						</div>
 					</div>
@@ -788,9 +788,10 @@
 									</div>
 								</div>
 								<div style="float:right;">
-									<div class="btn-group" role="group">
-										<button type="button" class="btn btn-default" data-dismiss="modal">關閉</button>
-									</div>
+									<a href="/lender/lenderReceiveMessages?msgKeyword=<%=jsonBorrowMessage._id%>&filter=<%if(jsonBorrowMessage.Status=="NotConfirmed"){%><%=encodeURIComponent('未確認')%><%}else if(jsonBorrowMessage.Status=="Confirmed"){%><%=encodeURIComponent('已同意')%><%}else if(jsonBorrowMessage.Status=="Rejected"){%><%=encodeURIComponent('已婉拒')%><%}%>&sorter=<%=encodeURIComponent('最新')%>&page=1">
+										<button type="button" class="btn btn-default">於列表查看</button>
+									</a>
+									<button type="button" class="btn btn-default" data-dismiss="modal">關閉</button>
 								</div>
 							</div>
 						</div>

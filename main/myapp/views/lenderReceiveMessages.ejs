@@ -688,7 +688,7 @@
 							<%}%>
 							<td align="right">
 								<div>
-									<%if(filterDefault=='已同意'){%><a href="/lender/lenderTransactionRecord?oneid=<%=jsonMessage[i].Transaction[0]._id%>&filter=<%if(jsonMessage[i].Transaction[0].InsuranceFeePaid>0){%>已保險<%}else{%>未保險<%}%>&sorter=<%=encodeURIComponent("最新")%>&page=1">查詢該筆交易</a>&nbsp;&nbsp;&nbsp;&nbsp;<%}%>Updated：<%=jsonMessage[i].Updated.getFullYear()%>/<%=jsonMessage[i].Updated.getMonth()+1%>/<%=jsonMessage[i].Updated.getDate()%>
+									<%if(filterDefault=='已同意'){%><a href="/lender/lenderTransactionRecord?oneid=<%=jsonMessage[i].Transaction[0]._id%>&filter=<%if(jsonMessage[i].Transaction[0].InsuranceFeePaid>0){%><%=encodeURIComponent("已保險")%><%}else if(jsonMessage[i].Transaction[0].InsuranceFeePaid==0){%><%=encodeURIComponent("未保險")%><%}%>&sorter=<%=encodeURIComponent("最新")%>&page=1">查詢該筆交易</a>&nbsp;&nbsp;&nbsp;&nbsp;<%}%>Updated：<%=jsonMessage[i].Updated.getFullYear()%>/<%=jsonMessage[i].Updated.getMonth()+1%>/<%=jsonMessage[i].Updated.getDate()%>
 								</div>
 							</td>
 						<tr>
