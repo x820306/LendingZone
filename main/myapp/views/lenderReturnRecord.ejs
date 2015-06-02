@@ -48,7 +48,14 @@
 				<br>
 				<% if(totalResultNum!=0){ %>
 					<% for(var i=0; i<jsonReturns.length; i++) { %>
-						<div style="height: 350px;" class="panel panel-default pd">
+						<table width="100%">
+							<tr>
+								<td>
+									<a style="font-size:15px;" href="/lender/lenderTransactionRecord?oneid=<%=jsonReturns[i].ToTransaction._id%>&filter=<%if(jsonReturns[i].ToTransaction.InsuranceFeePaid==0){%><%=encodeURIComponent('未保險')%><%}else if(jsonReturns[i].ToTransaction.InsuranceFeePaid>0){%><%=encodeURIComponent('已保險')%><%}%>&sorter=<%=encodeURIComponent('最新')%>&page=1">查看來源交易</a>
+								</td>
+							</tr>
+						</table>
+						<div style="height: 360px;" class="panel panel-default pd">
 							<div class="panel-body">
 								<div style="font-size:25px;display:inline;">來自 </div>
 								<div style="font-size:25px;display:inline;" class="myTitle"><%=jsonReturns[i].Borrower.Username%></div>
@@ -243,7 +250,6 @@
 						</td>
 					<tr>
 					</table>
-					<br>
 					<br>
 				<%}%>
 				<br>

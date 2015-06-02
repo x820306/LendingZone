@@ -195,6 +195,17 @@
 						<br>
 					<%}%>
 					<% for(var i=0; i<jsonTransaction.length; i++) { %>
+						<table width="100%">
+							<tr>
+								<td>
+									<%if(jsonTransaction[i].CreatedFrom.Type=="toBorrow"){%>
+										<a style="font-size:15px;" href="/lender/lenderReceiveMessages?msgKeyword=<%=jsonTransaction[i].CreatedFrom._id%>&filter=<%if(jsonTransaction[i].CreatedFrom.Status=="NotConfirmed"){%><%=encodeURIComponent('未確認')%><%}else if(jsonTransaction[i].CreatedFrom.Status=="Confirmed"){%><%=encodeURIComponent('已同意')%><%}else if(jsonTransaction[i].CreatedFrom.Status=="Rejected"){%><%=encodeURIComponent('已婉拒')%><%}%>&sorter=<%=encodeURIComponent('最新')%>&page=1">查看來源訊息</a>
+									<%}else if(jsonTransaction[i].CreatedFrom.Type=="toLend"){%>
+										<a style="font-size:15px;" href="/lender/lenderSendMessages?msgKeyword=<%=jsonTransaction[i].CreatedFrom._id%>&filter=<%if(jsonTransaction[i].CreatedFrom.Status=="NotConfirmed"){%><%=encodeURIComponent('未被確認')%><%}else if(jsonTransaction[i].CreatedFrom.Status=="Confirmed"){%><%=encodeURIComponent('已被同意')%><%}else if(jsonTransaction[i].CreatedFrom.Status=="Rejected"){%><%=encodeURIComponent('已被婉拒')%><%}%>&sorter=<%=encodeURIComponent('最新')%>&page=1">查看來源訊息</a>
+									<%}%>
+								</td>
+							</tr>
+						</table>
 						<div style="height: 420px;" class="panel panel-default pd">
 							<div class="panel-body">
 								<div style="font-size:25px;display:inline;">借給 </div>
@@ -454,7 +465,6 @@
 						</td>
 					<tr>
 					</table>
-					<br>
 					<br>
 				<%}%>
 				<%if(filterDefault=='未保險'){%>

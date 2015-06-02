@@ -527,7 +527,7 @@ router.get('/lenderTransactionRecord/:oneid?/:filter?/:sorter?/:page?', library.
 			var Borrows  = mongoose.model('Borrows');
 			var Messages  = mongoose.model('Messages');
 			var Transactions  = mongoose.model('Transactions');
-			Transactions.find({$and:andFindCmdAry}).populate('Borrower', 'Username').populate('CreatedFrom', 'FromBorrowRequest').populate('Return', 'PrincipalShouldPaid PrincipalNotPaid Created').sort(sorterRec).exec( function (err, transactions, count){
+			Transactions.find({$and:andFindCmdAry}).populate('Borrower', 'Username').populate('CreatedFrom','FromBorrowRequest Type Status').populate('Return', 'PrincipalShouldPaid PrincipalNotPaid Created').sort(sorterRec).exec( function (err, transactions, count){
 				if (err) {
 					console.log(err);
 					res.redirect('/message?content='+encodeURIComponent('錯誤!'));
@@ -757,7 +757,7 @@ router.get('/lenderReturnRecord/:oneid?/:id?/:sorter?/:page?', library.ensureAut
 			var Messages  = mongoose.model('Messages');
 			var Transactions  = mongoose.model('Transactions');
 			var Returns  = mongoose.model('Returns');
-			Returns.find({$and:andFindCmdAry,$where: function() { return (this.PrincipalShouldPaid-this.PrincipalNotPaid) > 0 }}).populate('Borrower', 'Username').populate('ToTransaction','CreatedFrom').sort(sorterRec).exec( function (err, returns, count){
+			Returns.find({$and:andFindCmdAry,$where: function() { return (this.PrincipalShouldPaid-this.PrincipalNotPaid) > 0 }}).populate('Borrower', 'Username').populate('ToTransaction','CreatedFrom InsuranceFeePaid').sort(sorterRec).exec( function (err, returns, count){
 				if (err) {
 					console.log(err);
 					res.redirect('/message?content='+encodeURIComponent('錯誤!'));
