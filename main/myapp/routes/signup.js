@@ -63,6 +63,7 @@ router.post('/changeData', library.ensureAuthenticated, function (req, res) {
 					user.IdCardNumber=sanitizer.sanitize(req.body.IdCardNumber.trim());
 					user.Phone=sanitizer.sanitize(req.body.Phone.trim());
 					user.Address=sanitizer.sanitize(req.body.Address.trim());
+					user.Updated=Date.now();
 					
 					if(req.files.IdCard){
 						user.IdCardType=req.files.IdCard.mimetype;

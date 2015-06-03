@@ -261,6 +261,7 @@ router.post('/resetPW', function(req, res, next) {
 					if(sanitizer.sanitize(req.body.Password.trim())==sanitizer.sanitize(req.body.Password2nd.trim())){
 						if((sanitizer.sanitize(req.body.Password.trim()).search(/[^\w\.\/]/ig)==-1)&&(sanitizer.sanitize(req.body.Password.trim()).length>=6)){
 							user.Password = sanitizer.sanitize(req.body.Password.trim());
+							user.Updated=Date.now();
 							user.resetPasswordToken = undefined;
 							user.resetPasswordExpires = undefined;
 							user.save(function (err,newUpdated){
@@ -306,6 +307,7 @@ router.post('/changePW',library.ensureAuthenticated,function(req, res, next) {
 								if(sanitizer.sanitize(req.body.Password.trim())==sanitizer.sanitize(req.body.Password2nd.trim())){
 									if((sanitizer.sanitize(req.body.Password.trim()).search(/[^\w\.\/]/ig)==-1)&&(sanitizer.sanitize(req.body.Password.trim()).length>=6)){
 										user.Password = sanitizer.sanitize(req.body.Password.trim());
+										user.Updated=Date.now();
 										user.save(function (err,newUpdated){
 											if (err){
 												console.log(err);
@@ -353,7 +355,7 @@ router.post('/ifOldPWRight',library.ensureAuthenticated,function(req, res, next)
 			console.log(err);
 			res.json({error: "錯誤",success:false}, 500);
 		}else{
-			if(!user) {
+			if(!user){
 				res.json({error:"認證錯誤",success:false}, 500);
 			}else{
 				user.comparePassword(sanitizer.sanitize(req.body.OldPassword.trim()), function(err, isMatch) {
@@ -393,15 +395,23 @@ function pwChangedMail(newUpdated){
 function userLevelSetter(res,uid,newLevel){
 	Users.update({_id:uid},{$set:{Level:newLevel}},function(err){
 		if(!err){
-			Borrows.update({CreatedBy:uid},{$set:{Level:newLevel}}, { multi: true },function(err){
+			var nowDate=Date.now();
+			Users.update({_id:uid},{$set:{Updated:nowDate}},function(err){
 				if(!err){
-					Messages.update({$or:[{$and:[{CreatedBy:uid},{Type:"toBorrow"}]},{$and:[{SendTo:uid},{Type:"toLend"}]}]},{$set:{Level:newLevel}}, { multi: true },function(err){
+					Borrows.update({CreatedBy:uid},{$set:{Level:newLevel}}, { multi: true },function(err){
 						if(!err){
-							Transactions.update({Borrower:uid},{$set:{Level:newLevel}}, { multi: true },function(err){
+							Messages.update({$or:[{$and:[{CreatedBy:uid},{Type:"toBorrow"}]},{$and:[{SendTo:uid},{Type:"toLend"}]}]},{$set:{Level:newLevel}}, { multi: true },function(err){
 								if(!err){
-									Returns.update({Borrower:uid},{$set:{Level:newLevel}}, { multi: true },function(err){
+									Transactions.update({Borrower:uid},{$set:{Level:newLevel}}, { multi: true },function(err){
 										if(!err){
-											res.end('success!');
+											Returns.update({Borrower:uid},{$set:{Level:newLevel}}, { multi: true },function(err){
+												if(!err){
+													res.end('success!');
+												}else{
+													console.log(err);
+													res.end('error!');
+												}
+											});
 										}else{
 											console.log(err);
 											res.end('error!');
