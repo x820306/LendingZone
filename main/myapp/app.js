@@ -6,6 +6,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var flash = require('connect-flash');
 
 var ccap = require('ccap');
 var captcha = ccap({});
@@ -41,11 +42,12 @@ app.set('view engine', 'ejs');
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
+app.use(cookieParser('lendingZone'));
 app.use(session({ secret: 'lendingZone',
 				  name: 'cookie_name',
 				  resave: true,
 				  saveUninitialized: true}));
+app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -63,19 +65,19 @@ passport.use('local', new LocalStrategy({
 		Users.findOne({"Username": Username}).exec(function (err, user){
 			if (err) {
 				console.log(err);
-				return done(null, false);
+				return done(null, false, { message: '資料庫錯誤！' });
 			}else{
 				if(!user){
 					console.log('Incorrect Username.');
-					return done(null, false);
+					return done(null, false, { message: '帳號錯誤！' });
 				}else{
 					user.comparePassword(Password, function(err, isMatch) {
 						if(err){
-							return done(null, false);
+							return done(null, false, { message: '資料庫錯誤！' });
 						}else{
 							if(!isMatch){
 								console.log('Incorrect Password.');
-								return done(null, false);
+								return done(null, false, { message: '密碼錯誤！' });
 							}else{
 								console.log('Login Success.');
 								var smaller_user={
@@ -118,6 +120,13 @@ app.get('/',library.newMsgChecker, function (req, res) {
 app.get('/message/:content?/:info1?/:info2?/:info3?/:info4?/:infoB?',library.newMsgChecker, function (req, res) {
 	if(typeof(req.query.content) !== "undefined"){
 		var temp=decodeURIComponent(req.query.content);
+		var tempArray=[];
+		tempArray=req.flash('error');
+		if(tempArray){
+			if(tempArray.length>0){
+				temp=tempArray[0];
+			}
+		}
 		var auRst=null;
 		if(req.isAuthenticated()){
 			auRst=req.user.Username;
@@ -139,7 +148,7 @@ app.get('/message/:content?/:info1?/:info2?/:info3?/:info4?/:infoB?',library.new
 	}
 });
 
-app.post('/login',captchaChecker, passport.authenticate('local', { failureRedirect: '/message?content='+encodeURIComponent('帳號或密碼錯誤！')}),function (req, res) {
+app.post('/login',captchaChecker, passport.authenticate('local', { failureRedirect: '/message?content='+encodeURIComponent('帳號或密碼錯誤！'),failureFlash: true }),function (req, res) {
 	var origString=req.get('referer');
 	var stringArray=origString.split('/');
 	var subString=stringArray[stringArray.length-1];
