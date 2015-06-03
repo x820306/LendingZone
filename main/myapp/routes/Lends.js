@@ -26,6 +26,28 @@ router.post('/createTest', function(req, res, next) {
 	
 });
 
+router.post('/destroyTest',function(req, res, next) {
+	Lends.findById(req.body.LendID).exec(function (err, lend){
+		if (err) {
+			console.log(err);
+			res.json({error: err.name}, 500);
+		}else{
+			if(!lend){
+				res.json({error:'no such lend'}, 500);
+			}else{
+				lend.remove(function (err,removedItem) {
+					if (err){
+						console.log(err);
+						res.json({error: err.name}, 500);
+					}else{
+						res.json(removedItem);
+					}
+				});
+			}
+		}
+	});
+});
+
 function samePart(res,req,differentPart,outterPara){
 	BankAccounts.findOne({"OwnedBy": req.user._id}).exec(function (err, bankaccount){
 		if (err) {

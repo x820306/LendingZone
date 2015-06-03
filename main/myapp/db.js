@@ -185,9 +185,9 @@ var MessagesModal  = mongoose.model('Messages');
 mongoose.model( 'Discussions', Discussions );
 var DiscussionsModal  = mongoose.model('Discussions');
 
-Borrows.pre('remove', function (next) {
+Borrows.pre('remove', function (next){
 	console.log('level-1');
-	DiscussionsModal.remove({BelongTo: this._id}).exec();
+	var borrow_id=this._id;
 	async.each(this.Message, function(id, callback) {
 		MessagesModal.findById(id).exec(function (err, message){
 			if(err){
@@ -204,10 +204,151 @@ Borrows.pre('remove', function (next) {
 		});
 	},function(err){
 		if(err) throw err;
-		next();
+		DiscussionsModal.remove({BelongTo: borrow_id},function(err){
+			if(err) throw err;
+			next();
+		});
 	});	
 });
 mongoose.model( 'Borrows', Borrows );
+var BorrowsModal  = mongoose.model('Borrows');
+
+mongoose.model( 'Lends', Lends );
+var LendsModal  = mongoose.model('Lends');
+mongoose.model( 'BankAccounts', BankAccounts );
+var BankAccountsModal  = mongoose.model('BankAccounts');
+
+Users.pre('remove', function (next){
+	var user_id=this._id;
+	BorrowsModal.find({}).exec(function (err, borrows){
+		if(err){
+			throw err;
+		}else{
+			async.each(borrows, function(brw, callback) {
+				if(brw.CreatedBy.toString()===user_id.toString()){
+					brw.remove(function (err,removed) {
+						callback();
+					});
+				}else{
+					var foundFlag=false;
+					for(j=brw.Likes.length-1;j>-1;j--){
+						if(brw.Likes[j].toString()===user_id.toString()){
+							brw.Likes.splice(j, 1);
+							brw.LikeNumber--;
+							foundFlag=true;
+						}
+					}
+					if(foundFlag){
+						brw.save(function (err,updatedBrw) {
+							if (err){
+								callback();
+							}else{	
+								callback();
+							}
+						});
+					}else{
+						callback();
+					}
+				}
+			},function(err){
+				if(err) throw err;
+				MessagesModal.find({$or:[{"SendTo": user_id},{"CreatedBy": user_id}]}).exec(function (err, messages){
+					if(err){
+						throw err;
+					}else{
+						async.each(messages, function(msg, callback){	
+							BorrowsModal.findById(msg.FromBorrowRequest).exec(function (err, borrow){
+								if(err){
+									callback();
+								}else{
+									if(!borrow){
+										callback();
+									}else{
+										var ctr = -1;
+										for (i = 0; i < borrow.Message.length; i++) {
+											if (borrow.Message[i].toString() === msg._id.toString()) {
+												ctr=i;
+												break;
+											}
+										};
+										if(ctr>-1){
+											borrow.Message.splice(ctr, 1);
+										}
+										borrow.save(function (err,updatedBorrow) {
+											if (err){
+												callback();
+											}else{	
+												msg.remove(function (err,removedItem) {
+													if (err){
+														callback();
+													}else{
+														callback();
+													}
+												});
+											}
+										});
+									}
+								}
+							});
+						},function(err){
+							if(err) throw err;
+							DiscussionsModal.find({CreatedBy:user_id}).exec(function (err, discussions){
+								if(err){
+									throw err;
+								}else{
+									async.each(discussions, function(dcs, callback){	
+										BorrowsModal.findById(dcs.BelongTo).exec(function (err, borrow2){
+											if(err){
+												callback();
+											}else{
+												if(!borrow2){
+													callback();
+												}else{
+													var ctr2 = -1;
+													for (o = 0; o < borrow2.Discussion.length; o++) {
+														if (borrow2.Discussion[o].toString() === dcs._id.toString()) {
+															ctr2=o;
+															break;
+														}
+													};
+													if(ctr2>-1){
+														borrow2.Discussion.splice(ctr2, 1);
+													}
+													borrow2.save(function (err,updatedBorrow2) {
+														if (err){
+															callback();
+														}else{	
+															dcs.remove(function (err,removedItem2) {
+																if (err){
+																	callback();
+																}else{
+																	callback();
+																}
+															});
+														}
+													});
+												}
+											}
+										});
+									},function(err){
+										if(err) throw err;
+										LendsModal.remove({CreatedBy: user_id},function(err){
+											if(err) throw err;
+											BankAccountsModal.remove({OwnedBy: user_id},function(err){
+												if(err) throw err;
+												next();
+											});
+										});	
+									});
+								}
+							});
+						});
+					}
+				});
+			});	
+		}
+	});
+});
 
 Users.pre('save', function(next) {
     var user = this;
@@ -247,7 +388,5 @@ Users.methods.comparePassword = function(candidatePassword, cb) {
 };
 
 mongoose.model( 'Users', Users );
-mongoose.model( 'Lends', Lends );
-mongoose.model( 'BankAccounts', BankAccounts );
 
 mongoose.connect( 'mongodb://lendingZone:lendingZone@ds031972.mongolab.com:31972/lending' );
