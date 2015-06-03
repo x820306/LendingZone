@@ -237,7 +237,7 @@ router.get('/resetPWpage/:token?', library.newMsgChecker, function(req, res, nex
 				res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 			}else{
 				if (!user) {
-					res.redirect('/message?content='+encodeURIComponent('token過期或無效！!'));
+					res.redirect('/message?content='+encodeURIComponent('token過期或無效!'));
 				}else{
 					res.render('resetPWpage',{newlrmNum: req.newlrmNumber,newlsmNum: req.newlsmNumber,userName: auRst,tk:req.query.token});
 				}
@@ -255,32 +255,73 @@ router.post('/resetPW', function(req, res, next) {
 			res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 		}else{
 			if (!user) {
-				res.redirect('/message?content='+encodeURIComponent('token過期或無效！!'));
+				res.redirect('/message?content='+encodeURIComponent('token過期或無效!'));
 			}else{
-				if(sanitizer.sanitize(req.body.Password.trim())!=''){
-					user.Password = sanitizer.sanitize(req.body.Password.trim());;
-					user.resetPasswordToken = undefined;
-					user.resetPasswordExpires = undefined;
-					user.save(function (err,newUpdated){
-						if (err){
-							console.log(err);
-							res.redirect('/message?content='+encodeURIComponent('錯誤!'));
-						}else{
-							var mailOptions = {
-								from: 'LendingZone <lendingzonesystem@gmail.com>', // sender address
-								to: newUpdated.Username+' <'+newUpdated.Email+'>', // list of receivers
-								subject: '您於Lending Zone的密碼已經變更', // Subject line
-								text: '您於Lending Zone的密碼已經變更', // plaintext body
-								html: '您於Lending Zone的密碼已經變更'
-							};
-							
-							transporter.sendMail(mailOptions, function(error, info){
-								if(error){
-									console.log(error);
+				if((sanitizer.sanitize(req.body.Password.trim())!='')&&(sanitizer.sanitize(req.body.Password2nd.trim())!='')){
+					if(sanitizer.sanitize(req.body.Password.trim())==sanitizer.sanitize(req.body.Password2nd.trim())){
+						if((sanitizer.sanitize(req.body.Password.trim()).search(/[^\w\.\/]/ig)==-1)&&(sanitizer.sanitize(req.body.Password.trim()).length>=6)){
+							user.Password = sanitizer.sanitize(req.body.Password.trim());
+							user.resetPasswordToken = undefined;
+							user.resetPasswordExpires = undefined;
+							user.save(function (err,newUpdated){
+								if (err){
+									console.log(err);
+									res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+								}else{
+									pwChangedMail(newUpdated);
+									res.redirect('/message?content='+encodeURIComponent('您的密碼已重設成功!'));
 								}
 							});
-							
-							res.redirect('/message?content='+encodeURIComponent('您的密碼已重設成功!'));
+						}else{
+							res.redirect('/message?content='+encodeURIComponent('新密碼格式不合規定!'));
+						}
+					}else{
+						res.redirect('/message?content='+encodeURIComponent('兩次密碼輸入不一致!'));
+					}
+				}else{
+					res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+				}
+			}
+		}
+	});
+});
+
+router.post('/changePW',library.ensureAuthenticated,function(req, res, next) {
+	Users.findById(req.user._id).exec(function (err, user){
+		if(err){
+			console.log(err);
+			res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+		}else{
+			if (!user) {
+				res.redirect('/message?content='+encodeURIComponent('認證錯誤'));
+			}else{
+				if((sanitizer.sanitize(req.body.Password.trim())!='')&&(sanitizer.sanitize(req.body.Password2nd.trim())!='')&&(sanitizer.sanitize(req.body.OldPassword.trim())!='')){
+					user.comparePassword(sanitizer.sanitize(req.body.OldPassword.trim()), function(err, isMatch) {
+						if(err){
+							res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+						}else{
+							if(!isMatch){
+								res.redirect('/message?content='+encodeURIComponent('舊密碼輸入錯誤!'));
+							}else{
+								if(sanitizer.sanitize(req.body.Password.trim())==sanitizer.sanitize(req.body.Password2nd.trim())){
+									if((sanitizer.sanitize(req.body.Password.trim()).search(/[^\w\.\/]/ig)==-1)&&(sanitizer.sanitize(req.body.Password.trim()).length>=6)){
+										user.Password = sanitizer.sanitize(req.body.Password.trim());
+										user.save(function (err,newUpdated){
+											if (err){
+												console.log(err);
+												res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+											}else{
+												pwChangedMail(newUpdated);
+												res.redirect('/message?content='+encodeURIComponent('您的密碼已變更成功!'));
+											}
+										});
+									}else{
+										res.redirect('/message?content='+encodeURIComponent('新密碼格式不合規定!'));
+									}
+								}else{
+									res.redirect('/message?content='+encodeURIComponent('兩次密碼輸入不一致!'));
+								}
+							}
 						}
 					});
 				}else{
@@ -291,7 +332,63 @@ router.post('/resetPW', function(req, res, next) {
 	});
 });
 
+router.post('/ifUsernameExist',function(req, res, next) {
+	Users.findOne({Username:sanitizer.sanitize(req.body.Urname.trim())}).exec(function (err, user){
+		if(err){
+			console.log(err);
+			res.json({error: "錯誤",success:false}, 500);
+		}else{
+			if(!user) {
+				res.json({Valid: true,success:true});
+			}else{
+				res.json({Valid: false,success:true});
+			}
+		}
+	});
+});
+
+router.post('/ifOldPWRight',library.ensureAuthenticated,function(req, res, next) {
+	Users.findById(req.user._id).exec(function (err, user){
+		if(err){
+			console.log(err);
+			res.json({error: "錯誤",success:false}, 500);
+		}else{
+			if(!user) {
+				res.json({error:"認證錯誤",success:false}, 500);
+			}else{
+				user.comparePassword(sanitizer.sanitize(req.body.OldPassword.trim()), function(err, isMatch) {
+					if(err){
+						res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+					}else{
+						if(!isMatch){
+							res.json({Right:false,success:true});
+						}else{
+							res.json({Right:true,success:true});
+						}
+					}
+				});
+			}
+		}
+	});
+});
+
 module.exports = router;
+
+function pwChangedMail(newUpdated){
+	var mailOptions = {
+		from: 'LendingZone <lendingzonesystem@gmail.com>', // sender address
+		to: newUpdated.Username+' <'+newUpdated.Email+'>', // list of receivers
+		subject: '您於Lending Zone的密碼已經變更', // Subject line
+		text: '您於Lending Zone的密碼已經變更', // plaintext body
+		html: '您於Lending Zone的密碼已經變更'
+	};
+	
+	transporter.sendMail(mailOptions, function(error, info){
+		if(error){
+			console.log(error);
+		}
+	});
+}
 
 function userLevelSetter(res,uid,newLevel){
 	Users.update({_id:uid},{$set:{Level:newLevel}},function(err){

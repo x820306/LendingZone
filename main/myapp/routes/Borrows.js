@@ -73,7 +73,7 @@ router.post('/destroyTest', function(req, res, next) {
 });
 
 router.post('/readable', library.ensureAuthenticated, function(req, res, next) {
-	Borrows.findById(req.body.borrowID).exec(function (err, borrow){
+	Borrows.findById(sanitizer.sanitize(req.body.borrowID.trim())).exec(function (err, borrow){
 		if (err) {
 			console.log(err);
 			res.redirect('/message?content='+encodeURIComponent('錯誤!'));
@@ -91,7 +91,7 @@ router.post('/readable', library.ensureAuthenticated, function(req, res, next) {
 							res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 						}else{
 							var objID=mongoose.Types.ObjectId(updatedBorrow._id.toString());
-							library.rejectMessageWhenNotReadable(res,false,'/lender/story?id='+req.body.borrowID,objID,req);
+							library.rejectMessageWhenNotReadable(res,false,'/lender/story?id='+sanitizer.sanitize(req.body.borrowID.trim()),objID,req);
 						}
 					});
 				}
@@ -101,7 +101,7 @@ router.post('/readable', library.ensureAuthenticated, function(req, res, next) {
 });
 
 router.post('/like', library.ensureAuthenticated, function(req, res, next) {
-	Borrows.findById(req.body._id).exec(function (err, borrow){
+	Borrows.findById(sanitizer.sanitize(req.body._id.trim())).exec(function (err, borrow){
 		if (err) {
 			console.log(err);
 			res.json({error: "something wrong",success:false}, 500);
@@ -137,7 +137,7 @@ router.post('/like', library.ensureAuthenticated, function(req, res, next) {
 });
 
 router.post('/unlike', library.ensureAuthenticated, function(req, res, next) {
-	Borrows.findById(req.body._id).exec(function (err, borrow){
+	Borrows.findById(sanitizer.sanitize(req.body._id.trim())).exec(function (err, borrow){
 		if (err) {
 			console.log(err);
 			res.json({error: "something wrong",success:false}, 500);
@@ -173,7 +173,7 @@ router.post('/unlike', library.ensureAuthenticated, function(req, res, next) {
 });
 
 router.post('/iflike', function(req, res, next) {
-	Borrows.findById(req.body._id).exec(function (err, borrow){
+	Borrows.findById(sanitizer.sanitize(req.body._id.trim())).exec(function (err, borrow){
 		if (err) {
 			console.log(err);
 			res.json({error: "something wrong",success:false}, 500);

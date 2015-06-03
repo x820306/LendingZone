@@ -92,7 +92,7 @@ router.post('/create',library.ensureAuthenticated, function(req, res, next) {
 });
 
 router.post('/destroy',library.ensureAuthenticated, function(req, res, next) {
-	Discussions.findById(req.body._id).exec(function (err, discussion){
+	Discussions.findById(sanitizer.sanitize(req.body._id.trim())).exec(function (err, discussion){
 		if (err) {
 			console.log(err);
 			res.json({error: "Discussion finding failed.",success:false}, 500);
@@ -179,7 +179,7 @@ router.post('/destroy',library.ensureAuthenticated, function(req, res, next) {
 });
 
 router.post('/edit',library.ensureAuthenticated, function(req, res, next) {
-	Discussions.findById(req.body._id).exec(function (err, discussion){
+	Discussions.findById(sanitizer.sanitize(req.body._id.trim())).exec(function (err, discussion){
 		if (err) {
 			console.log(err);
 			res.json({error: "Discussion finding failed.",success:false}, 500);
@@ -258,7 +258,7 @@ router.post('/edit',library.ensureAuthenticated, function(req, res, next) {
 });
 
 router.post('/findDiscussions', function(req, res, next) {
-	Borrows.findById(req.body._id).populate('Discussion').exec(function (err, borrow){
+	Borrows.findById(sanitizer.sanitize(req.body._id.trim())).populate('Discussion').exec(function (err, borrow){
 		if (err) {
 			console.log(err);
 			res.json({error: "Borrow finding failed.",success:false}, 500);

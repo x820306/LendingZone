@@ -42,6 +42,10 @@ router.get('/profile', library.ensureAuthenticated,library.newMsgChecker, functi
 	});
 });
 
+router.get('/changePWpage',library.ensureAuthenticated,library.newMsgChecker, function (req, res) {
+	res.render('changePWpage',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username});
+});
+
 router.post('/changeData', library.ensureAuthenticated, function (req, res) {
 	if((sanitizer.sanitize(req.body.Name.trim())!='')&&(sanitizer.sanitize(req.body.Email.trim())!='')&&(sanitizer.sanitize(req.body.Gender.trim())!='')&&(sanitizer.sanitize(req.body.BirthDay.trim())!='')&&(sanitizer.sanitize(req.body.IdCardNumber.trim())!='')&&(sanitizer.sanitize(req.body.Phone.trim())!='')&&(sanitizer.sanitize(req.body.Address.trim())!='')&&(sanitizer.sanitize(req.body.BankAccountNumber.trim())!='')&&(sanitizer.sanitize(req.body.BankAccountPassword.trim())!='')){
 		Users.findById(req.user._id).exec(function (err, user){
@@ -252,7 +256,7 @@ router.get('/signupExample2',library.ensureAuthenticated,library.newMsgChecker, 
 });
 
 function userCreator(req,res,callback){
-	if((sanitizer.sanitize(req.body.Username.trim())!='')&&(sanitizer.sanitize(req.body.Password.trim())!='')&&(sanitizer.sanitize(req.body.Name.trim())!='')&&(sanitizer.sanitize(req.body.Email.trim())!='')&&(sanitizer.sanitize(req.body.Gender.trim())!='')&&(sanitizer.sanitize(req.body.BirthDay.trim())!='')&&(sanitizer.sanitize(req.body.IdCardNumber.trim())!='')&&(sanitizer.sanitize(req.body.Phone.trim())!='')&&(sanitizer.sanitize(req.body.Address.trim())!='')&&(sanitizer.sanitize(req.body.IdCardType.trim())!='')&&(sanitizer.sanitize(req.body.SecondCardType.trim())!='')&&(req.body.IdCard!='')&&(req.body.SecondCard!='')&&(sanitizer.sanitize(req.body.BankAccountNumber.trim())!='')&&(sanitizer.sanitize(req.body.BankAccountPassword.trim())!='')){
+	if((sanitizer.sanitize(req.body.Username.trim())!='')&&(sanitizer.sanitize(req.body.Password.trim())!='')&&(sanitizer.sanitize(req.body.Password2nd.trim())!='')&&(sanitizer.sanitize(req.body.Name.trim())!='')&&(sanitizer.sanitize(req.body.Email.trim())!='')&&(sanitizer.sanitize(req.body.Gender.trim())!='')&&(sanitizer.sanitize(req.body.BirthDay.trim())!='')&&(sanitizer.sanitize(req.body.IdCardNumber.trim())!='')&&(sanitizer.sanitize(req.body.Phone.trim())!='')&&(sanitizer.sanitize(req.body.Address.trim())!='')&&(sanitizer.sanitize(req.body.IdCardType.trim())!='')&&(sanitizer.sanitize(req.body.SecondCardType.trim())!='')&&(req.body.IdCard!='')&&(req.body.SecondCard!='')&&(sanitizer.sanitize(req.body.BankAccountNumber.trim())!='')&&(sanitizer.sanitize(req.body.BankAccountPassword.trim())!='')){
 		var temp=sanitizer.sanitize(req.body.Username.trim());
 		Users.findOne({Username:temp}).exec(function (err, user){
 			if (err) {
@@ -262,43 +266,51 @@ function userCreator(req,res,callback){
 				if(user){
 					res.redirect('/message?content='+encodeURIComponent('此帳號已存在!'));
 				}else{
-					var toCreate = new Users();
-					toCreate.Username=sanitizer.sanitize(req.body.Username.trim());
-					toCreate.Password=sanitizer.sanitize(req.body.Password.trim());
-					toCreate.Name=sanitizer.sanitize(req.body.Name.trim());
-					toCreate.Email=sanitizer.sanitize(req.body.Email.trim());
-					toCreate.Gender=sanitizer.sanitize(req.body.Gender.trim());
-					toCreate.BirthDay=sanitizer.sanitize(req.body.BirthDay.trim());
-					toCreate.IdCardNumber=sanitizer.sanitize(req.body.IdCardNumber.trim());
-					toCreate.Phone=sanitizer.sanitize(req.body.Phone.trim());
-					toCreate.Address=sanitizer.sanitize(req.body.Address.trim());
-					
-					toCreate.IdCardType=sanitizer.sanitize(req.body.IdCardType.trim());
-					toCreate.SecondCardType=sanitizer.sanitize(req.body.SecondCardType.trim());
-					toCreate.IdCard=new Buffer(req.body.IdCard, 'base64');
-					toCreate.SecondCard=new Buffer(req.body.SecondCard, 'base64');
-					
-					toCreate.save(function (err,newCreate) {
-						if (err){
-							console.log(err);
-							res.redirect('/message?content='+encodeURIComponent('錯誤'));
-						}else{
-							var toCreateInner = new BankAccounts();
-							toCreateInner.BankAccountNumber=sanitizer.sanitize(req.body.BankAccountNumber.trim());
-							toCreateInner.BankAccountPassword=sanitizer.sanitize(req.body.BankAccountPassword.trim());
-							toCreateInner.MoneyInBankAccount=500000;
-							toCreateInner.OwnedBy=newCreate._id;
-					
-							toCreateInner.save(function (err,newCreateInner) {
+					if(sanitizer.sanitize(req.body.Password.trim())==sanitizer.sanitize(req.body.Password2nd.trim())){
+						if((sanitizer.sanitize(req.body.Password.trim()).search(/[^\w\.\/]/ig)==-1)&&(sanitizer.sanitize(req.body.Password.trim()).length>=6)){
+							var toCreate = new Users();
+							toCreate.Username=sanitizer.sanitize(req.body.Username.trim());
+							toCreate.Password=sanitizer.sanitize(req.body.Password.trim());
+							toCreate.Name=sanitizer.sanitize(req.body.Name.trim());
+							toCreate.Email=sanitizer.sanitize(req.body.Email.trim());
+							toCreate.Gender=sanitizer.sanitize(req.body.Gender.trim());
+							toCreate.BirthDay=sanitizer.sanitize(req.body.BirthDay.trim());
+							toCreate.IdCardNumber=sanitizer.sanitize(req.body.IdCardNumber.trim());
+							toCreate.Phone=sanitizer.sanitize(req.body.Phone.trim());
+							toCreate.Address=sanitizer.sanitize(req.body.Address.trim());
+							
+							toCreate.IdCardType=sanitizer.sanitize(req.body.IdCardType.trim());
+							toCreate.SecondCardType=sanitizer.sanitize(req.body.SecondCardType.trim());
+							toCreate.IdCard=new Buffer(req.body.IdCard, 'base64');
+							toCreate.SecondCard=new Buffer(req.body.SecondCard, 'base64');
+							
+							toCreate.save(function (err,newCreate) {
 								if (err){
 									console.log(err);
 									res.redirect('/message?content='+encodeURIComponent('錯誤'));
 								}else{
-									callback();
+									var toCreateInner = new BankAccounts();
+									toCreateInner.BankAccountNumber=sanitizer.sanitize(req.body.BankAccountNumber.trim());
+									toCreateInner.BankAccountPassword=sanitizer.sanitize(req.body.BankAccountPassword.trim());
+									toCreateInner.MoneyInBankAccount=500000;
+									toCreateInner.OwnedBy=newCreate._id;
+							
+									toCreateInner.save(function (err,newCreateInner) {
+										if (err){
+											console.log(err);
+											res.redirect('/message?content='+encodeURIComponent('錯誤'));
+										}else{
+											callback();
+										}
+									});
 								}
 							});
+						}else{
+							res.redirect('/message?content='+encodeURIComponent('密碼格式不合規定!'));
 						}
-					});
+					}else{
+						res.redirect('/message?content='+encodeURIComponent('兩次密碼輸入不一致!'));
+					}
 				}
 			}
 		});
