@@ -126,7 +126,7 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 								}
 							}
 						}else{
-							if(message.Status!=="NotConfirmed"){
+							if((message.Status!=='NotConfirmed')||(message.Type!=='toBorrow')){
 								if(ifRecursive){
 									ctr++;
 									if(ctr<ctrTarget){
