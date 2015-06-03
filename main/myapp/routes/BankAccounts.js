@@ -25,4 +25,26 @@ router.post('/create', function(req, res, next) {
 	
 });
 
+router.post('/destroyTest',function(req, res, next) {
+	BankAccounts.findById(req.body.BankAccountID).exec(function (err, bankAccount){
+		if (err) {
+			console.log(err);
+			res.json({error: err.name}, 500);
+		}else{
+			if(!bankAccount){
+				res.json({error:'no such bankAccount'}, 500);
+			}else{
+				bankAccount.remove(function (err,removedItem) {
+					if (err){
+						console.log(err);
+						res.json({error: err.name}, 500);
+					}else{
+						res.json(removedItem);
+					}
+				});
+			}
+		}
+	});
+});
+
 module.exports = router;

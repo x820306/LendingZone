@@ -80,6 +80,28 @@ router.post('/createTest', function(req, res, next) {
 	});
 });
 
+router.post('/destroyTest', function(req, res, next) {
+	Users.findById(req.body.UserID).exec(function (err, user){
+		if (err) {
+			console.log(err);
+			res.json({error: err.name}, 500);
+		}else{
+			if(!user){
+				res.json({error: 'no such user'}, 500);
+			}else{
+				user.remove(function (err,removedItem){
+					if (err){
+						console.log(err);
+						res.json({error: err.name}, 500);
+					}else{
+						res.json(removedItem);
+					}
+				});
+			}
+		}
+	});
+});
+
 router.get('/find/:id?', function(req, res, next) {
 	Users.findById(req.query.id).exec(function (err, user){
 		if (err) {

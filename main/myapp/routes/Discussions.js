@@ -24,6 +24,56 @@ router.post('/createTest', function(req, res, next) {
 	});
 });
 
+router.post('/destroyTest',function(req, res, next) {
+	Discussions.findById(req.body.DiscussionID).exec(function (err, discussion){
+		if (err) {
+			console.log(err);
+			res.json({error: err.name}, 500);
+		}else{
+			if(!discussion){
+				res.json({error:'no such discussion'}, 500);
+			}else{
+				Borrows.findById(discussion.BelongTo).exec(function (err, borrow){
+					if (err) {
+						console.log(err);
+						res.json({error: err.name}, 500);
+					}else{
+						if(!borrow){
+							res.json({error:'no such borrow'}, 500);
+						}else{
+							var ctr = -1;
+							for (i = 0; i < borrow.Discussion.length; i++) {
+								if (borrow.Discussion[i].toString() === discussion._id.toString()) {
+									ctr=i;
+									break;
+								}
+							};
+							if(ctr>-1){
+								borrow.Discussion.splice(ctr, 1);
+							}
+							borrow.save(function (err,updatedBorrow) {
+								if (err){
+									console.log(err);
+									res.json({error: err.name}, 500);
+								}else{	
+									discussion.remove(function (err,removedItem) {
+										if (err){
+											console.log(err);
+											res.json({error: err.name}, 500);
+										}else{
+											res.json(removedItem);
+										}
+									});
+								}
+							});
+						}
+					}
+				});
+			}
+		}
+	});
+});
+
 router.post('/create',library.ensureAuthenticated, function(req, res, next) {
 	var toCreate = new Discussions();
 	toCreate.Content=sanitizer.sanitize(req.body.Content.trim());

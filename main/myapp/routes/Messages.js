@@ -69,6 +69,56 @@ router.post('/createTest', function(req, res, next) {
 	});
 });
 
+router.post('/destroyTest',function(req, res, next) {
+	Messages.findById(req.body.MessageID).exec(function (err, message){
+		if (err) {
+			console.log(err);
+			res.json({error: err.name}, 500);
+		}else{
+			if(!message){
+				res.json({error:'no such message'}, 500);
+			}else{
+				Borrows.findById(message.FromBorrowRequest).exec(function (err, borrow){
+					if (err) {
+						console.log(err);
+						res.json({error: err.name}, 500);
+					}else{
+						if(!borrow){
+							res.json({error:'no such borrow'}, 500);
+						}else{
+							var ctr = -1;
+							for (i = 0; i < borrow.Message.length; i++) {
+								if (borrow.Message[i].toString() === message._id.toString()) {
+									ctr=i;
+									break;
+								}
+							};
+							if(ctr>-1){
+								borrow.Message.splice(ctr, 1);
+							}
+							borrow.save(function (err,updatedBorrow) {
+								if (err){
+									console.log(err);
+									res.json({error: err.name}, 500);
+								}else{	
+									message.remove(function (err,removedItem) {
+										if (err){
+											console.log(err);
+											res.json({error: err.name}, 500);
+										}else{
+											res.json(removedItem);
+										}
+									});
+								}
+							});
+						}
+					}
+				});
+			}
+		}
+	});
+});
+
 function toLendSamePart(res,req,differentPart,outterPara){
 	Borrows.findById(req.body.FromBorrowRequest).populate('CreatedBy', 'Username Email').exec(function (err, borrow){
 		if (err) {
