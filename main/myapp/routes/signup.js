@@ -16,7 +16,7 @@ router.get('/',library.newMsgChecker, function (req, res) {
 	res.redirect('/signup/success');
 });
 
-router.get('/profile', library.ensureAuthenticated,library.newMsgChecker, function (req, res) {
+router.get('/profile',library.ensureAuthenticated,library.newMsgChecker, function (req, res) {
 	Users.findById(req.user._id).exec(function (err, foundUser){
 		if (err) {
 			console.log(err);
@@ -268,7 +268,7 @@ function userCreator(req,res,callback){
 					res.redirect('/message?content='+encodeURIComponent('此帳號已存在!'));
 				}else{
 					if(sanitizer.sanitize(req.body.Password.trim())==sanitizer.sanitize(req.body.Password2nd.trim())){
-						if((sanitizer.sanitize(req.body.Password.trim()).search(/[^\w\.\/]/ig)==-1)&&(sanitizer.sanitize(req.body.Password.trim()).length>=6)){
+						if((sanitizer.sanitize(req.body.Username.trim()).search(/[^\w\.\/]/ig)==-1)&&(sanitizer.sanitize(req.body.Password.trim()).search(/[^\w\.\/]/ig)==-1)&&(sanitizer.sanitize(req.body.Password.trim()).length>=6)){
 							var toCreate = new Users();
 							toCreate.Username=sanitizer.sanitize(req.body.Username.trim());
 							toCreate.Password=sanitizer.sanitize(req.body.Password.trim());
@@ -307,7 +307,7 @@ function userCreator(req,res,callback){
 								}
 							});
 						}else{
-							res.redirect('/message?content='+encodeURIComponent('密碼格式不合規定!'));
+							res.redirect('/message?content='+encodeURIComponent('帳號名稱或密碼格式不合規定!'));
 						}
 					}else{
 						res.redirect('/message?content='+encodeURIComponent('兩次密碼輸入不一致!'));
