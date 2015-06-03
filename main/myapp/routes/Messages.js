@@ -121,215 +121,226 @@ function toLendSamePart(res,req,differentPart,outterPara){
 }
 
 function toLendCreatePart(res,req,borrow,lenderBankaccount,outterPara){
-	Messages.findOne({$and:[{"CreatedBy": borrow.CreatedBy},{"SendTo": req.user._id},{"FromBorrowRequest": req.body.FromBorrowRequest},{"Type": "toBorrow"}]}).exec(function (err, borrowMessage){
+	Messages.findOne({$and:[{"CreatedBy": req.user._id},{"SendTo": borrow.CreatedBy},{"FromBorrowRequest": req.body.FromBorrowRequest},{"Type": "toLend"}]}).exec(function (err, lendMessage){
 		if (err) {
 			console.log(err);
 			res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 		}else{
-			if(!borrowMessage){
-				var toCreate = new Messages();
-				toCreate.FromBorrowRequest=sanitizer.sanitize(req.body.FromBorrowRequest.trim());
-				if(sanitizer.sanitize(req.body.Message.trim()) != ''){
-					toCreate.Message=sanitizer.sanitize(req.body.Message.trim());
-				}
-				toCreate.MoneyToLend=parseInt(sanitizer.sanitize(req.body.MoneyToLend.trim()));
-				toCreate.InterestRate=(parseFloat(sanitizer.sanitize(req.body.InterestRate.trim()))/100)+library.serviceChargeRate;//scr
-				toCreate.MonthPeriod=parseInt(sanitizer.sanitize(req.body.MonthPeriod.trim()));
-				toCreate.CreatedBy= req.user._id
-				toCreate.SendTo=borrow.CreatedBy;
-				toCreate.Type='toLend';
-				toCreate.Level=borrow.Level;
-				
-				toCreate.save(function (err,newCreate) {
-					if (err){
+			if(!lendMessage){
+				Messages.findOne({$and:[{"CreatedBy": borrow.CreatedBy},{"SendTo": req.user._id},{"FromBorrowRequest": req.body.FromBorrowRequest},{"Type": "toBorrow"}]}).exec(function (err, borrowMessage){
+					if (err) {
 						console.log(err);
-						res.redirect('/message?content='+encodeURIComponent('新建失敗!'));
+						res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 					}else{
-						if(borrow.AutoComfirmToLendMsgPeriod==0){
-							var toCreateTransaction = new Transactions();
-							toCreateTransaction.Principal=newCreate.MoneyToLend;
-							toCreateTransaction.InterestRate=newCreate.InterestRate;
-							toCreateTransaction.MonthPeriod=newCreate.MonthPeriod;
-							toCreateTransaction.CreatedFrom=newCreate._id;
-							toCreateTransaction.Borrower=newCreate.SendTo;
-							toCreateTransaction.Lender=newCreate.CreatedBy;
-							toCreateTransaction.Level=newCreate.Level;
+						if(!borrowMessage){
+							var toCreate = new Messages();
+							toCreate.FromBorrowRequest=sanitizer.sanitize(req.body.FromBorrowRequest.trim());
+							if(sanitizer.sanitize(req.body.Message.trim()) != ''){
+								toCreate.Message=sanitizer.sanitize(req.body.Message.trim());
+							}
+							toCreate.MoneyToLend=parseInt(sanitizer.sanitize(req.body.MoneyToLend.trim()));
+							toCreate.InterestRate=(parseFloat(sanitizer.sanitize(req.body.InterestRate.trim()))/100)+library.serviceChargeRate;//scr
+							toCreate.MonthPeriod=parseInt(sanitizer.sanitize(req.body.MonthPeriod.trim()));
+							toCreate.CreatedBy= req.user._id
+							toCreate.SendTo=borrow.CreatedBy;
+							toCreate.Type='toLend';
+							toCreate.Level=borrow.Level;
 							
-							toCreateTransaction.save(function (err,newCreateTransaction) {
+							toCreate.save(function (err,newCreate) {
 								if (err){
 									console.log(err);
-									res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+									res.redirect('/message?content='+encodeURIComponent('新建失敗!'));
 								}else{
-									BankAccounts.findOne({"OwnedBy": newCreateTransaction.Borrower}).exec(function (err, borrowerBankaccount){
-										if (err) {
-											console.log(err);
-											res.redirect('/message?content='+encodeURIComponent('錯誤!'));
-										}else{
-											if(!borrowerBankaccount){
+									if(borrow.AutoComfirmToLendMsgPeriod==0){
+										var toCreateTransaction = new Transactions();
+										toCreateTransaction.Principal=newCreate.MoneyToLend;
+										toCreateTransaction.InterestRate=newCreate.InterestRate;
+										toCreateTransaction.MonthPeriod=newCreate.MonthPeriod;
+										toCreateTransaction.CreatedFrom=newCreate._id;
+										toCreateTransaction.Borrower=newCreate.SendTo;
+										toCreateTransaction.Lender=newCreate.CreatedBy;
+										toCreateTransaction.Level=newCreate.Level;
+										
+										toCreateTransaction.save(function (err,newCreateTransaction) {
+											if (err){
+												console.log(err);
 												res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 											}else{
-												borrowerBankaccount.MoneyInBankAccount+=newCreateTransaction.Principal;
-												borrowerBankaccount.save(function (err,updatedBorrowerBankaccount) {
-													if (err){
+												BankAccounts.findOne({"OwnedBy": newCreateTransaction.Borrower}).exec(function (err, borrowerBankaccount){
+													if (err) {
 														console.log(err);
 														res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 													}else{
-														lenderBankaccount.MoneyInBankAccount-=newCreateTransaction.Principal;
-														lenderBankaccount.save(function (err,updatedLenderBankaccount) {
-															if (err){
-																console.log(err);
-																res.redirect('/message?content='+encodeURIComponent('錯誤!'));
-															}else{				
-																borrow.MoneyToBorrowCumulated+=newCreateTransaction.Principal;
-																if(borrow.MoneyToBorrowCumulated>=borrow.MoneyToBorrow){
-																	borrow.IfReadable=false;
-																}
-																borrow.Message.push(newCreate._id);
-																borrow.save(function (err,updatedBorrow) {
-																	if (err){
-																		console.log(err);
-																		res.redirect('/message?content='+encodeURIComponent('錯誤!'));
-																	}else{				
-																		Lends.findOne({"CreatedBy": newCreate.CreatedBy}).exec(function (err, lend){
-																			if (err) {
-																				console.log(err);
-																				res.redirect('/message?content='+encodeURIComponent('錯誤!'));
-																			}else{
-																				if(!lend){
-																					newCreate.Status='Confirmed';
-																					newCreate.Transaction.push(newCreateTransaction._id);
-																					newCreate.save(function (err,newCreateUpdated) {
-																						if (err){
+														if(!borrowerBankaccount){
+															res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+														}else{
+															borrowerBankaccount.MoneyInBankAccount+=newCreateTransaction.Principal;
+															borrowerBankaccount.save(function (err,updatedBorrowerBankaccount) {
+																if (err){
+																	console.log(err);
+																	res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+																}else{
+																	lenderBankaccount.MoneyInBankAccount-=newCreateTransaction.Principal;
+																	lenderBankaccount.save(function (err,updatedLenderBankaccount) {
+																		if (err){
+																			console.log(err);
+																			res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+																		}else{				
+																			borrow.MoneyToBorrowCumulated+=newCreateTransaction.Principal;
+																			if(borrow.MoneyToBorrowCumulated>=borrow.MoneyToBorrow){
+																				borrow.IfReadable=false;
+																			}
+																			borrow.Message.push(newCreate._id);
+																			borrow.save(function (err,updatedBorrow) {
+																				if (err){
+																					console.log(err);
+																					res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+																				}else{				
+																					Lends.findOne({"CreatedBy": newCreate.CreatedBy}).exec(function (err, lend){
+																						if (err) {
 																							console.log(err);
 																							res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 																						}else{
-																							res.redirect('/lender/story?id='+req.body.FromBorrowRequest);
-																						}
-																					});
-																				}else{
-																					lend.MaxMoneyToLend-=newCreateTransaction.Principal;
-																					if(lend.MaxMoneyToLend<0){
-																						lend.MaxMoneyToLend=0;
-																					}
-																					lend.save(function (err,updatedLend) {
-																						if (err){
-																							console.log(err);
-																							res.redirect('/message?content='+encodeURIComponent('錯誤!'));
-																						}else{		
-																							newCreate.Status='Confirmed';
-																							newCreate.Transaction.push(newCreateTransaction._id);
-																							newCreate.save(function (err,newCreateUpdated) {
-																								if (err){
-																									console.log(err);
-																									res.redirect('/message?content='+encodeURIComponent('錯誤!'));
-																								}else{
-																									if(library.ifMail){
-																										var mailOptions = {
-																											from: 'LendingZone <lendingzonesystem@gmail.com>', // sender address
-																											to: lenderBankaccount.OwnedBy.Username+' <'+lenderBankaccount.OwnedBy.Email+'>', // list of receivers
-																											subject: borrow.CreatedBy.Username+'同意了您方才送出的欲借出訊息!', // Subject line
-																											text: '親愛的 '+lenderBankaccount.OwnedBy.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+borrow.CreatedBy.Username+' 同意了您方才在「'+borrow.StoryTitle+'("http://'+req.headers.host+'/lender/story?id='+borrow._id+'")」送出的欲借出訊息！'+String.fromCharCode(10)+'您的交易紅利代碼為： '+library.randomString(8)+String.fromCharCode(10)+'您可至 玉山銀行網站("http://www.esunbank.com.tw/") 兌換紅利喔!'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看訊息與交易結果:'+String.fromCharCode(10)+'"http://'+req.headers.host+'/lender/lenderSendMessages?msgKeyword='+newCreateUpdated._id+'&filter='+encodeURIComponent('已被同意')+'&sorter='+encodeURIComponent('最新')+'&page=1"', // plaintext body
-																											html: '<img src="cid:bpng" /><br><br>親愛的 '+lenderBankaccount.OwnedBy.Username+' 您好：<br><br>'+borrow.CreatedBy.Username+' 同意了您方才在「<a href="http://'+req.headers.host+'/lender/story?id='+borrow._id+'">'+borrow.StoryTitle+'</a>」送出的欲借出訊息！<br>您的交易紅利代碼為： <div style="color:#FF0000;display:inline;">'+library.randomString(8)+'</div><br>您可至 <a href="http://www.esunbank.com.tw/">玉山銀行網站</a> 兌換紅利喔!<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://'+req.headers.host+'/lender/lenderSendMessages?msgKeyword='+newCreateUpdated._id+'&filter='+encodeURIComponent('已被同意')+'&sorter='+encodeURIComponent('最新')+'&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看訊息與交易結果</span></a></td></tr></table>', 
-																											attachments: [{
-																												filename: 'b.png',
-																												path: __dirname+'/../public/images/b.png',
-																												cid: 'bpng' //same cid value as in the html img src
-																											}]
-																										};
-																										
-																										transporter.sendMail(mailOptions, function(error, info){
-																											if(error){
-																												console.log(error);
-																											}
-																										});
-																										
-																										var mailOptions2 = {
-																											from: 'LendingZone <lendingzonesystem@gmail.com>', // sender address
-																											to: borrow.CreatedBy.Username+' <'+borrow.CreatedBy.Email+'>', // list of receivers
-																											subject: '您同意了'+lenderBankaccount.OwnedBy.Username+'方才送來的欲借出訊息!', // Subject line
-																											text: '親愛的 '+borrow.CreatedBy.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+'您同意了 '+lenderBankaccount.OwnedBy.Username+' 方才在「'+borrow.StoryTitle+'("http://'+req.headers.host+'/lender/story?id='+borrow._id+'")」送來的欲借出訊息！'+String.fromCharCode(10)+'您的交易紅利代碼為： '+library.randomString(8)+String.fromCharCode(10)+'您可至 玉山銀行網站("http://www.esunbank.com.tw/") 兌換紅利喔!'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看訊息與交易結果:'+String.fromCharCode(10)+'"http://'+req.headers.host+'/lender/lenderSendMessages?msgKeyword='+newCreateUpdated._id+'&filter='+encodeURIComponent('已被同意')+'&sorter='+encodeURIComponent('最新')+'&page=1"', // plaintext body
-																											html: '<img src="cid:bpng" /><br><br>親愛的 '+borrow.CreatedBy.Username+' 您好：<br><br>您同意了 '+lenderBankaccount.OwnedBy.Username+' 方才在「<a href="http://'+req.headers.host+'/lender/story?id='+borrow._id+'">'+borrow.StoryTitle+'</a>」送來的欲借出訊息！<br>您的交易紅利代碼為： <div style="color:#FF0000;display:inline;">'+library.randomString(8)+'</div><br>您可至 <a href="http://www.esunbank.com.tw/">玉山銀行網站</a> 兌換紅利喔!<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://'+req.headers.host+'/lender/lenderSendMessages?msgKeyword='+newCreateUpdated._id+'&filter='+encodeURIComponent('已被同意')+'&sorter='+encodeURIComponent('最新')+'&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看訊息與交易結果</span></a></td></tr></table>', 
-																											attachments: [{
-																												filename: 'b.png',
-																												path: __dirname+'/../public/images/b.png',
-																												cid: 'bpng' //same cid value as in the html img src
-																											}]
-																										};
-																										
-																										transporter.sendMail(mailOptions2, function(error, info){
-																											if(error){
-																												console.log(error);
+																							if(!lend){
+																								newCreate.Status='Confirmed';
+																								newCreate.Transaction.push(newCreateTransaction._id);
+																								newCreate.save(function (err,newCreateUpdated) {
+																									if (err){
+																										console.log(err);
+																										res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+																									}else{
+																										res.redirect('/lender/story?id='+req.body.FromBorrowRequest);
+																									}
+																								});
+																							}else{
+																								lend.MaxMoneyToLend-=newCreateTransaction.Principal;
+																								if(lend.MaxMoneyToLend<0){
+																									lend.MaxMoneyToLend=0;
+																								}
+																								lend.save(function (err,updatedLend) {
+																									if (err){
+																										console.log(err);
+																										res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+																									}else{		
+																										newCreate.Status='Confirmed';
+																										newCreate.Transaction.push(newCreateTransaction._id);
+																										newCreate.save(function (err,newCreateUpdated) {
+																											if (err){
+																												console.log(err);
+																												res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+																											}else{
+																												if(library.ifMail){
+																													var mailOptions = {
+																														from: 'LendingZone <lendingzonesystem@gmail.com>', // sender address
+																														to: lenderBankaccount.OwnedBy.Username+' <'+lenderBankaccount.OwnedBy.Email+'>', // list of receivers
+																														subject: borrow.CreatedBy.Username+'同意了您方才送出的欲借出訊息!', // Subject line
+																														text: '親愛的 '+lenderBankaccount.OwnedBy.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+borrow.CreatedBy.Username+' 同意了您方才在「'+borrow.StoryTitle+'("http://'+req.headers.host+'/lender/story?id='+borrow._id+'")」送出的欲借出訊息！'+String.fromCharCode(10)+'您的交易紅利代碼為： '+library.randomString(8)+String.fromCharCode(10)+'您可至 玉山銀行網站("http://www.esunbank.com.tw/") 兌換紅利喔!'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看訊息與交易結果:'+String.fromCharCode(10)+'"http://'+req.headers.host+'/lender/lenderSendMessages?msgKeyword='+newCreateUpdated._id+'&filter='+encodeURIComponent('已被同意')+'&sorter='+encodeURIComponent('最新')+'&page=1"', // plaintext body
+																														html: '<img src="cid:bpng" /><br><br>親愛的 '+lenderBankaccount.OwnedBy.Username+' 您好：<br><br>'+borrow.CreatedBy.Username+' 同意了您方才在「<a href="http://'+req.headers.host+'/lender/story?id='+borrow._id+'">'+borrow.StoryTitle+'</a>」送出的欲借出訊息！<br>您的交易紅利代碼為： <div style="color:#FF0000;display:inline;">'+library.randomString(8)+'</div><br>您可至 <a href="http://www.esunbank.com.tw/">玉山銀行網站</a> 兌換紅利喔!<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://'+req.headers.host+'/lender/lenderSendMessages?msgKeyword='+newCreateUpdated._id+'&filter='+encodeURIComponent('已被同意')+'&sorter='+encodeURIComponent('最新')+'&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看訊息與交易結果</span></a></td></tr></table>', 
+																														attachments: [{
+																															filename: 'b.png',
+																															path: __dirname+'/../public/images/b.png',
+																															cid: 'bpng' //same cid value as in the html img src
+																														}]
+																													};
+																													
+																													transporter.sendMail(mailOptions, function(error, info){
+																														if(error){
+																															console.log(error);
+																														}
+																													});
+																													
+																													var mailOptions2 = {
+																														from: 'LendingZone <lendingzonesystem@gmail.com>', // sender address
+																														to: borrow.CreatedBy.Username+' <'+borrow.CreatedBy.Email+'>', // list of receivers
+																														subject: '您同意了'+lenderBankaccount.OwnedBy.Username+'方才送來的欲借出訊息!', // Subject line
+																														text: '親愛的 '+borrow.CreatedBy.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+'您同意了 '+lenderBankaccount.OwnedBy.Username+' 方才在「'+borrow.StoryTitle+'("http://'+req.headers.host+'/lender/story?id='+borrow._id+'")」送來的欲借出訊息！'+String.fromCharCode(10)+'您的交易紅利代碼為： '+library.randomString(8)+String.fromCharCode(10)+'您可至 玉山銀行網站("http://www.esunbank.com.tw/") 兌換紅利喔!'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看訊息與交易結果:'+String.fromCharCode(10)+'"http://'+req.headers.host+'/lender/lenderSendMessages?msgKeyword='+newCreateUpdated._id+'&filter='+encodeURIComponent('已被同意')+'&sorter='+encodeURIComponent('最新')+'&page=1"', // plaintext body
+																														html: '<img src="cid:bpng" /><br><br>親愛的 '+borrow.CreatedBy.Username+' 您好：<br><br>您同意了 '+lenderBankaccount.OwnedBy.Username+' 方才在「<a href="http://'+req.headers.host+'/lender/story?id='+borrow._id+'">'+borrow.StoryTitle+'</a>」送來的欲借出訊息！<br>您的交易紅利代碼為： <div style="color:#FF0000;display:inline;">'+library.randomString(8)+'</div><br>您可至 <a href="http://www.esunbank.com.tw/">玉山銀行網站</a> 兌換紅利喔!<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://'+req.headers.host+'/lender/lenderSendMessages?msgKeyword='+newCreateUpdated._id+'&filter='+encodeURIComponent('已被同意')+'&sorter='+encodeURIComponent('最新')+'&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看訊息與交易結果</span></a></td></tr></table>', 
+																														attachments: [{
+																															filename: 'b.png',
+																															path: __dirname+'/../public/images/b.png',
+																															cid: 'bpng' //same cid value as in the html img src
+																														}]
+																													};
+																													
+																													transporter.sendMail(mailOptions2, function(error, info){
+																														if(error){
+																															console.log(error);
+																														}
+																													});
+																												}
+																												res.redirect('/lender/story?id='+req.body.FromBorrowRequest);
 																											}
 																										});
 																									}
-																									res.redirect('/lender/story?id='+req.body.FromBorrowRequest);
-																								}
-																							});
+																								});
+																							}
 																						}
 																					});
 																				}
-																			}
-																		});
-																	}
-																});
-															}
-														});
+																			});
+																		}
+																	});
+																}
+															});
+														}
 													}
 												});
 											}
-										}
-									});
-								}
-							});
-						}else{
-							borrow.Message.push(newCreate._id);
-							borrow.save(function (err,updatedBorrow) {
-								if (err){
-									console.log(err);
-									res.redirect('/message?content='+encodeURIComponent('錯誤!'));
-								}else{	
-									if(library.ifMail){
-										var mailOptions = {
-											from: 'LendingZone <lendingzonesystem@gmail.com>', // sender address
-											to: borrow.CreatedBy.Username+' <'+borrow.CreatedBy.Email+'>', // list of receivers
-											subject: '您收到了來自'+lenderBankaccount.OwnedBy.Username+'的欲借出訊息!', // Subject line
-											text: '親愛的 '+borrow.CreatedBy.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+lenderBankaccount.OwnedBy.Username+' 想要資助您在「'+borrow.StoryTitle+'("http://'+req.headers.host+'/lender/story?id='+borrow._id+'")」的借款需求！'+String.fromCharCode(10)+'了解他所提供的資訊來決定是否要接受資助吧！'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看:'+String.fromCharCode(10)+'"http://'+req.headers.host+'/lender/lenderSendMessages?msgKeyword='+newCreate._id+'&filter='+encodeURIComponent('未被確認')+'&sorter='+encodeURIComponent('最新')+'&page=1"', // plaintext body
-											html: '<img src="cid:dpng" /><br><br>親愛的 '+borrow.CreatedBy.Username+' 您好：<br><br>'+lenderBankaccount.OwnedBy.Username+' 想要資助您在「<a href="http://'+req.headers.host+'/lender/story?id='+borrow._id+'">'+borrow.StoryTitle+'</a>」的借款需求！<br>了解他所提供的資訊來決定是否要接受資助吧！<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://'+req.headers.host+'/lender/lenderSendMessages?msgKeyword='+newCreate._id+'&filter='+encodeURIComponent('未被確認')+'&sorter='+encodeURIComponent('最新')+'&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看</span></a></td></tr></table>', 
-											attachments: [{
-												filename: 'd.png',
-												path: __dirname+'/../public/images/d.png',
-												cid: 'dpng' //same cid value as in the html img src
-											}]
-										};
-										
-										transporter.sendMail(mailOptions, function(error, info){
-											if(error){
-												console.log(error);
-											}
 										});
-										
-										var mailOptions2 = {
-											from: 'LendingZone <lendingzonesystem@gmail.com>', // sender address
-											to: lenderBankaccount.OwnedBy.Username+' <'+lenderBankaccount.OwnedBy.Email+'>', // list of receivers
-											subject: '您向'+borrow.CreatedBy.Username+'送出了欲借出訊息!', // Subject line
-											text: '親愛的 '+lenderBankaccount.OwnedBy.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+'您在「'+borrow.StoryTitle+'("http://'+req.headers.host+'/lender/story?id='+borrow._id+'")」向 '+borrow.CreatedBy.Username+' 送出了欲借出訊息！'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看:'+String.fromCharCode(10)+'"http://'+req.headers.host+'/lender/lenderSendMessages?msgKeyword='+newCreate._id+'&filter='+encodeURIComponent('未被確認')+'&sorter='+encodeURIComponent('最新')+'&page=1"', // plaintext body
-											html: '<img src="cid:dpng" /><br><br>親愛的 '+lenderBankaccount.OwnedBy.Username+' 您好：<br><br>您在「<a href="http://'+req.headers.host+'/lender/story?id='+borrow._id+'">'+borrow.StoryTitle+'</a>」向 '+borrow.CreatedBy.Username+' 送出了欲借出訊息！<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://'+req.headers.host+'/lender/lenderSendMessages?msgKeyword='+newCreate._id+'&filter='+encodeURIComponent('未被確認')+'&sorter='+encodeURIComponent('最新')+'&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看</span></a></td></tr></table>', 
-											attachments: [{
-												filename: 'd.png',
-												path: __dirname+'/../public/images/d.png',
-												cid: 'dpng' //same cid value as in the html img src
-											}]
-										};
-										
-										transporter.sendMail(mailOptions2, function(error, info){
-											if(error){
-												console.log(error);
+									}else{
+										borrow.Message.push(newCreate._id);
+										borrow.save(function (err,updatedBorrow) {
+											if (err){
+												console.log(err);
+												res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+											}else{	
+												if(library.ifMail){
+													var mailOptions = {
+														from: 'LendingZone <lendingzonesystem@gmail.com>', // sender address
+														to: borrow.CreatedBy.Username+' <'+borrow.CreatedBy.Email+'>', // list of receivers
+														subject: '您收到了來自'+lenderBankaccount.OwnedBy.Username+'的欲借出訊息!', // Subject line
+														text: '親愛的 '+borrow.CreatedBy.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+lenderBankaccount.OwnedBy.Username+' 想要資助您在「'+borrow.StoryTitle+'("http://'+req.headers.host+'/lender/story?id='+borrow._id+'")」的借款需求！'+String.fromCharCode(10)+'了解他所提供的資訊來決定是否要接受資助吧！'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看:'+String.fromCharCode(10)+'"http://'+req.headers.host+'/lender/lenderSendMessages?msgKeyword='+newCreate._id+'&filter='+encodeURIComponent('未被確認')+'&sorter='+encodeURIComponent('最新')+'&page=1"', // plaintext body
+														html: '<img src="cid:dpng" /><br><br>親愛的 '+borrow.CreatedBy.Username+' 您好：<br><br>'+lenderBankaccount.OwnedBy.Username+' 想要資助您在「<a href="http://'+req.headers.host+'/lender/story?id='+borrow._id+'">'+borrow.StoryTitle+'</a>」的借款需求！<br>了解他所提供的資訊來決定是否要接受資助吧！<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://'+req.headers.host+'/lender/lenderSendMessages?msgKeyword='+newCreate._id+'&filter='+encodeURIComponent('未被確認')+'&sorter='+encodeURIComponent('最新')+'&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看</span></a></td></tr></table>', 
+														attachments: [{
+															filename: 'd.png',
+															path: __dirname+'/../public/images/d.png',
+															cid: 'dpng' //same cid value as in the html img src
+														}]
+													};
+													
+													transporter.sendMail(mailOptions, function(error, info){
+														if(error){
+															console.log(error);
+														}
+													});
+													
+													var mailOptions2 = {
+														from: 'LendingZone <lendingzonesystem@gmail.com>', // sender address
+														to: lenderBankaccount.OwnedBy.Username+' <'+lenderBankaccount.OwnedBy.Email+'>', // list of receivers
+														subject: '您向'+borrow.CreatedBy.Username+'送出了欲借出訊息!', // Subject line
+														text: '親愛的 '+lenderBankaccount.OwnedBy.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+'您在「'+borrow.StoryTitle+'("http://'+req.headers.host+'/lender/story?id='+borrow._id+'")」向 '+borrow.CreatedBy.Username+' 送出了欲借出訊息！'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看:'+String.fromCharCode(10)+'"http://'+req.headers.host+'/lender/lenderSendMessages?msgKeyword='+newCreate._id+'&filter='+encodeURIComponent('未被確認')+'&sorter='+encodeURIComponent('最新')+'&page=1"', // plaintext body
+														html: '<img src="cid:dpng" /><br><br>親愛的 '+lenderBankaccount.OwnedBy.Username+' 您好：<br><br>您在「<a href="http://'+req.headers.host+'/lender/story?id='+borrow._id+'">'+borrow.StoryTitle+'</a>」向 '+borrow.CreatedBy.Username+' 送出了欲借出訊息！<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://'+req.headers.host+'/lender/lenderSendMessages?msgKeyword='+newCreate._id+'&filter='+encodeURIComponent('未被確認')+'&sorter='+encodeURIComponent('最新')+'&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看</span></a></td></tr></table>', 
+														attachments: [{
+															filename: 'd.png',
+															path: __dirname+'/../public/images/d.png',
+															cid: 'dpng' //same cid value as in the html img src
+														}]
+													};
+													
+													transporter.sendMail(mailOptions2, function(error, info){
+														if(error){
+															console.log(error);
+														}
+													});
+												}
+												res.redirect('/lender/story?id='+req.body.FromBorrowRequest);
 											}
 										});
 									}
-									res.redirect('/lender/story?id='+req.body.FromBorrowRequest);
 								}
 							});
+						}else{
+							res.redirect('/message?content='+encodeURIComponent('錯誤!請回到上頁重整頁面'));
 						}
 					}
 				});
@@ -341,63 +352,67 @@ function toLendCreatePart(res,req,borrow,lenderBankaccount,outterPara){
 }
 
 function toLendUpdatePart(res,req,innerPara,innerPara2,message){
-	if(sanitizer.sanitize(req.body.Message.trim()) != ''){
-		message.Message=sanitizer.sanitize(req.body.Message.trim());
-	}else{
-		message.Message='無內容';
-	}
-	message.MoneyToLend=parseInt(sanitizer.sanitize(req.body.MoneyToLend.trim()));
-	message.InterestRate=(parseFloat(sanitizer.sanitize(req.body.InterestRate.trim()))/100)+library.serviceChargeRate;//scr
-	message.MonthPeriod=parseInt(sanitizer.sanitize(req.body.MonthPeriod.trim()));
-	message.Updated = Date.now();
-	
-	message.save(function (err,newUpdate) {
-		if (err){
-			console.log(err);
-			res.redirect('/message?content='+encodeURIComponent('更新失敗!'));
+	if((message.Type=='toLend')&&(message.Status=='NotConfirmed')){
+		if(sanitizer.sanitize(req.body.Message.trim()) != ''){
+			message.Message=sanitizer.sanitize(req.body.Message.trim());
 		}else{
-			if(library.ifMail){
-				var mailOptions = {
-					from: 'LendingZone <lendingzonesystem@gmail.com>', // sender address
-					to: message.SendTo.Username+' <'+message.SendTo.Email+'>', // list of receivers
-					subject: message.CreatedBy.Username+'更新了他先前送來的欲借出訊息!', // Subject line
-					text: '親愛的 '+message.SendTo.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+message.CreatedBy.Username+' 更新了他先前在「'+message.FromBorrowRequest.StoryTitle+'("http://'+req.headers.host+'/lender/story?id='+message.FromBorrowRequest._id+'")」送來的欲借出訊息！'+String.fromCharCode(10)+'了解他所提供的資訊來決定是否要接受資助吧！'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看:'+String.fromCharCode(10)+'"http://'+req.headers.host+'/lender/lenderSendMessages?msgKeyword='+newUpdate._id+'&filter='+encodeURIComponent('未被確認')+'&sorter='+encodeURIComponent('最新')+'&page=1"', // plaintext body
-					html: '<img src="cid:dpng" /><br><br>親愛的 '+message.SendTo.Username+' 您好：<br><br>'+message.CreatedBy.Username+' 更新了他先前在「<a href="http://'+req.headers.host+'/lender/story?id='+message.FromBorrowRequest._id+'">'+message.FromBorrowRequest.StoryTitle+'</a>」送來的欲借出訊息！<br>了解他所提供的資訊來決定是否要接受資助吧！<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://'+req.headers.host+'/lender/lenderSendMessages?msgKeyword='+newUpdate._id+'&filter='+encodeURIComponent('未被確認')+'&sorter='+encodeURIComponent('最新')+'&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看</span></a></td></tr></table>', 
-					attachments: [{
-						filename: 'd.png',
-						path: __dirname+'/../public/images/d.png',
-						cid: 'dpng' //same cid value as in the html img src
-					}]
-				};
-				
-				transporter.sendMail(mailOptions, function(error, info){
-					if(error){
-						console.log(error);
-					}
-				});
-				
-				var mailOptions2 = {
-					from: 'LendingZone <lendingzonesystem@gmail.com>', // sender address
-					to: message.CreatedBy.Username+' <'+message.CreatedBy.Email+'>', // list of receivers
-					subject: '您更新了先前向'+message.SendTo.Username+'送出的欲借出訊息!', // Subject line
-					text: '親愛的 '+message.CreatedBy.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+'您更新了先前在「'+message.FromBorrowRequest.StoryTitle+'("http://'+req.headers.host+'/lender/story?id='+message.FromBorrowRequest._id+'")」向 '+message.SendTo.Username+' 送出的欲借出訊息！'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看:'+String.fromCharCode(10)+'"http://'+req.headers.host+'/lender/lenderSendMessages?msgKeyword='+newUpdate._id+'&filter='+encodeURIComponent('未被確認')+'&sorter='+encodeURIComponent('最新')+'&page=1"', // plaintext body
-					html: '<img src="cid:dpng" /><br><br>親愛的 '+message.CreatedBy.Username+' 您好：<br><br>您更新了先前在「<a href="http://'+req.headers.host+'/lender/story?id='+message.FromBorrowRequest._id+'">'+message.FromBorrowRequest.StoryTitle+'</a>」向 '+message.SendTo.Username+' 送出的欲借出訊息！<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://'+req.headers.host+'/lender/lenderSendMessages?msgKeyword='+newUpdate._id+'&filter='+encodeURIComponent('未被確認')+'&sorter='+encodeURIComponent('最新')+'&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看</span></a></td></tr></table>', 
-					attachments: [{
-						filename: 'd.png',
-						path: __dirname+'/../public/images/d.png',
-						cid: 'dpng' //same cid value as in the html img src
-					}]
-				};
-				
-				transporter.sendMail(mailOptions2, function(error, info){
-					if(error){
-						console.log(error);
-					}
-				});
-			}
-			res.redirect('/lender/story?id='+req.body.FromBorrowRequest);
+			message.Message='無內容';
 		}
-	});
+		message.MoneyToLend=parseInt(sanitizer.sanitize(req.body.MoneyToLend.trim()));
+		message.InterestRate=(parseFloat(sanitizer.sanitize(req.body.InterestRate.trim()))/100)+library.serviceChargeRate;//scr
+		message.MonthPeriod=parseInt(sanitizer.sanitize(req.body.MonthPeriod.trim()));
+		message.Updated = Date.now();
+		
+		message.save(function (err,newUpdate) {
+			if (err){
+				console.log(err);
+				res.redirect('/message?content='+encodeURIComponent('更新失敗!'));
+			}else{
+				if(library.ifMail){
+					var mailOptions = {
+						from: 'LendingZone <lendingzonesystem@gmail.com>', // sender address
+						to: message.SendTo.Username+' <'+message.SendTo.Email+'>', // list of receivers
+						subject: message.CreatedBy.Username+'更新了他先前送來的欲借出訊息!', // Subject line
+						text: '親愛的 '+message.SendTo.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+message.CreatedBy.Username+' 更新了他先前在「'+message.FromBorrowRequest.StoryTitle+'("http://'+req.headers.host+'/lender/story?id='+message.FromBorrowRequest._id+'")」送來的欲借出訊息！'+String.fromCharCode(10)+'了解他所提供的資訊來決定是否要接受資助吧！'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看:'+String.fromCharCode(10)+'"http://'+req.headers.host+'/lender/lenderSendMessages?msgKeyword='+newUpdate._id+'&filter='+encodeURIComponent('未被確認')+'&sorter='+encodeURIComponent('最新')+'&page=1"', // plaintext body
+						html: '<img src="cid:dpng" /><br><br>親愛的 '+message.SendTo.Username+' 您好：<br><br>'+message.CreatedBy.Username+' 更新了他先前在「<a href="http://'+req.headers.host+'/lender/story?id='+message.FromBorrowRequest._id+'">'+message.FromBorrowRequest.StoryTitle+'</a>」送來的欲借出訊息！<br>了解他所提供的資訊來決定是否要接受資助吧！<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://'+req.headers.host+'/lender/lenderSendMessages?msgKeyword='+newUpdate._id+'&filter='+encodeURIComponent('未被確認')+'&sorter='+encodeURIComponent('最新')+'&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看</span></a></td></tr></table>', 
+						attachments: [{
+							filename: 'd.png',
+							path: __dirname+'/../public/images/d.png',
+							cid: 'dpng' //same cid value as in the html img src
+						}]
+					};
+					
+					transporter.sendMail(mailOptions, function(error, info){
+						if(error){
+							console.log(error);
+						}
+					});
+					
+					var mailOptions2 = {
+						from: 'LendingZone <lendingzonesystem@gmail.com>', // sender address
+						to: message.CreatedBy.Username+' <'+message.CreatedBy.Email+'>', // list of receivers
+						subject: '您更新了先前向'+message.SendTo.Username+'送出的欲借出訊息!', // Subject line
+						text: '親愛的 '+message.CreatedBy.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+'您更新了先前在「'+message.FromBorrowRequest.StoryTitle+'("http://'+req.headers.host+'/lender/story?id='+message.FromBorrowRequest._id+'")」向 '+message.SendTo.Username+' 送出的欲借出訊息！'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看:'+String.fromCharCode(10)+'"http://'+req.headers.host+'/lender/lenderSendMessages?msgKeyword='+newUpdate._id+'&filter='+encodeURIComponent('未被確認')+'&sorter='+encodeURIComponent('最新')+'&page=1"', // plaintext body
+						html: '<img src="cid:dpng" /><br><br>親愛的 '+message.CreatedBy.Username+' 您好：<br><br>您更新了先前在「<a href="http://'+req.headers.host+'/lender/story?id='+message.FromBorrowRequest._id+'">'+message.FromBorrowRequest.StoryTitle+'</a>」向 '+message.SendTo.Username+' 送出的欲借出訊息！<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://'+req.headers.host+'/lender/lenderSendMessages?msgKeyword='+newUpdate._id+'&filter='+encodeURIComponent('未被確認')+'&sorter='+encodeURIComponent('最新')+'&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看</span></a></td></tr></table>', 
+						attachments: [{
+							filename: 'd.png',
+							path: __dirname+'/../public/images/d.png',
+							cid: 'dpng' //same cid value as in the html img src
+						}]
+					};
+					
+					transporter.sendMail(mailOptions2, function(error, info){
+						if(error){
+							console.log(error);
+						}
+					});
+				}
+				res.redirect('/lender/story?id='+req.body.FromBorrowRequest);
+			}
+		});
+	}else{
+		res.redirect('/message?content='+encodeURIComponent('錯誤!請回到上頁重整頁面'));
+	}
 }
 
 router.post('/rejectToBorrowMessageInStory', library.ensureAuthenticated, function(req, res, next) {
@@ -754,46 +769,50 @@ router.post('/destroy', library.ensureAuthenticated, function(req, res, next) {
 				if(message.CreatedBy!=req.user._id){
 					res.redirect('/message?content='+encodeURIComponent('認證錯誤!'));
 				}else{
-					Borrows.findById(message.FromBorrowRequest).exec(function (err, borrow){
-						if (err) {
-							console.log(err);
-							res.redirect('/message?content='+encodeURIComponent('錯誤!'));
-						}else{
-							if(!borrow){
+					if(message.Status=='NotConfirmed'){
+						Borrows.findById(message.FromBorrowRequest).exec(function (err, borrow){
+							if (err) {
+								console.log(err);
 								res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 							}else{
-								var ctr = -1;
-								for (i = 0; i < borrow.Message.length; i++) {
-									if (borrow.Message[i].toString() === message._id.toString()) {
-										ctr=i;
-										break;
+								if(!borrow){
+									res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+								}else{
+									var ctr = -1;
+									for (i = 0; i < borrow.Message.length; i++) {
+										if (borrow.Message[i].toString() === message._id.toString()) {
+											ctr=i;
+											break;
+										}
+									};
+									if(ctr>-1){
+										borrow.Message.splice(ctr, 1);
 									}
-								};
-								if(ctr>-1){
-									borrow.Message.splice(ctr, 1);
-								}
-								borrow.save(function (err,updatedBorrow) {
-									if (err){
-										console.log(err);
-										res.redirect('/message?content='+encodeURIComponent('錯誤!'));
-									}else{	
-										message.remove(function (err,removedItem) {
-											if (err){
-												console.log(err);
-												res.redirect('/message?content='+encodeURIComponent('刪除失敗!'));
-											}else{
-												if(removedItem.Type=='toLend'){
-													res.redirect('/lender/story?id='+req.body.FromBorrowRequest);
-												}else if(removedItem.Type=='toBorrow'){
-													res.redirect('/');
+									borrow.save(function (err,updatedBorrow) {
+										if (err){
+											console.log(err);
+											res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+										}else{	
+											message.remove(function (err,removedItem) {
+												if (err){
+													console.log(err);
+													res.redirect('/message?content='+encodeURIComponent('刪除失敗!'));
+												}else{
+													if(removedItem.Type=='toLend'){
+														res.redirect('/lender/story?id='+req.body.FromBorrowRequest);
+													}else if(removedItem.Type=='toBorrow'){
+														res.redirect('/');
+													}
 												}
-											}
-										});
-									}
-								});
+											});
+										}
+									});
+								}
 							}
-						}
-					});
+						});
+					}else{
+						res.redirect('/message?content='+encodeURIComponent('錯誤!請回到上頁重整頁面'));
+					}
 				}
 			}
 		}

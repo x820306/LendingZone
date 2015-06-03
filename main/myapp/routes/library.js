@@ -805,7 +805,7 @@ function rejectMessageWhenNotReadableRecursivePart(ctr,ctrTarget,res,ifAuto,resA
 		if (err) {
 			ctr++;
 			if(ctr<ctrTarget){
-				rejectMessageWhenNotReadableRecursivePart(ctr,ctrTarget,res,ifAuto,resAddress,array,'錯誤!',req)
+				rejectMessageWhenNotReadableRecursivePart(ctr,ctrTarget,res,ifAuto,resAddress,array,'有些訊息因錯誤而無法婉拒或被婉拒!',req)
 			}else{
 				if(!ifAuto){
 					res.redirect('/message?content='+encodeURIComponent('錯誤!'));
@@ -815,7 +815,7 @@ function rejectMessageWhenNotReadableRecursivePart(ctr,ctrTarget,res,ifAuto,resA
 			if(!message){
 				ctr++;
 				if(ctr<ctrTarget){
-					rejectMessageWhenNotReadableRecursivePart(ctr,ctrTarget,res,ifAuto,resAddress,array,'錯誤!',req)
+					rejectMessageWhenNotReadableRecursivePart(ctr,ctrTarget,res,ifAuto,resAddress,array,'有些訊息因錯誤而無法婉拒或被婉拒!',req)
 				}else{
 					if(!ifAuto){
 						res.redirect('/message?content='+encodeURIComponent('錯誤!'));
@@ -825,7 +825,7 @@ function rejectMessageWhenNotReadableRecursivePart(ctr,ctrTarget,res,ifAuto,resA
 				if(message.Status!=="NotConfirmed"){
 					ctr++;
 					if(ctr<ctrTarget){
-						rejectMessageWhenNotReadableRecursivePart(ctr,ctrTarget,res,ifAuto,resAddress,array,'錯誤!',req)
+						rejectMessageWhenNotReadableRecursivePart(ctr,ctrTarget,res,ifAuto,resAddress,array,'有些訊息因錯誤而無法婉拒或被婉拒!',req)
 					}else{
 						if(!ifAuto){
 							res.redirect('/message?content='+encodeURIComponent('錯誤!'));
@@ -838,7 +838,7 @@ function rejectMessageWhenNotReadableRecursivePart(ctr,ctrTarget,res,ifAuto,resA
 						if(err){
 							ctr++;
 							if(ctr<ctrTarget){
-								rejectMessageWhenNotReadableRecursivePart(ctr,ctrTarget,res,ifAuto,resAddress,array,'錯誤!',req)
+								rejectMessageWhenNotReadableRecursivePart(ctr,ctrTarget,res,ifAuto,resAddress,array,'有些訊息因錯誤而無法婉拒或被婉拒!',req)
 							}else{
 								if(!ifAuto){
 									res.redirect('/message?content='+encodeURIComponent('錯誤!'));

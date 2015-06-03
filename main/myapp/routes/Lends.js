@@ -261,7 +261,18 @@ function autoConfirm(req,res,sorter,lendID){
 }
 
 router.post('/create', library.ensureAuthenticated, function(req, res, next) {
-	samePart(res,req,createPart,null);
+	Lends.findOne({CreatedBy:req.user._id}).exec(function (err, lend){
+		if (err) {
+			console.log(err);
+			res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+		}else{
+			if(!lend){
+				samePart(res,req,createPart,null);
+			}else{
+				res.redirect('/message?content='+encodeURIComponent('錯誤!請回到上頁重整頁面'));
+			}
+		}
+	});
 });
 
 router.post('/update', library.ensureAuthenticated, function(req, res, next) {
