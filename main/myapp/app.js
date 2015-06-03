@@ -210,6 +210,11 @@ app.get('/test', function (req, res) {
 	res.json(library.captchaTextArray);
 });
 
+app.get('/test2', function (req, res) {
+	console.log(library.formIdfrArray);
+	res.json(library.formIdfrArray);
+});
+
 //database models routers
 app.use('/Users', Users);
 app.use('/Borrows', Borrows);

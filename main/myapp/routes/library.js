@@ -29,6 +29,9 @@ var ifMail=false;
 var captchaIdfrCtr=0;
 var captchaTextArray=[];
 var captchaTimer=null;
+var formIdfrCtr=0;
+var formIdfrArray=[];
+var formTimer=null;
 
 exports.autoComfirmToBorrowMsgArray=autoComfirmToBorrowMsgArray;
 exports.insuranceRate=insuranceRate;
@@ -36,6 +39,8 @@ exports.serviceChargeRate=serviceChargeRate;
 exports.ifMail=ifMail;
 exports.captchaIdfrCtr=captchaIdfrCtr;
 exports.captchaTextArray=captchaTextArray;
+exports.formIdfrCtr=formIdfrCtr;
+exports.formIdfrArray=formIdfrArray;
 
 exports.setCaptchaTimer = function(){
 	if(captchaTimer){
@@ -43,6 +48,14 @@ exports.setCaptchaTimer = function(){
 		captchaTimer=null;
 	}
 	captchaTimer=setInterval( function(){exports.captchaTextArray=[];},600000);
+}
+
+exports.setFormTimer = function(){
+	if(formTimer){
+		clearInterval(formTimer);
+		formTimer=null;
+	}
+	formTimer=setInterval( function(){exports.formIdfrArray=[];},600000);
 }
 
 exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,req,res,ifAuto,resAddress,ifLenderSide,infoJson){
