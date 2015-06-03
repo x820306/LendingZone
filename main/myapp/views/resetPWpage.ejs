@@ -5,21 +5,21 @@
 			<form method = "post" action= "/Users/resetPW" onsubmit="return disableButton();">
 				<h3>重設密碼<br></h3>
 				<div class="input-group">
-					<label for="nPwdIpt">密碼</label>
-					<input type="password" class="form-control" id="PwdIpt" name="Password" placeholder="密碼" required="required">
+					<label for="nPwdIpt">新密碼</label>
+					<input type="password" class="form-control" id="PwdIpt" name="Password" placeholder="新密碼" required="required" onkeyup="value=value.replace(/[^\w\.\/]/ig,'');checkLength(); return false;"><br><span id="confirmMessage1" class="confirmMessage1"></span>
 				</div>
 				<br>
 				<div class="input-group">
-					<label for="n2PwdIpt">密碼確認</label>
-					<input type="password" class="form-control" id="2PwdIpt" name="2PwdIpt" placeholder="密碼確認" onkeyup="checkPwd(); return false;"> <br><span id="confirmMessage"></span>
+					<label for="n2PwdIpt">新密碼確認</label>
+					<input type="password" class="form-control" id="2PwdIpt" name="Password2nd" placeholder="新密碼確認" required="required" onkeyup="value=value.replace(/[^\w\.\/]/ig,'');checkPwd(); return false;"> <br><span id="confirmMessage2" class="confirmMessage2"></span>
 				</div>
 				<br>
 				<input type="hidden" name="Token" value="<%=tk%>">
 				<div class="btn-toolbar" role="toolbar" style = "margin-top: 10px;">
-				<button id="subBtnID" style="display:none;" type="submit" class="btn btn-default btn-lg">
+				<button id="subBtnID" type="submit" class="btn btn-default btn-lg">
 					  <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> 確認
 				</button>
-				<button type="button" class="btn btn-default btn-lg" onClick = "javascript:location.href='/'" >
+				<button id="cancelBtnID" type="button" class="btn btn-default btn-lg" onClick = "javascript:location.href='/'" >
 					  <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> 關閉
 				</button></div>
 			</form>
@@ -27,37 +27,79 @@
 	</div>
 </div>
 <script>
+	var valiFlag1=false;
+	var valiFlag2=false;
 	var submitFlag=false;
+	
+	function start(){
+		var orig=$('#subBtnID').attr('class');
+		if(orig.search(' disabled')<0){
+			orig=orig+' disabled';
+			$('#subBtnID').attr('class',orig);
+		}
+		orig=$('#cancelBtnID').attr('class');
+		if(orig.search(' disabled')<0){
+			orig=orig+' disabled';
+			$('#cancelBtnID').attr('class',orig);
+		}
+	}
+	
+	function end(){
+		var orig=$('#subBtnID').attr('class');
+		orig=orig.replace(/ disabled/g, '');
+		$('#subBtnID').attr('class',orig);
+		
+		orig=$('#cancelBtnID').attr('class');
+		orig=orig.replace(/ disabled/g, '');
+		$('#cancelBtnID').attr('class',orig);
+	}
+	
 	function disableButton(){
 		if(!submitFlag){
-			var orig=$('#subBtnID').attr('class');
-			if(orig.search(' disabled')<0){
-				orig=orig+' disabled';
-				$('#subBtnID').attr('class',orig);
-			}
 			submitFlag=true;
-			return true;
+			start();
+			checkLength();
+			checkPwd();
+			if(!valiFlag1){
+				$('#PwdIpt').focus();
+				submitFlag=false;
+				end();
+				return false;
+			}else if(!valiFlag2){
+				$('#2PwdIpt').focus();
+				submitFlag=false;
+				end();
+				return false;
+			}else{
+				return true;
+			}
 		}else{
 			return false;
 		}
 	}
 	
+	function checkLength()
+	{
+	    var pwd1 = $('#PwdIpt').val().trim();
+	    if(pwd1.length<6){
+	        $('#confirmMessage1').html('密碼須大於六碼');
+			valiFlag1=false;
+	    }else{
+	        $('#confirmMessage1').html('密碼長度符合條件');
+			valiFlag1=true;
+	    }
+	}
+	
 	function checkPwd()
 	{
-	    var pwd1 = $('#PwdIpt').val();
-	    var pwd2 = $('#2PwdIpt').val();
+	    var pwd1 = $('#PwdIpt').val().trim();
+	    var pwd2 = $('#2PwdIpt').val().trim();
 	    if(pwd1 == pwd2){
-	        $('#confirmMessage').html('輸入密碼相同');
-			var orig=$('#subBtnID').attr('style');
-			orig=orig.replace(/display:none;/g, '');
-			$('#subBtnID').attr('style',orig);
+	        $('#confirmMessage2').html('輸入密碼相同');
+			valiFlag2=true;
 	    }else{
-	        $('#confirmMessage').html('請再次確認您輸入的密碼是否相同');
-			var orig=$('#subBtnID').attr('style');
-			if(orig.search('display:none;')<0){
-				orig=orig+'display:none;';
-				$('#subBtnID').attr('style',orig);
-			}
+	        $('#confirmMessage2').html('請再次確認您輸入的密碼是否相同');
+			valiFlag2=false;
 	    }
 	}
 </script>

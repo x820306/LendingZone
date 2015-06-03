@@ -13,7 +13,7 @@
 						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 						<h4 class="modal-title" id="myModalLabel"><img src="/images/login.png " height="30px" width="30px"/>&nbsp;登入</h4>
 					</div>
-					<form action="/login" method="post" id="loginForm" onsubmit="return disableButton();">
+					<form action="/login" method="post" id="loginForm" onsubmit="return disableButtonFooter();">
 						<div class="modal-body" style="text-align:center;">
 							<div style="margin:0px auto;" class="input-group">
 									<input type="text" class="form-control" name="Username" id="usernameID" placeholder="帳號" required="required">
@@ -188,7 +188,7 @@
 		}
 		
 		var submitFlag=false;
-		function disableButton(){
+		function disableButtonFooter(){
 			if(!submitFlag){
 				var orig=$('#lgBtn').attr('class');
 				if(orig.search(' disabled')<0){
