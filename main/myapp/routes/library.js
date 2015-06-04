@@ -277,7 +277,7 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																}else if(nowMoney>maxMoney3){
 																	returnSringNow='金額超過您所設定之自動借款餘額!您可調高後再嘗試';
 																	returnSring=returnSringNow;
-																}else if(nowMoney<minMoney){
+																}else if((nowMoney<minMoney)&&(minMoney<=maxMoney2)){
 																	returnSringNow='金額少於對方期望!';
 																	returnSring=returnSringNow;
 																}else if(month>maxMonth){
@@ -315,24 +315,6 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																if(nowMoney2>maxMoney){
 																	returnSringNow='有訊息因借款金額超過借出方銀行帳戶內的餘額而無法被同意';
 																	returnSring=returnSringNow;
-																}else if(nowMoney2>maxMoney2){
-																	if(maxMoney2==0){
-																		returnSringNow='有些訊息因借入方已不需要借款或其條件不合您現在的自動出借設定而無法被同意，它們已被自動婉拒';
-																		returnSring=returnSringNow;
-																	}else{
-																		finalMoneyToLend=maxMoney2;
-																		finalInterestRate=message.InterestRate;
-																		finalMonthPeriod=message.MonthPeriod;
-																	}
-																}else if(nowMoney2>maxMoney3){
-																	if(maxMoney3==0){
-																		returnSringNow='有些訊息因借出方所設定之自動借款額度已用盡而無法被同意';
-																		returnSring=returnSringNow;
-																	}else{
-																		finalMoneyToLend=maxMoney3;
-																		finalInterestRate=message.InterestRate;
-																		finalMonthPeriod=message.MonthPeriod;
-																	}
 																}else if(rate2<minRate){
 																	returnSringNow='有些訊息因借入方已不需要借款或其條件不合您現在的自動出借設定而無法被同意，它們已被自動婉拒';
 																	returnSring=returnSringNow;
@@ -357,6 +339,39 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																}else if(!borrow.IfReadable){
 																	returnSringNow='有些訊息因借入方已不需要借款或其條件不合您現在的自動出借設定而無法被同意，它們已被自動婉拒';
 																	returnSring=returnSringNow;
+																}else if(nowMoney2>maxMoney2){
+																	if(maxMoney2==0){
+																		returnSringNow='有些訊息因借入方已不需要借款或其條件不合您現在的自動出借設定而無法被同意，它們已被自動婉拒';
+																		returnSring=returnSringNow;
+																	}else{
+																		 if(nowMoney2>maxMoney3){
+																			if(maxMoney3==0){
+																				returnSringNow='有些訊息因借出方所設定之自動借款額度已用盡而無法被同意';
+																				returnSring=returnSringNow;
+																			}else{
+																				if(maxMoney2<=maxMoney3){
+																					finalMoneyToLend=maxMoney2;
+																				}else{
+																					finalMoneyToLend=maxMoney3;
+																				}
+																				finalInterestRate=message.InterestRate;
+																				finalMonthPeriod=message.MonthPeriod;
+																			}
+																		}else{
+																			finalMoneyToLend=maxMoney2;
+																			finalInterestRate=message.InterestRate;
+																			finalMonthPeriod=message.MonthPeriod;
+																		}
+																	}
+																}else if(nowMoney2>maxMoney3){
+																	if(maxMoney3==0){
+																		returnSringNow='有些訊息因借出方所設定之自動借款額度已用盡而無法被同意';
+																		returnSring=returnSringNow;
+																	}else{
+																		finalMoneyToLend=maxMoney3;
+																		finalInterestRate=message.InterestRate;
+																		finalMonthPeriod=message.MonthPeriod;
+																	}
 																}else{
 																	finalMoneyToLend=message.MoneyToLend;
 																	finalInterestRate=message.InterestRate;

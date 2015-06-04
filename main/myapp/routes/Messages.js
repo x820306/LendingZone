@@ -159,6 +159,8 @@ function toLendSamePart(res,req,differentPart,outterPara){
 								res.redirect('/message?content='+encodeURIComponent('超過對方可接受之最大期數!'));
 							}else if(rate>maxRate){
 								res.redirect('/message?content='+encodeURIComponent('超過期望利率上限!'));
+							}else if(!borrow.IfReadable){
+								res.redirect('/message?content='+encodeURIComponent('借入方已不需要借款，請回上頁重整頁面!'));
 							}else{
 								differentPart(res,req,borrow,lenderBankaccount,outterPara);
 							}

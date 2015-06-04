@@ -457,7 +457,18 @@
 									<textarea class="form-control" name="Message" rows="3" readonly="readonly"><%=jsonMessage.Message%></textarea>
 									<br>
 								</div>
+								<%if(jsonMessage.Status=='NotConfirmed'){%>
+									<form action="/Messages/destroy" method="post" onsubmit="return disableButton();">
+									<input type="hidden" name="FromBorrowRequest" value="<%=json._id%>">
+									<input type="hidden" name="_id" value="<%=jsonMessage._id%>">
+								<%}%>
 								<div class="modal-footer" style="text-align: left;">
+									<%if(jsonMessage.Status=='NotConfirmed'){%>
+										<button type="button" class="btn btn-danger" onclick="checkAndOpenModal(chkModal7,mdlCnt7,'您確定要刪除欲借出訊息嗎?',false);">
+											刪除
+										</button>
+										&nbsp;
+									<%}%>
 									<a href="/lender/lenderSendMessages?msgKeyword=<%=jsonMessage._id%>&filter=<%if(jsonMessage.Status=="NotConfirmed"){%><%=encodeURIComponent('未被確認')%><%}else if(jsonMessage.Status=="Confirmed"){%><%=encodeURIComponent('已被同意')%><%}else if(jsonMessage.Status=="Rejected"){%><%=encodeURIComponent('已被婉拒')%><%}%>&sorter=<%=encodeURIComponent('最新')%>&page=1">
 										<button type="button" class="btn btn-default">於列表查看</button>
 									</a>
@@ -467,6 +478,25 @@
 							</div>
 						</div>
 					</div>
+					<%if(jsonMessage.Status=='NotConfirmed'){%>
+					<div class="modal fade" id="chkModal7">
+						<div class="modal-dialog modal-sm">
+							<div class="modal-content">
+								<div class="modal-header" style="text-align: center;">
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+									<h4 class="modal-title">再次確認</h4>
+								</div>
+								<div id="mdlCnt7" class="modal-body" style="text-align: center;">
+								</div>
+								<div class="modal-footer" style="text-align: center;">
+									<button type="submit" class="btn btn-danger" id="destroyBtnID" onclick="destroy();">確定</button>
+									<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+								</div>
+							</div>
+						</div>
+					</div>
+					</form>
+					<%}%>
 				<%}else{%>
 					<div class="modal fade" id="hendLendModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 						<div class="modal-dialog modal-md">
@@ -1300,6 +1330,25 @@
 								if(orig.search(' disabled')<0){
 									orig=orig+' disabled';
 									$('#updateBtnID').attr('class',orig);
+								}
+								submitFlag=true;
+								return true;
+							}else{
+								return false;
+							}
+						}
+					<%}else if((!json.IfReadable)&&(jsonMessage.Status=='NotConfirmed')){%>
+						function destroy(){
+							$('#chkModal7').modal('hide');
+						}
+						
+						var submitFlag=false;
+						function disableButton(){
+							if(!submitFlag){
+								var orig=$('#destroyBtnID').attr('class');
+								if(orig.search(' disabled')<0){
+									orig=orig+' disabled';
+									$('#destroyBtnID').attr('class',orig);
 								}
 								submitFlag=true;
 								return true;
