@@ -284,7 +284,7 @@ function captchaChecker(req, res, next){
 	if(passFlag){
 		return next();
 	}else{
-		res.redirect('/message?content='+encodeURIComponent('驗證碼錯誤！'));
+		res.redirect('/message?content='+encodeURIComponent('驗證碼錯誤或過期！'));
 	}
 }
 

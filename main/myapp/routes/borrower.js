@@ -98,7 +98,7 @@ router.post('/borrowCreate', library.ensureAuthenticated, function(req, res) {
 			});
 		}
 	}else{
-		res.redirect('/message?content='+encodeURIComponent('表單已成功提交過，請重新整理頁面！'));
+		res.redirect('/message?content='+encodeURIComponent('表單已成功提交過或過期，請重新整理頁面！'));
 	}
 });
 
