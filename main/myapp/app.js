@@ -38,7 +38,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 // uncomment after placing your favicon in /public
-//app.use(favicon(__dirname + '/public/favicon.ico'));
+app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -65,19 +65,19 @@ passport.use('local', new LocalStrategy({
 		Users.findOne({"Username": Username}).exec(function (err, user){
 			if (err) {
 				console.log(err);
-				return done(null, false, { message: '資料庫錯誤！' });
+				return done(null, false, { errorTarget:1, errorMessage: '資料庫錯誤！' });
 			}else{
 				if(!user){
 					console.log('Incorrect Username.');
-					return done(null, false, { message: '帳號錯誤！' });
+					return done(null, false, { errorTarget:1, errorMessage: '帳號錯誤！' });
 				}else{
 					user.comparePassword(Password, function(err, isMatch) {
 						if(err){
-							return done(null, false, { message: '資料庫錯誤！' });
+							return done(null, false, { errorTarget:1, errorMessage: '資料庫錯誤！' });
 						}else{
 							if(!isMatch){
 								console.log('Incorrect Password.');
-								return done(null, false, { message: '密碼錯誤！' });
+								return done(null, false, { errorTarget:2, errorMessage: '密碼錯誤！' });
 							}else{
 								console.log('Login Success.');
 								var smaller_user={
@@ -109,61 +109,59 @@ passport.deserializeUser(function (user, done) {
     done(null, user);
 });
 
-app.get('/',library.newMsgChecker, function (req, res) {
+app.get('/',library.loginFormChecker,library.newMsgChecker, function (req, res) {
 	var auRst=null;
 	if(req.isAuthenticated()){
 		auRst=req.user.Username;
 	}
-	res.render('index',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst});
+
+	res.render('index',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst});
 });
 
-app.get('/message/:content?/:info1?/:info2?/:info3?/:info4?/:infoB?',library.newMsgChecker, function (req, res) {
+app.get('/message/:content?',library.loginFormChecker,library.newMsgChecker, function (req, res) {
 	if(typeof(req.query.content) !== "undefined"){
-		var temp=decodeURIComponent(req.query.content);
-		var tempArray=[];
-		tempArray=req.flash('error');
-		if(tempArray){
-			if(tempArray.length>0){
-				temp=tempArray[0];
-			}
-		}
 		var auRst=null;
 		if(req.isAuthenticated()){
 			auRst=req.user.Username;
 		}
-		var info1=parseFloat(decodeURIComponent(req.query.info1));
-		var info2=parseFloat(decodeURIComponent(req.query.info2));
-		var info3=parseFloat(decodeURIComponent(req.query.info3));
-		var info4=parseFloat(decodeURIComponent(req.query.info4));
-		var infoB=parseFloat(decodeURIComponent(req.query.infoB));
-		if((typeof(req.query.info1) !== "undefined")&&(typeof(req.query.info2) !== "undefined")&&(typeof(req.query.info3) !== "undefined")&&(typeof(req.query.info4) !== "undefined")&&(typeof(req.query.infoB) === "undefined")){
-			res.render('message',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,content:temp,if1:info1,if2:info2,if3:info3,if4:info4,ifB:null});
-		}else if((typeof(req.query.info1) === "undefined")&&(typeof(req.query.info2) === "undefined")&&(typeof(req.query.info3) === "undefined")&&(typeof(req.query.info4) === "undefined")&&(typeof(req.query.infoB) !== "undefined")){
-			res.render('message',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,content:temp,if1:null,if2:null,if3:null,if4:null,ifB:infoB});
-		}else{
-			res.render('message',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst, content:temp,if1:null,if2:null,if3:null,if4:null,ifB:null});
-		}
+		
+		var temp=decodeURIComponent(req.query.content);
+		res.render('message',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst, content:temp});
+	
 	}else{
 		res.redirect('/');
 	}
 });
 
-app.post('/login',captchaChecker, passport.authenticate('local', { failureRedirect: '/message?content='+encodeURIComponent('帳號或密碼錯誤！'),failureFlash: true }),function (req, res) {
-	var origString=req.get('referer');
-	var stringArray=origString.split('/');
-	var subString=stringArray[stringArray.length-1];
-	var subStringArray=subString.split('?');
-	var target=subStringArray[0];
-	if((target=='message')||(target=='borrowCreate')||(target=='readable')||(target=='buyInsurance')||(target=='rejectToBorrowMessageInStory')||(target=='confirmToBorrowMessageInStory')||(target=='rejectToBorrowMessageInLRM')||(target=='confirmToBorrowMessageInLRM')||(target=='toLendCreate')||(target=='toLendUpdate')||(target=='destroy')||(target=='create')||(target=='update')||(target=='changeData')||(target=='changePW')){
-		res.redirect('/');
+app.post('/login',captchaChecker, function(req, res, next) {
+  passport.authenticate('local', function(err, user, info) {
+    if(err){ 
+		cosole.log(err);
+		res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 	}else{
-		res.redirect(req.get('referer'));
+		if(!user){ 
+			redirector(req,res,info.errorTarget,info.errorMessage);
+		}else{
+			req.logIn(user, function(err) {
+				if(err){ 
+					cosole.log(err);
+					res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+				}else{
+					if(routeChecker(req)){
+						res.redirect(req.get('referer'));
+					}else{
+						res.redirect('/');
+					}
+				}
+			});
+		}
 	}
+  })(req, res, next);
 });
+
 
 app.get('/captcha/:captchaIdfr?', function (req, res) {
 	if(typeof(req.query.captchaIdfr) !== "undefined"){
-		console.log('captcha');
 		var captchaIdfr=parseInt(req.query.captchaIdfr);
 		
 		if(captchaIdfr>0){
@@ -196,13 +194,13 @@ app.get('/logout', function (req, res) {
     res.redirect('/');
 });
 
-app.get('/signupTest',library.newMsgChecker, function (req, res) {
-   var auRst=null;
+app.get('/signupTest',library.loginFormChecker,library.newMsgChecker, function (req, res) {
+	var auRst=null;
 	if(req.isAuthenticated()){
 		auRst=req.user.Username;
 	}
 	
-	res.render('signupTest',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst});
+	res.render('signupTest',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst});
 });
 
 app.get('/test', function (req, res) {
@@ -284,7 +282,37 @@ function captchaChecker(req, res, next){
 	if(passFlag){
 		return next();
 	}else{
-		res.redirect('/message?content='+encodeURIComponent('驗證碼錯誤或過期！'));
+		redirector(req,res,3,'錯誤或過期！');
+	}
+}
+
+function redirector(req,res,target,message){
+	var formContent={
+		F1:req.body.Username,
+		F2:req.body.Password,
+		F3:req.body.CaptchaText,
+	};
+	
+	var json={FormContent:formContent,Target:target,Message:message};
+	var string=JSON.stringify(json);
+	req.flash('loginForm',string);
+	if(routeChecker(req)){
+		res.redirect(req.get('referer'));
+	}else{
+		res.redirect('/');
+	}
+}
+
+function routeChecker(req){
+	var origString=req.get('referer');
+	var stringArray=origString.split('/');
+	var subString=stringArray[stringArray.length-1];
+	var subStringArray=subString.split('?');
+	var target=subStringArray[0];
+	if((target=='message')||(target=='borrowCreate')||(target=='readable')||(target=='buyInsurance')||(target=='buyInsuranceAll')||(target=='rejectToBorrowMessageInStory')||(target=='confirmToBorrowMessageInStory')||(target=='rejectToBorrowMessageInLRM')||(target=='confirmToBorrowMessageInLRM')||(target=='rejectToBorrowMessageInLRMall')||(target=='confirmToBorrowMessageInLRMall')||(target=='toLendCreate')||(target=='toLendUpdate')||(target=='destroy')||(target=='create')||(target=='update')||(target=='changeData')||(target=='changePW')||(target=='deleteToLendMessageInLRMall')||(target=='buyInsuranceAll')||(target=='rejectToBorrowMessageInLRMall')||(target=='confirmToBorrowMessageInLRMall')){
+		return false;
+	}else{
+		return true;
 	}
 }
 

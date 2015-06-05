@@ -32,13 +32,13 @@
 		<% } %>
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						<h3 class="panel-title">最大可借出金額<i style="color:red;">&nbsp;*</i></h3>
+						<h3 class="panel-title">最大可借出金額<i style="color:red;">&nbsp;*</i><span id="s1" style="color:red;"><%if(lfJSON){%><%if(lfJSON.Target[0]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=lfJSON.Message[0]%><%}%><%}%></span></h3>
 					</div>
 					<div class="panel-body">
 						<% if(!jsonLend){ %>
-							<input type="number" style="width:95%;" class="textForm" name="MaxMoneyToLend" required="required">
+							<input id="f1" type="number" style="width:95%;" class="textForm" name="MaxMoneyToLend" required="required"<%if(lfJSON){%> value="<%=lfJSON.FormContent.F1%>"<%}%>>
 						<% }else{ %>
-							<input type="number" style="width:95%;" class="textForm" name="MaxMoneyToLend" value="<%=jsonLend.MaxMoneyToLend.toFixed(0)%>" required="required">
+							<input id="f1" type="number" style="width:95%;" class="textForm" name="MaxMoneyToLend" value="<%if(lfJSON){%><%=lfJSON.FormContent.F1%><%}else{%><%=jsonLend.MaxMoneyToLend.toFixed(0)%><%}%>" required="required">
 						<% } %>
 						&nbsp;元
 					</div>					
@@ -46,13 +46,13 @@
 				</br>
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						<h3 class="panel-title">最低欲借出年利率<i style="color:red;">&nbsp;*</i></h3>
+						<h3 class="panel-title">最低欲借出年利率<i style="color:red;">&nbsp;*</i><span id="s2" style="color:red;"><%if(lfJSON){%><%if(lfJSON.Target[1]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=lfJSON.Message[1]%><%}%><%}%></span></h3>
 					</div>
 					<div class="panel-body">
 						<% if(!jsonLend){ %>
-							<input type="text" style="width:95%;" class="textForm" name="InterestRate" required="required">
+							<input id="f2" type="text" style="width:95%;" class="textForm" name="InterestRate" required="required"<%if(lfJSON){%> value="<%=lfJSON.FormContent.F2%>"<%}%>>
 						<% }else{ %>
-							<input type="text" style="width:95%;" class="textForm" name="InterestRate" value="<%=(jsonLend.InterestRate*100).toFixed(2)%>" required="required">
+							<input id="f2" type="text" style="width:95%;" class="textForm" name="InterestRate" value="<%if(lfJSON){%><%=lfJSON.FormContent.F2%><%}else{%><%=(jsonLend.InterestRate*100).toFixed(2)%><%}%>" required="required">
 						<% } %>
 						%
 					</div>
@@ -60,13 +60,13 @@
 				</br>
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						<h3 class="panel-title">最低欲借出期數（單位/月，最大36個月）<i style="color:red;">*</i></h3>
+						<h3 class="panel-title">最低欲借出期數（單位/月，最大36個月）<i style="color:red;">*</i><span id="s3" style="color:red;"><%if(lfJSON){%><%if(lfJSON.Target[2]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=lfJSON.Message[2]%><%}%><%}%></span></h3>
 					</div>
 					<div class="panel-body">
 						<% if(!jsonLend){ %>
-							<input type="number" style="width:95%;" class="textForm" name="MonthPeriod" required="required">
+							<input id="f3" type="number" style="width:95%;" class="textForm" name="MonthPeriod" required="required"<%if(lfJSON){%> value="<%=lfJSON.FormContent.F3%>"<%}%>>
 						<% }else{ %>
-							<input type="number" style="width:95%;" class="textForm" name="MonthPeriod" value="<%=jsonLend.MonthPeriod.toFixed(0)%>" required="required">
+							<input id="f3" type="number" style="width:95%;" class="textForm" name="MonthPeriod" value="<%if(lfJSON){%><%=lfJSON.FormContent.F3%><%}else{%><%=jsonLend.MonthPeriod.toFixed(0)%><%}%>" required="required">
 						<% } %>
 						&nbsp;個月
 					</div>
@@ -74,13 +74,13 @@
 				</br>
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						<h3 class="panel-title">最低可接受信用等級</h3>
+						<h3 class="panel-title">最低可接受信用等級<span id="s4" style="color:red;"><%if(lfJSON){%><%if(lfJSON.Target[3]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=lfJSON.Message[3]%><%}%><%}%></span></h3>
 					</div>
 					<div class="panel-body">
 						<% if(!jsonLend){ %>
-							<input type="number" style="width:95%;" class="textForm" name="MinLevelAccepted">
+							<input id="f4" type="number" style="width:95%;" class="textForm" name="MinLevelAccepted"<%if(lfJSON){%> value="<%=lfJSON.FormContent.F4%>"<%}%>>
 						<% }else{ %>
-							<input type="number" style="width:95%;" class="textForm" name="MinLevelAccepted" value="<%=jsonLend.MinLevelAccepted.toFixed(0)%>">
+							<input id="f4" type="number" style="width:95%;" class="textForm" name="MinLevelAccepted" value="<%if(lfJSON){%><%=lfJSON.FormContent.F4%><%}else{%><%=jsonLend.MinLevelAccepted.toFixed(0)%><%}%>">
 						<% } %>
 						&nbsp;級
 					</div>
@@ -88,13 +88,13 @@
 				</br>
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						<h3 class="panel-title">最低可接受總利息</h3>
+						<h3 class="panel-title">最低可接受總利息<span id="s5" style="color:red;"><%if(lfJSON){%><%if(lfJSON.Target[4]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=lfJSON.Message[4]%><%}%><%}%></span></h3>
 					</div>
 					<div class="panel-body">
 						<% if(!jsonLend){ %>
-							<input type="number" style="width:95%;" class="textForm" name="MinInterestInFuture">
+							<input id="f5" type="number" style="width:95%;" class="textForm" name="MinInterestInFuture"<%if(lfJSON){%> value="<%=lfJSON.FormContent.F5%>"<%}%>>
 						<% }else{ %>
-							<input type="number" style="width:95%;" class="textForm" name="MinInterestInFuture" value="<%=jsonLend.MinInterestInFuture.toFixed(0)%>">
+							<input id="f5" type="number" style="width:95%;" class="textForm" name="MinInterestInFuture" value="<%if(lfJSON){%><%=lfJSON.FormContent.F5%><%}else{%><%=jsonLend.MinInterestInFuture.toFixed(0)%><%}%>">
 						<% } %>
 						&nbsp;元
 					</div>
@@ -102,13 +102,13 @@
 				</br>
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						<h3 class="panel-title">最低可接受每期平均利息</h3>
+						<h3 class="panel-title">最低可接受每期平均利息<span id="s6" style="color:red;"><%if(lfJSON){%><%if(lfJSON.Target[5]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=lfJSON.Message[5]%><%}%><%}%></span></h3>
 					</div>
 					<div class="panel-body">
 						<% if(!jsonLend){ %>
-							<input type="number" style="width:95%;" class="textForm" name="MinInterestInFutureMonth">
+							<input id="f6" type="number" style="width:95%;" class="textForm" name="MinInterestInFutureMonth"<%if(lfJSON){%> value="<%=lfJSON.FormContent.F6%>"<%}%>>
 						<% }else{ %>
-							<input type="number" style="width:95%;" class="textForm" name="MinInterestInFutureMonth" value="<%=jsonLend.MinInterestInFutureMonth.toFixed(0)%>">
+							<input id="f6" type="number" style="width:95%;" class="textForm" name="MinInterestInFutureMonth" value="<%if(lfJSON){%><%=lfJSON.FormContent.F6%><%}else{%><%=jsonLend.MinInterestInFutureMonth.toFixed(0)%><%}%>">
 						<% } %>
 						&nbsp;元
 					</div>
@@ -116,13 +116,13 @@
 				</br>
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						<h3 class="panel-title">最低可接受每期平均本利和</h3>
+						<h3 class="panel-title">最低可接受每期平均本利和<span id="s7" style="color:red;"><%if(lfJSON){%><%if(lfJSON.Target[6]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=lfJSON.Message[6]%><%}%><%}%></span></h3>
 					</div>
 					<div class="panel-body">
 						<% if(!jsonLend){ %>
-							<input type="number" style="width:95%;" class="textForm" name="MinInterestInFutureMoneyMonth">
+							<input id="f7" type="number" style="width:95%;" class="textForm" name="MinInterestInFutureMoneyMonth"<%if(lfJSON){%> value="<%=lfJSON.FormContent.F7%>"<%}%>>
 						<% }else{ %>
-							<input type="number" style="width:95%;" class="textForm" name="MinInterestInFutureMoneyMonth" value="<%=jsonLend.MinInterestInFutureMoneyMonth.toFixed(0)%>">
+							<input id="f7" type="number" style="width:95%;" class="textForm" name="MinInterestInFutureMoneyMonth" value="<%if(lfJSON){%><%=lfJSON.FormContent.F7%><%}else{%><%=jsonLend.MinInterestInFutureMoneyMonth.toFixed(0)%><%}%>">
 						<% } %>
 						&nbsp;元
 					</div>
@@ -130,13 +130,13 @@
 				</br>
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						<h3 class="panel-title">最低可接受總利息/最初本金比</h3>
+						<h3 class="panel-title">最低可接受總利息/最初本金比<span id="s8" style="color:red;"><%if(lfJSON){%><%if(lfJSON.Target[7]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=lfJSON.Message[7]%><%}%><%}%></span></h3>
 					</div>
 					<div class="panel-body">
 						<% if(!jsonLend){ %>
-							<input type="text" style="width:95%;" class="textForm" name="MinInterestInFutureDivMoney">
+							<input id="f8" type="text" style="width:95%;" class="textForm" name="MinInterestInFutureDivMoney"<%if(lfJSON){%> value="<%=lfJSON.FormContent.F8%>"<%}%>>
 						<% }else{ %>
-							<input type="text" style="width:95%;" class="textForm" name="MinInterestInFutureDivMoney" value="<%=(jsonLend.MinInterestInFutureDivMoney*100).toFixed(2)%>">
+							<input id="f8" type="text" style="width:95%;" class="textForm" name="MinInterestInFutureDivMoney" value="<%if(lfJSON){%><%=lfJSON.FormContent.F8%><%}else{%><%=(jsonLend.MinInterestInFutureDivMoney*100).toFixed(2)%><%}%>">
 						<% } %>
 						&nbsp;%
 					</div>
@@ -149,56 +149,77 @@
 					<div class="panel-body">
 						<% if(!jsonLend){ %>
 							 <select class="textForm" name="AutoComfirmToBorrowMsgPeriod" id="periodSel" onchange="if($('#periodSel').val()>0){$('#sorterSel').prop('disabled', false);$('#sorterPnl').attr('style','');}else{$('#sorterSel').prop('disabled', true);$('#sorterSel').val('-InterestRate');$('#sorterPnl').attr('style','display:none;');}">
-								<option value=-1>永不自動同意</option>
-								<option value=0>立即自動同意</option>
-								<option value=1>每天自動同意一次</option>
-								<option value=2>每兩天自動同意一次</option>
-								<option value=3>每三天自動同意一次</option>
+								<option value=-1<%if(lfJSON){%><%if(lfJSON.FormContent.F9==-1){%> selected<%}%><%}%>>永不自動同意</option>
+								<option value=0<%if(lfJSON){%><%if(lfJSON.FormContent.F9==0){%> selected<%}%><%}%>>立即自動同意</option>
+								<option value=1<%if(lfJSON){%><%if(lfJSON.FormContent.F9==1){%> selected<%}%><%}%>>每天自動同意一次</option>
+								<option value=2<%if(lfJSON){%><%if(lfJSON.FormContent.F9==2){%> selected<%}%><%}%>>每兩天自動同意一次</option>
+								<option value=3<%if(lfJSON){%><%if(lfJSON.FormContent.F9==3){%> selected<%}%><%}%>>每三天自動同意一次</option>
 							  </select>
 						<% }else{ %>
 							<select class="textForm" name="AutoComfirmToBorrowMsgPeriod"  id="periodSel" onchange="if($('#periodSel').val()>0){$('#sorterSel').prop('disabled', false);$('#sorterPnl').attr('style','');}else{$('#sorterSel').prop('disabled', true);$('#sorterSel').val('-InterestRate');$('#sorterPnl').attr('style','display:none;');}">
-								<option value=-1<%if(jsonLend.AutoComfirmToBorrowMsgPeriod==-1){%> selected<%}%>>永不自動同意</option>
-								<option value=0<%if(jsonLend.AutoComfirmToBorrowMsgPeriod==0){%> selected<%}%>>立即自動同意</option>
-								<option value=1<%if(jsonLend.AutoComfirmToBorrowMsgPeriod==1){%> selected<%}%>>每天自動同意一次</option>
-								<option value=2<%if(jsonLend.AutoComfirmToBorrowMsgPeriod==2){%> selected<%}%>>每兩天自動同意一次</option>
-								<option value=3<%if(jsonLend.AutoComfirmToBorrowMsgPeriod==3){%> selected<%}%>>每三天自動同意一次</option>
+								<option value=-1<%if(lfJSON){%><%if(lfJSON.FormContent.F9==-1){%> selected<%}%><%}else{%><%if(jsonLend.AutoComfirmToBorrowMsgPeriod==-1){%> selected<%}%><%}%>>永不自動同意</option>
+								<option value=0<%if(lfJSON){%><%if(lfJSON.FormContent.F9==0){%> selected<%}%><%}else{%><%if(jsonLend.AutoComfirmToBorrowMsgPeriod==0){%> selected<%}%><%}%>>立即自動同意</option>
+								<option value=1<%if(lfJSON){%><%if(lfJSON.FormContent.F9==1){%> selected<%}%><%}else{%><%if(jsonLend.AutoComfirmToBorrowMsgPeriod==1){%> selected<%}%><%}%>>每天自動同意一次</option>
+								<option value=2<%if(lfJSON){%><%if(lfJSON.FormContent.F9==2){%> selected<%}%><%}else{%><%if(jsonLend.AutoComfirmToBorrowMsgPeriod==2){%> selected<%}%><%}%>>每兩天自動同意一次</option>
+								<option value=3<%if(lfJSON){%><%if(lfJSON.FormContent.F9==3){%> selected<%}%><%}else{%><%if(jsonLend.AutoComfirmToBorrowMsgPeriod==3){%> selected<%}%><%}%>>每三天自動同意一次</option>
 							  </select>
 						<% } %>
 					</div>
 				</div>
 				</br>
-				<div class="panel panel-default" id="sorterPnl"<% if(!jsonLend){%> style="display:none;"<%}else{%><% if(jsonLend.AutoComfirmToBorrowMsgPeriod<=0){ %> style="display:none;"<%}%><%}%>>
-					<div class="panel-heading">
-						<h3 class="panel-title">自動同意優先順序</h3>
+				<%if(!lfJSON){%>
+					<div class="panel panel-default" id="sorterPnl"<% if(!jsonLend){%> style="display:none;"<%}else{%><% if(jsonLend.AutoComfirmToBorrowMsgPeriod<=0){ %> style="display:none;"<%}%><%}%>>
+						<div class="panel-heading">
+							<h3 class="panel-title">自動同意優先順序</h3>
+						</div>
+						<div class="panel-body">
+							<% if(!jsonLend){ %>
+								<select class="textForm" class="textForm" name="AutoComfirmToBorrowMsgSorter" id="sorterSel" disabled="disabled">
+									<option value="-InterestRate">利率最高</option>
+									<option value="-MoneyToLend">金額最高</option>
+									<option value="-MonthPeriod">期數最多</option>
+									<option value="-Level">信用等級最高</option>
+									<option value="-SpecialA">預計總利息最高</option>
+									<option value="-SpecialB">預計平均利息最高</option>
+									<option value="-SpecialC">預計平均本利和最高</option>
+									<option value="-SpecialD">預計利本比最高</option>
+									<option value="-Updated">最新</option>
+								 </select>
+							<% }else{ %>
+								<select class="textForm" class="textForm" name="AutoComfirmToBorrowMsgSorter" id="sorterSel"<% if(jsonLend.AutoComfirmToBorrowMsgPeriod<=0){ %> disabled="disabled"<%}%>>
+									<option value="-InterestRate"<%if(jsonLend.AutoComfirmToBorrowMsgSorter=="-InterestRate"){%> selected<%}%>>利率最高</option>
+									<option value="-MoneyToLend"<%if(jsonLend.AutoComfirmToBorrowMsgSorter=="-MoneyToLend"){%> selected<%}%>>金額最高</option>
+									<option value="-MonthPeriod"<%if(jsonLend.AutoComfirmToBorrowMsgSorter=="-MonthPeriod"){%> selected<%}%>>期數最多</option>
+									<option value="-Level"<%if(jsonLend.AutoComfirmToBorrowMsgSorter=="-Level"){%> selected<%}%>>信用等級最高</option>
+									<option value="-SpecialA"<%if(jsonLend.AutoComfirmToBorrowMsgSorter=="-SpecialA"){%> selected<%}%>>預計總利息最高</option>
+									<option value="-SpecialB"<%if(jsonLend.AutoComfirmToBorrowMsgSorter=="-SpecialB"){%> selected<%}%>>預計平均利息最高</option>
+									<option value="-SpecialC"<%if(jsonLend.AutoComfirmToBorrowMsgSorter=="-SpecialC"){%> selected<%}%>>預計平均本利和最高</option>
+									<option value="-SpecialD"<%if(jsonLend.AutoComfirmToBorrowMsgSorter=="-SpecialD"){%> selected<%}%>>預計利本比最高</option>
+									<option value="-Updated"<%if(jsonLend.AutoComfirmToBorrowMsgSorter=="-Updated"){%> selected<%}%>>最新</option>
+								  </select>
+							<% } %>
+						</div>
 					</div>
-					<div class="panel-body">
-						<% if(!jsonLend){ %>
-							<select class="textForm" class="textForm" name="AutoComfirmToBorrowMsgSorter" id="sorterSel" disabled="disabled">
-								<option value="-InterestRate">利率最高</option>
-								<option value="-MoneyToLend">金額最高</option>
-								<option value="-MonthPeriod">期數最多</option>
-								<option value="-Level">信用等級最高</option>
-								<option value="-SpecialA">預計總利息最高</option>
-								<option value="-SpecialB">預計平均利息最高</option>
-								<option value="-SpecialC">預計平均本利和最高</option>
-								<option value="-SpecialD">預計利本比最高</option>
-								<option value="-Updated">最新</option>
-							 </select>
-						<% }else{ %>
-							<select class="textForm" class="textForm" name="AutoComfirmToBorrowMsgSorter" id="sorterSel"<% if(jsonLend.AutoComfirmToBorrowMsgPeriod==-1){ %> disabled="disabled"<%}%>>
-								<option value="-InterestRate"<%if(jsonLend.AutoComfirmToBorrowMsgSorter=="-InterestRate"){%> selected<%}%>>利率最高</option>
-								<option value="-MoneyToLend"<%if(jsonLend.AutoComfirmToBorrowMsgSorter=="-MoneyToLend"){%> selected<%}%>>金額最高</option>
-								<option value="-MonthPeriod"<%if(jsonLend.AutoComfirmToBorrowMsgSorter=="-MonthPeriod"){%> selected<%}%>>期數最多</option>
-								<option value="-Level"<%if(jsonLend.AutoComfirmToBorrowMsgSorter=="-Level"){%> selected<%}%>>信用等級最高</option>
-								<option value="-SpecialA"<%if(jsonLend.AutoComfirmToBorrowMsgSorter=="-SpecialA"){%> selected<%}%>>預計總利息最高</option>
-								<option value="-SpecialB"<%if(jsonLend.AutoComfirmToBorrowMsgSorter=="-SpecialB"){%> selected<%}%>>預計平均利息最高</option>
-								<option value="-SpecialC"<%if(jsonLend.AutoComfirmToBorrowMsgSorter=="-SpecialC"){%> selected<%}%>>預計平均本利和最高</option>
-								<option value="-SpecialD"<%if(jsonLend.AutoComfirmToBorrowMsgSorter=="-SpecialD"){%> selected<%}%>>預計利本比最高</option>
-								<option value="-Updated"<%if(jsonLend.AutoComfirmToBorrowMsgSorter=="-Updated"){%> selected<%}%>>最新</option>
+				<%}else{%>
+					<div class="panel panel-default" id="sorterPnl"<% if(lfJSON.FormContent.F9<=0){ %> style="display:none;"<%}%>>
+						<div class="panel-heading">
+							<h3 class="panel-title">自動同意優先順序</h3>
+						</div>
+						<div class="panel-body">
+							<select class="textForm" class="textForm" name="AutoComfirmToBorrowMsgSorter" id="sorterSel"<% if(lfJSON.FormContent.F9<=0){ %> disabled="disabled"<%}%>>
+								<option value="-InterestRate"<%if(lfJSON.FormContent.F10=="-InterestRate"){%> selected<%}%>>利率最高</option>
+								<option value="-MoneyToLend"<%if(lfJSON.FormContent.F10=="-MoneyToLend"){%> selected<%}%>>金額最高</option>
+								<option value="-MonthPeriod"<%if(lfJSON.FormContent.F10=="-MonthPeriod"){%> selected<%}%>>期數最多</option>
+								<option value="-Level"<%if(lfJSON.FormContent.F10=="-Level"){%> selected<%}%>>信用等級最高</option>
+								<option value="-SpecialA"<%if(lfJSON.FormContent.F10=="-SpecialA"){%> selected<%}%>>預計總利息最高</option>
+								<option value="-SpecialB"<%if(lfJSON.FormContent.F10=="-SpecialB"){%> selected<%}%>>預計平均利息最高</option>
+								<option value="-SpecialC"<%if(lfJSON.FormContent.F10=="-SpecialC"){%> selected<%}%>>預計平均本利和最高</option>
+								<option value="-SpecialD"<%if(lfJSON.FormContent.F10=="-SpecialD"){%> selected<%}%>>預計利本比最高</option>
+								<option value="-Updated"<%if(lfJSON.FormContent.F10=="-Updated"){%> selected<%}%>>最新</option>
 							  </select>
-						<% } %>
+						</div>
 					</div>
-				</div>
+				<%}%>
 				</br>
 				<% if(!jsonLend){ %>
 					<div style="width:100%;text-align: center;">
@@ -298,6 +319,17 @@
 	</div>
 </div>
 <script>
+<%if(lfJSON){%>
+	$(document).ready(function (){
+		<%for(i=0;i<lfJSON.Target.length;i++){%>
+			<%if(lfJSON.Target[i]){%>
+				$('#f<%=i+1%>').focus();
+				<%break;%>
+			<%}%>
+		<%}%>
+	});
+<%}%>
+
 function checkAndOpenModal(target,cntNumber,cntTail,flag){
 	var a=$("input[name='MaxMoneyToLend']").val().trim();
 	var b=$("input[name='InterestRate']").val().trim();

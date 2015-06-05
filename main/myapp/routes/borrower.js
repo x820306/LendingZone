@@ -7,40 +7,47 @@ var sanitizer = require('sanitizer');
 var express = require('express');
 var router = express.Router();
 
-// U can try this by /borrower
-router.get('/', library.newMsgChecker, function(req, res) {
-	var auRst = null;
-	if (req.isAuthenticated()) {
-		auRst = req.user.Username;
+router.get('/borrowPage',library.loginFormChecker, library.ensureAuthenticated, library.newMsgChecker, function(req, res) {
+	var stringArray=req.flash('borrowForm');
+	var borrowFormJson=null;
+	if(stringArray.length>0){
+		borrowFormJson=JSON.parse(stringArray[0]);
 	}
-	res.redirect('/borrower/borrowSuccess');
-});
-
-// this is the basic type when page no need to ensure authenticated. U can try this by /borrower/borrowerExample
-router.get('/borrowPage', library.ensureAuthenticated, library.newMsgChecker, function(req, res) {
-	var auRst = null;
-	if (req.isAuthenticated()) {
-		auRst = req.user.Username;
-	}
-
-	//console.log(req.user);
-	//get data from database and process them here
-
-	//pass what u get from database and send them into ejs in this line
+	
 	library.formIdfrCtr+=1;
 	library.formIdfrArray.push(library.formIdfrCtr);
 	library.setFormTimer();
 	
 	res.render('borrowPage', {
+		lgfJSON:req.loginFormJson,
 		newlrmNum: req.newlrmNumber,
 		newlsmNum: req.newlsmNumber,
-		userName: auRst,
+		userName: req.user.Username,
 		scr:library.serviceChargeRate,
-		idfr:library.formIdfrCtr
+		idfr:library.formIdfrCtr,
+		bfJSON:borrowFormJson
 	});
 });
 
-router.post('/borrowCreate', library.ensureAuthenticated, function(req, res) {
+function redirector(req,res,target,message){
+	var formContent={
+		F1:req.body.MoneyToBorrow,
+		F2:req.body.MaxInterestRateAccepted,
+		F3:req.body.MonthPeriodAccepted,
+		F4:req.body.StoryTitle,
+		F5:req.body.Category,
+		F6:req.body.Story,
+		F7:req.body.TimeLimit
+	};
+	
+	var json={FormContent:formContent,Target:target,Message:message};
+	var string=JSON.stringify(json);
+	
+	req.flash('borrowForm',string);
+	res.redirect(req.get('referer'));
+}
+
+router.post('/borrowCreate',library.loginFormChecker, library.ensureAuthenticated, function(req, res) {
 	var Idfr=parseInt(req.body.Idfr);
 	var passFlag=false;
 	var ctr=-1;
@@ -58,13 +65,56 @@ router.post('/borrowCreate', library.ensureAuthenticated, function(req, res) {
 		var nowMoney=parseInt(sanitizer.sanitize(req.body.MoneyToBorrow.trim()));
 		var rate=parseFloat(sanitizer.sanitize(req.body.MaxInterestRateAccepted.trim()))/100;
 		var month=parseInt(sanitizer.sanitize(req.body.MonthPeriodAccepted.trim()));
-		if((sanitizer.sanitize(req.body.MoneyToBorrow.trim())=='')||(sanitizer.sanitize(req.body.MaxInterestRateAccepted.trim())=='')||(sanitizer.sanitize(req.body.MonthPeriodAccepted.trim())=='')){
-			res.redirect('/message?content='+encodeURIComponent('必要參數未填!'));
-		}else if((isNaN(month))||(isNaN(nowMoney))||(isNaN(rate))){
-			res.redirect('/message?content='+encodeURIComponent('非數字參數!'));
-		}else if((month<1)||(month>36)||(nowMoney<5000)||(nowMoney>150000)||(rate<=library.serviceChargeRate)||(rate>0.99)){
-			res.redirect('/message?content='+encodeURIComponent('錯誤參數!'));
-		}else{
+		
+		var errorTarget=[];
+		var errorMessage=[];
+		for(i=0;i<3;i++){
+			errorTarget.push(false);
+			errorMessage.push('');
+		}
+		
+		if(sanitizer.sanitize(req.body.MoneyToBorrow.trim())==''){
+			errorTarget[0]=true;
+			errorMessage[0]='必要參數未填!';
+		}else if(isNaN(nowMoney)){
+			errorTarget[0]=true;
+			errorMessage[0]='非數字參數!';
+		}else if((nowMoney<5000)||(nowMoney>150000)){
+			errorTarget[0]=true;
+			errorMessage[0]='錯誤參數!';
+		}
+		
+		if(sanitizer.sanitize(req.body.MaxInterestRateAccepted.trim())==''){
+			errorTarget[1]=true;
+			errorMessage[1]='必要參數未填!';
+		}else if(isNaN(rate)){
+			errorTarget[1]=true;
+			errorMessage[1]='非數字參數!';
+		}else if((rate<=library.serviceChargeRate)||(rate>0.99)){
+			errorTarget[1]=true;
+			errorMessage[1]='錯誤參數!';
+		}
+		
+		if(sanitizer.sanitize(req.body.MonthPeriodAccepted.trim())==''){
+			errorTarget[2]=true;
+			errorMessage[2]='必要參數未填!';
+		}else if(isNaN(month)){
+			errorTarget[2]=true;
+			errorMessage[2]='非數字參數!';
+		}else if((month<1)||(month>36)){
+			errorTarget[2]=true;
+			errorMessage[2]='錯誤參數!';
+		}
+		
+		var valiFlag=true;
+		for(i=0;i<errorTarget.length;i++){
+			if(errorTarget[i]){
+				valiFlag=false;
+				break;
+			}
+		}
+		
+		if(valiFlag){
 			var toCreate = new Borrows();
 			toCreate.MoneyToBorrow = parseInt(sanitizer.sanitize(req.body.MoneyToBorrow.trim()));
 			toCreate.MaxInterestRateAccepted = parseFloat(sanitizer.sanitize(req.body.MaxInterestRateAccepted.trim()))/100;
@@ -96,76 +146,51 @@ router.post('/borrowCreate', library.ensureAuthenticated, function(req, res) {
 					res.redirect('/borrower/borrowSuccess');
 				}
 			});
-		}
+		}else{
+			redirector(req,res,errorTarget,errorMessage);
+		}	
 	}else{
 		res.redirect('/message?content='+encodeURIComponent('表單已成功提交過或過期，請重新整理頁面！'));
 	}
 });
 
 // this is the basic type when page need to ensure authenticated. U can try this by /borrower/borrowerExample2
-router.get('/checkMatch', library.ensureAuthenticated, library.newMsgChecker, function(req, res) {
-	var auRst = null;
-	if (req.isAuthenticated()) {
-		auRst = req.user.Username;
-	}
-	//get data from database and process them here
-
-	//pass what u get from database and send them into ejs in this line
+router.get('/checkMatch',library.loginFormChecker, library.ensureAuthenticated, library.newMsgChecker, function(req, res) {
 	res.render('checkMatch', {
+		lgfJSON:req.loginFormJson,
 		newlrmNum: req.newlrmNumber,
 		newlsmNum: req.newlsmNumber,
-		userName: auRst
+		userName: req.user.Username
 	});
 });
 
 // this is the basic type when page no need to ensure authenticated. U can try this by /borrower/borrowerExample
-router.get('/borrowerPanel', library.ensureAuthenticated, library.newMsgChecker, function(req, res) {
-	var auRst = null;
-	if (req.isAuthenticated()) {
-		auRst = req.user.Username;
-	}
-
-	//get data from database and process them here
-
-	//pass what u get from database and send them into ejs in this line
+router.get('/borrowerPanel',library.loginFormChecker, library.ensureAuthenticated, library.newMsgChecker, function(req, res) {
 	res.render('borrowerPanel', {
+		lgfJSON:req.loginFormJson,
 		newlrmNum: req.newlrmNumber,
 		newlsmNum: req.newlsmNumber,
-		userName: auRst
+		userName: req.user.Username
 	});
 });
 
 // this is the basic type when page no need to ensure authenticated. U can try this by /borrower/borrowerExample
-router.get('/borrowerConfirmedMatch', library.ensureAuthenticated, library.newMsgChecker, function(req, res) {
-	var auRst = null;
-	if (req.isAuthenticated()) {
-		auRst = req.user.Username;
-	}
-
-	//get data from database and process them here
-
-	//pass what u get from database and send them into ejs in this line
+router.get('/borrowerConfirmedMatch',library.loginFormChecker, library.ensureAuthenticated, library.newMsgChecker, function(req, res) {
 	res.render('borrowerConfirmedMatch', {
+		lgfJSON:req.loginFormJson,
 		newlrmNum: req.newlrmNumber,
 		newlsmNum: req.newlsmNumber,
-		userName: auRst
+		userName: req.user.Username
 	});
 });
 
 // this is the basic type when page no need to ensure authenticated. U can try this by /borrower/borrowerExample
-router.get('/borrowSuccess', library.ensureAuthenticated, library.newMsgChecker, function(req, res) {
-	var auRst = null;
-	if (req.isAuthenticated()) {
-		auRst = req.user.Username;
-	}
-
-	//get data from database and process them here
-
-	//pass what u get from database and send them into ejs in this line
+router.get('/borrowSuccess',library.loginFormChecker, library.ensureAuthenticated, library.newMsgChecker, function(req, res) {
 	res.render('borrowSuccess', {
+		lgfJSON:req.loginFormJson,
 		newlrmNum: req.newlrmNumber,
 		newlsmNum: req.newlsmNumber,
-		userName: auRst
+		userName: req.user.Username
 	});
 });
 module.exports = router;

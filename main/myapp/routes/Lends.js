@@ -4,6 +4,7 @@ var Lends  = mongoose.model('Lends');
 var BankAccounts  = mongoose.model('BankAccounts');
 var Messages = mongoose.model('Messages');
 var sanitizer = require('sanitizer');
+var flash = require('connect-flash');
 
 var express = require('express');
 var router = express.Router();
@@ -92,20 +93,126 @@ function samePart(res,req,differentPart,outterPara){
 					MinInterestInFutureDivMoney=parseFloat(sanitizer.sanitize(req.body.MinInterestInFutureDivMoney.trim()))/100;
 				}
 				
-				if((sanitizer.sanitize(req.body.MaxMoneyToLend.trim())=='')||(sanitizer.sanitize(req.body.InterestRate.trim())=='')||(sanitizer.sanitize(req.body.MonthPeriod.trim())=='')){
-					res.redirect('/message?content='+encodeURIComponent('必要參數未填!'));
-				}else if((isNaN(month))||(isNaN(nowMoney))||(isNaN(level))||(isNaN(MinInterestInFuture))||(isNaN(MinInterestInFutureMonth))||(isNaN(MinInterestInFutureMoneyMonth))||(isNaN(rate))||(isNaN(MinInterestInFutureDivMoney))){
-					res.redirect('/message?content='+encodeURIComponent('非數字參數!'));
-				}else if((month<1)||(month>36)||(nowMoney<1)||(level<0)||(MinInterestInFuture<0)||(MinInterestInFutureMonth<0)||(MinInterestInFutureMoneyMonth<0)||(rate<(0.0001+library.serviceChargeRate))||(rate>(0.99+library.serviceChargeRate))||(MinInterestInFutureDivMoney<0)||(MinInterestInFutureDivMoney>0.99)){
-					res.redirect('/message?content='+encodeURIComponent('錯誤參數!'));//scr
+				var errorTarget=[];
+				var errorMessage=[];
+				for(i=0;i<8;i++){
+					errorTarget.push(false);
+					errorMessage.push('');
+				}
+				
+				if(sanitizer.sanitize(req.body.MaxMoneyToLend.trim())==''){
+					errorTarget[0]=true;
+					errorMessage[0]='必要參數未填!';
+				}else if(isNaN(nowMoney)){
+					errorTarget[0]=true;
+					errorMessage[0]='非數字參數!';
+				}else if(nowMoney<1){
+					errorTarget[0]=true;
+					errorMessage[0]='錯誤參數!';
 				}else if(nowMoney>maxMoney){
-					res.redirect('/message?content='+encodeURIComponent('超過金額上限!'));
-				}else{
+					errorTarget[0]=true;
+					errorMessage[0]='超過金額上限：'+maxMoney.toFixed(0)+'元!';
+				}
+				
+				if(sanitizer.sanitize(req.body.InterestRate.trim())==''){
+					errorTarget[1]=true;
+					errorMessage[1]='必要參數未填!';
+				}else if(isNaN(rate)){
+					errorTarget[1]=true;
+					errorMessage[1]='非數字參數!';
+				}else if((rate<(0.0001+library.serviceChargeRate))||(rate>(0.99+library.serviceChargeRate))){
+					errorTarget[1]=true;
+					errorMessage[1]='錯誤參數!';
+				}
+				
+				if(sanitizer.sanitize(req.body.MonthPeriod.trim())==''){
+					errorTarget[2]=true;
+					errorMessage[2]='必要參數未填!';
+				}else if(isNaN(month)){
+					errorTarget[2]=true;
+					errorMessage[2]='非數字參數!';
+				}else if((month<1)||(month>36)){
+					errorTarget[2]=true;
+					errorMessage[2]='錯誤參數!';
+				}
+				
+				if(isNaN(level)){
+					errorTarget[3]=true;
+					errorMessage[3]='非數字參數!';
+				}else if(level<0){
+					errorTarget[3]=true;
+					errorMessage[3]='錯誤參數!';
+				}
+				
+				if(isNaN(MinInterestInFuture)){
+					errorTarget[4]=true;
+					errorMessage[4]='非數字參數!';
+				}else if(MinInterestInFuture<0){
+					errorTarget[4]=true;
+					errorMessage[4]='錯誤參數!';
+				}
+				
+				if(isNaN(MinInterestInFutureMonth)){
+					errorTarget[5]=true;
+					errorMessage[5]='非數字參數!';
+				}else if(MinInterestInFutureMonth<0){
+					errorTarget[5]=true;
+					errorMessage[5]='錯誤參數!';
+				}
+				
+				if(isNaN(MinInterestInFutureMoneyMonth)){
+					errorTarget[6]=true;
+					errorMessage[6]='非數字參數!';
+				}else if(MinInterestInFutureMoneyMonth<0){
+					errorTarget[6]=true;
+					errorMessage[6]='錯誤參數!';
+				}
+				
+				if(isNaN(MinInterestInFutureDivMoney)){
+					errorTarget[7]=true;
+					errorMessage[7]='非數字參數!';
+				}else if((MinInterestInFutureDivMoney<0)||(MinInterestInFutureDivMoney>0.99)){
+					errorTarget[7]=true;
+					errorMessage[7]='錯誤參數!';
+				}
+				
+				var valiFlag=true;
+				for(i=0;i<errorTarget.length;i++){
+					if(errorTarget[i]){
+						valiFlag=false;
+						break;
+					}
+				}
+				
+				if(valiFlag){
 					differentPart(res,req,outterPara);
-				}	
+				}else{
+					redirector(req,res,errorTarget,errorMessage);
+				}
 			}
 		}
 	});
+}
+
+function redirector(req,res,target,message){
+	var formContent={
+		F1:req.body.MaxMoneyToLend,
+		F2:req.body.InterestRate,
+		F3:req.body.MonthPeriod,
+		F4:req.body.MinLevelAccepted,
+		F5:req.body.MinInterestInFuture,
+		F6:req.body.MinInterestInFutureMonth,
+		F7:req.body.MinInterestInFutureMoneyMonth,
+		F8:req.body.MinInterestInFutureDivMoney,
+		F9:req.body.AutoComfirmToBorrowMsgPeriod,
+		F10:req.body.AutoComfirmToBorrowMsgSorter
+	};
+	
+	var json={FormContent:formContent,Target:target,Message:message};
+	var string=JSON.stringify(json);
+	
+	req.flash('lendForm',string);
+	res.redirect(req.get('referer'));
 }
 
 function createPart(res,req,outterPara){
@@ -157,18 +264,28 @@ function updatePart(res,req,lend){
 	lend.MonthPeriod=parseInt(sanitizer.sanitize(req.body.MonthPeriod.trim()));
 	if(sanitizer.sanitize(req.body.MinLevelAccepted.trim())!=''){
 		lend.MinLevelAccepted=parseInt(sanitizer.sanitize(req.body.MinLevelAccepted.trim()));
+	}else{
+		lend.MinLevelAccepted=0;
 	}
 	if(sanitizer.sanitize(req.body.MinInterestInFuture.trim())!=''){
 		lend.MinInterestInFuture=parseInt(sanitizer.sanitize(req.body.MinInterestInFuture.trim()));
+	}else{
+		lend.MinInterestInFuture=0;
 	}
 	if(sanitizer.sanitize(req.body.MinInterestInFutureMonth.trim())!=''){
 		lend.MinInterestInFutureMonth=parseInt(sanitizer.sanitize(req.body.MinInterestInFutureMonth.trim()));
+	}else{
+		lend.MinInterestInFutureMonth=0;
 	}
 	if(sanitizer.sanitize(req.body.MinInterestInFutureMoneyMonth.trim())!=''){
 		lend.MinInterestInFutureMoneyMonth=parseInt(sanitizer.sanitize(req.body.MinInterestInFutureMoneyMonth.trim()));
+	}else{
+		lend.MinInterestInFutureMoneyMonth=0;
 	}
 	if(sanitizer.sanitize(req.body.MinInterestInFutureDivMoney.trim())!=''){
 		lend.MinInterestInFutureDivMoney=parseFloat(sanitizer.sanitize(req.body.MinInterestInFutureDivMoney.trim()))/100;
+	}else{
+		lend.MinInterestInFutureDivMoney=0;
 	}
 	
 	lend.AutoComfirmToBorrowMsgPeriod=sanitizer.sanitize(req.body.AutoComfirmToBorrowMsgPeriod.trim());
@@ -271,7 +388,7 @@ function autoConfirm(req,res,sorter,lendID){
 								}
 								delete req.body.array;
 								req.body.array=arrayOp;
-								var infoJson={info1:0,info2:0,info3:0,info4:0};
+								var infoJson={counter1:req.body.array.length,counter2:0,info1:0,info2:0,info3:0,info4:0};
 								library.confirmToBorrowMessage(true,0,req.body.array.length,null,req,res,true,'/',true,infoJson);
 							}
 						}
@@ -282,7 +399,7 @@ function autoConfirm(req,res,sorter,lendID){
 	});
 }
 
-router.post('/create', library.ensureAuthenticated, function(req, res, next) {
+router.post('/create',library.loginFormChecker, library.ensureAuthenticated, function(req, res, next) {
 	Lends.findOne({CreatedBy:req.user._id}).exec(function (err, lend){
 		if (err) {
 			console.log(err);
@@ -297,7 +414,7 @@ router.post('/create', library.ensureAuthenticated, function(req, res, next) {
 	});
 });
 
-router.post('/update', library.ensureAuthenticated, function(req, res, next) {
+router.post('/update',library.loginFormChecker, library.ensureAuthenticated, function(req, res, next) {
 	Lends.findById(req.body._id).exec(function (err, lend){
 		if (err) {
 			console.log(err);
@@ -316,7 +433,7 @@ router.post('/update', library.ensureAuthenticated, function(req, res, next) {
 	});
 });
 
-router.post('/destroy', library.ensureAuthenticated, function(req, res, next) {
+router.post('/destroy',library.loginFormChecker, library.ensureAuthenticated, function(req, res, next) {
 	Lends.findById(req.body._id).exec(function (err, lend){
 		if (err) {
 			console.log(err);
@@ -345,6 +462,57 @@ router.post('/destroy', library.ensureAuthenticated, function(req, res, next) {
 								library.autoComfirmToBorrowMsgArray.splice(ctr,1);
 							}
 							res.redirect('/lender/lend');
+						}
+					});
+				}
+			}
+		}
+	});
+});
+
+router.post('/changer',library.loginFormChecker, library.ensureAuthenticated, function(req, res, next) {
+	Lends.findById(sanitizer.sanitize(req.body.TargetID.trim())).exec(function (err,lend){
+		if (err) {
+			console.log(err);
+			res.json({error: '錯誤',success:false}, 500);
+		}else{
+			if(!lend){
+				res.json({origValue:'未找到自動出借設定!',error: '找不到自動出借設定!',success:false});
+			}else{
+				if(lend.CreatedBy!=req.user._id){
+					res.json({origValue:lend.MaxMoneyToLend,error: '認證錯誤',success:false});
+				}else{
+					BankAccounts.findOne({"OwnedBy": req.user._id}).exec(function (err, bankaccount){
+						if (err) {
+							console.log(err);
+							res.json({error: '錯誤',success:false}, 500);
+						}else{
+							if(!bankaccount){
+								res.json({origValue:lend.MaxMoneyToLend,error: '找不到銀行帳戶!',success:false});
+							}else{
+								var maxMoney=parseInt(bankaccount.MoneyInBankAccount);
+								var nowMoney=parseInt(sanitizer.sanitize(req.body.Value.trim()));
+								
+								if(sanitizer.sanitize(req.body.Value.trim())==''){
+									res.json({result0:bankaccount.MoneyInBankAccount,origValue:lend.MaxMoneyToLend,error: '必要參數未填!',success:false});
+								}else if(isNaN(nowMoney)){
+									res.json({result0:bankaccount.MoneyInBankAccount,origValue:lend.MaxMoneyToLend,error: '非數字參數!',success:false});
+								}else if(nowMoney<1){
+									res.json({result0:bankaccount.MoneyInBankAccount,origValue:lend.MaxMoneyToLend,error: '錯誤參數!',success:false});
+								}else if(nowMoney>maxMoney){
+									res.json({result0:bankaccount.MoneyInBankAccount,origValue:lend.MaxMoneyToLend,error: '超過金額上限：'+maxMoney.toFixed(0)+"元!",success:false});
+								}else{
+									lend.MaxMoneyToLend=nowMoney;
+									lend.save(function (err,lendUpdated) {
+										if (err){
+											console.log(err);
+											res.json({error: '錯誤',success:false}, 500);
+										}else{
+											res.json({result0:bankaccount.MoneyInBankAccount,result:lendUpdated.MaxMoneyToLend,success:true});
+										}
+									});
+								}
+							}
 						}
 					});
 				}

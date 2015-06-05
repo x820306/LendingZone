@@ -72,7 +72,7 @@ router.post('/destroyTest', function(req, res, next) {
 	});
 });
 
-router.post('/readable', library.ensureAuthenticated, function(req, res, next) {
+router.post('/readable',library.loginFormChecker, library.ensureAuthenticated, function(req, res, next) {
 	Borrows.findById(sanitizer.sanitize(req.body.borrowID.trim())).exec(function (err, borrow){
 		if (err) {
 			console.log(err);
@@ -100,7 +100,7 @@ router.post('/readable', library.ensureAuthenticated, function(req, res, next) {
 	});
 });
 
-router.post('/like', library.ensureAuthenticated, function(req, res, next) {
+router.post('/like',library.loginFormChecker, library.ensureAuthenticated, function(req, res, next) {
 	Borrows.findById(sanitizer.sanitize(req.body._id.trim())).exec(function (err, borrow){
 		if (err) {
 			console.log(err);
@@ -136,7 +136,7 @@ router.post('/like', library.ensureAuthenticated, function(req, res, next) {
 	});
 });
 
-router.post('/unlike', library.ensureAuthenticated, function(req, res, next) {
+router.post('/unlike',library.loginFormChecker, library.ensureAuthenticated, function(req, res, next) {
 	Borrows.findById(sanitizer.sanitize(req.body._id.trim())).exec(function (err, borrow){
 		if (err) {
 			console.log(err);

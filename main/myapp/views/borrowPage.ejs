@@ -16,90 +16,57 @@
     <form style="margin-left:60px;" action="/borrower/borrowCreate" method="post" onsubmit="return disableButton();">
 
     <div class="borrowBlock">
-      <div class="borrowBlockTitle">借款金額<i style="color:red;">*</i></div>
+      <div class="borrowBlockTitle">借款金額<i style="color:red;">*</i></div><span id="s1" style="color:red;"><%if(bfJSON){%><%if(bfJSON.Target[0]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=bfJSON.Message[0]%><%}%><%}%></span>
 	  <div>金額限制 $5,000~$150,000</div>
-      <input type="number" name="MoneyToBorrow" required>
+      <input id="f1" type="number" name="MoneyToBorrow" required<%if(bfJSON){%> value="<%=bfJSON.FormContent.F1%>"<%}%>>
     </div>
 
     <div class="borrowBlock">
-      <div class="borrowBlockTitle">可接受利率上限<i style="color:red;">*</i></div>
+      <div class="borrowBlockTitle">可接受利率上限<i style="color:red;">*</i></div><span id="s2" style="color:red;"><%if(bfJSON){%><%if(bfJSON.Target[1]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=bfJSON.Message[1]%><%}%><%}%></span>
       <div>單位為%，須大於<%=(scr*100).toFixed(2)%>%</div>
-      <input type="text" name="MaxInterestRateAccepted" required>
+      <input id="f2" type="text" name="MaxInterestRateAccepted" required<%if(bfJSON){%> value="<%=bfJSON.FormContent.F2%>"<%}%>>
     </div>
 
     <div class="borrowBlock">
-      <div class="borrowBlockTitle">預期還款期數</div>
-      <div>最高36個月</div>
-      <select name="MonthPeriodAccepted">
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-            <option value="6">6</option>
-            <option value="7">7</option>
-            <option value="8">8</option>
-            <option value="9">9</option>
-            <option value="10">10</option>
-            <option value="11">11</option>
-            <option value="12">12</option>
-            <option value="13">13</option>
-            <option value="14">14</option>
-            <option value="15">15</option>
-            <option value="16">16</option>
-            <option value="17">17</option>
-            <option value="18">18</option>
-            <option value="19">19</option>
-            <option value="20">20</option>
-            <option value="21">21</option>
-            <option value="22">22</option>
-            <option value="23">23</option>
-            <option value="24">24</option>
-            <option value="25">25</option>
-            <option value="26">26</option>
-            <option value="27">27</option>
-            <option value="28">28</option>
-            <option value="29">29</option>
-            <option value="30">30</option>
-            <option value="31">31</option>
-            <option value="32">32</option>
-            <option value="33">33</option>
-            <option value="34">34</option>
-            <option value="35">35</option>
-            <option value="36">36</option>
-    </select>
+		<div class="borrowBlockTitle">預期還款期數</div><span id="s3" style="color:red;"><%if(bfJSON){%><%if(bfJSON.Target[2]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=bfJSON.Message[2]%><%}%><%}%></span>
+		<div>最高36個月</div>
+		<select id="f3" name="MonthPeriodAccepted">
+            <%for(i=1;i<=36;i++){%>
+				<option value="<%=i%>"<%if(bfJSON){%><%if(bfJSON.FormContent.F3==i){%> selected<%}%><%}%>><%=i%></option>
+			<%}%>
+		</select>
     </div>
 
     <div class="borrowBlock">
         <div class="borrowBlockTitle">標題</div>
 		<div>選擇性填寫，但"標題"與"借款原因"均有填寫才會出現在供借出者閱覽的故事列表中！</div>
-        <input name="StoryTitle" required>
+        <input id="f4" name="StoryTitle" required<%if(bfJSON){%> value="<%=bfJSON.FormContent.F4%>"<%}%>>
     </div>
 
     <div class="borrowBlock">
         <div class="borrowBlockTitle">類別</div>
-        <select name="Category">
-            <option value="general">一般</option>
-            <option value="education">教育</option>
-            <option value="family">家庭</option>
-            <option value="tour">旅遊</option>
+        <select id="f5" name="Category">
+            <option value="general"<%if(bfJSON){%><%if(bfJSON.FormContent.F5=='general'){%> selected<%}%><%}%>>一般</option>
+            <option value="education"<%if(bfJSON){%><%if(bfJSON.FormContent.F5=='education'){%> selected<%}%><%}%>>教育</option>
+            <option value="family"<%if(bfJSON){%><%if(bfJSON.FormContent.F5=='family'){%> selected<%}%><%}%>>家庭</option>
+            <option value="tour"<%if(bfJSON){%><%if(bfJSON.FormContent.F5=='tour'){%> selected<%}%><%}%>>旅遊</option>
         </select>
     </div>
 
     <div class="borrowBlock">
         <div class="borrowBlockTitle">借款原因/故事</div>
         <div>選擇性填寫，不限字數，也可附上相關網頁/影片連結</div>
-        <textarea name="Story"></textarea>
+        <textarea id="f6" name="Story"><%if(bfJSON){%><%=bfJSON.FormContent.F6%><%}%></textarea>
     </div>
 
     <div class="borrowBlock">
         <div class="borrowBlockTitle">媒合確定最晚期限</div>
         <div>系統預設為三天</div>
-        <input type="date" name="TimeLimit">
+        <input id="f7" type="date" name="TimeLimit"<%if(bfJSON){%> value="<%=bfJSON.FormContent.F7%>"<%}%>>
     </div>
 	<input type="hidden" name="Idfr" value="<%=idfr%>">
     <div class="borrowBlock" >
-		<button type="reset" id="buttonReset" class="btn btn-danger">
+		<button type="button" id="buttonReset" class="btn btn-danger" onclick="clearForm();">
 			重寫
 		</button>
 		&nbsp;
@@ -134,58 +101,77 @@
 -->
 
 <img width="65px" height="65px" src="/images/icon.png" class="hastip" title="把借款的故事或原因寫下來，<br>能幫助其他人暸解您的情況！<br>有助於借款喔！" style="position:fixed;"/>
+<script src="/javascripts/jquery-ui.js"></script>
+<link rel="stylesheet" href="/stylesheets/borrower.css">
+<script>
+	$(document).ready(function (){
+		<%if(bfJSON){%>
+			<%for(i=0;i<bfJSON.Target.length;i++){%>
+				<%if(bfJSON.Target[i]){%>
+					$('#f<%=i+1%>').focus();
+					<%break;%>
+				<%}%>
+			<%}%>
+		<%}%>
+		
+		document.body.style['background-color']='#FFE4A3';
 
+		$('#buttonCancel').click(function(){
+			$('#borrowDialog').css({
+				'display':'none'
+			});
+			$('.bottomSection').css({
+				'background-color': '#FFF9E7'
+			});
+		});
 
-    <script src="/javascripts/jquery-ui.js"></script>
-    <link rel="stylesheet" href="/stylesheets/borrower.css">
-    <script>
-		var submitFlag=false;
-		function disableButton(){
-			if(!submitFlag){
-				var orig=$('#buttonReset').attr('class');
-				if(orig.search(' disabled')<0){
-					orig=orig+' disabled';
-					$('#buttonReset').attr('class',orig);
-				}
-				var orig=$('#btnSbmt').attr('class');
-				if(orig.search(' disabled')<0){
-					orig=orig+' disabled';
-					$('#btnSbmt').attr('class',orig);
-				}
-				submitFlag=true;
-				return true;
-			}else{
-				return false;
-			}
-		}
+		$('#buttonCheck').click(function () {
+			console.log('click buttonCheck');
+			$('#borrowDialog').css({
+				'top': (window.pageYOffset+window.innerHeight/4).toString()+'px',
+				'display':'block'
+			});
+			$('.bottomSection').css({
+				'background-color': '#EEEEEE'
+			});
+		});
+		$( '.hastip' ).css({
+			'top': (window.innerHeight*0.8).toString()+'px',//window.pageYOffset+
+			'left': '60%'
+		});
+		$('.hastip').draggable();
+	});
 	
-        document.body.style['background-color']='#FFE4A3';
+	
+	function clearForm(){
+		$('#f1').val('');
+		$('#f2').val('');
+		$('#f3').prop('selectedIndex', 0);
+		$('#f4').val('');
+		$('#f5').prop('selectedIndex', 0);
+		$('#f6').val('');
+		$('#f7').val('');
+	}
 
-        $('#buttonCancel').click(function(){
-            $('#borrowDialog').css({
-                'display':'none'
-            });
-            $('.bottomSection').css({
-                'background-color': '#FFF9E7'
-            });
-        });
-
-        $('#buttonCheck').click(function () {
-            console.log('click buttonCheck');
-            $('#borrowDialog').css({
-                'top': (window.pageYOffset+window.innerHeight/4).toString()+'px',
-                'display':'block'
-            });
-            $('.bottomSection').css({
-                'background-color': '#EEEEEE'
-            });
-        });
-        $( '.hastip' ).css({
-            'top': (window.innerHeight*0.8).toString()+'px',//window.pageYOffset+
-            'left': '60%'
-        });
-        $('.hastip').draggable();
-    </script>
-
+	var submitFlag=false;
+	function disableButton(){
+		if(!submitFlag){
+			var orig=$('#buttonReset').attr('class');
+			if(orig.search(' disabled')<0){
+				orig=orig+' disabled';
+				$('#buttonReset').attr('class',orig);
+			}
+			var orig=$('#btnSbmt').attr('class');
+			if(orig.search(' disabled')<0){
+				orig=orig+' disabled';
+				$('#btnSbmt').attr('class',orig);
+			}
+			submitFlag=true;
+			return true;
+		}else{
+			return false;
+		}
+	}
+</script>
 <%- include('layout_footer',{imgSettingCode:"var ifLoadedCount=0;",imgDrawingCode:""}); -%>
 

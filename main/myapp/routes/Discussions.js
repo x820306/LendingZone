@@ -74,7 +74,7 @@ router.post('/destroyTest',function(req, res, next) {
 	});
 });
 
-router.post('/create',library.ensureAuthenticated, function(req, res, next) {
+router.post('/create',library.loginFormChecker,library.ensureAuthenticated, function(req, res, next) {
 	var toCreate = new Discussions();
 	toCreate.Content=sanitizer.sanitize(req.body.Content.trim());
 	toCreate.BelongTo=sanitizer.sanitize(req.body.BelongTo.trim());
@@ -141,7 +141,7 @@ router.post('/create',library.ensureAuthenticated, function(req, res, next) {
 	});
 });
 
-router.post('/destroy',library.ensureAuthenticated, function(req, res, next) {
+router.post('/destroy',library.loginFormChecker,library.ensureAuthenticated, function(req, res, next) {
 	Discussions.findById(sanitizer.sanitize(req.body._id.trim())).exec(function (err, discussion){
 		if (err) {
 			console.log(err);
@@ -228,7 +228,7 @@ router.post('/destroy',library.ensureAuthenticated, function(req, res, next) {
 	});
 });
 
-router.post('/edit',library.ensureAuthenticated, function(req, res, next) {
+router.post('/edit',library.loginFormChecker,library.ensureAuthenticated, function(req, res, next) {
 	Discussions.findById(sanitizer.sanitize(req.body._id.trim())).exec(function (err, discussion){
 		if (err) {
 			console.log(err);

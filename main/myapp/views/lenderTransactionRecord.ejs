@@ -25,23 +25,23 @@
 							<ul class="dropdown-menu">
 								<% if((filterDefault=='未保險')&&(pageNumber>1)){%>
 								<li style="display:none"><a href="#" id="sorter0"><%=sorterDefault%></a></li>
-								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter1').text());$('#bAll').attr('href','/Transactions/buyInsuranceAll?oneid=<%=encodeURIComponent(oneidDefault)%>&sorter='+encodeURIComponent($('#sorterSelected').text()));$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter1">最新</a></li>
-								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter2').text());$('#bAll').attr('href','/Transactions/buyInsuranceAll?oneid=<%=encodeURIComponent(oneidDefault)%>&sorter='+encodeURIComponent($('#sorterSelected').text()));$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter2">已獲利最多</a></li>
-								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter3').text());$('#bAll').attr('href','/Transactions/buyInsuranceAll?oneid=<%=encodeURIComponent(oneidDefault)%>&sorter='+encodeURIComponent($('#sorterSelected').text()));$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter3">利率最高</a></li>
-								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter4').text());$('#bAll').attr('href','/Transactions/buyInsuranceAll?oneid=<%=encodeURIComponent(oneidDefault)%>&sorter='+encodeURIComponent($('#sorterSelected').text()));$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter4">未還本金最多</a></li>
-								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter5').text());$('#bAll').attr('href','/Transactions/buyInsuranceAll?oneid=<%=encodeURIComponent(oneidDefault)%>&sorter='+encodeURIComponent($('#sorterSelected').text()));$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter5">已還本金最多</a></li>
-								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter6').text());$('#bAll').attr('href','/Transactions/buyInsuranceAll?oneid=<%=encodeURIComponent(oneidDefault)%>&sorter='+encodeURIComponent($('#sorterSelected').text()));$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter6">剩下期數最多</a></li>
-								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter7').text());$('#bAll').attr('href','/Transactions/buyInsuranceAll?oneid=<%=encodeURIComponent(oneidDefault)%>&sorter='+encodeURIComponent($('#sorterSelected').text()));$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter7">已過期數最多</a></li>
-								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter8').text());$('#bAll').attr('href','/Transactions/buyInsuranceAll?oneid=<%=encodeURIComponent(oneidDefault)%>&sorter='+encodeURIComponent($('#sorterSelected').text()));$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter8">信用等級最高</a></li>
-								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter9').text());$('#bAll').attr('href','/Transactions/buyInsuranceAll?oneid=<%=encodeURIComponent(oneidDefault)%>&sorter='+encodeURIComponent($('#sorterSelected').text()));$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter9">預計總利息最高</a></li>
-								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter10').text());$('#bAll').attr('href','/Transactions/buyInsuranceAll?oneid=<%=encodeURIComponent(oneidDefault)%>&sorter='+encodeURIComponent($('#sorterSelected').text()));$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter10">預計平均利息最高</a></li>
-								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter11').text());$('#bAll').attr('href','/Transactions/buyInsuranceAll?oneid=<%=encodeURIComponent(oneidDefault)%>&sorter='+encodeURIComponent($('#sorterSelected').text()));$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter11">預計平均本利和最高</a></li>
-								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter12').text());$('#bAll').attr('href','/Transactions/buyInsuranceAll?oneid=<%=encodeURIComponent(oneidDefault)%>&sorter='+encodeURIComponent($('#sorterSelected').text()));$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter12">預計利本比最高</a></li>
-								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter13').text());$('#bAll').attr('href','/Transactions/buyInsuranceAll?oneid=<%=encodeURIComponent(oneidDefault)%>&sorter='+encodeURIComponent($('#sorterSelected').text()));$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter13">成交日期最晚</a></li>
-								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter14').text());$('#bAll').attr('href','/Transactions/buyInsuranceAll?oneid=<%=encodeURIComponent(oneidDefault)%>&sorter='+encodeURIComponent($('#sorterSelected').text()));$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter14">收款記錄最多</a></li>
-								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter15').text());$('#bAll').attr('href','/Transactions/buyInsuranceAll?oneid=<%=encodeURIComponent(oneidDefault)%>&sorter='+encodeURIComponent($('#sorterSelected').text()));$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter15">上次成功收款日期最晚</a></li>
-								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter16').text());$('#bAll').attr('href','/Transactions/buyInsuranceAll?oneid=<%=encodeURIComponent(oneidDefault)%>&sorter='+encodeURIComponent($('#sorterSelected').text()));$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter16">下次應收款日期最早</a></li>
-								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter17').text());$('#bAll').attr('href','/Transactions/buyInsuranceAll?oneid=<%=encodeURIComponent(oneidDefault)%>&sorter='+encodeURIComponent($('#sorterSelected').text()));$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter17">保險所需費用最高</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter1').text());$('#sorterIpt').val($('#sorterSelected').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter1">最新</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter2').text());$('#sorterIpt').val($('#sorterSelected').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter2">已獲利最多</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter3').text());$('#sorterIpt').val($('#sorterSelected').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter3">利率最高</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter4').text());$('#sorterIpt').val($('#sorterSelected').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter4">未還本金最多</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter5').text());$('#sorterIpt').val($('#sorterSelected').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter5">已還本金最多</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter6').text());$('#sorterIpt').val($('#sorterSelected').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter6">剩下期數最多</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter7').text());$('#sorterIpt').val($('#sorterSelected').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter7">已過期數最多</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter8').text());$('#sorterIpt').val($('#sorterSelected').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter8">信用等級最高</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter9').text());$('#sorterIpt').val($('#sorterSelected').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter9">預計總利息最高</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter10').text());$('#sorterIpt').val($('#sorterSelected').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter10">預計平均利息最高</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter11').text());$('#sorterIpt').val($('#sorterSelected').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter11">預計平均本利和最高</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter12').text());$('#sorterIpt').val($('#sorterSelected').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter12">預計利本比最高</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter13').text());$('#sorterIpt').val($('#sorterSelected').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter13">成交日期最晚</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter14').text());$('#sorterIpt').val($('#sorterSelected').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter14">收款記錄最多</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter15').text());$('#sorterIpt').val($('#sorterSelected').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter15">上次成功收款日期最晚</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter16').text());$('#sorterIpt').val($('#sorterSelected').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter16">下次應收款日期最早</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter17').text());$('#sorterIpt').val($('#sorterSelected').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter17">保險所需費用最高</a></li>
 								<%}else{%>
 								<li style="display:none"><a href="#" id="sorter0"><%=sorterDefault%></a></li>
 								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter1').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter1">最新</a></li>
@@ -70,7 +70,30 @@
 						</div>
 						<button type="button" style="height:40px;" class="btn btn-default" onclick="window.open('/lender/lenderTransactionRecord?oneid='+encodeURIComponent($('#oneidIpt').val())+'&filter='+encodeURIComponent($('#filter0').text())+'&sorter='+encodeURIComponent($('#sorter0').text())+'&page=1','_self');">Go!</button>
 					</span>
-				</div> 
+				</div>
+				<%if((biJSON)&&(filterDefault=='已保險')){%>
+					<br>
+					<%=biJSON.Contect%>
+					<br>
+					欲購買<%=biJSON.InfoJSON.counter1%>筆保險，其中<%=biJSON.InfoJSON.counter2%>筆成功，<%=biJSON.InfoJSON.counter1-biJSON.InfoJSON.counter2%>筆失敗
+					<br>
+					<table style="display:inline;" class="table">
+						<thead class="myThead">
+							<tr>
+								<th>
+								本次實際合計費用
+								</th>
+							</tr>
+						</thead>
+						<tbody class="myTbody">
+							<tr>
+								<td>
+									<div style="display:inline;"><%=biJSON.InfoJSON.info1.toFixed(0)%></div><div style="display:inline;">元</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				<%}%>
 				<% if(totalResultNum!=0){ %>
 					<% if(filterDefault=='未保險'){%>
 						<%if(pageNumber>1){%>
@@ -110,11 +133,9 @@
 										<br>
 									</div>
 									<div class="modal-footer" style="text-align: center;">
-										<a href="/Transactions/buyInsuranceAll?oneid=<%=encodeURIComponent(oneidDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>" id="bAll">
-											<button class="btn btn-primary" id="buyBtnAll" onclick="buyAll();">
-												確定
-											</button>
-										</a>
+										<button class="btn btn-primary" id="buyBtnAll" onclick="buyAll();">
+											確定
+										</button>
 										&nbsp;
 										<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
 									</div>
@@ -154,7 +175,7 @@
 									</div>
 									<div class="modal-body" style="text-align: center;">
 										<br>
-										您確定要為已選交易購買保險嗎?
+										您確定要為已選之<div id="seCtr1" style="display:inline;"></div>筆交易購買保險嗎?
 										<br>
 										<br>
 									</div>
@@ -190,7 +211,6 @@
 							</div>
 						</div>
 					<% }else{%>
-						<br>
 						<br>
 						<br>
 					<%}%>
@@ -468,6 +488,12 @@
 					<br>
 				<%}%>
 				<%if(filterDefault=='未保險'){%>
+					<%if(pageNumber>1){%>
+						<form action="/Transactions/buyInsuranceAll" method="post" id="formID0">
+							<input type="hidden" name="oneid" id="oneidIpt" value="<%=oneidDefault%>">
+							<input type="hidden" name="sorter" id="sorterIpt" value="<%=sorterDefault%>">
+						</form>
+					<%}%>
 					<form action="/Transactions/buyInsurance" method="post" id="formID">
 						<input type="hidden" name="JsonArrayString" id="hdnIpt">
 					</form>
@@ -548,6 +574,13 @@
 </div>
 <script>
 <% if((filterDefault=='未保險')&&(totalResultNum>0)){%>
+$(document).ready(function(){
+	$("#selectAll").prop("checked", false);
+	$("input[name='selectCheckBox']").each(function() {
+		$(this).prop("checked", false);
+	});
+});
+
 function checkAndOpenModal(target){
 	var ctr=0;
 	$("input[name='selectCheckBox']").each(function() {
@@ -556,6 +589,9 @@ function checkAndOpenModal(target){
 			}
 	});
 	if(ctr>0){
+		if(target=='#chkModal2'){
+			$('#seCtr1').html(ctr);
+		}
 		$(target).modal('show');
 	}else{
 		$('#msgModal').modal('show');
@@ -620,16 +656,28 @@ function selectFun(index){
 }
 
 <%if(pageNumber>1){%>
+var buyAllFlag=false;
 function buyAll(){
-	disableButton();
+	if(!buyAllFlag){
+		$('#chkModal1').modal('hide');
+		disableButton();
+		var form=document.getElementById('formID0');
+		form.submit();
+	}
 }
 <%}%>
 
+var buyFlag=false;
 function buy(){
-	samepart(buyInner);
+	if(!buyFlag){
+		$('#chkModal2').modal('hide');
+		disableButton();
+		samepart(buyInner);
+	}
 }
 
 function disableButton(){
+	buyFlag=true;
 	var orig=$('#buyBtn').attr('class');
 	if(orig.search(' disabled')<0){
 		orig=orig+' disabled';
@@ -637,16 +685,30 @@ function disableButton(){
 	}
 	
 	<%if(pageNumber>1){%>
-	orig=$('#buyBtnAll').attr('class');
-	if(orig.search(' disabled')<0){
-		orig=orig+' disabled';
-		$(buyBtnAll).attr('class',orig);
-	}
+		buyAllFlag=true;
+		orig=$('#buyBtnAll').attr('class');
+		if(orig.search(' disabled')<0){
+			orig=orig+' disabled';
+			$(buyBtnAll).attr('class',orig);
+		}
+	<%}%>
+}
+
+function enableButton(){
+	buyFlag=false;
+	var orig=$('#buyBtn').attr('class');
+	orig=orig.replace(/ disabled/g, '');
+	$('#buyBtn').attr('class',orig);
+	
+	<%if(pageNumber>1){%>
+		buyAllFlag=false;
+		orig=$('#buyBtnAll').attr('class');
+		orig=orig.replace(/ disabled/g, '');
+		$('#buyBtnAll').attr('class',orig);
 	<%}%>
 }
 
 function buyInner(){
-	disableButton();
 	var form=document.getElementById('formID');
 	form.submit();
 }

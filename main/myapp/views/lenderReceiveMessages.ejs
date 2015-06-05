@@ -24,15 +24,15 @@
 							<ul class="dropdown-menu" role="menu">
 								<% if((filterDefault=='未確認')&&(pageNumber>1)){%>
 								<li style="display:none"><a href="#" id="sorter0"><%=sorterDefault%></a></li>
-								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter1').text());$('#cAll').attr('href','/Messages/confirmToBorrowMessageInLRMall?msgKeyword=<%=encodeURIComponent(msgKeywordDefault)%>&sorter='+encodeURIComponent($('#sorterSelected').text()));$('#rAll').attr('href','/Messages/rejectToBorrowMessageInLRMall?msgKeyword=<%=encodeURIComponent(msgKeywordDefault)%>&sorter='+encodeURIComponent($('#sorterSelected').text()));$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter1">最新</a></li>
-								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter2').text());$('#cAll').attr('href','/Messages/confirmToBorrowMessageInLRMall?msgKeyword=<%=encodeURIComponent(msgKeywordDefault)%>&sorter='+encodeURIComponent($('#sorterSelected').text()));$('#rAll').attr('href','/Messages/rejectToBorrowMessageInLRMall?msgKeyword=<%=encodeURIComponent(msgKeywordDefault)%>&sorter='+encodeURIComponent($('#sorterSelected').text()));$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter2">利率最高</a></li>
-								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter3').text());$('#cAll').attr('href','/Messages/confirmToBorrowMessageInLRMall?msgKeyword=<%=encodeURIComponent(msgKeywordDefault)%>&sorter='+encodeURIComponent($('#sorterSelected').text()));$('#rAll').attr('href','/Messages/rejectToBorrowMessageInLRMall?msgKeyword=<%=encodeURIComponent(msgKeywordDefault)%>&sorter='+encodeURIComponent($('#sorterSelected').text()));$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter3">金額最高</a></li>
-								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter4').text());$('#cAll').attr('href','/Messages/confirmToBorrowMessageInLRMall?msgKeyword=<%=encodeURIComponent(msgKeywordDefault)%>&sorter='+encodeURIComponent($('#sorterSelected').text()));$('#rAll').attr('href','/Messages/rejectToBorrowMessageInLRMall?msgKeyword=<%=encodeURIComponent(msgKeywordDefault)%>&sorter='+encodeURIComponent($('#sorterSelected').text()));$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter4">期數最多</a></li>
-								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter5').text());$('#cAll').attr('href','/Messages/confirmToBorrowMessageInLRMall?msgKeyword=<%=encodeURIComponent(msgKeywordDefault)%>&sorter='+encodeURIComponent($('#sorterSelected').text()));$('#rAll').attr('href','/Messages/rejectToBorrowMessageInLRMall?msgKeyword=<%=encodeURIComponent(msgKeywordDefault)%>&sorter='+encodeURIComponent($('#sorterSelected').text()));$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter5">信用等級最高</a></li>
-								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter6').text());$('#cAll').attr('href','/Messages/confirmToBorrowMessageInLRMall?msgKeyword=<%=encodeURIComponent(msgKeywordDefault)%>&sorter='+encodeURIComponent($('#sorterSelected').text()));$('#rAll').attr('href','/Messages/rejectToBorrowMessageInLRMall?msgKeyword=<%=encodeURIComponent(msgKeywordDefault)%>&sorter='+encodeURIComponent($('#sorterSelected').text()));$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter6">預計總利息最高</a></li>
-								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter7').text());$('#cAll').attr('href','/Messages/confirmToBorrowMessageInLRMall?msgKeyword=<%=encodeURIComponent(msgKeywordDefault)%>&sorter='+encodeURIComponent($('#sorterSelected').text()));$('#rAll').attr('href','/Messages/rejectToBorrowMessageInLRMall?msgKeyword=<%=encodeURIComponent(msgKeywordDefault)%>&sorter='+encodeURIComponent($('#sorterSelected').text()));$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter7">預計平均利息最高</a></li>
-								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter8').text());$('#cAll').attr('href','/Messages/confirmToBorrowMessageInLRMall?msgKeyword=<%=encodeURIComponent(msgKeywordDefault)%>&sorter='+encodeURIComponent($('#sorterSelected').text()));$('#rAll').attr('href','/Messages/rejectToBorrowMessageInLRMall?msgKeyword=<%=encodeURIComponent(msgKeywordDefault)%>&sorter='+encodeURIComponent($('#sorterSelected').text()));$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter8">預計平均本利和最高</a></li>
-								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter9').text());$('#cAll').attr('href','/Messages/confirmToBorrowMessageInLRMall?msgKeyword=<%=encodeURIComponent(msgKeywordDefault)%>&sorter='+encodeURIComponent($('#sorterSelected').text()));$('#rAll').attr('href','/Messages/rejectToBorrowMessageInLRMall?msgKeyword=<%=encodeURIComponent(msgKeywordDefault)%>&sorter='+encodeURIComponent($('#sorterSelected').text()));$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter9">預計利本比最高</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter1').text());$('#sorterIpt').val($('#sorterSelected').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter1">最新</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter2').text());$('#sorterIpt').val($('#sorterSelected').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter2">利率最高</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter3').text());$('#sorterIpt').val($('#sorterSelected').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter3">金額最高</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter4').text());$('#sorterIpt').val($('#sorterSelected').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter4">期數最多</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter5').text());$('#sorterIpt').val($('#sorterSelected').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter5">信用等級最高</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter6').text());$('#sorterIpt').val($('#sorterSelected').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter6">預計總利息最高</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter7').text());$('#sorterIpt').val($('#sorterSelected').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter7">預計平均利息最高</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter8').text());$('#sorterIpt').val($('#sorterSelected').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter8">預計平均本利和最高</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter9').text());$('#sorterIpt').val($('#sorterSelected').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter9">預計利本比最高</a></li>
 								<%}else{%>
 								<li style="display:none"><a href="#" id="sorter0"><%=sorterDefault%></a></li>
 								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter1').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter1">最新</a></li>
@@ -50,6 +50,63 @@
 						<button type="button" style="height:40px;" class="btn btn-default" onclick="window.open('/lender/lenderReceiveMessages?msgKeyword='+encodeURIComponent($('#msgKeywordIpt').val().trim())+'&filter='+encodeURIComponent($('#filter0').text())+'&sorter='+encodeURIComponent($('#sorter0').text())+'&page=1','_self');">Go!</button>
 					</span>
 				</div> 
+				<%if((cfJSON)&&(filterDefault=='已同意')){%>
+					<br>
+					<%=cfJSON.Contect%>
+					<br>
+					欲同意<%=cfJSON.InfoJSON.counter1%>筆訊息，其中<%=cfJSON.InfoJSON.counter2%>筆成功，<%=cfJSON.InfoJSON.counter1-cfJSON.InfoJSON.counter2%>筆失敗
+					<br>
+					<table style="display:inline;" class="table">
+						<thead class="myThead">
+							<tr>
+								<th>
+								本次實際借出金額
+								</th>
+								<th>
+								本次實際合計總利息
+								</th>
+								<th>
+								本次實際合計平均利息
+								</th>
+								<th>
+								本次實際合計平均本利和
+								</th>
+								<th>
+								本次實際合計利本比
+								</th>
+							</tr>
+						</thead>
+						<tbody class="myTbody">
+							<tr>
+								<td>
+									<div style="display:inline;"><%=cfJSON.InfoJSON.info1.toFixed(0)%></div><div style="display:inline;">元</div>
+								</td>
+								<td>
+									<div style="display:inline;"><%=cfJSON.InfoJSON.info2.toFixed(0)%></div><div style="display:inline;">元</div>
+								</td>
+								<td>
+									<div style="display:inline;"><%=cfJSON.InfoJSON.info3.toFixed(0)%></div><div style="display:inline;">元</div>
+								</td>
+								<td>
+									<div style="display:inline;"><%=cfJSON.InfoJSON.info4.toFixed(0)%></div><div style="display:inline;">元</div>
+								</td>
+								<td>
+									<%if(cfJSON.InfoJSON.info1>0){%>
+										<div style="display:inline;"><%=(cfJSON.InfoJSON.info2/cfJSON.InfoJSON.info1*100).toFixed(2)%></div><div style="display:inline;">%</div>
+									<%}else{%>
+										<div style="display:inline;">0.00</div><div style="display:inline;">%</div>
+									<%}%>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				<%}%>
+				<%if((rjJSON)&&(filterDefault=='已婉拒')){%>
+					<br>
+					<%=rjJSON.Contect%>
+					<br>
+					欲婉拒<%=rjJSON.InfoJSON.counter1%>筆訊息，其中<%=rjJSON.InfoJSON.counter2%>筆成功，<%=rjJSON.InfoJSON.counter1-rjJSON.InfoJSON.counter2%>筆失敗
+				<%}%>
 				<% if(totalResultNum>0){ %>
 					<% if(filterDefault=='未確認'){%>
 						<br>
@@ -59,20 +116,32 @@
 									<th>
 									您目前的自動借出額度
 									</th>
+									<th>
+									您銀行帳戶內的餘額
+									</th>
 								</tr>
 							</thead>
 							<tbody class="myTbody">
 								<tr>
 									<td>
 										<%if(jsonLend){%>
-											<%=jsonLend.MaxMoneyToLend%>元
+											<input style="display:inline;width:90%;" id="lendChangerIpt" type="text" class="form-control" value="<%=jsonLend.MaxMoneyToLend.toFixed(0)%>" onkeypress="if(event.keyCode==13){lendChanger();}"><div style="display:inline;">&nbsp;元</div>
 										<%}else{%>
-											未找到自動出借設定！
+											<input type="text" class="form-control" readonly="readonly" value="未找到自動出借設定！">
 										<%}%>
+									</td>
+									<td>
+										<input style="display:inline;width:90%;" id="lendChangerIpt0" type="text" class="form-control" readonly="readonly" value="<%if(jsonAccount){%><%=jsonAccount.MoneyInBankAccount.toFixed(0)%><%}else{%>錯誤<%}%>"><div style="display:inline;">&nbsp;元</div>
 									</td>
 								</tr>
 							</tbody>
 						</table>
+						<%if(jsonLend){%>
+							<br>
+							<button id="lendChangerBtn" type="button" class="btn btn-default" onclick="lendChanger();">變更</button>
+							<span id="s0" style="color:red;"></span>
+							<br>
+						<%}%>
 						<%if(pageNumber>1){%>
 						<br>
 						<table style="display:inline;" class="table">
@@ -137,11 +206,9 @@
 										<br>
 									</div>
 									<div class="modal-footer" style="text-align: center;">
-										<a href="/Messages/confirmToBorrowMessageInLRMall?msgKeyword=<%=encodeURIComponent(msgKeywordDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>" id="cAll">
-											<button class="btn btn-primary" id="confirmAllBtn" onclick="confirmAll();">
-												確定
-											</button>
-										</a>
+										<button class="btn btn-primary" id="confirmAllBtn" onclick="confirmAll();">
+											確定
+										</button>
 										&nbsp;
 										<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
 									</div>
@@ -166,11 +233,9 @@
 										<br>
 									</div>
 									<div class="modal-footer" style="text-align: center;">
-										<a href="/Messages/rejectToBorrowMessageInLRMall?msgKeyword=<%=encodeURIComponent(msgKeywordDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>" id="rAll">
-											<button class="btn btn-danger" id="rejectAllBtn" onclick="rejectAll();">
-												確定
-											</button>
-										</a>
+										<button class="btn btn-danger" id="rejectAllBtn" onclick="rejectAll();">
+											確定
+										</button>
 										&nbsp;
 										<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
 									</div>
@@ -234,7 +299,7 @@
 									</div>
 									<div class="modal-body" style="text-align: center;">
 										<br>
-										您確定要同意已選之請求嗎?
+										您確定要同意已選之<div id="seCtr1" style="display:inline;"></div>筆請求嗎?
 										<br>
 										<br>
 									</div>
@@ -260,7 +325,7 @@
 									</div>
 									<div class="modal-body" style="text-align: center;">
 										<br>
-										您確定要婉拒已選之請求嗎?
+										您確定要婉拒已選之<div id="seCtr2" style="display:inline;"></div>筆請求嗎?
 										<br>
 										<br>
 									</div>
@@ -295,8 +360,7 @@
 								</div>
 							</div>
 						</div>
-					<% }else{%>
-						<br>
+					<%}else{%>
 						<br>
 						<br>
 					<%}%>
@@ -696,6 +760,12 @@
 					<br>
 				<%}%>
 				<%if(filterDefault=='未確認'){%>
+					<%if(pageNumber>1){%>
+						<form action="/Messages/confirmToBorrowMessageInLRMall" method="post" id="formID0">
+							<input type="hidden" name="msgKeyword" id="msgKeywordIpt" value="<%=msgKeywordDefault%>">
+							<input type="hidden" name="sorter" id="sorterIpt" value="<%=sorterDefault%>">
+						</form>
+					<%}%>
 					<form action="/Messages/confirmToBorrowMessageInLRM" method="post" id="formID">
 						<input type="hidden" name="JsonArrayString" id="hdnIpt">
 					</form>
@@ -776,6 +846,83 @@
 </div>
 <script>
 <% if((filterDefault=='未確認')&&(totalResultNum>0)){%>
+$(document).ready(function(){
+	$("#selectAll").prop("checked", false);
+	$("input[name='selectCheckBox']").each(function() {
+		$(this).prop("checked", false);
+	});
+});
+
+<%if(jsonLend){%>				
+var lendChangerFlag=false;
+function lendChanger(){
+	if(!lendChangerFlag){
+		var temp=$('#lendChangerIpt').val().trim();
+		if(temp!==''){
+			ajaxer(temp);
+		}else{
+			$('#s0').html('&nbsp;&nbsp;&nbsp;&nbsp;不可為空值！');
+		}
+	}
+}
+
+function ajaxer(value){
+	$('#s0').html('&nbsp;&nbsp;&nbsp;&nbsp;處理中...');
+	starter();
+	$.ajax({ 
+		url: '/Lends/changer',
+		type: 'POST',
+		data:{Value:value,TargetID:"<%=jsonLend._id%>"},
+		dataType: 'json',
+		success: function(Jdata) {
+			var origInner;
+			if(Jdata.success){
+				$('#lendChangerIpt0').val(Jdata.result0.toFixed(0));
+				$('#lendChangerIpt').val(Jdata.result.toFixed(0));
+				$('#s0').html('&nbsp;&nbsp;&nbsp;&nbsp;成功修改！');
+			}else{
+				if(Jdata.result0){
+					$('#lendChangerIpt0').val(Jdata.result0.toFixed(0));
+				}
+				if(Jdata.origValue){
+					$('#lendChangerIpt').val(Jdata.origValue.toFixed(0));
+				}
+				$('#s0').html('&nbsp;&nbsp;&nbsp;&nbsp;'+Jdata.error);
+			}
+			ender();
+		},
+		error: function() {
+			$('#s0').html('&nbsp;&nbsp;&nbsp;&nbsp;something wrong!');
+			ender();
+		}
+	});	
+}
+
+function starter(){
+	lendChangerFlag=true;
+	$('#lendChangerIpt').attr('onkeypress','');
+	$('#lendChangerIpt').attr('readonly','readonly');
+	var orig=$('#lendChangerBtn').attr('class');
+	if(orig.search(' disabled')<0){
+		orig=orig+' disabled';
+		$('#lendChangerBtn').attr('class',orig);
+	}
+	
+	disableButton();
+}
+
+function ender(){
+	lendChangerFlag=false;
+	$('#lendChangerIpt').attr('onkeypress','if(event.keyCode==13){lendChanger();}');
+	$('#lendChangerIpt').removeAttr("readonly");
+	var orig=$('#lendChangerBtn').attr('class');
+	orig=orig.replace(/ disabled/g, '');
+	$('#lendChangerBtn').attr('class',orig);
+	
+	enableButton();
+}
+<%}%>
+
 function checkAndOpenModal(target){
 	var ctr=0;
 	$("input[name='selectCheckBox']").each(function() {
@@ -784,6 +931,11 @@ function checkAndOpenModal(target){
 			}
 	});
 	if(ctr>0){
+		if(target=='#chkModal3'){
+			$('#seCtr1').html(ctr);
+		}else if(target=='#chkModal4'){
+			$('#seCtr2').html(ctr);
+		}
 		$(target).modal('show');
 	}else{
 		$('#msgModal').modal('show');
@@ -912,30 +1064,55 @@ function selectFun(index){
 }
 
 <%if(pageNumber>1){%>
+var confirmAllFlag=false;
 function confirmAll(){
-	disableButton();
+	if(!confirmAllFlag){
+		$('#chkModal1').modal('hide');
+		disableButton();
+		var form=document.getElementById('formID0');
+		form.submit();
+	}
 }
 
+var rejectAllFlag=false;
 function rejectAll(){
-	disableButton();
+	if(!rejectAllFlag){
+		$('#chkModal2').modal('hide');
+		disableButton();
+		var form=document.getElementById('formID0');
+		form.action="/Messages/rejectToBorrowMessageInLRMall";
+		form.submit();
+	}
 }
 <%}%>
 
+var confirmFlag=false;
 function confirm(){
-	samepart(confirmInner);
+	if(!confirmFlag){
+		$('#chkModal3').modal('hide');
+		disableButton();
+		samepart(confirmInner);
+	}
 }
 
+var rejectFlag=false;
 function reject(){
-	samepart(rejectInner);
+	if(!rejectFlag){
+		$('#chkModal4').modal('hide');
+		disableButton();
+		samepart(rejectInner);
+	}
 }
 
 function disableButton(){
+	confirmFlag=true;
 	var orig=$('#confirmBtn').attr('class');
 	if(orig.search(' disabled')<0){
 		orig=orig+' disabled';
 		$('#confirmBtn').attr('class',orig);
 	}
 	
+	rejectFlag=true;
 	orig=$('#rejectBtn').attr('class');
 	if(orig.search(' disabled')<0){
 		orig=orig+' disabled';
@@ -943,12 +1120,14 @@ function disableButton(){
 	}
 	
 	<%if(pageNumber>1){%>
+	confirmAllFlag=true;
 	orig=$('#confirmAllBtn').attr('class');
 	if(orig.search(' disabled')<0){
 		orig=orig+' disabled';
 		$('#confirmAllBtn').attr('class',orig);
 	}
 
+	rejectAllFlag=true;
 	orig=$('#rejectAllBtn').attr('class');
 	if(orig.search(' disabled')<0){
 		orig=orig+' disabled';
@@ -957,14 +1136,38 @@ function disableButton(){
 	<%}%>
 }
 
+function enableButton(){
+	confirmFlag=false;
+	var orig=$('#confirmBtn').attr('class');
+	orig=orig.replace(/ disabled/g, '');
+	$('#confirmBtn').attr('class',orig);
+	
+	rejectFlag=false;
+	orig=$('#rejectBtn').attr('class');
+	orig=orig.replace(/ disabled/g, '');
+	$('#rejectBtn').attr('class',orig);
+	
+	<%if(pageNumber>1){%>
+		confirmAllFlag=false;
+		orig=$('#confirmAllBtn').attr('class');
+		orig=orig.replace(/ disabled/g, '');
+		$('#confirmAllBtn').attr('class',orig);
+
+		rejectAllFlag=false;
+		orig=$('#rejectAllBtn').attr('class');
+		orig=orig.replace(/ disabled/g, '');
+		$('#rejectAllBtn').attr('class',orig);
+	<%}%>
+}
+
+
+
 function confirmInner(){
-	disableButton();
 	var form=document.getElementById('formID');
 	form.submit();
 }
 
 function rejectInner(){
-	disableButton();
 	var form=document.getElementById('formID');
 	form.action="/Messages/rejectToBorrowMessageInLRM";
 	form.submit();
