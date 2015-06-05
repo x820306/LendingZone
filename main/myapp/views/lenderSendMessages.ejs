@@ -22,6 +22,18 @@
 						<div class="btn-group">
 							<button type="button" style="height:40px;" class="btn btn-default" id="sorterSelected" data-toggle="dropdown" aria-expanded="false"><%=sorterDefault%> <span class='caret'></span></button>
 							<ul class="dropdown-menu" role="menu">
+								<% if((filterDefault=='未被確認')&&(pageNumber>1)){%>
+								<li style="display:none"><a href="#" id="sorter0"><%=sorterDefault%></a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter1').text());$('#sorterIpt').val($('#sorterSelected').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter1">最新</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter2').text());$('#sorterIpt').val($('#sorterSelected').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter2">利率最高</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter3').text());$('#sorterIpt').val($('#sorterSelected').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter3">金額最高</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter4').text());$('#sorterIpt').val($('#sorterSelected').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter4">期數最多</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter5').text());$('#sorterIpt').val($('#sorterSelected').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter5">信用等級最高</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter6').text());$('#sorterIpt').val($('#sorterSelected').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter6">預計總利息最高</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter7').text());$('#sorterIpt').val($('#sorterSelected').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter7">預計平均利息最高</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter8').text());$('#sorterIpt').val($('#sorterSelected').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter8">預計平均本利和最高</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter9').text());$('#sorterIpt').val($('#sorterSelected').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter9">預計利本比最高</a></li>
+								<%}else{%>
 								<li style="display:none"><a href="#" id="sorter0"><%=sorterDefault%></a></li>
 								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter1').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter1">最新</a></li>
 								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter2').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter2">利率最高</a></li>
@@ -32,15 +44,103 @@
 								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter7').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter7">預計平均利息最高</a></li>
 								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter8').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter8">預計平均本利和最高</a></li>
 								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter9').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter9">預計利本比最高</a></li>
+								<%}%>
 							</ul>
 						</div>
 						<button type="button" style="height:40px;" class="btn btn-default" onclick="window.open('/lender/lenderSendMessages?msgKeyword='+encodeURIComponent($('#msgKeywordIpt').val().trim())+'&filter='+encodeURIComponent($('#filter0').text())+'&sorter='+encodeURIComponent($('#sorter0').text())+'&page=1','_self');">Go!</button>
 					</span>
 				</div> 
-				<br>
-				<br>
-				<br>
-				<% if(totalResultNum!=0){ %>
+				<%if((delJSON)&&(filterDefault=='未被確認')){%>
+					<br>
+					<%=delJSON.Contect%>
+					<br>
+					欲刪除<%=delJSON.InfoJSON.counter1%>筆訊息，其中<%=delJSON.InfoJSON.counter2%>筆成功，<%=delJSON.InfoJSON.counter1-delJSON.InfoJSON.counter2%>筆失敗
+					<br>
+				<%}%>
+				<% if(totalResultNum>0){ %>
+					<% if(filterDefault=='未被確認'){%>
+						<br>
+						<input type="checkbox" id="selectAll" onclick="selectAllFun();"> 全選&nbsp;&nbsp;&nbsp;&nbsp;
+						<button type="button" class="btn btn-danger" onclick="checkAndOpenModal('#chkModal2')">
+							刪除
+						</button>
+						<div class="modal fade" id="chkModal2">
+							<div class="modal-dialog modal-sm">
+								<div class="modal-content">
+									<div class="modal-header" style="text-align: center;">
+										<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+										<h4 class="modal-title">再次確認</h4>
+									</div>
+									<div class="modal-body" style="text-align: center;">
+										<br>
+										您確定要刪除已選之<div id="seCtr1" style="display:inline;"></div>筆訊息嗎?
+										<br>
+										<br>
+									</div>
+									<div class="modal-footer" style="text-align: center;">
+										<button class="btn btn-danger" id="deleteBtn" onclick="deleteSelected();">
+											確定
+										</button>
+										<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+									</div>
+								</div>
+							</div>
+						</div>
+						&nbsp;&nbsp;
+						<%if(pageNumber>1){%>
+							<button type="button" class="btn btn-danger" data-toggle="modal" data-target="#chkModal1">
+								刪除全部送出之訊息
+							</button>
+							<div class="modal fade" id="chkModal1">
+								<div class="modal-dialog modal-sm">
+									<div class="modal-content">
+										<div class="modal-header" style="text-align: center;">
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+											<h4 class="modal-title">再次確認</h4>
+										</div>
+										<div class="modal-body" style="text-align: center;">
+											<br>
+											您確定要刪除全部送出之訊息嗎?
+											<br>
+											<br>
+										</div>
+										<div class="modal-footer" style="text-align: center;">
+											<button class="btn btn-danger" id="deleteAllBtn" onclick="deleteAll();">
+												確定
+											</button>
+											&nbsp;
+											<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+										</div>
+									</div>
+								</div>
+							</div>
+						<%}%>
+						<br>
+						<br>
+						<br>
+						<div class="modal fade" id="msgModal">
+							<div class="modal-dialog modal-sm">
+								<div class="modal-content">
+									<div class="modal-header" style="text-align: center;">
+										<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+										<h4 class="modal-title">訊息</h4>
+									</div>
+									<div class="modal-body" style="text-align: center;">
+										<br>
+										您未選擇訊息！
+										<br>
+										<br>
+									</div>
+									<div class="modal-footer" style="text-align: center;">
+										<button type="button" class="btn btn-default" data-dismiss="modal">關閉</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					<%}else{%>
+						<br>
+						<br>
+					<%}%>
 					<% for(var i=0; i<jsonMessage.length; i++) { %>
 					<ul class="nav nav-tabs">
 						<li class="active"><a href="#tab1<%=i%>" data-toggle="tab">訊息</a></li>
@@ -422,6 +522,11 @@
 					</div>
 					<table width="100%">
 					<tr>
+						<%if(filterDefault=='未被確認'){%>
+							<td>
+								<input type="checkbox" name="selectCheckBox" id="selectCheckBoxId<%=i%>" onclick="selectFun(<%=i%>);" value='{"MessageID":"<%=jsonMessage[i]._id%>"}'> 選擇
+							</td>
+						<%}%>
 						<td align="right">
 							<div>
 								<%if(filterDefault=='已被同意'){%><a href="/lender/lenderTransactionRecord?oneid=<%=jsonMessage[i].Transaction[0]._id%>&filter=<%if(jsonMessage[i].Transaction[0].InsuranceFeePaid>0){%><%=encodeURIComponent("已保險")%><%}else if(jsonMessage[i].Transaction[0].InsuranceFeePaid==0){%><%=encodeURIComponent("未保險")%><%}%>&sorter=<%=encodeURIComponent("最新")%>&page=1">查詢該筆交易</a>&nbsp;&nbsp;&nbsp;&nbsp;<%}%>Updated：<%=jsonMessage[i].Updated.getFullYear()%>/<%=jsonMessage[i].Updated.getMonth()+1%>/<%=jsonMessage[i].Updated.getDate()%>
@@ -429,6 +534,18 @@
 						</td>
 					<tr>
 					</table>
+					<br>
+				<%}%>
+				<%if(filterDefault=='未被確認'){%>
+					<%if(pageNumber>1){%>
+						<form action="/Messages/deleteToLendMessageInLRMall" method="post" id="formID0">
+							<input type="hidden" name="msgKeyword" id="msgKeywordIpt" value="<%=msgKeywordDefault%>">
+							<input type="hidden" name="sorter" id="sorterIpt" value="<%=sorterDefault%>">
+						</form>
+					<%}%>
+					<form action="/Messages/deleteToLendMessageInLRM" method="post" id="formID">
+						<input type="hidden" name="JsonArrayString" id="hdnIpt">
+					</form>
 				<%}%>
 				<br>
 				<table align="center">
@@ -504,4 +621,144 @@
 		</div>
 	</div>
 </div>
+<script>
+<% if((filterDefault=='未被確認')&&(totalResultNum>0)){%>
+$(document).ready(function(){
+	$("#selectAll").prop("checked", false);
+	$("input[name='selectCheckBox']").each(function() {
+		$(this).prop("checked", false);
+	});
+});
+
+function checkAndOpenModal(target){
+	var ctr=0;
+	$("input[name='selectCheckBox']").each(function() {
+			if($(this).prop("checked")){
+				ctr+=1;
+			}
+	});
+	if(ctr>0){
+		if(target=='#chkModal2'){
+			$('#seCtr1').html(ctr);
+		}
+		$(target).modal('show');
+	}else{
+		$('#msgModal').modal('show');
+	}
+}
+
+function selectAllFun(){
+	if($("#selectAll").prop("checked"))
+	{
+		$("input[name='selectCheckBox']").each(function() {
+			$(this).prop("checked", true);
+		});
+	}else{
+		$("input[name='selectCheckBox']").each(function() {
+			$(this).prop("checked", false);
+		});
+	}
+}
+
+function selectFun(index){
+	if($("#selectCheckBoxId"+index).prop("checked"))
+	{	
+		var ctr=0;
+		$("input[name='selectCheckBox']").each(function() {
+			if($(this).prop("checked")){
+				ctr+=1;
+			}
+		});
+		if(ctr==$("input[name='selectCheckBox']").length){
+			$("#selectAll").prop("checked", true);
+		}
+	}else{
+		var ctr=0;
+		$("input[name='selectCheckBox']").each(function() {
+			if($(this).prop("checked")){
+				ctr+=1;
+			}
+		});
+		if(ctr<$("input[name='selectCheckBox']").length){
+			$("#selectAll").prop("checked", false);
+		}		
+	}
+}
+
+<%if(pageNumber>1){%>
+var deleteAllFlag=false;
+function deleteAll(){
+	if(!deleteAllFlag){
+		$('#chkModal1').modal('hide');
+		disableButton();
+		var form=document.getElementById('formID0');
+		form.submit();
+	}
+}
+<%}%>
+
+var deleteSelectedFlag=false;
+function deleteSelected(){
+	if(!deleteSelectedFlag){
+		$('#chkModal2').modal('hide');
+		disableButton();
+		samepart(deleteInner);
+	}
+}
+
+function disableButton(){
+	deleteSelectedFlag=true;
+	var orig=$('#deleteBtn').attr('class');
+	if(orig.search(' disabled')<0){
+		orig=orig+' disabled';
+		$('#deleteBtn').attr('class',orig);
+	}
+	
+	<%if(pageNumber>1){%>
+	deleteAllFlag=true;
+	orig=$('#deleteAllBtn').attr('class');
+	if(orig.search(' disabled')<0){
+		orig=orig+' disabled';
+		$(deleteAllBtn).attr('class',orig);
+	}
+	<%}%>
+}
+
+function enableButton(){
+	deleteSelectedFlag=false;
+	var orig=$('#deleteBtn').attr('class');
+	orig=orig.replace(/ disabled/g, '');
+	$('#deleteBtn').attr('class',orig);
+	
+	<%if(pageNumber>1){%>
+		deleteAllFlag=false;
+		orig=$('#deleteAllBtn').attr('class');
+		orig=orig.replace(/ disabled/g, '');
+		$(deleteAllBtn).attr('class',orig);
+	<%}%>
+}
+
+
+function deleteInner(){
+	var form=document.getElementById('formID');
+	form.submit();
+}
+
+function samepart(toDO){
+	var JSONarrayString='{"array":['
+	$("input[name='selectCheckBox']").each(function() {
+			if($(this).prop("checked")){
+				JSONarrayString+=$(this).val();
+				JSONarrayString+=',';
+			}
+	});
+	if(JSONarrayString!='{"array":['){
+		JSONarrayString=JSONarrayString.substr(0,JSONarrayString.length-1);
+		JSONarrayString+=']}';
+		$("#hdnIpt").val(JSONarrayString);
+		toDO();
+	}
+}
+<%}%>
+</script>
 <%- include('layout_footer',{imgSettingCode:"var ifLoadedCount=0;",imgDrawingCode:""}); -%>

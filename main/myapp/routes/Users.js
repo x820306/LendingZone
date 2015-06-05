@@ -248,7 +248,7 @@ router.post('/forgetPW', function(req, res, next) {
 	}
 });
 
-router.get('/resetPWpage/:token?', library.newMsgChecker, function(req, res, next) {
+router.get('/resetPWpage/:token?',library.loginFormChecker, library.newMsgChecker, function(req, res, next) {
 	if(typeof(req.query.token) !== "undefined"){
 		var auRst=null;
 		if(req.isAuthenticated()){
@@ -261,7 +261,7 @@ router.get('/resetPWpage/:token?', library.newMsgChecker, function(req, res, nex
 				if (!user) {
 					res.redirect('/message?content='+encodeURIComponent('token過期或無效!'));
 				}else{
-					res.render('resetPWpage',{newlrmNum: req.newlrmNumber,newlsmNum: req.newlsmNumber,userName: auRst,tk:req.query.token});
+					res.render('resetPWpage',{lgfJSON:req.loginFormJson,newlrmNum: req.newlrmNumber,newlsmNum: req.newlsmNumber,userName: auRst,tk:req.query.token});
 				}
 			}
 		});
@@ -309,7 +309,7 @@ router.post('/resetPW', function(req, res, next) {
 	});
 });
 
-router.post('/changePW',library.ensureAuthenticated,function(req, res, next) {
+router.post('/changePW',library.loginFormChecker,library.ensureAuthenticated,function(req, res, next) {
 	Users.findById(req.user._id).exec(function (err, user){
 		if(err){
 			console.log(err);
@@ -371,7 +371,7 @@ router.post('/ifUsernameExist',function(req, res, next) {
 	});
 });
 
-router.post('/ifOldPWRight',library.ensureAuthenticated,function(req, res, next) {
+router.post('/ifOldPWRight',library.loginFormChecker,library.ensureAuthenticated,function(req, res, next) {
 	Users.findById(req.user._id).exec(function (err, user){
 		if(err){
 			console.log(err);

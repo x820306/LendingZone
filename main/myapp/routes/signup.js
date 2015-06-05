@@ -7,16 +7,7 @@ var sanitizer = require('sanitizer');
 var express = require('express');
 var router = express.Router();
 
-// U can try this by /signup
-router.get('/',library.newMsgChecker, function (req, res) {
-	var auRst=null;
-	if(req.isAuthenticated()){
-		auRst=req.user.Username;
-	}
-	res.redirect('/signup/success');
-});
-
-router.get('/profile',library.ensureAuthenticated,library.newMsgChecker, function (req, res) {
+router.get('/profile',library.loginFormChecker,library.ensureAuthenticated,library.newMsgChecker, function (req, res) {
 	Users.findById(req.user._id).exec(function (err, foundUser){
 		if (err) {
 			console.log(err);
@@ -33,7 +24,7 @@ router.get('/profile',library.ensureAuthenticated,library.newMsgChecker, functio
 						if(!foundAccount){
 							res.redirect('/message?content='+encodeURIComponent('錯誤'));
 						}else{
-							res.render('profile',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,user:foundUser,account:foundAccount});
+							res.render('profile',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,user:foundUser,account:foundAccount});
 						}
 					}
 				});
@@ -42,11 +33,11 @@ router.get('/profile',library.ensureAuthenticated,library.newMsgChecker, functio
 	});
 });
 
-router.get('/changePWpage',library.ensureAuthenticated,library.newMsgChecker, function (req, res) {
-	res.render('changePWpage',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username});
+router.get('/changePWpage',library.loginFormChecker,library.ensureAuthenticated,library.newMsgChecker, function (req, res) {
+	res.render('changePWpage',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username});
 });
 
-router.post('/changeData', library.ensureAuthenticated, function (req, res) {
+router.post('/changeData',library.loginFormChecker, library.ensureAuthenticated, function (req, res) {
 	if((sanitizer.sanitize(req.body.Name.trim())!='')&&(sanitizer.sanitize(req.body.Email.trim())!='')&&(sanitizer.sanitize(req.body.Gender.trim())!='')&&(sanitizer.sanitize(req.body.BirthDay.trim())!='')&&(sanitizer.sanitize(req.body.IdCardNumber.trim())!='')&&(sanitizer.sanitize(req.body.Phone.trim())!='')&&(sanitizer.sanitize(req.body.Address.trim())!='')&&(sanitizer.sanitize(req.body.BankAccountNumber.trim())!='')&&(sanitizer.sanitize(req.body.BankAccountPassword.trim())!='')){
 		Users.findById(req.user._id).exec(function (err, user){
 			if (err) {
@@ -111,7 +102,7 @@ router.post('/changeData', library.ensureAuthenticated, function (req, res) {
 });
 
 // this is the basic type when page no need to ensure authenticated. U can try this by /signup/signupExample
-router.get('/cardData',library.newMsgChecker, function (req, res) {
+router.get('/cardData',library.loginFormChecker,library.newMsgChecker, function (req, res) {
 	var auRst=null;
 	if(req.isAuthenticated()){
 		auRst=req.user.Username;
@@ -120,21 +111,21 @@ router.get('/cardData',library.newMsgChecker, function (req, res) {
 	//get data from database and process them here
 	
 	//pass what u get from database and send them into ejs in this line
-	res.render('cardData_1',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst});
+	res.render('cardData_1',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst});
 });
 
 // this is the basic type when page no need to ensure authenticated. U can try this by /signup/signupExample
-router.post('/checkPro',library.newMsgChecker, function (req, res) {
+router.post('/checkPro',library.loginFormChecker,library.newMsgChecker, function (req, res) {
 	var auRst=null;
 	if(req.isAuthenticated()){
 		auRst=req.user.Username;
 	}
 	
-	res.render('checkPro_1',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,BankAccountNumber:req.body.cardIpt,BankAccountPassword:req.body.cardPwdIpt});
+	res.render('checkPro_1',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,BankAccountNumber:req.body.cardIpt,BankAccountPassword:req.body.cardPwdIpt});
 });
 
 // this is the basic type when page no need to ensure authenticated. U can try this by /signup/signupExample
-router.get('/newAcc',library.newMsgChecker, function (req, res) {
+router.get('/newAcc',library.loginFormChecker,library.newMsgChecker, function (req, res) {
 	var auRst=null;
 	if(req.isAuthenticated()){
 		auRst=req.user.Username;
@@ -143,22 +134,22 @@ router.get('/newAcc',library.newMsgChecker, function (req, res) {
 	//get data from database and process them here
 	
 	//pass what u get from database and send them into ejs in this line
-	res.render('newAcc_2',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst});
+	res.render('newAcc_2',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst});
 });
 
 // this is the basic type when page no need to ensure authenticated. U can try this by /signup/signupExample
-router.post('/apply',library.newMsgChecker, function (req, res) {
+router.post('/apply',library.loginFormChecker,library.newMsgChecker, function (req, res) {
 	var auRst=null;
 	if(req.isAuthenticated()){
 		auRst=req.user.Username;
 	}
 
-	res.render('apply_1',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst, Name:req.body.nameIpt, Email:req.body.emailIpt, Gender:req.body.genderIpt,
+	res.render('apply_1',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst, Name:req.body.nameIpt, Email:req.body.emailIpt, Gender:req.body.genderIpt,
 		BirthDay:req.body.birthIpt, Phone:req.body.telIpt, Address:req.body.addrIpt,IdCardNumber:req.body.ssnIpt,IdCard:req.body.IdCard,IdCardType:req.body.IdCardType,SecondCard:req.body.SecondCard,SecondCardType:req.body.SecondCardType,
 		BankAccountNumber:req.body.BankAccountNumber,BankAccountPassword:req.body.BankAccountPassword});
 });
 
-router.post('/_apply',library.newMsgChecker, function (req, res) {
+router.post('/_apply',library.loginFormChecker,library.newMsgChecker, function (req, res) {
 	var auRst=null;
 	if(req.isAuthenticated()){
 		auRst=req.user.Username;
@@ -181,35 +172,35 @@ router.post('/_apply',library.newMsgChecker, function (req, res) {
 	}
 	
 	//pass what u get from database and send them into ejs in this line
-	res.render('apply_2',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst, Name:req.body.nameIpt, Email:req.body.emailIpt, Gender:req.body.genderIpt,
+	res.render('apply_2',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst, Name:req.body.nameIpt, Email:req.body.emailIpt, Gender:req.body.genderIpt,
 		BirthDay:req.body.birthIpt, Phone:req.body.telIpt, Address:req.body.addrIpt,IdCardNumber:req.body.ssnIpt,IdCard:IdCardBase64,IdCardType:varIdCardType,SecondCard:SecondCardBase64,SecondCardType:varSecondCardType,
 		BankAccountNumber:req.body.cardIpt,BankAccountPassword:req.body.cardPwdIpt});
 });
 
 // this is the basic type when page no need to ensure authenticated. U can try this by /signup/signupExample
-router.post('/community',library.newMsgChecker, function (req, res) {
+router.post('/community',library.loginFormChecker,library.newMsgChecker, function (req, res) {
 	var auRst=null;
 	if(req.isAuthenticated()){
 		auRst=req.user.Username;
 	}
 	userCreator(req,res,function (){
-		res.render('community_1',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst});
+		res.render('community_1',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst});
 	});
 });
 
 // this is the basic type when page no need to ensure authenticated. U can try this by /signup/signupExample
-router.post('/_community',library.newMsgChecker, function (req, res) {
+router.post('/_community',library.loginFormChecker,library.newMsgChecker, function (req, res) {
 	var auRst=null;
 	if(req.isAuthenticated()){
 		auRst=req.user.Username;
 	}
 	userCreator(req,res,function (){
-		res.render('community_2',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst});
+		res.render('community_2',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst});
 	});
 });
 
 // this is the basic type when page no need to ensure authenticated. U can try this by /signup/signupExample
-router.get('/success',library.newMsgChecker, function (req, res) {
+router.get('/success',library.loginFormChecker,library.newMsgChecker, function (req, res) {
 	var auRst=null;
 	if(req.isAuthenticated()){
 		auRst=req.user.Username;
@@ -218,11 +209,11 @@ router.get('/success',library.newMsgChecker, function (req, res) {
 	//get data from database and process them here
 	
 	//pass what u get from database and send them into ejs in this line
-	res.render('success_1',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst});
+	res.render('success_1',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst});
 });
 
 // this is the basic type when page no need to ensure authenticated. U can try this by /signup/signupExample
-router.get('/_success',library.newMsgChecker, function (req, res) {
+router.get('/_success',library.loginFormChecker,library.newMsgChecker, function (req, res) {
 	var auRst=null;
 	if(req.isAuthenticated()){
 		auRst=req.user.Username;
@@ -231,29 +222,7 @@ router.get('/_success',library.newMsgChecker, function (req, res) {
 	//get data from database and process them here
 	
 	//pass what u get from database and send them into ejs in this line
-	res.render('success_2',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst});
-});
-
-// this is the basic type when page no need to ensure authenticated. U can try this by /signup/signupExample
-
-router.get('/signupExample',library.newMsgChecker, function (req, res) {
-	var auRst=null;
-	if(req.isAuthenticated()){
-		auRst=req.user.Username;
-	}
-	
-	//get data from database and process them here
-	
-	//pass what u get from database and send them into ejs in this line
-	res.render('ejsExample',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst});
-});
-
-// this is the basic type when page need to ensure authenticated. U can try this by /signup/signupExample2
-router.get('/signupExample2',library.ensureAuthenticated,library.newMsgChecker, function (req, res) {
-	//get data from database and process them here
-	
-	//pass what u get from database and send them into ejs in this line
-	res.render('ejsExample',{newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username});
+	res.render('success_2',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst});
 });
 
 function userCreator(req,res,callback){

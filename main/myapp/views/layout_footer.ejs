@@ -16,18 +16,20 @@
 					<form action="/login" method="post" id="loginForm" onsubmit="return disableButtonFooter();">
 						<div class="modal-body" style="text-align:center;">
 							<div style="margin:0px auto;" class="input-group">
-									<input type="text" class="form-control" name="Username" id="usernameID" placeholder="帳號" required="required">
+								<input type="text" class="form-control" name="Username" id="usernameID" placeholder="帳號" required="required"<%if(lgfJSON){%> value="<%=lgfJSON.FormContent.F1%>"<%}%>>
+								<br><span id="s1" style="color:red;"><%if(lgfJSON){%><%if(lgfJSON.Target==1){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=lgfJSON.Message%><%}%><%}%></span>
 							</div>
 							<br>
 							<div style="margin:0px auto;" class="input-group">
-									<input type="password" class="form-control" name="Password" id="passwordID" placeholder="密碼" required="required">
+								<input type="password" class="form-control" name="Password" id="passwordID" placeholder="密碼" required="required"<%if(lgfJSON){%> value="<%=lgfJSON.FormContent.F2%>"<%}%>>
+								<br><span id="s2" style="color:red;"><%if(lgfJSON){%><%if(lgfJSON.Target==2){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=lgfJSON.Message%><%}%><%}%></span>
 							</div>
 							<br>
 							<input type="hidden" name="CaptchaIdfr" id="captchaIdfr" value="0">
 							<table width="100%;">
 								<tr>
 									<td align="right" style="width:50%;">
-										<input style="width:100px;" type="text" class="form-control" name="CaptchaText" id="captchaText" placeholder="驗證碼" required="required">
+										<input style="width:100px;" type="text" class="form-control" name="CaptchaText" id="captchaText" placeholder="驗證碼" required="required"<%if(lgfJSON){%> value="<%=lgfJSON.FormContent.F3%>"<%}%>>
 									</td>
 									<td align="left" style="width:50%;">
 										&nbsp;&nbsp;<img id="captchaPic" width="100px" height="35px;" src="" />
@@ -35,6 +37,7 @@
 								</tr>
 								<tr>
 									<td align="right">
+										<span id="s3" style="color:red;"><%if(lgfJSON){%><%if(lgfJSON.Target==3){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=lgfJSON.Message%><%}%><%}%></span>
 									</td>
 									<td align="left">
 										&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" onclick="ajaxCaptcha();return false;">看不清?</a>
@@ -73,6 +76,21 @@
 		var id;
 		<% if(!userName){ %>
 			ajaxCaptcha();
+			<% if(lgfJSON){ %>
+				$('#myModal').on('shown.bs.modal.myevent', function () {
+					setTimeout(function() {
+						<%if(lgfJSON.Target==1){%>
+							$('#usernameID').focus();
+						<%}else if(lgfJSON.Target==2){%>
+							$('#passwordID').focus();
+						<%}else if(lgfJSON.Target==3){%>
+							$('#captchaText').focus();
+						<%}%>
+						$('#myModal').off('shown.bs.modal.myevent');
+					}, 100);
+				});
+				$('#myModal').modal('show');
+			<% } %>
 		<% } %>
 		
 		$('.hastip').tooltipsy({
