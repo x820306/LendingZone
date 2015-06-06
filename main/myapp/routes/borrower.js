@@ -15,7 +15,8 @@ router.get('/borrowPage',library.loginFormChecker, library.ensureAuthenticated, 
 	}
 	
 	library.formIdfrCtr+=1;
-	library.formIdfrArray.push(library.formIdfrCtr);
+	var tempIdfr=library.formIdfrCtr;
+	library.formIdfrArray.push(tempIdfr);
 	library.setFormTimer();
 	
 	res.render('borrowPage', {
@@ -24,7 +25,7 @@ router.get('/borrowPage',library.loginFormChecker, library.ensureAuthenticated, 
 		newlsmNum: req.newlsmNumber,
 		userName: req.user.Username,
 		scr:library.serviceChargeRate,
-		idfr:library.formIdfrCtr,
+		idfr:tempIdfr,
 		bfJSON:borrowFormJson
 	});
 });

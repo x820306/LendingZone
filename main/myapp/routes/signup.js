@@ -108,20 +108,45 @@ router.get('/cardData',library.loginFormChecker,library.newMsgChecker, function 
 		auRst=req.user.Username;
 	}
 	
+	library.formIdfrCtr+=1;
+	var tempIdfr=library.formIdfrCtr;
+	library.formIdfrArray.push(tempIdfr);
+	library.setFormTimer();
+	
 	//get data from database and process them here
 	
 	//pass what u get from database and send them into ejs in this line
-	res.render('cardData_1',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst});
+	res.render('cardData_1',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,formSession1:tempIdfr});
 });
 
 // this is the basic type when page no need to ensure authenticated. U can try this by /signup/signupExample
 router.post('/checkPro',library.loginFormChecker,library.newMsgChecker, function (req, res) {
-	var auRst=null;
-	if(req.isAuthenticated()){
-		auRst=req.user.Username;
+	var Idfr=parseInt(req.body.FormSession1);
+	var passFlag=false;
+	if(Idfr>0){
+		for(i=0;i<library.formIdfrArray.length;i++){
+			if(Idfr==library.formIdfrArray[i]){
+				passFlag=true;
+				break;
+			}
+		}
 	}
 	
-	res.render('checkPro_1',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,BankAccountNumber:req.body.cardIpt,BankAccountPassword:req.body.cardPwdIpt});
+	if(passFlag){
+		var auRst=null;
+		if(req.isAuthenticated()){
+			auRst=req.user.Username;
+		}
+		
+		library.formIdfrCtr+=1;
+		var tempIdfr=library.formIdfrCtr;
+		library.formIdfrArray.push(tempIdfr);
+		library.setFormTimer();
+		
+		res.render('checkPro_1',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,BankAccountNumber:req.body.cardIpt,BankAccountPassword:req.body.cardPwdIpt,formSession1:req.body.FormSession1,formSession2:tempIdfr});
+	}else{
+		res.redirect('/signupTest');
+	}
 });
 
 // this is the basic type when page no need to ensure authenticated. U can try this by /signup/signupExample
@@ -131,72 +156,210 @@ router.get('/newAcc',library.loginFormChecker,library.newMsgChecker, function (r
 		auRst=req.user.Username;
 	}
 	
+	library.formIdfrCtr+=1;
+	var tempIdfr=library.formIdfrCtr;
+	library.formIdfrArray.push(tempIdfr);
+	library.setFormTimer();
+	
 	//get data from database and process them here
 	
 	//pass what u get from database and send them into ejs in this line
-	res.render('newAcc_2',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst});
+	res.render('newAcc_2',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,formSession1:tempIdfr});
 });
 
 // this is the basic type when page no need to ensure authenticated. U can try this by /signup/signupExample
 router.post('/apply',library.loginFormChecker,library.newMsgChecker, function (req, res) {
-	var auRst=null;
-	if(req.isAuthenticated()){
-		auRst=req.user.Username;
+	var Idfr=parseInt(req.body.FormSession2);
+	var passFlag=false;
+	if(Idfr>0){
+		for(i=0;i<library.formIdfrArray.length;i++){
+			if(Idfr==library.formIdfrArray[i]){
+				passFlag=true;
+				break;
+			}
+		}
 	}
+	
+	if(passFlag){
+		var auRst=null;
+		if(req.isAuthenticated()){
+			auRst=req.user.Username;
+		}
 
-	res.render('apply_1',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst, Name:req.body.nameIpt, Email:req.body.emailIpt, Gender:req.body.genderIpt,
-		BirthDay:req.body.birthIpt, Phone:req.body.telIpt, Address:req.body.addrIpt,IdCardNumber:req.body.ssnIpt,IdCard:req.body.IdCard,IdCardType:req.body.IdCardType,SecondCard:req.body.SecondCard,SecondCardType:req.body.SecondCardType,
-		BankAccountNumber:req.body.BankAccountNumber,BankAccountPassword:req.body.BankAccountPassword});
+		library.formIdfrCtr+=1;
+		var tempIdfr=library.formIdfrCtr;
+		library.formIdfrArray.push(tempIdfr);
+		library.setFormTimer();
+		
+		res.render('apply_1',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst, Name:req.body.nameIpt, Email:req.body.emailIpt, Gender:req.body.genderIpt,
+			BirthDay:req.body.birthIpt, Phone:req.body.telIpt, Address:req.body.addrIpt,IdCardNumber:req.body.ssnIpt,IdCard:req.body.IdCard,IdCardType:req.body.IdCardType,SecondCard:req.body.SecondCard,SecondCardType:req.body.SecondCardType,
+			BankAccountNumber:req.body.BankAccountNumber,BankAccountPassword:req.body.BankAccountPassword,formSession1:req.body.FormSession1,formSession2:req.body.FormSession2,formSession3:tempIdfr});
+	}else{
+		res.redirect('/signupTest');
+	}
 });
 
 router.post('/_apply',library.loginFormChecker,library.newMsgChecker, function (req, res) {
-	var auRst=null;
-	if(req.isAuthenticated()){
-		auRst=req.user.Username;
-	}
-	var varIdCardType='';
-	if(req.files.ssnImg){
-		varIdCardType=req.files.ssnImg.mimetype;
-	}
-	var varSecondCardType='';
-	if(req.files.cerImg){
-		varSecondCardType=req.files.cerImg.mimetype;
-	}
-	var IdCardBase64='';
-	if(req.files.ssnImg){
-		IdCardBase64=req.files.ssnImg.buffer.toString('base64');
-	}
-	var SecondCardBase64='';
-	if(req.files.cerImg){
-		SecondCardBase64=req.files.cerImg.buffer.toString('base64');
+	var Idfr=parseInt(req.body.FormSession1);
+	var passFlag=false;
+	if(Idfr>0){
+		for(i=0;i<library.formIdfrArray.length;i++){
+			if(Idfr==library.formIdfrArray[i]){
+				passFlag=true;
+				break;
+			}
+		}
 	}
 	
-	//pass what u get from database and send them into ejs in this line
-	res.render('apply_2',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst, Name:req.body.nameIpt, Email:req.body.emailIpt, Gender:req.body.genderIpt,
-		BirthDay:req.body.birthIpt, Phone:req.body.telIpt, Address:req.body.addrIpt,IdCardNumber:req.body.ssnIpt,IdCard:IdCardBase64,IdCardType:varIdCardType,SecondCard:SecondCardBase64,SecondCardType:varSecondCardType,
-		BankAccountNumber:req.body.cardIpt,BankAccountPassword:req.body.cardPwdIpt});
+	if(passFlag){
+		var auRst=null;
+		if(req.isAuthenticated()){
+			auRst=req.user.Username;
+		}
+		var varIdCardType='';
+		if(req.files.ssnImg){
+			varIdCardType=req.files.ssnImg.mimetype;
+		}
+		var varSecondCardType='';
+		if(req.files.cerImg){
+			varSecondCardType=req.files.cerImg.mimetype;
+		}
+		var IdCardBase64='';
+		if(req.files.ssnImg){
+			IdCardBase64=req.files.ssnImg.buffer.toString('base64');
+		}
+		var SecondCardBase64='';
+		if(req.files.cerImg){
+			SecondCardBase64=req.files.cerImg.buffer.toString('base64');
+		}
+		
+		library.formIdfrCtr+=1;
+		var tempIdfr=library.formIdfrCtr;
+		library.formIdfrArray.push(tempIdfr);
+		library.setFormTimer();
+		
+		//pass what u get from database and send them into ejs in this line
+		res.render('apply_2',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst, Name:req.body.nameIpt, Email:req.body.emailIpt, Gender:req.body.genderIpt,
+			BirthDay:req.body.birthIpt, Phone:req.body.telIpt, Address:req.body.addrIpt,IdCardNumber:req.body.ssnIpt,IdCard:IdCardBase64,IdCardType:varIdCardType,SecondCard:SecondCardBase64,SecondCardType:varSecondCardType,
+			BankAccountNumber:req.body.cardIpt,BankAccountPassword:req.body.cardPwdIpt,formSession1:req.body.FormSession1,formSession2:tempIdfr});
+	}else{
+		res.redirect('/signupTest');
+	}
 });
 
 // this is the basic type when page no need to ensure authenticated. U can try this by /signup/signupExample
 router.post('/community',library.loginFormChecker,library.newMsgChecker, function (req, res) {
-	var auRst=null;
-	if(req.isAuthenticated()){
-		auRst=req.user.Username;
+	var Idfr1=parseInt(req.body.FormSession1);
+	var Idfr2=parseInt(req.body.FormSession2);
+	var Idfr3=parseInt(req.body.FormSession3);
+	var passFlag=false;
+	if(Idfr3>0){
+		for(i=0;i<library.formIdfrArray.length;i++){
+			if(Idfr3==library.formIdfrArray[i]){
+				passFlag=true;
+				break;
+			}
+		}
 	}
-	userCreator(req,res,function (){
-		res.render('community_1',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst});
-	});
+	
+	if(passFlag){
+		var auRst=null;
+		if(req.isAuthenticated()){
+			auRst=req.user.Username;
+		}
+		userCreator(req,res,function (){
+			var ctr1=-1;
+			if(Idfr1>0){
+				for(i=0;i<library.formIdfrArray.length;i++){
+					if(Idfr1==library.formIdfrArray[i]){
+						ctr1=i;
+						break;
+					}
+				}
+			}
+			if(ctr1>-1){
+				library.formIdfrArray.splice(ctr1, 1);
+			}
+			var ctr2=-1;
+			if(Idfr2>0){
+				for(i=0;i<library.formIdfrArray.length;i++){
+					if(Idfr2==library.formIdfrArray[i]){
+						ctr2=i;
+						break;
+					}
+				}
+			}
+			if(ctr2>-1){
+				library.formIdfrArray.splice(ctr2, 1);
+			}
+			var ctr3=-1;
+			if(Idfr3>0){
+				for(i=0;i<library.formIdfrArray.length;i++){
+					if(Idfr3==library.formIdfrArray[i]){
+						ctr3=i;
+						break;
+					}
+				}
+			}
+			if(ctr3>-1){
+				library.formIdfrArray.splice(ctr3, 1);
+			}
+			res.render('community_1',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst});
+		});
+	}else{
+		res.redirect('/signupTest');
+	}
 });
 
 // this is the basic type when page no need to ensure authenticated. U can try this by /signup/signupExample
 router.post('/_community',library.loginFormChecker,library.newMsgChecker, function (req, res) {
-	var auRst=null;
-	if(req.isAuthenticated()){
-		auRst=req.user.Username;
+	var Idfr1=parseInt(req.body.FormSession1);
+	var Idfr2=parseInt(req.body.FormSession2);
+	var passFlag=false;
+	if(Idfr2>0){
+		for(i=0;i<library.formIdfrArray.length;i++){
+			if(Idfr2==library.formIdfrArray[i]){
+				passFlag=true;
+				break;
+			}
+		}
 	}
-	userCreator(req,res,function (){
-		res.render('community_2',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst});
-	});
+	
+	if(passFlag){
+		var auRst=null;
+		if(req.isAuthenticated()){
+			auRst=req.user.Username;
+		}
+		userCreator(req,res,function (){
+			var ctr1=-1;
+			if(Idfr1>0){
+				for(i=0;i<library.formIdfrArray.length;i++){
+					if(Idfr1==library.formIdfrArray[i]){
+						ctr1=i;
+						break;
+					}
+				}
+			}
+			if(ctr1>-1){
+				library.formIdfrArray.splice(ctr1, 1);
+			}
+			var ctr2=-1;
+			if(Idfr2>0){
+				for(i=0;i<library.formIdfrArray.length;i++){
+					if(Idfr2==library.formIdfrArray[i]){
+						ctr2=i;
+						break;
+					}
+				}
+			}
+			if(ctr2>-1){
+				library.formIdfrArray.splice(ctr2, 1);
+			}
+			res.render('community_2',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst});
+		});
+	}else{
+		res.redirect('/signupTest');
+	}
 });
 
 // this is the basic type when page no need to ensure authenticated. U can try this by /signup/signupExample
