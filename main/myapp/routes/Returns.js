@@ -44,6 +44,15 @@ router.post('/destroyTest', function(req, res, next) {
 						if(!transaction){
 							res.json({error: 'no such transaction'}, 500);
 						}else{
+							
+							transaction.MonthPeriodHasPast-=1;
+							transaction.MonthPeriod+=1;
+							transaction.Principal+=(foundReturn.PrincipalShouldPaid-foundReturn.PrincipalNotPaid);
+							transaction.Principal-=foundReturn.InterestNotPaid;
+							transaction.PrincipalReturnedCumulated-=(foundReturn.PrincipalShouldPaid-foundReturn.PrincipalNotPaid);
+							transaction.InterestCumulated-=(foundReturn.InterestShouldPaid-foundReturn.InterestNotPaid);
+							transaction.ServiceChargeCumulated-=(foundReturn.ServiceChargeShouldPaid-foundReturn.ServiceChargeNotPaid);
+							
 							var ctr = -1;
 							for (i = 0; i < transaction.Return.length; i++) {
 								if (transaction.Return[i].toString() === foundReturn._id.toString()) {
@@ -100,6 +109,9 @@ router.post('/pay', function(req, res, next) {
 						res.end("error");
 					}else{
 						var PrincipalBeforePaid=transaction.Principal;
+						var PrincipalReturnedCumulatedBeforePaid=transaction.PrincipalReturnedCumulated;
+						var InterestCumulatedBeforePaid=transaction.InterestCumulated;
+						var ServiceChargeCumulatedBeforePaid=transaction.ServiceChargeCumulated;
 		
 						var ServiceChargeShouldPaid=Math.round(transaction.Principal*library.serviceChargeRate/12);//scr
 						var PrincipalShouldPaid;
@@ -119,42 +131,25 @@ router.post('/pay', function(req, res, next) {
 							ServiceChargeNotPaid=ServiceChargeShouldPaid-MoneyPaid;
 							PrincipalNotPaid=PrincipalShouldPaid;
 							InterestNotPaid=InterestShouldPaid;
-							transaction.Principal-=0;
-							transaction.Principal+=InterestNotPaid;
-							transaction.PrincipalReturnedCumulated+=0;
-							transaction.InterestCumulated+=0;
 						}else{
 							var tempMoneyPaid0=MoneyPaid-ServiceChargeShouldPaid;
-							if(tempMoneyPaid0<=PrincipalShouldPaid){
+							if(tempMoneyPaid0<=InterestShouldPaid){
 								ServiceChargeNotPaid=0;
-								PrincipalNotPaid=PrincipalShouldPaid-tempMoneyPaid0;
-								InterestNotPaid=InterestShouldPaid;
-								transaction.Principal-=tempMoneyPaid0;
-								transaction.Principal+=InterestNotPaid;
-								transaction.PrincipalReturnedCumulated+=tempMoneyPaid0;
-								transaction.InterestCumulated+=0;
+								PrincipalNotPaid=PrincipalShouldPaid;
+								InterestNotPaid=InterestShouldPaid-tempMoneyPaid0;
 							}else{
-								var tempMoneyPaid=tempMoneyPaid0-PrincipalShouldPaid;
-								if(tempMoneyPaid<=InterestShouldPaid){
-									ServiceChargeNotPaid=0;
-									PrincipalNotPaid=0;
-									InterestNotPaid=InterestShouldPaid-tempMoneyPaid;
-									transaction.Principal-=PrincipalShouldPaid;
-									transaction.Principal+=InterestNotPaid;
-									transaction.PrincipalReturnedCumulated+=PrincipalShouldPaid;
-									transaction.InterestCumulated+=tempMoneyPaid;
-								}else{
-									ServiceChargeNotPaid=0;
-									PrincipalNotPaid=InterestShouldPaid-tempMoneyPaid;
-									InterestNotPaid=0;
-									transaction.Principal-=PrincipalShouldPaid;
-									transaction.Principal+=PrincipalNotPaid;
-									transaction.PrincipalReturnedCumulated+=PrincipalShouldPaid;
-									transaction.PrincipalReturnedCumulated-=PrincipalNotPaid;
-									transaction.InterestCumulated+=InterestShouldPaid;
-								}
+								var tempMoneyPaid=tempMoneyPaid0-InterestShouldPaid;
+								ServiceChargeNotPaid=0;
+								PrincipalNotPaid=PrincipalShouldPaid-tempMoneyPaid;
+								InterestNotPaid=0;
 							}
 						}
+						transaction.Principal-=(PrincipalShouldPaid-PrincipalNotPaid);
+						transaction.Principal+=InterestNotPaid;
+						transaction.PrincipalReturnedCumulated+=(PrincipalShouldPaid-PrincipalNotPaid);
+						transaction.InterestCumulated+=(InterestShouldPaid-InterestNotPaid);
+						transaction.ServiceChargeCumulated+=(ServiceChargeShouldPaid-ServiceChargeNotPaid);
+						
 						if((transaction.MonthPeriod==0)&&(transaction.Principal>0)){
 							transaction.MonthPeriod=1;
 						}
@@ -170,6 +165,13 @@ router.post('/pay', function(req, res, next) {
 						toCreate.PrincipalShouldPaid=PrincipalShouldPaid;
 						toCreate.PrincipalNotPaid=PrincipalNotPaid;
 						toCreate.PrincipalBeforePaid=PrincipalBeforePaid;
+						toCreate.PrincipalReturnedCumulatedBeforePaid=PrincipalReturnedCumulatedBeforePaid;
+						toCreate.InterestCumulatedBeforePaid=InterestCumulatedBeforePaid;
+						toCreate.ServiceChargeCumulatedBeforePaid=ServiceChargeCumulatedBeforePaid;
+						toCreate.PrincipalAfterPaid=transaction.Principal;
+						toCreate.PrincipalReturnedCumulatedAfterPaid=transaction.PrincipalReturnedCumulated;
+						toCreate.InterestCumulatedAfterPaid=transaction.InterestCumulated;
+						toCreate.ServiceChargeCumulatedAfterPaid=transaction.ServiceChargeCumulated;
 						toCreate.Level=transaction.Level;
 						
 						toCreate.save(function (err,newCreate) {

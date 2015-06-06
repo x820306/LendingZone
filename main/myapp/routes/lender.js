@@ -486,7 +486,7 @@ router.get('/lenderTransactionRecord/:oneid?/:filter?/:sorter?/:page?',library.l
 			var sorterRec=null;
 			
 			if(sorter=='最新'){
-				sorterRec="-Updated";
+				sorterRec="-Created";
 			}else if(sorter=='已獲利最多'){
 				sorterRec="-InterestCumulated";
 			}else if(sorter=='利率最高'){
@@ -509,8 +509,8 @@ router.get('/lenderTransactionRecord/:oneid?/:filter?/:sorter?/:page?',library.l
 				sorterRec="-Updated";
 			}else if(sorter=='預計利本比最高'){
 				sorterRec="-Updated";
-			}else if(sorter=='成交日期最晚'){
-				sorterRec="-Created";
+			}else if(sorter=='最後更新'){
+				sorterRec="-Updated";
 			}else if(sorter=='收款記錄最多'){
 				sorterRec="-Updated";
 			}else if(sorter=='上次成功收款日期最晚'){
@@ -550,7 +550,7 @@ router.get('/lenderTransactionRecord/:oneid?/:filter?/:sorter?/:page?',library.l
 			var Borrows  = mongoose.model('Borrows');
 			var Messages  = mongoose.model('Messages');
 			var Transactions  = mongoose.model('Transactions');
-			Transactions.find({$and:andFindCmdAry}).populate('Borrower', 'Username').populate('CreatedFrom','FromBorrowRequest Type Status').populate('Return', 'PrincipalShouldPaid PrincipalNotPaid Created').sort(sorterRec).exec( function (err, transactions, count){
+			Transactions.find({$and:andFindCmdAry}).populate('Borrower', 'Username').populate('CreatedFrom','FromBorrowRequest Type Status').populate('Return', 'InterestShouldPaid InterestNotPaid Created').sort(sorterRec).exec( function (err, transactions, count){
 				if (err) {
 					console.log(err);
 					res.redirect('/message?content='+encodeURIComponent('錯誤!'));
@@ -641,7 +641,7 @@ router.get('/lenderTransactionRecord/:oneid?/:filter?/:sorter?/:page?',library.l
 										transactions[i].previousPayDate=null;
 										transactions[i].previousPayDateNum=0;
 										for(u=transactions[i].Return.length-1;u>-1;u--){
-											if((transactions[i].Return[u].PrincipalShouldPaid-transactions[i].Return[u].PrincipalNotPaid)>0){
+											if((transactions[i].Return[u].InterestShouldPaid-transactions[i].Return[u].InterestNotPaid)>0){
 												transactions[i].ReturnCount+=1;
 												if(!transactions[i].previousPayDate){
 													transactions[i].previousPayDate=transactions[i].Return[u].Created;
@@ -727,7 +727,7 @@ router.get('/lenderReturnRecord/:oneid?/:id?/:sorter?/:page?',library.loginFormC
 			var sorterRec=null;
 			
 			if(sorter=='最新'){
-				sorterRec="-Updated";
+				sorterRec="-Created";
 			}else if(sorter=='實收金額最多'){
 				sorterRec="-Updated";
 			}else if(sorter=='應收金額最多'){
@@ -752,6 +752,26 @@ router.get('/lenderReturnRecord/:oneid?/:id?/:sorter?/:page?',library.loginFormC
 				sorterRec="-InterestNotPaid";
 			}else if(sorter=='超收利息最多'){
 				sorterRec="InterestNotPaid";
+			}else if(sorter=='收款前未還本金最多'){
+				sorterRec="-PrincipalBeforePaid";
+			}else if(sorter=='收款前已還本金最多'){
+				sorterRec="-PrincipalReturnedCumulatedBeforePaid";
+			}else if(sorter=='收款前累積利息最多'){
+				sorterRec="-InterestCumulatedBeforePaid";
+			}else if(sorter=='收款前累積本利和最多'){
+				sorterRec="-Updated";
+			}else if(sorter=='收款後未還本金最多'){
+				sorterRec="-PrincipalAfterPaid";
+			}else if(sorter=='收款後已還本金最多'){
+				sorterRec="-PrincipalReturnedCumulatedAfterPaid";
+			}else if(sorter=='收款後累積利息最多'){
+				sorterRec="-InterestCumulatedAfterPaid";
+			}else if(sorter=='收款後累積本利和最多'){
+				sorterRec="-Updated";
+			}else if(sorter=='對方信用等級最高'){
+				sorterRec="-Level";
+			}else if(sorter=='最後更新'){
+				sorterRec="-Updated";
 			}else{
 				sorter='最新';
 				sorterRec="-Updated";
@@ -780,7 +800,7 @@ router.get('/lenderReturnRecord/:oneid?/:id?/:sorter?/:page?',library.loginFormC
 			var Messages  = mongoose.model('Messages');
 			var Transactions  = mongoose.model('Transactions');
 			var Returns  = mongoose.model('Returns');
-			Returns.find({$and:andFindCmdAry,$where: function() { return (this.PrincipalShouldPaid-this.PrincipalNotPaid) > 0 }}).populate('Borrower', 'Username').populate('ToTransaction','CreatedFrom InsuranceFeePaid').sort(sorterRec).exec( function (err, returns, count){
+			Returns.find({$and:andFindCmdAry,$where: function() { return (this.InterestShouldPaid-this.InterestNotPaid) > 0 }}).populate('Borrower', 'Username').populate('ToTransaction','CreatedFrom InsuranceFeePaid').sort(sorterRec).exec( function (err, returns, count){
 				if (err) {
 					console.log(err);
 					res.redirect('/message?content='+encodeURIComponent('錯誤!'));
@@ -866,6 +886,8 @@ router.get('/lenderReturnRecord/:oneid?/:id?/:sorter?/:page?',library.loginFormC
 												returns[i].MoneyNotPaid=returns[i].InterestNotPaid+returns[i].PrincipalNotPaid;
 												returns[i].InterestReallyPaid=returns[i].InterestShouldPaid-returns[i].InterestNotPaid;
 												returns[i].PrincipalReallyPaid=returns[i].PrincipalShouldPaid-returns[i].PrincipalNotPaid;
+												returns[i].PICumulatedBeforePaid=returns[i].PrincipalReturnedCumulatedBeforePaid+returns[i].InterestCumulatedBeforePaid;
+												returns[i].PICumulatedAfterPaid=returns[i].PrincipalReturnedCumulatedAfterPaid+returns[i].InterestCumulatedAfterPaid;
 											}
 											
 											if(sorter=='實收金額最多'){
@@ -880,6 +902,10 @@ router.get('/lenderReturnRecord/:oneid?/:id?/:sorter?/:page?',library.loginFormC
 												returns.sort(function(a,b) { return parseFloat(b.PrincipalReallyPaid) - parseFloat(a.PrincipalReallyPaid)} );
 											}else if(sorter=='實收利息最多'){
 												returns.sort(function(a,b) { return parseFloat(b.InterestReallyPaid) - parseFloat(a.InterestReallyPaid)} );
+											}else if(sorter=='收款前累積本利和最多'){
+												returns.sort(function(a,b) { return parseFloat(b.PICumulatedBeforePaid) - parseFloat(a.PICumulatedBeforePaid)} );
+											}else if(sorter=='收款後累積本利和最多'){
+												returns.sort(function(a,b) { return parseFloat(b.PICumulatedAfterPaid) - parseFloat(a.PICumulatedAfterPaid)} );
 											}
 											
 											var divider=10;
@@ -1179,7 +1205,7 @@ router.get('/lenderSendMessages/:msgKeyword?/:filter?/:sorter?/:page?',library.l
 							var options = {
 								path: 'Transaction.Return',
 								model: Returns,
-								select: 'PrincipalShouldPaid PrincipalNotPaid Created'
+								select: 'InterestShouldPaid InterestNotPaid Created'
 							};
 
 							Transactions.populate(messages, options, function(err, messages) {
@@ -1226,7 +1252,7 @@ router.get('/lenderSendMessages/:msgKeyword?/:filter?/:sorter?/:page?',library.l
 											messages[i].Transaction[0].ReturnCount=0;
 											messages[i].Transaction[0].previousPayDate=null;
 											for(u=messages[i].Transaction[0].Return.length-1;u>-1;u--){
-												if((messages[i].Transaction[0].Return[u].PrincipalShouldPaid-messages[i].Transaction[0].Return[u].PrincipalNotPaid)>0){
+												if((messages[i].Transaction[0].Return[u].InterestShouldPaid-messages[i].Transaction[0].Return[u].InterestNotPaid)>0){
 													messages[i].Transaction[0].ReturnCount+=1;
 													if(!messages[i].Transaction[0].previousPayDate){
 														messages[i].Transaction[0].previousPayDate=messages[i].Transaction[0].Return[u].Created;
@@ -1438,7 +1464,7 @@ router.get('/lenderReceiveMessages/:msgKeyword?/:filter?/:sorter?/:page?',librar
 							var options = {
 								path: 'Transaction.Return',
 								model: Returns,
-								select: 'PrincipalShouldPaid PrincipalNotPaid Created'
+								select: 'InterestShouldPaid InterestNotPaid Created'
 							};
 
 							Transactions.populate(messages, options, function(err, messages) {
@@ -1485,7 +1511,7 @@ router.get('/lenderReceiveMessages/:msgKeyword?/:filter?/:sorter?/:page?',librar
 											messages[i].Transaction[0].ReturnCount=0;
 											messages[i].Transaction[0].previousPayDate=null;
 											for(u=messages[i].Transaction[0].Return.length-1;u>-1;u--){
-												if((messages[i].Transaction[0].Return[u].PrincipalShouldPaid-messages[i].Transaction[0].Return[u].PrincipalNotPaid)>0){
+												if((messages[i].Transaction[0].Return[u].InterestShouldPaid-messages[i].Transaction[0].Return[u].InterestNotPaid)>0){
 													messages[i].Transaction[0].ReturnCount+=1;
 													if(!messages[i].Transaction[0].previousPayDate){
 														messages[i].Transaction[0].previousPayDate=messages[i].Transaction[0].Return[u].Created;
