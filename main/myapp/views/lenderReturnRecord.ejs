@@ -31,6 +31,16 @@
 								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter11').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter11">應收利息最多</a></li>
 								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter12').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter12">未收利息最多</a></li>
 								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter13').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter13">超收利息最多</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter14').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter14">收款前未還本金最多</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter15').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter15">收款前已還本金最多</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter16').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter16">收款前累積利息最多</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter17').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter17">收款前累積本利和最多</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter18').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter18">收款後未還本金最多</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter19').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter19">收款後已還本金最多</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter20').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter20">收款後累積利息最多</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter21').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter21">收款後累積本利和最多</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter22').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter22">對方信用等級最高</a></li>
+								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter23').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter23">最後更新</a></li>
 							</ul>
 						</div>
 						<%if(idDefault!=''){%>
@@ -55,7 +65,7 @@
 								</td>
 							</tr>
 						</table>
-						<div style="height: 360px;" class="panel panel-default pd">
+						<div style="height: 500px;" class="panel panel-default pd">
 							<div class="panel-body">
 								<div style="font-size:25px;display:inline;">來自 </div>
 								<div style="font-size:25px;display:inline;" class="myTitle"><%=jsonReturns[i].Borrower.Username%></div>
@@ -149,10 +159,6 @@
 												</div>	
 											</td>
 										<tr>
-									</table>
-								</div>
-								<div class="col-md-6">
-									<table width="100%" height="240px">
 										<tr>
 											<td>
 												<div class="myTitle">
@@ -198,6 +204,136 @@
 										<tr>
 											<td>
 												<div class="myTitle">
+													&nbsp;&nbsp;&nbsp;&nbsp;收款日期:
+												</div>
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].Created.getFullYear()%>/<%=jsonReturns[i].Created.getMonth()+1%>/<%=jsonReturns[i].Created.getDate()%>
+												</div>	
+											</td>
+										<tr>
+									</table>
+								</div>
+								<div class="col-md-6">
+									<table width="100%" height="240px">
+										<tr>
+											<td>
+												<div class="myTitle">
+													&nbsp;&nbsp;&nbsp;&nbsp;收款前未還本金:
+												</div>
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].PrincipalBeforePaid%>元
+												</div>	
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div class="myTitle">
+													&nbsp;&nbsp;&nbsp;&nbsp;收款後未還本金:
+												</div>
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].PrincipalAfterPaid%>元
+												</div>	
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div class="myTitle">
+													&nbsp;&nbsp;&nbsp;&nbsp;收款前已還本金:
+												</div>
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].PrincipalReturnedCumulatedBeforePaid%>元
+												</div>	
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div class="myTitle">
+													&nbsp;&nbsp;&nbsp;&nbsp;收款後已還本金:
+												</div>
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].PrincipalReturnedCumulatedAfterPaid%>元
+												</div>	
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div class="myTitle">
+													&nbsp;&nbsp;&nbsp;&nbsp;收款前累積利息:
+												</div>
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].InterestCumulatedBeforePaid%>元
+												</div>	
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div class="myTitle">
+													&nbsp;&nbsp;&nbsp;&nbsp;收款後累積利息:
+												</div>
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].InterestCumulatedAfterPaid%>元
+												</div>	
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div class="myTitle">
+													&nbsp;&nbsp;&nbsp;&nbsp;收款前累積本利和:
+												</div>
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].PICumulatedBeforePaid%>元
+												</div>	
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div class="myTitle">
+													&nbsp;&nbsp;&nbsp;&nbsp;收款後累積本利和:
+												</div>
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].PICumulatedAfterPaid%>元
+												</div>	
+											</td>
+										<tr>
+										<tr>
+											<td>
+												<div class="myTitle">
 													&nbsp;&nbsp;&nbsp;&nbsp;對方信用等級:
 												</div>
 											</td>
@@ -220,20 +356,6 @@
 											<td>
 												<div>
 													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].BorrowerBankAccountNumber%>
-												</div>	
-											</td>
-										<tr>
-										<tr>
-											<td>
-												<div class="myTitle">
-													&nbsp;&nbsp;&nbsp;&nbsp;收款日期:
-												</div>
-											</td>
-										<tr>
-										<tr>
-											<td>
-												<div>
-													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].Created.getFullYear()%>/<%=jsonReturns[i].Created.getMonth()+1%>/<%=jsonReturns[i].Created.getDate()%>
 												</div>	
 											</td>
 										<tr>

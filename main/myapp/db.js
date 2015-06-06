@@ -93,6 +93,7 @@ var Transactions = new Schema({
 	Principal: { type: Number, default: 0 },//未還本金
 	PrincipalReturnedCumulated: { type: Number, default: 0 },//已還本金，以上兩者相加可得原始本金
 	InterestCumulated: { type: Number, default: 0 },//已繳利息
+	ServiceChargeCumulated: { type: Number, default: 0 },
 	InterestRate: { type: Number, default: 0.01 },
 	MonthPeriod: { type: Number, default: 1 },//剩下期數
 	MonthPeriodHasPast: { type: Number, default: 0 },//已過期數
@@ -125,6 +126,13 @@ var Returns = new Schema({
 	PrincipalShouldPaid: { type: Number, default: 0 },
 	PrincipalNotPaid: { type: Number, default: 0 },
 	PrincipalBeforePaid: { type: Number, default: 0 },
+	PrincipalReturnedCumulatedBeforePaid: { type: Number, default: 0 },
+	InterestCumulatedBeforePaid: { type: Number, default: 0 },
+	ServiceChargeCumulatedBeforePaid: { type: Number, default: 0 },
+	PrincipalAfterPaid: { type: Number, default: 0 },
+	PrincipalReturnedCumulatedAfterPaid: { type: Number, default: 0 },
+	InterestCumulatedAfterPaid: { type: Number, default: 0 },
+	ServiceChargeCumulatedAfterPaid: { type: Number, default: 0 },
 	Level:{ type: Number, default: 0 },
 	BorrowerBankAccountNumber: {type: String, default:''},
 	Updated: { type: Date, default: Date.now },

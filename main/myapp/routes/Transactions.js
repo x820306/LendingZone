@@ -68,6 +68,7 @@ router.post('/destroyTest', function(req, res, next) {
 						if(!message){
 							res.json({error: 'no such message'}, 500);
 						}else{
+							message.Status='NotConfirmed';
 							var ctr = -1;
 							for (i = 0; i < message.Transaction.length; i++) {
 								if (message.Transaction[i].toString() === transaction._id.toString()) {
@@ -117,7 +118,7 @@ router.post('/buyInsuranceAll',library.loginFormChecker,library.ensureAuthentica
 	var sorterRec=null;
 	
 	if(sorter=='最新'){
-		sorterRec="-Updated";
+		sorterRec="-Created";
 	}else if(sorter=='已獲利最多'){
 		sorterRec="-InterestCumulated";
 	}else if(sorter=='利率最高'){
@@ -140,8 +141,8 @@ router.post('/buyInsuranceAll',library.loginFormChecker,library.ensureAuthentica
 		sorterRec="-Updated";
 	}else if(sorter=='預計利本比最高'){
 		sorterRec="-Updated";
-	}else if(sorter=='成交日期最晚'){
-		sorterRec="-Created";
+	}else if(sorter=='最後更新'){
+		sorterRec="-Updated";
 	}else if(sorter=='收款記錄最多'){
 		sorterRec="-Updated";
 	}else if(sorter=='上次成功收款日期最晚'){
@@ -169,7 +170,7 @@ router.post('/buyInsuranceAll',library.loginFormChecker,library.ensureAuthentica
 		ObjID=mongoose.Types.ObjectId(stringArray[0]);
 	}
 	
-	Transactions.find({$and:andFindCmdAry}).populate('Borrower', 'Username').populate('CreatedFrom', 'FromBorrowRequest').sort(sorterRec).exec(function (err, transactions){
+	Transactions.find({$and:andFindCmdAry}).populate('Borrower', 'Username').populate('CreatedFrom', 'FromBorrowRequest').populate('Return', 'InterestShouldPaid InterestNotPaid Created').sort(sorterRec).exec(function (err, transactions){
 		if (err) {
 			console.log(err);
 			res.redirect('/message?content='+encodeURIComponent('錯誤!'));
@@ -264,7 +265,7 @@ router.post('/buyInsuranceAll',library.loginFormChecker,library.ensureAuthentica
 									transactions[i].ReturnCount=0;
 									transactions[i].previousPayDateNum=0;
 									for(u=transactions[i].Return.length-1;u>-1;u--){
-										if((transactions[i].Return[u].PrincipalShouldPaid-transactions[i].Return[u].PrincipalNotPaid)>0){
+										if((transactions[i].Return[u].InterestShouldPaid-transactions[i].Return[u].InterestNotPaid)>0){
 											transactions[i].ReturnCount+=1;
 											if(transactions[i].previousPayDateNum==0){
 												transactions[i].previousPayDateNum=transactions[i].Return[u].Created.getTime();
