@@ -287,6 +287,7 @@ router.post('/buyInsuranceAll',library.loginFormChecker,library.ensureAuthentica
 	var andFindCmdAry=[];
 	andFindCmdAry.push({"Lender": req.user._id});
 	andFindCmdAry.push({"InsuranceFeePaid":0});
+	andFindCmdAry.push({"Principal":{'$gt': 0 }});
 	
 	if((sorter!='預計總利息')&&(sorter!='預計平均利息')&&(sorter!='預計平均本利和')&&(sorter!='預計利本比')&&(sorter!='收款記錄')&&(sorter!='上次成功收款日期')&&(sorter!='下次應收款日期')){
 		var jsonTemp={};
@@ -494,7 +495,7 @@ function buyInsurance(ctr,ctrTarget,returnSring,req,res,infoJson,address){
 					redirector(req,res,'有些交易因錯誤無法購買保險!',infoJson,address);
 				}
 			}else{
-				if(transaction.InsuranceFeePaid!==0){
+				if((transaction.InsuranceFeePaid!==0)||(transaction.Principal<=0)){
 					ctr++;
 					if(ctr<ctrTarget){
 						buyInsurance(ctr,ctrTarget,'有些交易因錯誤無法購買保險!',req,res,infoJson,address);

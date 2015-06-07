@@ -58,7 +58,7 @@
 								<ul class="dropdown-menu" role="menu">
 									<li <% if(nav_cur=='lend'){ %> class="active"<% } %>><a href="/lender/lend">自動借出設定</a></li>
 									<li <% if(nav_cur=='income'){ %> class="active"<% } %>><a href="/lender/income">收入分析</a></li>
-									<li <% if(nav_cur=='lenderTransactionRecord'){ %> class="active"<% } %>><a href="/lender/lenderTransactionRecord?oneid=&filter=<%=encodeURIComponent("未保險")%>&sorter=<%=encodeURIComponent("建立日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">借出紀錄</a></li>
+									<li <% if(nav_cur=='lenderTransactionRecord'){ %> class="active"<% } %>><a href="/lender/lenderTransactionRecord?oneid=&filter=<%=encodeURIComponent("不分類")%>&sorter=<%=encodeURIComponent("建立日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">借出紀錄</a></li>
 									<li <% if(nav_cur=='lenderReturnRecord'){ %> class="active"<% } %>><a href="/lender/lenderReturnRecord?oneid=&id=&sorter=<%=encodeURIComponent("建立日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">收款記錄</a></li>
 									<li class="divider"></li>
 									<li <% if(nav_cur=='lenderReceiveMessages'){ %> class="active"<% } %>><a href="/lender/lenderReceiveMessages?msgKeyword=&filter=<%=encodeURIComponent("未確認")%>&sorter=<%=encodeURIComponent("更新日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">收到之訊息<% if(userName!==null){ %> <span class="badge"><%=newlrmNum%></span><% }%></a></li>
@@ -152,7 +152,7 @@
 			<ul class="dropdown-menu" role="menu">
 				<li <% if(nav_cur=='lend'){ %> class="active"<% } %>><a href="/lender/lend">自動借出設定</a></li>
 				<li <% if(nav_cur=='income'){ %> class="active"<% } %>><a href="/lender/income">收入分析</a></li>
-				<li <% if(nav_cur=='lenderTransactionRecord'){ %> class="active"<% } %>><a href="/lender/lenderTransactionRecord?oneid=&filter=<%=encodeURIComponent("未保險")%>&sorter=<%=encodeURIComponent("建立日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">借出紀錄</a></li>
+				<li <% if(nav_cur=='lenderTransactionRecord'){ %> class="active"<% } %>><a href="/lender/lenderTransactionRecord?oneid=&filter=<%=encodeURIComponent("不分類")%>&sorter=<%=encodeURIComponent("建立日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">借出紀錄</a></li>
 				<li <% if(nav_cur=='lenderReturnRecord'){ %> class="active"<% } %>><a href="/lender/lenderReturnRecord?oneid=&id=&sorter=<%=encodeURIComponent("建立日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">收款記錄</a></li>
 				<li class="divider"></li>
 				<li <% if(nav_cur=='lenderReceiveMessages'){ %> class="active"<% } %>><a href="/lender/lenderReceiveMessages?msgKeyword=&filter=<%=encodeURIComponent("未確認")%>&sorter=<%=encodeURIComponent("更新日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">收到之訊息<% if(userName!==null){ %> <span class="badge"><%=newlrmNum%></span><% }%></a></li>

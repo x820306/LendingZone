@@ -2,7 +2,7 @@
 <div class="container">
 	<div class="row">
 		<div class="col-md-9">
-			<div style="font-size:30pt;">借出紀錄</div>
+			<div style="font-size:30pt;">借出紀錄 - <%=filterDefault%></div>
 				<div style="font-size:20pt;">&nbsp;<%=totalResultNum%> result</div>
 				<br>
 				<div class="input-group">
@@ -14,8 +14,10 @@
 							</button>
 							<ul class="dropdown-menu">
 								<li style="display:none"><a href="#" id="filter0"><%=filterDefault%></a></li>
-								<li id="flis1"<%if(filterDefault=='未保險'){%> class="active"<%}%>><a href="#" onclick="filterSelector(1);return false;" id="filter1">未保險</a></li>
-								<li id="flis2"<%if(filterDefault=='已保險'){%> class="active"<%}%>><a href="#" onclick="filterSelector(2);return false;" id="filter2">已保險</a></li>
+								<li id="flis1"<%if(filterDefault=='不分類'){%> class="active"<%}%>><a href="#" onclick="filterSelector(1);return false;" id="filter1">不分類</a></li>
+								<li id="flis2"<%if(filterDefault=='未保險'){%> class="active"<%}%>><a href="#" onclick="filterSelector(2);return false;" id="filter2">未保險</a></li>
+								<li id="flis3"<%if(filterDefault=='已保險'){%> class="active"<%}%>><a href="#" onclick="filterSelector(3);return false;" id="filter3">已保險</a></li>
+								<li id="flis4"<%if(filterDefault=='已結清'){%> class="active"<%}%>><a href="#" onclick="filterSelector(4);return false;" id="filter4">已結清</a></li>
 							</ul>
 						</div>
 						<div class="btn-group">
@@ -40,11 +42,8 @@
 								<li id="slis14"<%if(sorterDefault=='收款記錄'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(14);return false;" id="sorter14">收款記錄</a></li>
 								<li id="slis15"<%if(sorterDefault=='上次成功收款日期'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(15);return false;" id="sorter15">上次成功收款日期</a></li>
 								<li id="slis16"<%if(sorterDefault=='下次應收款日期'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(16);return false;" id="sorter16">下次應收款日期</a></li>
-								<% if(filterDefault=='已保險'){%>
-									<li id="slis17"<%if(sorterDefault=='已付保險費用'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(17);return false;" id="sorter17">已付保險費用</a></li>
-								<%}else if(filterDefault=='未保險'){%>
-									<li id="slis17"<%if(sorterDefault=='保險所需費用'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(17);return false;" id="sorter17">保險所需費用</a></li>
-								<%}%>
+								<li id="slis17"<%if(sorterDefault=='保險所需費用'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(17);return false;" id="sorter17">保險所需費用</a></li>
+								<li id="slis18"<%if(sorterDefault=='已付保險費用'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(18);return false;" id="sorter18">已付保險費用</a></li>	
 							</ul>
 						</div>
 						<div class="btn-group">
@@ -240,112 +239,112 @@
 													&nbsp;&nbsp;&nbsp;&nbsp;對方未還本金：
 												</div>
 											</td>
-										<tr>
+										</tr>
 										<tr>
 											<td>
 												<div>
 													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonTransaction[i].Principal.toFixed(0)%>元
 												</div>	
 											</td>
-										<tr>
+										</tr>
 										<tr>
 											<td>
 												<div class="myTitle">
 													&nbsp;&nbsp;&nbsp;&nbsp;對方已還本金：
 												</div>
 											</td>
-										<tr>
+										</tr>
 										<tr>
 											<td>
 												<div>
 													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonTransaction[i].PrincipalReturnedCumulated.toFixed(0)%>元
 												</div>	
 											</td>
-										<tr>
+										</tr>
 										<tr>
 											<td>
 												<div class="myTitle">
 													&nbsp;&nbsp;&nbsp;&nbsp;年利率：
 												</div>
 											</td>
-										<tr>
+										</tr>
 										<tr>
 											<td>
 												<div>
 													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=(jsonTransaction[i].InterestRate*100).toFixed(2)%>%
 												</div>	
 											</td>
-										<tr>
+										</tr>
 										<tr>
 											<td>
 												<div class="myTitle">
 													&nbsp;&nbsp;&nbsp;&nbsp;已得利息：
 												</div>
 											</td>
-										<tr>
+										</tr>
 										<tr>
 											<td>
 												<div>
 													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonTransaction[i].InterestCumulated.toFixed(0)%>元
 												</div>	
 											</td>
-										<tr>
+										</tr>
 										<tr>
 											<td>
 												<div class="myTitle">
 													&nbsp;&nbsp;&nbsp;&nbsp;剩下期數：
 												</div>
 											</td>
-										<tr>
+										</tr>
 										<tr>
 											<td>
 												<div>
 													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonTransaction[i].MonthPeriod.toFixed(0)%>個月
 												</div>	
 											</td>
-										<tr>
+										</tr>
 										<tr>
 											<td>
 												<div class="myTitle">
 													&nbsp;&nbsp;&nbsp;&nbsp;已過期數:
 												</div>
 											</td>
-										<tr>
+										</tr>
 										<tr>
 											<td>
 												<div>
 													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonTransaction[i].MonthPeriodHasPast.toFixed(0)%>個月
 												</div>	
 											</td>
-										<tr>
+										</tr>
 										<tr>
 											<td>
 												<div class="myTitle">
 													&nbsp;&nbsp;&nbsp;&nbsp;對方信用等級:
 												</div>
 											</td>
-										<tr>
+										</tr>
 										<tr>
 											<td>
 												<div>
 													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonTransaction[i].Level.toFixed(0)%>級
 												</div>	
 											</td>
-										<tr>
+										</tr>
 										<tr>
 											<td>
 												<div class="myTitle">
 													&nbsp;&nbsp;&nbsp;&nbsp;成交日期:
 												</div>
 											</td>
-										<tr>
+										</tr>
 										<tr>
 											<td>
 												<div>
 													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonTransaction[i].Created.getFullYear()%>/<%=jsonTransaction[i].Created.getMonth()+1%>/<%=jsonTransaction[i].Created.getDate()%>
 												</div>	
 											</td>
-										<tr>
+										</tr>
 									</table>
 								</div>	
 								<div class="col-md-6">	
@@ -356,63 +355,63 @@
 													&nbsp;&nbsp;&nbsp;&nbsp;預計尚可收取利息：
 												</div>
 											</td>
-										<tr>
+										</tr>
 										<tr>
 											<td>
 												<div>
 													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonTransaction[i].InterestInFuture.toFixed(0)%>元
 												</div>	
 											</td>
-										<tr>
+										</tr>
 										<tr>
 											<td>
 												<div class="myTitle">
 													&nbsp;&nbsp;&nbsp;&nbsp;預計剩餘每期平均利息：
 												</div>
 											</td>
-										<tr>
+										</tr>
 										<tr>
 											<td>
 												<div>
 													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonTransaction[i].InterestInFutureMonth.toFixed(0)%>元
 												</div>	
 											</td>
-										<tr>
+										</tr>
 										<tr>
 											<td>
 												<div class="myTitle">
 													&nbsp;&nbsp;&nbsp;&nbsp;預計剩餘每期平均本利和：
 												</div>
 											</td>
-										<tr>
+										</tr>
 										<tr>
 											<td>
 												<div>
 													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonTransaction[i].InterestInFutureMoneyMonth.toFixed(0)%>元
 												</div>	
 											</td>
-										<tr>
+										</tr>
 										<tr>
 											<td>
 												<div class="myTitle">
 													&nbsp;&nbsp;&nbsp;&nbsp;預計尚可收取利息/目前本金比：
 												</div>
 											</td>
-										<tr>
+										</tr>
 										<tr>
 											<td>
 												<div>
 													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonTransaction[i].InterestInFutureDivMoney.toFixed(2)%>%
 												</div>	
 											</td>
-										<tr>
+										</tr>
 										<tr>
 											<td>
 												<div class="myTitle">
 													&nbsp;&nbsp;&nbsp;&nbsp;上次成功收款日期：
 												</div>
 											</td>
-										<tr>
+										</tr>
 										<tr>
 											<td>
 												<div>
@@ -420,49 +419,49 @@
 																									
 												</div>	
 											</td>
-										<tr>
+										</tr>
 										<tr>
 											<td>
 												<div class="myTitle">
 													&nbsp;&nbsp;&nbsp;&nbsp;下次應收款日期：
 												</div>
 											</td>
-										<tr>
+										</tr>
 										<tr>
 											<td>
 												<div>
 													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%if(jsonTransaction[i].nextPayDate){%><%=jsonTransaction[i].nextPayDate.getFullYear()%>/<%=jsonTransaction[i].nextPayDate.getMonth()+1%>/<%=jsonTransaction[i].nextPayDate.getDate()%><%}else{%>已還清<%}%>
 												</div>	
 											</td>
-										<tr>
+										</tr>
 										<tr>
 											<td>
 												<div class="myTitle">
 													&nbsp;&nbsp;&nbsp;&nbsp;保險所需費用：
 												</div>
 											</td>
-										<tr>
+										</tr>
 										<tr>
 											<td>
 												<div>
-													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:none;" id="value1<%=i%>"><%if(jsonTransaction[i].Principal*insuranceRate<1){%>1<%}else{%><%=jsonTransaction[i].Principal*insuranceRate%><%}%></div><%if(jsonTransaction[i].Principal*insuranceRate<1){%>1<%}else{%><%=(jsonTransaction[i].Principal*insuranceRate).toFixed(0)%><%}%>元
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:none;" id="value1<%=i%>"><%if(jsonTransaction[i].Principal>0){%><%if(jsonTransaction[i].Principal*insuranceRate<1){%>1<%}else{%><%=jsonTransaction[i].Principal*insuranceRate%><%}%><%}else{%>0<%}%></div><%if(jsonTransaction[i].Principal>0){%><%if(jsonTransaction[i].Principal*insuranceRate<1){%>1<%}else{%><%=(jsonTransaction[i].Principal*insuranceRate).toFixed(0)%><%}%><%}else{%>0<%}%>元
 												</div>	
 											</td>
-										<tr>
+										</tr>
 										<tr>
 											<td>
 												<div class="myTitle">
 													&nbsp;&nbsp;&nbsp;&nbsp;已付保險費用：
 												</div>
 											</td>
-										<tr>
+										</tr>
 										<tr>
 											<td>
 												<div>
 													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonTransaction[i].InsuranceFeePaid.toFixed(0)%>元
 												</div>	
 											</td>
-										<tr>
+										</tr>
 									</table>
 								</div>
 							</div>
@@ -477,6 +476,18 @@
 									<input type="checkbox" name="selectCheckBox" id="selectCheckBoxId<%=i%>" onclick="selectFun(<%=i%>);" value='{"TransactionID":"<%=jsonTransaction[i]._id%>"}'> 選擇
 								</div>
 							</td>
+							<%}else if(filterDefault=='不分類'){%>
+								<td style="border-bottom-style: none;border-top-style: none;">
+									<%if(jsonTransaction[i].Principal>0){%>
+										<%if(jsonTransaction[i].InsuranceFeePaid>0){%>
+											已保險
+										<%}else{%>
+											<a href="/lender/lenderTransactionRecord?oneid=<%=encodeURIComponent(jsonTransaction[i]._id)%>&filter=<%=encodeURIComponent('未保險')%>&sorter=<%=encodeURIComponent('建立日期')%>&director=<%=encodeURIComponent('大至小')%>&lbound=&ubound=&page=1">未保險</a>	
+										<%}%>
+									<%}else{%>
+										已結清
+									<%}%>
+								</td>
 							<%}%>
 							<td align="right" style="border-bottom-style: none;border-top-style: none;">
 								<div>
@@ -582,7 +593,7 @@ function filterSelector(index){
 	$('#filterSelected').html($('#filter'+index).text());
 	$('#filter0').html($('#filterSelected').text());
 	$('#filterSelected').append(' <span class=\'caret\'><\/span>'); 
-	for(i=1;i<=2;i++){
+	for(i=1;i<=4;i++){
 		$('#flis'+i).attr('class','');
 	}
 	$('#flis'+index).attr('class','active');
@@ -605,7 +616,7 @@ function sorterSelector(index){
 	$('#sorter0').html($('#sorterSelected').text());
 	$('#sorterSelected').append(' <span class=\'caret\'><\/span>');
 	
-	for(i=1;i<=17;i++){
+	for(i=1;i<=18;i++){
 		$('#slis'+i).attr('class','');
 	}
 	$('#slis'+index).attr('class','active');
