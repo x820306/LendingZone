@@ -18,7 +18,8 @@ var Borrows = new Schema({
 	IfReadable: { type: Boolean, default: true },
 	Level:{ type: Number, default: 0 },//Have to be copied from User when creating, for sorting convenience
 	AutoComfirmToLendMsgPeriod: { type: Number, default: -1 },
-	AutoComfirmToLendMsgSorter: { type: String, default: 'InterestRate' },
+	AutoComfirmToLendMsgSorter: { type: String, default: 'invalid' },
+	AutoComfirmToLendMsgDirector: { type: String, default: 'invalid' },
 	CreatedBy: { type: Schema.Types.ObjectId, ref: 'Users' },
 	Discussion: [{ type: Schema.Types.ObjectId, ref: 'Discussions' }],
 	Message:[{ type: Schema.Types.ObjectId, ref: 'Messages' }],
@@ -36,7 +37,8 @@ var Lends = new Schema({
 	MinInterestInFutureMoneyMonth: { type: Number, default: 0 },
 	MinInterestInFutureDivMoney:{ type: Number, default: 0 },
 	AutoComfirmToBorrowMsgPeriod: { type: Number, default: -1 },
-	AutoComfirmToBorrowMsgSorter: { type: String, default: '-InterestRate' },
+	AutoComfirmToBorrowMsgSorter: { type: String, default: 'invalid' },
+	AutoComfirmToBorrowMsgDirector: { type: String, default: 'invalid' },
 	CreatedBy: { type: Schema.Types.ObjectId, ref: 'Users' },
 	Updated: { type: Date, default: Date.now },
 	Created: { type: Date, default: Date.now }

@@ -1,4 +1,4 @@
-<%- include('layout_header',{nav_cur:'search'}); -%>
+<%- include('layout_header',{searchTitle:keywordDefault,nav_cur:'search'}); -%>
 
 <div class="container">
 	<div class="row">
@@ -7,7 +7,7 @@
 				<div style="font-size:20pt;">&nbsp;<%=totalResultNum%> result</div>
 				<br>
 				<div class="input-group">
-					<input type="text" style="height:40px;" class="form-control" id="subKeywordIpt" placeholder="搜尋借入者的名稱或故事標題、內容" value="<%=keywordDefault%>" onkeypress="if(event.keyCode==13){ window.open('/lender/search?keyword='+encodeURIComponent($('#subKeywordIpt').val().trim())+'&action='+encodeURIComponent($('#sorter0').text())+'&category='+encodeURIComponent($('#subCategory0').text())+'&filter='+encodeURIComponent($('#filter0').text())+'&lbound='+encodeURIComponent($('#lbound').val().trim())+'&ubound='+encodeURIComponent($('#ubound').val().trim())+'&page=1','_self');}">
+					<input type="text" style="height:40px;" class="form-control" id="subKeywordIpt" placeholder="搜尋借入者的名稱或故事標題、內容" value="<%=keywordDefault%>" onkeypress="if(event.keyCode==13){linker();}" onkeyup="$('#keywordIpt').val($('#subKeywordIpt').val());">
 					<span class="input-group-btn">
 						<div class="btn-group">
 							<button type="button" style="height:40px;" class="btn btn-default dropdown-toggle" data-toggle="dropdown" id="subCategorySelected">
@@ -15,85 +15,71 @@
 							</button>
 							<ul class="dropdown-menu">
 								<li style="display:none"><a href="#" id="subCategory0"><%=categoryDefault%></a></li>
-								<li><a href="#" onclick="$('#subCategorySelected').html('');$('#subCategorySelected').html($('#subCategory1').text());$('#subCategory0').html($('#subCategorySelected').text());$('#subCategorySelected').append(' <span class=\'caret\'><\/span>'); return false;" id="subCategory1">不分類</a></li>
-								<li><a href="#" onclick="$('#subCategorySelected').html('');$('#subCategorySelected').html($('#subCategory2').text());$('#subCategory0').html($('#subCategorySelected').text());$('#subCategorySelected').append(' <span class=\'caret\'><\/span>'); return false;" id="subCategory2">一般</a></li>
-								<li><a href="#" onclick="$('#subCategorySelected').html('');$('#subCategorySelected').html($('#subCategory3').text());$('#subCategory0').html($('#subCategorySelected').text());$('#subCategorySelected').append(' <span class=\'caret\'><\/span>'); return false;" id="subCategory3">教育</a></li>
-								<li><a href="#" onclick="$('#subCategorySelected').html('');$('#subCategorySelected').html($('#subCategory4').text());$('#subCategory0').html($('#subCategorySelected').text());$('#subCategorySelected').append(' <span class=\'caret\'><\/span>'); return false;" id="subCategory4">家庭</a></li>
-								<li><a href="#" onclick="$('#subCategorySelected').html('');$('#subCategorySelected').html($('#subCategory5').text());$('#subCategory0').html($('#subCategorySelected').text());$('#subCategorySelected').append(' <span class=\'caret\'><\/span>'); return false;" id="subCategory5">旅遊</a></li>
+								<li id="clis1"<%if(categoryDefault=='不分類'){%> class="active"<%}%>><a href="#" onclick="categorySelector(1);subCategorySelector(1);return false;" id="subCategory1">不分類</a></li>
+								<li id="clis2"<%if(categoryDefault=='一般'){%> class="active"<%}%>><a href="#" onclick="categorySelector(2);subCategorySelector(2);return false;" id="subCategory2">一般</a></li>
+								<li id="clis3"<%if(categoryDefault=='教育'){%> class="active"<%}%>><a href="#" onclick="categorySelector(3);subCategorySelector(3);return false;" id="subCategory3">教育</a></li>
+								<li id="clis4"<%if(categoryDefault=='家庭'){%> class="active"<%}%>><a href="#" onclick="categorySelector(4);subCategorySelector(4);return false;" id="subCategory4">家庭</a></li>
+								<li id="clis5"<%if(categoryDefault=='旅遊'){%> class="active"<%}%>><a href="#" onclick="categorySelector(5);subCategorySelector(5);return false;" id="subCategory5">旅遊</a></li>
 							</ul>
 						</div>
 						<div class="btn-group">
 							<button type="button" style="height:40px;" class="btn btn-default" id="sorterSelected" data-toggle="dropdown" aria-expanded="false"><%=actionDefault%> <span class='caret'></span></button>
 							<ul class="dropdown-menu" role="menu">
 								<li style="display:none"><a href="#" id="sorter0"><%=actionDefault%></a></li>
-								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter1').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter1">最新</a></li>
-								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter2').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter2">最緊急</a></li>
-								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter3').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter3">最熱門</a></li>
-								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter4').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter4">金額最高</a></li>
-								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter5').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter5">利率最高</a></li>
-								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter6').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter6">期數最多</a></li>
-								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter7').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>');return false;" id="sorter7">信用等級最高</a></li>
+								<li id="alis1"<%if(actionDefault=='建立日期'){%> class="active"<%}%>><a href="#" onclick="searchActionSelector(1);sorterSelector(1);return false;" id="sorter1">建立日期</a></li>
+								<li id="alis2"<%if(actionDefault=='更新日期'){%> class="active"<%}%>><a href="#" onclick="searchActionSelector(2);sorterSelector(2);return false;" id="sorter2">更新日期</a></li>
+								<li id="alis3"<%if(actionDefault=='最晚媒合日期'){%> class="active"<%}%>><a href="#" onclick="searchActionSelector(3);sorterSelector(3);return false;" id="sorter3">最晚媒合日期</a></li>
+								<li id="alis4"<%if(actionDefault=='金額'){%> class="active"<%}%>><a href="#" onclick="searchActionSelector(4);sorterSelector(4);return false;" id="sorter4">金額</a></li>
+								<li id="alis5"<%if(actionDefault=='利率'){%> class="active"<%}%>><a href="#" onclick="searchActionSelector(5);sorterSelector(5);return false;" id="sorter5">利率</a></li>
+								<li id="alis6"<%if(actionDefault=='期數'){%> class="active"<%}%>><a href="#" onclick="searchActionSelector(6);sorterSelector(6);return false;" id="sorter6">期數</a></li>
+								<li id="alis7"<%if(actionDefault=='信用等級'){%> class="active"<%}%>><a href="#" onclick="searchActionSelector(7);sorterSelector(7);return false;" id="sorter7">信用等級</a></li>
+								<li id="alis8"<%if(actionDefault=='按讚次數'){%> class="active"<%}%>><a href="#" onclick="searchActionSelector(8);sorterSelector(8);return false;" id="sorter8">按讚次數</a></li>
 							</ul>
 						</div>
-						<button type="button" style="height:40px;" class="btn btn-default" onclick="window.open('/lender/search?keyword='+encodeURIComponent($('#subKeywordIpt').val().trim())+'&action='+encodeURIComponent($('#sorter0').text())+'&category='+encodeURIComponent($('#subCategory0').text())+'&filter='+encodeURIComponent($('#filter0').text())+'&lbound='+encodeURIComponent($('#lbound').val().trim())+'&ubound='+encodeURIComponent($('#ubound').val().trim())+'&page=1','_self');"><span class="glyphicon glyphicon-search"></span></button>
+						<div class="btn-group">
+							<button type="button" style="height:40px;" class="btn btn-default" id="directorSelected" data-toggle="dropdown" aria-expanded="false"><%=directorDefault%> <span class='caret'></span></button>
+							<ul class="dropdown-menu" role="menu">
+								<li style="display:none"><a href="#" id="director0"><%=directorDefault%></a></li>
+								<li id="dlis1"<%if(directorDefault=='大至小'){%> class="active"<%}%>><a href="#" onclick="directorMainSelector(1);directorSelector(1);return false;" id="director1">大至小</a></li>
+								<li id="dlis2"<%if(directorDefault=='小至大'){%> class="active"<%}%>><a href="#" onclick="directorMainSelector(2);directorSelector(2);return false;" id="director2">小至大</a></li>
+							</ul>
+						</div>
+						<button type="button" style="height:40px;" class="btn btn-default" onclick="linker();"><span class="glyphicon glyphicon-search"></span></button>
 					</span>
 				</div> 
 				<br>
-				<table width="100%">
-					<tr>
-						<td>
-							<input style="height:32px;width:150px;display:inline;" type="text" placeholder="下限(元/%/個月/級)" class="form-control" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode==13){ window.open('/lender/search?keyword='+encodeURIComponent($('#subKeywordIpt').val().trim())+'&action='+encodeURIComponent($('#sorter0').text())+'&category='+encodeURIComponent($('#subCategory0').text())+'&filter='+encodeURIComponent($('#filter0').text())+'&lbound='+encodeURIComponent($('#lbound').val().trim())+'&ubound='+encodeURIComponent($('#ubound').val().trim())+'&page=1','_self');}">
-							&nbsp;~&nbsp;
-							<input style="height:32px;width:150px;display:inline;" type="text" placeholder="上限(元/%/個月/級)" class="form-control" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode==13){ window.open('/lender/search?keyword='+encodeURIComponent($('#subKeywordIpt').val().trim())+'&action='+encodeURIComponent($('#sorter0').text())+'&category='+encodeURIComponent($('#subCategory0').text())+'&filter='+encodeURIComponent($('#filter0').text())+'&lbound='+encodeURIComponent($('#lbound').val().trim())+'&ubound='+encodeURIComponent($('#ubound').val().trim())+'&page=1','_self');}">
-							&nbsp;&nbsp;&nbsp;&nbsp;
-							<div class="btn-group">
-								<button type="button" style="height:32px;" class="btn btn-default dropdown-toggle" data-toggle="dropdown" id="filterSelected">
-									<%=filterDefault%> <span class="caret"></span>
-								</button>
-								<ul class="dropdown-menu">
-									<li style="display:none"><a href="#" id="filter0"><%=filterDefault%></a></li>
-									<li><a href="#" onclick="$('#filterSelected').html('');$('#filterSelected').html($('#filter1').text());$('#filter0').html($('#filterSelected').text());$('#filterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="filter1">未選擇濾鏡</a></li>
-									<li><a href="#" onclick="$('#filterSelected').html('');$('#filterSelected').html($('#filter2').text());$('#filter0').html($('#filterSelected').text());$('#filterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="filter2">金額</a></li>
-									<li><a href="#" onclick="$('#filterSelected').html('');$('#filterSelected').html($('#filter3').text());$('#filter0').html($('#filterSelected').text());$('#filterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="filter3">利率</a></li>
-									<li><a href="#" onclick="$('#filterSelected').html('');$('#filterSelected').html($('#filter4').text());$('#filter0').html($('#filterSelected').text());$('#filterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="filter4">期數</a></li>
-									<li><a href="#" onclick="$('#filterSelected').html('');$('#filterSelected').html($('#filter5').text());$('#filter0').html($('#filterSelected').text());$('#filterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="filter5">信用等級</a></li>
-								</ul>
-							</div>
-						</td>
-					<tr>
-				</table>
+				<%if((actionDefault=='建立日期')||(actionDefault=='更新日期')||(actionDefault=='最晚媒合日期')){%>
+					<input style="height:32px;width:180px;display:inline;" type="date" placeholder="" class="form-control" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode==13){ linker();}">
+					&nbsp;~&nbsp;
+					<input style="height:32px;width:180px;display:inline;" type="date" placeholder="" class="form-control" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode==13){ linker();}">
+				<%}else{%>
+					<input style="height:32px;width:180px;display:inline;" type="text" placeholder="下限(元/%/個月/級/次)" class="form-control" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode==13){ linker();}">
+					&nbsp;~&nbsp;
+					<input style="height:32px;width:180px;display:inline;" type="text" placeholder="上限(元/%/個月/級/次)" class="form-control" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode==13){ linker();}">
+				<%}%>
 				<br>
 				<br>
 			<% if(totalResultNum>0){%>
 				<% for(var i=0; i<jsonArray.length; i++) { %>
-					<div style="border-top-style: none;border-right-style: none;border-bottom-style: none;border-left-style: none;margin-bottom: 0px;" class="table-responsive">
-					<table style="margin-bottom: 0px;" class="table" width="100%">
-						<tr>
-							<td style="border-top-style: none;">
-								<div style="font-size:15px;display:inline;">
-									金額：<%=jsonArray[i].MoneyToBorrow.toFixed(0)%>元
-								</div>&nbsp;&nbsp;&nbsp;&nbsp;
-								<div style="font-size:15px;display:inline;">
-									年利率：<%=(jsonArray[i].MaxInterestRateAccepted*100).toFixed(2)%>%
-								</div>&nbsp;&nbsp;&nbsp;&nbsp;
-								<div style="font-size:15px;display:inline;">
-									期數：<%=jsonArray[i].MonthPeriodAccepted.toFixed(0)%>個月
-								</div>&nbsp;&nbsp;&nbsp;&nbsp;
-								<div style="font-size:15px;display:inline;">
-									信用：<%=jsonArray[i].Level.toFixed(0)%>級
-								</div>
-							</td>
-							<td style="border-top-style: none;" align="right">
-								<div style="font-size:15px;display:inline;">
-									Deadline：<%=jsonArray[i].TimeLimit.getFullYear()%>/<%=jsonArray[i].TimeLimit.getMonth()+1%>/<%=jsonArray[i].TimeLimit.getDate()%>
-								</div>
-								&nbsp;&nbsp;&nbsp;&nbsp;
-								<div style="font-size:15px;display:inline;">
-									Created：<%=jsonArray[i].Created.getFullYear()%>/<%=jsonArray[i].Created.getMonth()+1%>/<%=jsonArray[i].Created.getDate()%>
-								</div>
-							</td>
-						<tr>
-					</table>
+					<div style="border-top-style: none;border-right-style: none;border-bottom-style: none;border-left-style: none;margin-top: 0px;margin-bottom: 0px;" class="table-responsive">
+						<table style="margin-bottom: 0px;margin-top: 0px;" class="table" width="100%">
+							<tr>
+								<td style="border-bottom-style: none;border-top-style: none;">
+									<div style="font-size:15px;display:inline;">
+										金額：<%=jsonArray[i].MoneyToBorrow.toFixed(0)%>元
+									</div>&nbsp;&nbsp;&nbsp;&nbsp;
+									<div style="font-size:15px;display:inline;">
+										年利率：<%=(jsonArray[i].MaxInterestRateAccepted*100).toFixed(2)%>%
+									</div>&nbsp;&nbsp;&nbsp;&nbsp;
+									<div style="font-size:15px;display:inline;">
+										期數：<%=jsonArray[i].MonthPeriodAccepted.toFixed(0)%>個月
+									</div>&nbsp;&nbsp;&nbsp;&nbsp;
+									<div style="font-size:15px;display:inline;">
+										信用：<%=jsonArray[i].Level.toFixed(0)%>級
+									</div>
+								</td>
+							</tr>
+						</table>
 					</div>
 					<div style="height:300px;" class="panel panel-default pd">
 						<div class="panel-body">
@@ -105,7 +91,7 @@
 									</td>
 									<td align="right">
 										<div style="font-size:20px;display:inline;" class="myTitle2" id="likeBtn<%=i%>">
-											<%if(!userName){ %>
+											<%if(userName===null){ %>
 												<button class="btn btn-default" data-toggle="modal" data-target="#myModal" id="btnID<%=i%>">
 													<span class="glyphicon glyphicon-thumbs-up myTitle2"></span>
 												</button>
@@ -139,7 +125,27 @@
 							</div>
 						</div>
 					</div>
+					<div style="border-top-style: none;border-right-style: none;border-bottom-style: none;border-left-style: none;margin-top: 0px;margin-bottom: 0px;" class="table-responsive">
+						<table style="margin-bottom: 0px;margin-top: 0px;" class="table" width="100%">
+							<tr>
+								<td align="right" style="border-bottom-style: none;border-top-style: none;">
+									<div style="font-size:15px;display:inline;">
+										Deadline：<%=jsonArray[i].TimeLimit.getFullYear()%>/<%=jsonArray[i].TimeLimit.getMonth()+1%>/<%=jsonArray[i].TimeLimit.getDate()%>
+									</div>
+									&nbsp;&nbsp;&nbsp;&nbsp;
+									<div style="font-size:15px;display:inline;">
+										Created：<%=jsonArray[i].Created.getFullYear()%>/<%=jsonArray[i].Created.getMonth()+1%>/<%=jsonArray[i].Created.getDate()%>
+									</div>
+									&nbsp;&nbsp;&nbsp;&nbsp;
+									<div style="font-size:15px;display:inline;">
+										Updated：<%=jsonArray[i].Updated.getFullYear()%>/<%=jsonArray[i].Updated.getMonth()+1%>/<%=jsonArray[i].Updated.getDate()%>
+									</div>
+								</td>
+							</tr>
+						</table>
+					</div>
 					<input type="hidden" id="borrowID<%=i%>" value="<%=jsonArray[i]._id%>">
+					<br>
 					<br>
 				<% } %>
 				<br>
@@ -154,7 +160,7 @@
 									<%}%>
 								>
 								<% if(targetPageNumber!=1){%>
-									<a href="/lender/search?keyword=<%=encodeURIComponent(keywordDefault)%>&action=<%=encodeURIComponent(actionDefault)%>&category=<%=encodeURIComponent(categoryDefault)%>&filter=<%=encodeURIComponent(filterDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=targetPageNumber-1%>">
+									<a href="/lender/search?keyword=<%=encodeURIComponent(keywordDefault)%>&category=<%=encodeURIComponent(categoryDefault)%>&action=<%=encodeURIComponent(actionDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=targetPageNumber-1%>">
 								<%}else{%>
 									<a href="#" onclick="return false;">
 								<%}%>
@@ -165,7 +171,7 @@
 											<% if(targetPageNumber==j){%>
 												class="active"
 											<%}%>
-										><a href="/lender/search?keyword=<%=encodeURIComponent(keywordDefault)%>&action=<%=encodeURIComponent(actionDefault)%>&category=<%=encodeURIComponent(categoryDefault)%>&filter=<%=encodeURIComponent(filterDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=j%>"><%=j%></a></li>
+										><a href="/lender/search?keyword=<%=encodeURIComponent(keywordDefault)%>&category=<%=encodeURIComponent(categoryDefault)%>&action=<%=encodeURIComponent(actionDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=j%>"><%=j%></a></li>
 									<%}%>
 								<% }else{%>
 									<% if(targetPageNumber>=pageNumber-3){%>
@@ -174,7 +180,7 @@
 											<% if(targetPageNumber==j){%>
 												class="active"
 											<%}%>
-										><a href="/lender/search?keyword=<%=encodeURIComponent(keywordDefault)%>&action=<%=encodeURIComponent(actionDefault)%>&category=<%=encodeURIComponent(categoryDefault)%>&filter=<%=encodeURIComponent(filterDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=j%>"><%=j%></a></li>
+										><a href="/lender/search?keyword=<%=encodeURIComponent(keywordDefault)%>&category=<%=encodeURIComponent(categoryDefault)%>&action=<%=encodeURIComponent(actionDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=j%>"><%=j%></a></li>
 										<%}%>
 									<%}else if(targetPageNumber<=5){%>
 										<% for(var j=1; j<=10; j++) { %>
@@ -182,15 +188,15 @@
 											<% if(targetPageNumber==j){%>
 												class="active"
 											<%}%>
-										><a href="/lender/search?keyword=<%=encodeURIComponent(keywordDefault)%>&action=<%=encodeURIComponent(actionDefault)%>&category=<%=encodeURIComponent(categoryDefault)%>&filter=<%=encodeURIComponent(filterDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=j%>"><%=j%></a></li>
+										><a href="/lender/search?keyword=<%=encodeURIComponent(keywordDefault)%>&category=<%=encodeURIComponent(categoryDefault)%>&action=<%=encodeURIComponent(actionDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=j%>"><%=j%></a></li>
 										<%}%>
 									<%}else{%>
 										<% for(var j=targetPageNumber-5; j<targetPageNumber; j++) { %>
-										<li><a href="/lender/search?keyword=<%=encodeURIComponent(keywordDefault)%>&action=<%=encodeURIComponent(actionDefault)%>&category=<%=encodeURIComponent(categoryDefault)%>&filter=<%=encodeURIComponent(filterDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=j%>"><%=j%></a></li>
+										<li><a href="/lender/search?keyword=<%=encodeURIComponent(keywordDefault)%>&category=<%=encodeURIComponent(categoryDefault)%>&action=<%=encodeURIComponent(actionDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=j%>"><%=j%></a></li>
 										<%}%>
-										<li class="active"><a href="/lender/search?keyword=<%=encodeURIComponent(keywordDefault)%>&action=<%=encodeURIComponent(actionDefault)%>&category=<%=encodeURIComponent(categoryDefault)%>&filter=<%=encodeURIComponent(filterDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=targetPageNumber%>"><%=targetPageNumber%></a></li>
+										<li class="active"><a href="/lender/search?keyword=<%=encodeURIComponent(keywordDefault)%>&category=<%=encodeURIComponent(categoryDefault)%>&action=<%=encodeURIComponent(actionDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=targetPageNumber%>"><%=targetPageNumber%></a></li>
 										<% for(var j=targetPageNumber+1; j<=targetPageNumber+4; j++) { %>
-										<li><a href="/lender/search?keyword=<%=encodeURIComponent(keywordDefault)%>&action=<%=encodeURIComponent(actionDefault)%>&category=<%=encodeURIComponent(categoryDefault)%>&filter=<%=encodeURIComponent(filterDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=j%>"><%=j%></a></li>
+										<li><a href="/lender/search?keyword=<%=encodeURIComponent(keywordDefault)%>&category=<%=encodeURIComponent(categoryDefault)%>&action=<%=encodeURIComponent(actionDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=j%>"><%=j%></a></li>
 										<%}%>
 									<%}%>
 								<%}%>
@@ -200,7 +206,7 @@
 									<%}%>
 								>
 								<% if(targetPageNumber!=pageNumber){%>
-									<a href="/lender/search?keyword=<%=encodeURIComponent(keywordDefault)%>&action=<%=encodeURIComponent(actionDefault)%>&category=<%=encodeURIComponent(categoryDefault)%>&filter=<%=encodeURIComponent(filterDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=targetPageNumber+1%>">
+									<a href="/lender/search?keyword=<%=encodeURIComponent(keywordDefault)%>&category=<%=encodeURIComponent(categoryDefault)%>&action=<%=encodeURIComponent(actionDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=targetPageNumber+1%>">
 								<%}else{%>
 									<a href="#" onclick="return false;">
 								<%}%>
@@ -217,7 +223,75 @@
 	</div>
 </div>
 <script>
-	<%if(userName){%>
+	function linker(){
+		window.open('/lender/search?keyword='+encodeURIComponent($('#subKeywordIpt').val().trim())+'&category='+encodeURIComponent($('#subCategory0').text())+'&action='+encodeURIComponent($('#sorter0').text())+'&director='+encodeURIComponent($('#director0').text())+'&lbound='+encodeURIComponent($('#lbound').val().trim())+'&ubound='+encodeURIComponent($('#ubound').val().trim())+'&page=1','_self');
+	}
+	
+	function subCategorySelector(index){
+		$('#subCategorySelected').html('');
+		$('#subCategorySelected').html($('#subCategory'+index).text());
+		$('#subCategory0').html($('#subCategorySelected').text());
+		$('#subCategorySelected').append(' <span class=\'caret\'><\/span>');
+		for(i=1;i<=5;i++){
+			$('#clis'+i).attr('class','');
+		}
+		$('#clis'+index).attr('class','active');
+	}
+
+	function sorterSelector(index){
+		$('#lbound').val('');
+		$('#ubound').val('');
+		if(($('#sorter'+index).text()=='建立日期')||($('#sorter'+index).text()=='更新日期')||($('#sorter'+index).text()=='最晚媒合日期')){
+			enableDater();
+		}else{
+			disableDater();
+		}
+		$('#sorterSelected').html('');
+		$('#sorterSelected').html($('#sorter'+index).text());
+		$('#sorter0').html($('#sorterSelected').text());
+		$('#sorterSelected').append(' <span class=\'caret\'><\/span>');
+		for(i=1;i<=8;i++){
+			$('#alis'+i).attr('class','');
+		}
+		$('#alis'+index).attr('class','active');
+	}
+	
+	function directorSelector(index){
+		$('#directorSelected').html('');
+		$('#directorSelected').html($('#director'+index).text());
+		$('#director0').html($('#directorSelected').text());
+		$('#directorSelected').append(' <span class=\'caret\'><\/span>');
+		for(i=1;i<=2;i++){
+			$('#dlis'+i).attr('class','');
+		}
+		$('#dlis'+index).attr('class','active');
+	}
+
+	<%if((actionDefault=='建立日期')||(actionDefault=='更新日期')||(actionDefault=='最晚媒合日期')){%>
+		var ifDater=true;
+	<%}else{%>
+		var ifDater=false;
+	<%}%>
+	function enableDater(){
+		if(!ifDater){
+			$('#lbound').attr('type','date');
+			$('#ubound').attr('type','date');
+			$('#lbound').attr('placeholder','');
+			$('#ubound').attr('placeholder','');
+			ifDater=true;
+		}
+	}
+	
+	function disableDater(){
+		if(ifDater){
+			$('#lbound').attr('type','text');
+			$('#ubound').attr('type','text');
+			$('#lbound').attr('placeholder','下限(元/%/個月/級/次)');
+			$('#ubound').attr('placeholder','上限(元/%/個月/級/次)');
+			ifDater=false;
+		}
+	}
+	<%if(userName!==null){%>
 		$(document).ready(function (){
 			for(i=0;i<<%=jsonArray.length%>;i++){
 				var orig=$('#btnID'+i).attr('class');

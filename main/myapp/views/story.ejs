@@ -1,4 +1,4 @@
-<%- include('layout_header',{nav_cur:'story',actionDefault:'最新',keywordDefault:'',categoryDefault:'不分類'}); -%>
+<%- include('layout_header',{searchTitle:null,nav_cur:'story',actionDefault:'建立日期',directorDefault:'大至小',keywordDefault:'',categoryDefault:'不分類'}); -%>
 <div class="container">
 	<div class="row">
 		<div class="col-md-9">
@@ -10,7 +10,7 @@
 					</td>
 					<td align="right">
 						<div style="font-size:20px;display:inline;" class="myTitle2" id="likeBtn">
-							<%if(!userName){ %>
+							<%if(userName===null){ %>
 								<button class="btn btn-default" data-toggle="modal" data-target="#myModal" id="btnID">
 									<span class="glyphicon glyphicon-thumbs-up myTitle2"></span>
 								</button>
@@ -161,7 +161,7 @@
 						<%}%>
 					</div>
 					<div class="input-group my_discussion_ipt">
-						<%if(!userName){ %>
+						<%if(userName===null){ %>
 							<textarea style="height:35px;" placeholder="留言...Enter送出，Shift+Enter換行" class="form-control" onkeypress="if(event.keyCode==13){$('#myModal').modal('show');}"></textarea>
 							<span class="input-group-btn">
 								<button style="height:35px;" class="btn btn-default" type="button" id="sendButton" data-toggle="modal" data-target="#myModal">
@@ -183,7 +183,7 @@
 			<table width="100%">
 				<tr>
 					<td>
-						<%if(!userName){ %>
+						<%if(userName===null){ %>
 							<button class="btn btn-default" data-toggle="modal" data-target="#myModal">
 								<span class="myTitle2">我想借錢給此人</span>
 							</button>
@@ -275,7 +275,7 @@
 		</div>
 	</div>
 </div>
-<%if(userName){ %>
+<%if(userName!==null){ %>
 	<%if(!ifSelf){ %>
 		<div class="modal fade" id="msgModal">
 			<div class="modal-dialog modal-sm">
@@ -469,7 +469,7 @@
 										</button>
 										&nbsp;
 									<%}%>
-									<a href="/lender/lenderSendMessages?msgKeyword=<%=jsonMessage._id%>&filter=<%if(jsonMessage.Status=="NotConfirmed"){%><%=encodeURIComponent('未被確認')%><%}else if(jsonMessage.Status=="Confirmed"){%><%=encodeURIComponent('已被同意')%><%}else if(jsonMessage.Status=="Rejected"){%><%=encodeURIComponent('已被婉拒')%><%}%>&sorter=<%=encodeURIComponent('最新')%>&page=1">
+									<a href="/lender/lenderSendMessages?msgKeyword=<%=jsonMessage._id%>&filter=<%if(jsonMessage.Status=="NotConfirmed"){%><%=encodeURIComponent('未被確認')%><%}else if(jsonMessage.Status=="Confirmed"){%><%=encodeURIComponent('已被同意')%><%}else if(jsonMessage.Status=="Rejected"){%><%=encodeURIComponent('已被婉拒')%><%}%>&sorter=<%=encodeURIComponent("更新日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">
 										<button type="button" class="btn btn-default">於列表查看</button>
 									</a>
 									&nbsp;
@@ -582,7 +582,7 @@
 										</div>
 									</div>
 									<div style="float:right;">
-										<a href="/lender/lenderSendMessages?msgKeyword=<%=jsonMessage._id%>&filter=<%if(jsonMessage.Status=="NotConfirmed"){%><%=encodeURIComponent('未被確認')%><%}else if(jsonMessage.Status=="Confirmed"){%><%=encodeURIComponent('已被同意')%><%}else if(jsonMessage.Status=="Rejected"){%><%=encodeURIComponent('已被婉拒')%><%}%>&sorter=<%=encodeURIComponent('最新')%>&page=1">
+										<a href="/lender/lenderSendMessages?msgKeyword=<%=jsonMessage._id%>&filter=<%if(jsonMessage.Status=="NotConfirmed"){%><%=encodeURIComponent('未被確認')%><%}else if(jsonMessage.Status=="Confirmed"){%><%=encodeURIComponent('已被同意')%><%}else if(jsonMessage.Status=="Rejected"){%><%=encodeURIComponent('已被婉拒')%><%}%>&sorter=<%=encodeURIComponent("更新日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">
 											<button type="button" class="btn btn-default">於列表查看</button>
 										</a>
 										<button type="button" class="btn btn-default" data-dismiss="modal">關閉</button>
@@ -694,7 +694,7 @@
 									</button>
 									&nbsp;
 								<%}%>
-								<a href="/lender/lenderReceiveMessages?msgKeyword=<%=jsonBorrowMessage._id%>&filter=<%if(jsonBorrowMessage.Status=="NotConfirmed"){%><%=encodeURIComponent('未確認')%><%}else if(jsonBorrowMessage.Status=="Confirmed"){%><%=encodeURIComponent('已同意')%><%}else if(jsonBorrowMessage.Status=="Rejected"){%><%=encodeURIComponent('已婉拒')%><%}%>&sorter=<%=encodeURIComponent('最新')%>&page=1">
+								<a href="/lender/lenderReceiveMessages?msgKeyword=<%=jsonBorrowMessage._id%>&filter=<%if(jsonBorrowMessage.Status=="NotConfirmed"){%><%=encodeURIComponent('未確認')%><%}else if(jsonBorrowMessage.Status=="Confirmed"){%><%=encodeURIComponent('已同意')%><%}else if(jsonBorrowMessage.Status=="Rejected"){%><%=encodeURIComponent('已婉拒')%><%}%>&sorter=<%=encodeURIComponent("更新日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">
 									<button type="button" class="btn btn-default">於列表查看</button>
 								</a>
 								&nbsp;
@@ -822,7 +822,7 @@
 									</div>
 								</div>
 								<div style="float:right;">
-									<a href="/lender/lenderReceiveMessages?msgKeyword=<%=jsonBorrowMessage._id%>&filter=<%if(jsonBorrowMessage.Status=="NotConfirmed"){%><%=encodeURIComponent('未確認')%><%}else if(jsonBorrowMessage.Status=="Confirmed"){%><%=encodeURIComponent('已同意')%><%}else if(jsonBorrowMessage.Status=="Rejected"){%><%=encodeURIComponent('已婉拒')%><%}%>&sorter=<%=encodeURIComponent('最新')%>&page=1">
+									<a href="/lender/lenderReceiveMessages?msgKeyword=<%=jsonBorrowMessage._id%>&filter=<%if(jsonBorrowMessage.Status=="NotConfirmed"){%><%=encodeURIComponent('未確認')%><%}else if(jsonBorrowMessage.Status=="Confirmed"){%><%=encodeURIComponent('已同意')%><%}else if(jsonBorrowMessage.Status=="Rejected"){%><%=encodeURIComponent('已婉拒')%><%}%>&sorter=<%=encodeURIComponent("更新日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">
 										<button type="button" class="btn btn-default">於列表查看</button>
 									</a>
 									<button type="button" class="btn btn-default" data-dismiss="modal">關閉</button>
@@ -895,7 +895,7 @@
 	<%}%>
 <%}%>			
 <script>
-	<%if(userName){%>
+	<%if(userName!==null){%>
 		$(document).ready(function (){
 			$('.modal')
 				.on({
