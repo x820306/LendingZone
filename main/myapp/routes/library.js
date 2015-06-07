@@ -77,7 +77,53 @@ function redirector(req,res,target,message){
 	res.redirect(req.get('referer'));
 }
 
+exports.directorDivider = function(dtr,input,type){
+	if(type){
+		if(dtr=='大至小'){
+			if(input.search(/-/)>-1){
+				output=input.replace(/-/g,'');
+			}else{
+				output="-"+input;
+			}
+		}else if(dtr=='小至大'){
+			output=input;
+		}
+	}else{
+		if(dtr=='minus'){
+			if(input.search(/-/)>-1){
+				output=input.replace(/-/g,'');
+			}else{
+				output="-"+input;
+			}
+		}else if(dtr=='plus'){
+			output=input;
+		}
+	}
+	return output;
+}
 
+
+exports.arrayFilter=function(array,tgt,lb,ub){
+	if((lb!==null)&&(ub!==null)){
+		for(v=array.length-1;v>-1;v--){
+			if((array[v][tgt]<lb)||(array[v][tgt]>ub)){
+				array.splice(v, 1);
+			}
+		}
+	}else if(lb!==null){
+		for(v=array.length-1;v>-1;v--){
+			if(array[v][tgt]<lb){
+				array.splice(v, 1);
+			}
+		}
+	}else if(ub!==null){
+		for(v=array.length-1;v>-1;v--){
+			if(array[v][tgt]>ub){
+				array.splice(v, 1);
+			}
+		}
+	}
+}
 
 exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,req,res,ifAuto,resAddress,ifLenderSide,infoJson){
 	var FBR;
@@ -1075,8 +1121,8 @@ function mailAgree(message,newCreateUpdated,req){
 			from: 'LendingZone <lendingzonesystem@gmail.com>', // sender address
 			to: message.CreatedBy.Username+' <'+message.CreatedBy.Email+'>', // list of receivers
 			subject: message.SendTo.Username+'同意了您先前送出的借款請求!', // Subject line
-			text: '親愛的 '+message.CreatedBy.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+message.SendTo.Username+' 同意了您先前在「'+message.FromBorrowRequest.StoryTitle+'("http://'+req.headers.host+'/lender/story?id='+message.FromBorrowRequest._id+'")」送出的借款請求！'+String.fromCharCode(10)+'您的交易紅利代碼為： '+exports.randomString(8)+String.fromCharCode(10)+'您可至 玉山銀行網站("http://www.esunbank.com.tw/") 兌換紅利喔!'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看訊息與交易結果:'+String.fromCharCode(10)+'"http://'+req.headers.host+'/lender/lenderReceiveMessages?msgKeyword='+newCreateUpdated._id+'&filter='+encodeURIComponent('已同意')+'&sorter='+encodeURIComponent('最新')+'&page=1"', // plaintext body
-			html: '<img src="cid:bpng" /><br><br>親愛的 '+message.CreatedBy.Username+' 您好：<br><br>'+message.SendTo.Username+' 同意了您先前在「<a href="http://'+req.headers.host+'/lender/story?id='+message.FromBorrowRequest._id+'">'+message.FromBorrowRequest.StoryTitle+'</a>」送出的借款請求！<br>您的交易紅利代碼為： <div style="color:#FF0000;display:inline;">'+exports.randomString(8)+'</div><br>您可至 <a href="http://www.esunbank.com.tw/">玉山銀行網站</a> 兌換紅利喔!<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://'+req.headers.host+'/lender/lenderReceiveMessages?msgKeyword='+newCreateUpdated._id+'&filter='+encodeURIComponent('已同意')+'&sorter='+encodeURIComponent('最新')+'&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看訊息與交易結果</span></a></td></tr></table>', 
+			text: '親愛的 '+message.CreatedBy.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+message.SendTo.Username+' 同意了您先前在「'+message.FromBorrowRequest.StoryTitle+'("http://'+req.headers.host+'/lender/story?id='+message.FromBorrowRequest._id+'")」送出的借款請求！'+String.fromCharCode(10)+'您的交易紅利代碼為： '+exports.randomString(8)+String.fromCharCode(10)+'您可至 玉山銀行網站("http://www.esunbank.com.tw/") 兌換紅利喔!'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看訊息與交易結果:'+String.fromCharCode(10)+'"http://'+req.headers.host+'/lender/lenderReceiveMessages?msgKeyword='+newCreateUpdated._id+'&filter='+encodeURIComponent('已同意')+'&sorter='+encodeURIComponent('更新日期')+'&director='+encodeURIComponent('大至小')+'&lbound=&ubound=&page=1"', // plaintext body
+			html: '<img src="cid:bpng" /><br><br>親愛的 '+message.CreatedBy.Username+' 您好：<br><br>'+message.SendTo.Username+' 同意了您先前在「<a href="http://'+req.headers.host+'/lender/story?id='+message.FromBorrowRequest._id+'">'+message.FromBorrowRequest.StoryTitle+'</a>」送出的借款請求！<br>您的交易紅利代碼為： <div style="color:#FF0000;display:inline;">'+exports.randomString(8)+'</div><br>您可至 <a href="http://www.esunbank.com.tw/">玉山銀行網站</a> 兌換紅利喔!<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://'+req.headers.host+'/lender/lenderReceiveMessages?msgKeyword='+newCreateUpdated._id+'&filter='+encodeURIComponent('已同意')+'&sorter='+encodeURIComponent('更新日期')+'&director='+encodeURIComponent('大至小')+'&lbound=&ubound=&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看訊息與交易結果</span></a></td></tr></table>', 
 			attachments: [{
 				filename: 'b.png',
 				path: __dirname+'/../public/images/b.png',
@@ -1093,8 +1139,8 @@ function mailAgree(message,newCreateUpdated,req){
 			from: 'LendingZone <lendingzonesystem@gmail.com>', // sender address
 			to: message.SendTo.Username+' <'+message.SendTo.Email+'>', // list of receivers
 			subject: '您同意了'+message.CreatedBy.Username+'先前送來的借款請求!', // Subject line
-			text: '親愛的 '+message.SendTo.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+'您同意了 '+message.CreatedBy.Username+' 先前在「'+message.FromBorrowRequest.StoryTitle+'("http://'+req.headers.host+'/lender/story?id='+message.FromBorrowRequest._id+'")」送來的借款請求！'+String.fromCharCode(10)+'您的交易紅利代碼為： '+exports.randomString(8)+String.fromCharCode(10)+'您可至 玉山銀行網站("http://www.esunbank.com.tw/") 兌換紅利喔!'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看訊息與交易結果:'+String.fromCharCode(10)+'"http://'+req.headers.host+'/lender/lenderReceiveMessages?msgKeyword='+newCreateUpdated._id+'&filter='+encodeURIComponent('已同意')+'&sorter='+encodeURIComponent('最新')+'&page=1"', // plaintext body
-			html: '<img src="cid:bpng" /><br><br>親愛的 '+message.SendTo.Username+' 您好：<br><br>您同意了 '+message.CreatedBy.Username+' 先前在「<a href="http://'+req.headers.host+'/lender/story?id='+message.FromBorrowRequest._id+'">'+message.FromBorrowRequest.StoryTitle+'</a>」送來的借款請求！<br>您的交易紅利代碼為： <div style="color:#FF0000;display:inline;">'+exports.randomString(8)+'</div><br>您可至 <a href="http://www.esunbank.com.tw/">玉山銀行網站</a> 兌換紅利喔!<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://'+req.headers.host+'/lender/lenderReceiveMessages?msgKeyword='+newCreateUpdated._id+'&filter='+encodeURIComponent('已同意')+'&sorter='+encodeURIComponent('最新')+'&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看訊息與交易結果</span></a></td></tr></table>', 
+			text: '親愛的 '+message.SendTo.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+'您同意了 '+message.CreatedBy.Username+' 先前在「'+message.FromBorrowRequest.StoryTitle+'("http://'+req.headers.host+'/lender/story?id='+message.FromBorrowRequest._id+'")」送來的借款請求！'+String.fromCharCode(10)+'您的交易紅利代碼為： '+exports.randomString(8)+String.fromCharCode(10)+'您可至 玉山銀行網站("http://www.esunbank.com.tw/") 兌換紅利喔!'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看訊息與交易結果:'+String.fromCharCode(10)+'"http://'+req.headers.host+'/lender/lenderReceiveMessages?msgKeyword='+newCreateUpdated._id+'&filter='+encodeURIComponent('已同意')+'&sorter='+encodeURIComponent('更新日期')+'&director='+encodeURIComponent('大至小')+'&lbound=&ubound=&page=1"', // plaintext body
+			html: '<img src="cid:bpng" /><br><br>親愛的 '+message.SendTo.Username+' 您好：<br><br>您同意了 '+message.CreatedBy.Username+' 先前在「<a href="http://'+req.headers.host+'/lender/story?id='+message.FromBorrowRequest._id+'">'+message.FromBorrowRequest.StoryTitle+'</a>」送來的借款請求！<br>您的交易紅利代碼為： <div style="color:#FF0000;display:inline;">'+exports.randomString(8)+'</div><br>您可至 <a href="http://www.esunbank.com.tw/">玉山銀行網站</a> 兌換紅利喔!<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://'+req.headers.host+'/lender/lenderReceiveMessages?msgKeyword='+newCreateUpdated._id+'&filter='+encodeURIComponent('已同意')+'&sorter='+encodeURIComponent('更新日期')+'&director='+encodeURIComponent('大至小')+'&lbound=&ubound=&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看訊息與交易結果</span></a></td></tr></table>', 
 			attachments: [{
 				filename: 'b.png',
 				path: __dirname+'/../public/images/b.png',
@@ -1116,8 +1162,8 @@ function mailReject(message,newUpdate,req){
 			from: 'LendingZone <lendingzonesystem@gmail.com>', // sender address
 			to: message.CreatedBy.Username+' <'+message.CreatedBy.Email+'>', // list of receivers
 			subject: message.SendTo.Username+'婉拒了您先前送出的借款請求!', // Subject line
-			text: '親愛的 '+message.CreatedBy.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+message.SendTo.Username+' 婉拒了您先前在「'+message.FromBorrowRequest.StoryTitle+'("http://'+req.headers.host+'/lender/story?id='+message.FromBorrowRequest._id+'")」送出的借款請求！'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看:'+String.fromCharCode(10)+'"http://'+req.headers.host+'/lender/lenderReceiveMessages?msgKeyword='+newUpdate._id+'&filter='+encodeURIComponent('已婉拒')+'&sorter='+encodeURIComponent('最新')+'&page=1"', // plaintext body
-			html: '親愛的 '+message.CreatedBy.Username+' 您好：<br><br>'+message.SendTo.Username+' 婉拒了您先前在「<a href="http://'+req.headers.host+'/lender/story?id='+message.FromBorrowRequest._id+'">'+message.FromBorrowRequest.StoryTitle+'</a>」送出的借款請求！<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://'+req.headers.host+'/lender/lenderReceiveMessages?msgKeyword='+newUpdate._id+'&filter='+encodeURIComponent('已婉拒')+'&sorter='+encodeURIComponent('最新')+'&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看</span></a></td></tr></table>' 
+			text: '親愛的 '+message.CreatedBy.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+message.SendTo.Username+' 婉拒了您先前在「'+message.FromBorrowRequest.StoryTitle+'("http://'+req.headers.host+'/lender/story?id='+message.FromBorrowRequest._id+'")」送出的借款請求！'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看:'+String.fromCharCode(10)+'"http://'+req.headers.host+'/lender/lenderReceiveMessages?msgKeyword='+newUpdate._id+'&filter='+encodeURIComponent('已婉拒')+'&sorter='+encodeURIComponent('更新日期')+'&director='+encodeURIComponent('大至小')+'&lbound=&ubound=&page=1"', // plaintext body
+			html: '親愛的 '+message.CreatedBy.Username+' 您好：<br><br>'+message.SendTo.Username+' 婉拒了您先前在「<a href="http://'+req.headers.host+'/lender/story?id='+message.FromBorrowRequest._id+'">'+message.FromBorrowRequest.StoryTitle+'</a>」送出的借款請求！<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://'+req.headers.host+'/lender/lenderReceiveMessages?msgKeyword='+newUpdate._id+'&filter='+encodeURIComponent('已婉拒')+'&sorter='+encodeURIComponent('更新日期')+'&director='+encodeURIComponent('大至小')+'&lbound=&ubound=&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看</span></a></td></tr></table>' 
 			// html body
 		};
 		
@@ -1131,8 +1177,8 @@ function mailReject(message,newUpdate,req){
 			from: 'LendingZone <lendingzonesystem@gmail.com>', // sender address
 			to: message.SendTo.Username+' <'+message.SendTo.Email+'>', // list of receivers
 			subject:'您婉拒了'+ message.CreatedBy.Username+'先前送來的借款請求!', // Subject line
-			text: '親愛的 '+message.SendTo.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+'您婉拒了 '+message.CreatedBy.Username+' 先前在「'+message.FromBorrowRequest.StoryTitle+'("http://'+req.headers.host+'/lender/story?id='+message.FromBorrowRequest._id+'")」送來的借款請求！'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看:'+String.fromCharCode(10)+'"http://'+req.headers.host+'/lender/lenderReceiveMessages?msgKeyword='+newUpdate._id+'&filter='+encodeURIComponent('已婉拒')+'&sorter='+encodeURIComponent('最新')+'&page=1"', // plaintext body
-			html: '親愛的 '+message.SendTo.Username+' 您好：<br><br>您婉拒了 '+message.CreatedBy.Username+' 先前在「<a href="http://'+req.headers.host+'/lender/story?id='+message.FromBorrowRequest._id+'">'+message.FromBorrowRequest.StoryTitle+'</a>」送來的借款請求！<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://'+req.headers.host+'/lender/lenderReceiveMessages?msgKeyword='+newUpdate._id+'&filter='+encodeURIComponent('已婉拒')+'&sorter='+encodeURIComponent('最新')+'&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看</span></a></td></tr></table>' 
+			text: '親愛的 '+message.SendTo.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+'您婉拒了 '+message.CreatedBy.Username+' 先前在「'+message.FromBorrowRequest.StoryTitle+'("http://'+req.headers.host+'/lender/story?id='+message.FromBorrowRequest._id+'")」送來的借款請求！'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看:'+String.fromCharCode(10)+'"http://'+req.headers.host+'/lender/lenderReceiveMessages?msgKeyword='+newUpdate._id+'&filter='+encodeURIComponent('已婉拒')+'&sorter='+encodeURIComponent('更新日期')+'&director='+encodeURIComponent('大至小')+'&lbound=&ubound=&page=1"', // plaintext body
+			html: '親愛的 '+message.SendTo.Username+' 您好：<br><br>您婉拒了 '+message.CreatedBy.Username+' 先前在「<a href="http://'+req.headers.host+'/lender/story?id='+message.FromBorrowRequest._id+'">'+message.FromBorrowRequest.StoryTitle+'</a>」送來的借款請求！<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://'+req.headers.host+'/lender/lenderReceiveMessages?msgKeyword='+newUpdate._id+'&filter='+encodeURIComponent('已婉拒')+'&sorter='+encodeURIComponent('更新日期')+'&director='+encodeURIComponent('大至小')+'&lbound=&ubound=&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看</span></a></td></tr></table>' 
 			// html body
 		};
 		
@@ -1150,8 +1196,8 @@ function mailRejectLend(message,newUpdate,req){
 			from: 'LendingZone <lendingzonesystem@gmail.com>', // sender address
 			to: message.CreatedBy.Username+' <'+message.CreatedBy.Email+'>', // list of receivers
 			subject: message.SendTo.Username+'婉拒了您先前送出的欲借出訊息!', // Subject line
-			text: '親愛的 '+message.CreatedBy.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+message.SendTo.Username+' 婉拒了您先前在「'+message.FromBorrowRequest.StoryTitle+'("http://'+req.headers.host+'/lender/story?id='+message.FromBorrowRequest._id+'")」送出的欲借出訊息！'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看:'+String.fromCharCode(10)+'"http://'+req.headers.host+'/lender/lenderSendMessages?msgKeyword='+newUpdate._id+'&filter='+encodeURIComponent('已被婉拒')+'&sorter='+encodeURIComponent('最新')+'&page=1"', // plaintext body
-			html: '親愛的 '+message.CreatedBy.Username+' 您好：<br><br>'+message.SendTo.Username+' 婉拒了您先前在「<a href="http://'+req.headers.host+'/lender/story?id='+message.FromBorrowRequest._id+'">'+message.FromBorrowRequest.StoryTitle+'</a>」送出的欲借出訊息！<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://'+req.headers.host+'/lender/lenderSendMessages?msgKeyword='+newUpdate._id+'&filter='+encodeURIComponent('已被婉拒')+'&sorter='+encodeURIComponent('最新')+'&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看</span></a></td></tr></table>' 
+			text: '親愛的 '+message.CreatedBy.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+message.SendTo.Username+' 婉拒了您先前在「'+message.FromBorrowRequest.StoryTitle+'("http://'+req.headers.host+'/lender/story?id='+message.FromBorrowRequest._id+'")」送出的欲借出訊息！'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看:'+String.fromCharCode(10)+'"http://'+req.headers.host+'/lender/lenderSendMessages?msgKeyword='+newUpdate._id+'&filter='+encodeURIComponent('已被婉拒')+'&sorter='+encodeURIComponent('更新日期')+'&director='+encodeURIComponent('大至小')+'&lbound=&ubound=&page=1"', // plaintext body
+			html: '親愛的 '+message.CreatedBy.Username+' 您好：<br><br>'+message.SendTo.Username+' 婉拒了您先前在「<a href="http://'+req.headers.host+'/lender/story?id='+message.FromBorrowRequest._id+'">'+message.FromBorrowRequest.StoryTitle+'</a>」送出的欲借出訊息！<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://'+req.headers.host+'/lender/lenderSendMessages?msgKeyword='+newUpdate._id+'&filter='+encodeURIComponent('已被婉拒')+'&sorter='+encodeURIComponent('更新日期')+'&director='+encodeURIComponent('大至小')+'&lbound=&ubound=&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看</span></a></td></tr></table>' 
 			// html body
 		};
 		
@@ -1165,8 +1211,8 @@ function mailRejectLend(message,newUpdate,req){
 			from: 'LendingZone <lendingzonesystem@gmail.com>', // sender address
 			to: message.SendTo.Username+' <'+message.SendTo.Email+'>', // list of receivers
 			subject:'您婉拒了'+ message.CreatedBy.Username+'先前送來的欲借出訊息!', // Subject line
-			text: '親愛的 '+message.SendTo.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+'您婉拒了 '+message.CreatedBy.Username+' 先前在「'+message.FromBorrowRequest.StoryTitle+'("http://'+req.headers.host+'/lender/story?id='+message.FromBorrowRequest._id+'")」送來的欲借出訊息！'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看:'+String.fromCharCode(10)+'"http://'+req.headers.host+'/lender/lenderSendMessages?msgKeyword='+newUpdate._id+'&filter='+encodeURIComponent('已被婉拒')+'&sorter='+encodeURIComponent('最新')+'&page=1"', // plaintext body
-			html: '親愛的 '+message.SendTo.Username+' 您好：<br><br>您婉拒了 '+message.CreatedBy.Username+' 先前在「<a href="http://'+req.headers.host+'/lender/story?id='+message.FromBorrowRequest._id+'">'+message.FromBorrowRequest.StoryTitle+'</a>」送來的欲借出訊息！<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://'+req.headers.host+'/lender/lenderSendMessages?msgKeyword='+newUpdate._id+'&filter='+encodeURIComponent('已被婉拒')+'&sorter='+encodeURIComponent('最新')+'&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看</span></a></td></tr></table>' 
+			text: '親愛的 '+message.SendTo.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+'您婉拒了 '+message.CreatedBy.Username+' 先前在「'+message.FromBorrowRequest.StoryTitle+'("http://'+req.headers.host+'/lender/story?id='+message.FromBorrowRequest._id+'")」送來的欲借出訊息！'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看:'+String.fromCharCode(10)+'"http://'+req.headers.host+'/lender/lenderSendMessages?msgKeyword='+newUpdate._id+'&filter='+encodeURIComponent('已被婉拒')+'&sorter='+encodeURIComponent('更新日期')+'&director='+encodeURIComponent('大至小')+'&lbound=&ubound=&page=1"', // plaintext body
+			html: '親愛的 '+message.SendTo.Username+' 您好：<br><br>您婉拒了 '+message.CreatedBy.Username+' 先前在「<a href="http://'+req.headers.host+'/lender/story?id='+message.FromBorrowRequest._id+'">'+message.FromBorrowRequest.StoryTitle+'</a>」送來的欲借出訊息！<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://'+req.headers.host+'/lender/lenderSendMessages?msgKeyword='+newUpdate._id+'&filter='+encodeURIComponent('已被婉拒')+'&sorter='+encodeURIComponent('更新日期')+'&director='+encodeURIComponent('大至小')+'&lbound=&ubound=&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看</span></a></td></tr></table>' 
 			// html body
 		};
 		

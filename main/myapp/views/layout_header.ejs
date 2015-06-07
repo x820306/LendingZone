@@ -3,7 +3,7 @@
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Lending Zone</title>
+	<title><%if((searchTitle!==null)&&(searchTitle!=='')){%><%=searchTitle%> - <%}%>Lending Zone</title>
 
 	<!-- jquery js-->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
@@ -53,17 +53,17 @@
 							<ul class="dropdown-menu" role="menu">
 								<li <% if(nav_cur=='lend'){ %> class="active"<% } %>><a href="/lender/lend">自動借出設定</a></li>
 								<li <% if(nav_cur=='income'){ %> class="active"<% } %>><a href="/lender/income">收入分析</a></li>
-								<li <% if(nav_cur=='lenderTransactionRecord'){ %> class="active"<% } %>><a href="/lender/lenderTransactionRecord?oneid=&filter=<%=encodeURIComponent("未保險")%>&sorter=<%=encodeURIComponent("最新")%>&page=1">借出紀錄</a></li>
-								<li <% if(nav_cur=='lenderReturnRecord'){ %> class="active"<% } %>><a href="/lender/lenderReturnRecord?oneid=&id=&sorter=<%=encodeURIComponent("最新")%>&page=1">收款記錄</a></li>
+								<li <% if(nav_cur=='lenderTransactionRecord'){ %> class="active"<% } %>><a href="/lender/lenderTransactionRecord?oneid=&filter=<%=encodeURIComponent("未保險")%>&sorter=<%=encodeURIComponent("建立日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">借出紀錄</a></li>
+								<li <% if(nav_cur=='lenderReturnRecord'){ %> class="active"<% } %>><a href="/lender/lenderReturnRecord?oneid=&id=&sorter=<%=encodeURIComponent("建立日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">收款記錄</a></li>
 								<li class="divider"></li>
-								<li <% if(nav_cur=='lenderReceiveMessages'){ %> class="active"<% } %>><a href="/lender/lenderReceiveMessages?msgKeyword=&filter=<%=encodeURIComponent("未確認")%>&sorter=<%=encodeURIComponent("最新")%>&page=1">收到之訊息<% if(userName){ %> <span class="badge"><%=newlrmNum%></span><% }%></a></li>
-								<li <% if(nav_cur=='lenderSendMessages'){ %> class="active"<% } %>><a href="/lender/lenderSendMessages?msgKeyword=&filter=<%=encodeURIComponent("未被確認")%>&sorter=<%=encodeURIComponent("最新")%>&page=1">送出之訊息<% if(userName){ %> <span class="badge"><%=newlsmNum%></span><% } %></a></li>
+								<li <% if(nav_cur=='lenderReceiveMessages'){ %> class="active"<% } %>><a href="/lender/lenderReceiveMessages?msgKeyword=&filter=<%=encodeURIComponent("未確認")%>&sorter=<%=encodeURIComponent("更新日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">收到之訊息<% if(userName!==null){ %> <span class="badge"><%=newlrmNum%></span><% }%></a></li>
+								<li <% if(nav_cur=='lenderSendMessages'){ %> class="active"<% } %>><a href="/lender/lenderSendMessages?msgKeyword=&filter=<%=encodeURIComponent("未被確認")%>&sorter=<%=encodeURIComponent("更新日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">送出之訊息<% if(userName!==null){ %> <span class="badge"><%=newlsmNum%></span><% } %></a></li>
 							</ul>
 						</li>
 					</ul>
 					<div class="navbar-form navbar-left" role="search">
 						<div class="input-group">
-							<input type="text" style="height:32px;" class="form-control" id="keywordIpt" placeholder="搜尋借入者的名稱或故事標題、內容" value="<%=keywordDefault%>" onkeypress="if(event.keyCode==13){ window.open('/lender/search?keyword='+encodeURIComponent($('#keywordIpt').val().trim())+'&action='+encodeURIComponent($('#searchAction0').text())+'&category='+encodeURIComponent($('#category0').text())+'&filter='+encodeURIComponent('未選擇濾鏡')+'&lbound=&ubound=&page=1','_self');}">
+							<input type="text" style="height:32px;" class="form-control" id="keywordIpt" placeholder="搜尋借入者的名稱或故事標題、內容" value="<%=keywordDefault%>" onkeypress="if(event.keyCode==13){<%if(nav_cur=='search'){%>linker();<%}else{%>linkerMain();<%}%>}"<%if(nav_cur=='search'){%> onkeyup="$('#subKeywordIpt').val($('#keywordIpt').val());"<%}%>>
 							<span class="input-group-btn">
 								<div class="btn-group">
 									<button type="button" style="height:32px;" class="btn btn-default dropdown-toggle" data-toggle="dropdown" id="categorySelected">
@@ -71,34 +71,43 @@
 									</button>
 									<ul class="dropdown-menu">
 										<li style="display:none"><a href="#" id="category0"><%=categoryDefault%></a></li>
-										<li><a href="#" onclick="$('#categorySelected').html('');$('#categorySelected').html($('#category1').text());$('#category0').html($('#categorySelected').text());$('#categorySelected').append(' <span class=\'caret\'><\/span>'); return false;" id="category1">不分類</a></li>
-										<li><a href="#" onclick="$('#categorySelected').html('');$('#categorySelected').html($('#category2').text());$('#category0').html($('#categorySelected').text());$('#categorySelected').append(' <span class=\'caret\'><\/span>'); return false;" id="category2">一般</a></li>
-										<li><a href="#" onclick="$('#categorySelected').html('');$('#categorySelected').html($('#category3').text());$('#category0').html($('#categorySelected').text());$('#categorySelected').append(' <span class=\'caret\'><\/span>'); return false;" id="category3">教育</a></li>
-										<li><a href="#" onclick="$('#categorySelected').html('');$('#categorySelected').html($('#category4').text());$('#category0').html($('#categorySelected').text());$('#categorySelected').append(' <span class=\'caret\'><\/span>'); return false;" id="category4">家庭</a></li>
-										<li><a href="#" onclick="$('#categorySelected').html('');$('#categorySelected').html($('#category5').text());$('#category0').html($('#categorySelected').text());$('#categorySelected').append(' <span class=\'caret\'><\/span>'); return false;" id="category5">旅遊</a></li>
+										<li id="cli1"<%if(categoryDefault=='不分類'){%> class="active"<%}%>><a href="#" onclick="<%if(nav_cur=='search'){%>subCategorySelector(1);<%}%>categorySelector(1);return false;" id="category1">不分類</a></li>
+										<li id="cli2"<%if(categoryDefault=='一般'){%> class="active"<%}%>><a href="#" onclick="<%if(nav_cur=='search'){%>subCategorySelector(2);<%}%>categorySelector(2);return false;" id="category2">一般</a></li>
+										<li id="cli3"<%if(categoryDefault=='教育'){%> class="active"<%}%>><a href="#" onclick="<%if(nav_cur=='search'){%>subCategorySelector(3);<%}%>categorySelector(3);return false;" id="category3">教育</a></li>
+										<li id="cli4"<%if(categoryDefault=='家庭'){%> class="active"<%}%>><a href="#" onclick="<%if(nav_cur=='search'){%>subCategorySelector(4);<%}%>categorySelector(4);return false;" id="category4">家庭</a></li>
+										<li id="cli5"<%if(categoryDefault=='旅遊'){%> class="active"<%}%>><a href="#" onclick="<%if(nav_cur=='search'){%>subCategorySelector(5);<%}%>categorySelector(5);return false;" id="category5">旅遊</a></li>
 									</ul>
 								</div>
 								<div class="btn-group">
 									<button type="button" style="height:32px;" class="btn btn-default" id="searchActionSelected" data-toggle="dropdown" aria-expanded="false"><%=actionDefault%> <span class='caret'></span></button>
 									<ul class="dropdown-menu" role="menu">
 										<li style="display:none"><a href="#" id="searchAction0"><%=actionDefault%></a></li>
-										<li><a href="#" onclick="$('#searchActionSelected').html('');$('#searchActionSelected').html($('#searchAction1').text());$('#searchAction0').html($('#searchActionSelected').text());$('#searchActionSelected').append(' <span class=\'caret\'><\/span>');return false;" id="searchAction1">最新</a></li>
-										<li><a href="#" onclick="$('#searchActionSelected').html('');$('#searchActionSelected').html($('#searchAction2').text());$('#searchAction0').html($('#searchActionSelected').text());$('#searchActionSelected').append(' <span class=\'caret\'><\/span>');return false;" id="searchAction2">最緊急</a></li>
-										<li><a href="#" onclick="$('#searchActionSelected').html('');$('#searchActionSelected').html($('#searchAction3').text());$('#searchAction0').html($('#searchActionSelected').text());$('#searchActionSelected').append(' <span class=\'caret\'><\/span>');return false;" id="searchAction3">最熱門</a></li>
-										<li><a href="#" onclick="$('#searchActionSelected').html('');$('#searchActionSelected').html($('#searchAction4').text());$('#searchAction0').html($('#searchActionSelected').text());$('#searchActionSelected').append(' <span class=\'caret\'><\/span>');return false;" id="searchAction4">金額最高</a></li>
-										<li><a href="#" onclick="$('#searchActionSelected').html('');$('#searchActionSelected').html($('#searchAction5').text());$('#searchAction0').html($('#searchActionSelected').text());$('#searchActionSelected').append(' <span class=\'caret\'><\/span>');return false;" id="searchAction5">利率最高</a></li>
-										<li><a href="#" onclick="$('#searchActionSelected').html('');$('#searchActionSelected').html($('#searchAction6').text());$('#searchAction0').html($('#searchActionSelected').text());$('#searchActionSelected').append(' <span class=\'caret\'><\/span>');return false;" id="searchAction6">期數最多</a></li>
-										<li><a href="#" onclick="$('#searchActionSelected').html('');$('#searchActionSelected').html($('#searchAction7').text());$('#searchAction0').html($('#searchActionSelected').text());$('#searchActionSelected').append(' <span class=\'caret\'><\/span>');return false;" id="searchAction7">信用等級最高</a></li>
+										<li id="ali1"<%if(actionDefault=='建立日期'){%> class="active"<%}%>><a href="#" onclick="<%if(nav_cur=='search'){%>sorterSelector(1);<%}%>searchActionSelector(1);return false;" id="searchAction1">建立日期</a></li>
+										<li id="ali2"<%if(actionDefault=='更新日期'){%> class="active"<%}%>><a href="#" onclick="<%if(nav_cur=='search'){%>sorterSelector(2);<%}%>searchActionSelector(2);return false;" id="searchAction2">更新日期</a></li>
+										<li id="ali3"<%if(actionDefault=='最晚媒合日期'){%> class="active"<%}%>><a href="#" onclick="<%if(nav_cur=='search'){%>sorterSelector(3);<%}%>searchActionSelector(3);return false;" id="searchAction3">最晚媒合日期</a></li>
+										<li id="ali4"<%if(actionDefault=='金額'){%> class="active"<%}%>><a href="#" onclick="<%if(nav_cur=='search'){%>sorterSelector(4);<%}%>searchActionSelector(4);return false;" id="searchAction4">金額</a></li>
+										<li id="ali5"<%if(actionDefault=='利率'){%> class="active"<%}%>><a href="#" onclick="<%if(nav_cur=='search'){%>sorterSelector(5);<%}%>searchActionSelector(5);return false;" id="searchAction5">利率</a></li>
+										<li id="ali6"<%if(actionDefault=='期數'){%> class="active"<%}%>><a href="#" onclick="<%if(nav_cur=='search'){%>sorterSelector(6);<%}%>searchActionSelector(6);return false;" id="searchAction6">期數</a></li>
+										<li id="ali7"<%if(actionDefault=='信用等級'){%> class="active"<%}%>><a href="#" onclick="<%if(nav_cur=='search'){%>sorterSelector(7);<%}%>searchActionSelector(7);return false;" id="searchAction7">信用等級</a></li>
+										<li id="ali8"<%if(actionDefault=='按讚次數'){%> class="active"<%}%>><a href="#" onclick="<%if(nav_cur=='search'){%>sorterSelector(8);<%}%>searchActionSelector(8);return false;" id="searchAction8">按讚次數</a></li>
 									</ul>
 								</div>
-								<button type="button" style="height:32px;" class="btn btn-default" onclick="window.open('/lender/search?keyword='+encodeURIComponent($('#keywordIpt').val().trim())+'&action='+encodeURIComponent($('#searchAction0').text())+'&category='+encodeURIComponent($('#category0').text())+'&filter='+encodeURIComponent('未選擇濾鏡')+'&lbound=&ubound=&page=1','_self');"><span class="glyphicon glyphicon-search"></span></button>
+								<div class="btn-group">
+									<button type="button" style="height:32px;" class="btn btn-default" id="directorMainSelected" data-toggle="dropdown" aria-expanded="false"><%=directorDefault%> <span class='caret'></span></button>
+									<ul class="dropdown-menu" role="menu">
+										<li style="display:none"><a href="#" id="directorMain0"><%=directorDefault%></a></li>
+										<li id="dli1"<%if(directorDefault=='大至小'){%> class="active"<%}%>><a href="#" onclick="<%if(nav_cur=='search'){%>directorSelector(1);<%}%>directorMainSelector(1);return false;" id="directorMain1">大至小</a></li>
+										<li id="dli2"<%if(directorDefault=='小至大'){%> class="active"<%}%>><a href="#" onclick="<%if(nav_cur=='search'){%>directorSelector(2);<%}%>directorMainSelector(2);return false;" id="directorMain2">小至大</a></li>
+									</ul>
+								</div>
+								<button type="button" style="height:32px;" class="btn btn-default" onclick="<%if(nav_cur=='search'){%>linker();<%}else{%>linkerMain();<%}%>"><span class="glyphicon glyphicon-search"></span></button>
 							</span>
 						</div>
 					</div>
 					<ul class="nav navbar-nav navbar-right">
 						<!--<li><a href="#" onclick="if(ifLoadedCount<=0){if(!ifDrawed){doneResizing();}$('#introCanvas').attr('style',$('#introCanvas').attr('style').replace(/display:none;/g, ''));}else{alert('請等候圖片載入完畢');}return false;">引導</a></li>%>-->
 						<% if(nav_cur!='signup'){ %>
-							<% if(!userName){ %>
+							<% if(userName===null){ %>
 								<li><a href="#" data-toggle="modal" data-target="#myModal">登入</a></li>
 								<li><a href="/signupTest">註冊</a></li>
 							<% }else{ %>
@@ -123,3 +132,41 @@
 		</nav>
 	</header>
 	<main role="main">
+	<script>
+		function categorySelector(index){
+			$('#categorySelected').html('');
+			$('#categorySelected').html($('#category'+index).text());
+			$('#category0').html($('#categorySelected').text());
+			$('#categorySelected').append(' <span class=\'caret\'><\/span>');
+			for(i=1;i<=5;i++){
+				$('#cli'+i).attr('class','');
+			}
+			$('#cli'+index).attr('class','active');
+		}
+		
+		function searchActionSelector(index){
+			$('#searchActionSelected').html('');
+			$('#searchActionSelected').html($('#searchAction'+index).text());
+			$('#searchAction0').html($('#searchActionSelected').text());
+			$('#searchActionSelected').append(' <span class=\'caret\'><\/span>');
+			for(i=1;i<=8;i++){
+				$('#ali'+i).attr('class','');
+			}
+			$('#ali'+index).attr('class','active');
+		}
+		
+		function directorMainSelector(index){
+			$('#directorMainSelected').html('');
+			$('#directorMainSelected').html($('#directorMain'+index).text());
+			$('#directorMain0').html($('#directorMainSelected').text());
+			$('#directorMainSelected').append(' <span class=\'caret\'><\/span>');
+			for(i=1;i<=2;i++){
+				$('#dli'+i).attr('class','');
+			}
+			$('#dli'+index).attr('class','active');
+		}
+		
+		function linkerMain(){
+			window.open('/lender/search?keyword='+encodeURIComponent($('#keywordIpt').val().trim())+'&category='+encodeURIComponent($('#category0').text())+'&action='+encodeURIComponent($('#searchAction0').text())+'&director='+encodeURIComponent($('#directorMain0').text())+'&lbound=&ubound=&page=1','_self');
+		}
+	</script>

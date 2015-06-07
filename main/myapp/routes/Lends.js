@@ -205,7 +205,8 @@ function redirector(req,res,target,message){
 		F7:req.body.MinInterestInFutureMoneyMonth,
 		F8:req.body.MinInterestInFutureDivMoney,
 		F9:req.body.AutoComfirmToBorrowMsgPeriod,
-		F10:req.body.AutoComfirmToBorrowMsgSorter
+		F10:req.body.AutoComfirmToBorrowMsgSorter,
+		F11:req.body.AutoComfirmToBorrowMsgDirector
 	};
 	
 	var json={FormContent:formContent,Target:target,Message:message};
@@ -242,6 +243,11 @@ function createPart(res,req,outterPara){
 	}else{
 		toCreate.AutoComfirmToBorrowMsgSorter=sanitizer.sanitize(req.body.AutoComfirmToBorrowMsgSorter.trim());
 	}
+	if(!req.body.AutoComfirmToBorrowMsgDirector){
+		toCreate.AutoComfirmToBorrowMsgDirector="invalid";
+	}else{
+		toCreate.AutoComfirmToBorrowMsgDirector=sanitizer.sanitize(req.body.AutoComfirmToBorrowMsgDirector.trim());
+	}
 	toCreate.CreatedBy=req.user._id;
 	
 	toCreate.save(function (err,newCreate) {
@@ -249,7 +255,7 @@ function createPart(res,req,outterPara){
 			res.redirect('/message?content='+encodeURIComponent('新建失敗!'));
 		}else{
 			if(newCreate.AutoComfirmToBorrowMsgPeriod>0){
-				var toSaveID=setInterval( function() { autoConfirm(req,res,newCreate.AutoComfirmToBorrowMsgSorter,newCreate._id); }, 86400000*newCreate.AutoComfirmToBorrowMsgPeriod);
+				var toSaveID=setInterval( function() { autoConfirm(req,res,newCreate.AutoComfirmToBorrowMsgSorter,newCreate.AutoComfirmToBorrowMsgDirector,newCreate._id); }, 86400000*newCreate.AutoComfirmToBorrowMsgPeriod);
 				var toSaveJSON={CreatedBy:req.user._id,CommandID:toSaveID,LendID:newCreate._id};
 				library.autoComfirmToBorrowMsgArray.push(toSaveJSON);
 			}
@@ -294,6 +300,11 @@ function updatePart(res,req,lend){
 	}else{
 		lend.AutoComfirmToBorrowMsgSorter=sanitizer.sanitize(req.body.AutoComfirmToBorrowMsgSorter.trim());
 	}
+	if(!req.body.AutoComfirmToBorrowMsgDirector){
+		lend.AutoComfirmToBorrowMsgDirector="invalid";
+	}else{
+		lend.AutoComfirmToBorrowMsgDirector=sanitizer.sanitize(req.body.AutoComfirmToBorrowMsgDirector.trim());
+	}
 	lend.Updated = Date.now();
 	
 	lend.save(function (err,newUpdate) {
@@ -314,7 +325,7 @@ function updatePart(res,req,lend){
 			}
 			
 			if(newUpdate.AutoComfirmToBorrowMsgPeriod>0){
-				var toSaveID=setInterval( function() { autoConfirm(req,res,newUpdate.AutoComfirmToBorrowMsgSorter,newUpdate._id); }, 86400000*newUpdate.AutoComfirmToBorrowMsgPeriod);
+				var toSaveID=setInterval( function() { autoConfirm(req,res,newUpdate.AutoComfirmToBorrowMsgSorter,newUpdate.AutoComfirmToBorrowMsgDirector,newUpdate._id); }, 86400000*newUpdate.AutoComfirmToBorrowMsgPeriod);
 				var toSaveJSON={CreatedBy:req.user._id,CommandID:toSaveID,LendID:newUpdate._id};
 				library.autoComfirmToBorrowMsgArray.push(toSaveJSON);
 			}
@@ -323,19 +334,20 @@ function updatePart(res,req,lend){
 	});
 }
 
-function autoConfirm(req,res,sorter,lendID){
-	var sorterReserve=sorter;
-	if(sorter=='-SpecialA'){
-		sorter='-Updated';
-	}else if(sorter=='-SpecialB'){
-		sorter='-Updated';
-	}else if(sorter=='-SpecialC'){
-		sorter='-Updated';
-	}else if(sorter=='-SpecialD'){
-		sorter='-Updated';
+function autoConfirm(req,res,sorter,director,lendID){
+	var sorterRec=null;
+	
+	if((director!='minus')&&(director!='plus')){
+		director='minus';
+	}
+	
+	if((sorter=='SpecialA')||(sorter=='SpecialB')||(sorter=='SpecialC')||(sorter=='SpecialD')){
+		sorterRec=library.directorDivider(director,'Updated',false);
 	}else{
-		sorterReserve='-InterestRate';
-		sorter='-InterestRate';
+		if((sorter!='InterestRate')&&(sorter!='MoneyToLend')&&(sorter!='MonthPeriod')&&(sorter!='Level')&&(sorter!='Updated')&&(sorter!='Created')){
+			sorter='InterestRate';
+		}
+		sorterRec=library.directorDivider(director,sorter,false);
 	}
 	
 	Lends.findById(lendID).exec(function (err, lend){
@@ -344,12 +356,12 @@ function autoConfirm(req,res,sorter,lendID){
 		}else{
 			if(lend){
 				if(lend.MaxMoneyToLend>0){
-					Messages.find({$and:[{"SendTo": req.user._id},{"Type": "toBorrow"},{"Status": "NotConfirmed"}]}).sort(sorter).exec(function (err, messages){
+					Messages.find({$and:[{"SendTo": req.user._id},{"Type": "toBorrow"},{"Status": "NotConfirmed"}]}).sort(sorterRec).exec(function (err, messages){
 						if (err) {
 							console.log(err);
 						}else{
 							if(messages.length>0){
-								if((sorterReserve=='-SpecialA')||(sorterReserve=='-SpecialB')||(sorterReserve=='-SpecialC')||(sorterReserve=='-SpecialD')){
+								if((sorter=='SpecialA')||(sorter=='SpecialB')||(sorter=='SpecialC')||(sorter=='SpecialD')){
 									for(i=0;i<messages.length;i++){
 										messages[i].InterestRate-=library.serviceChargeRate;//scr
 										messages[i].InterestInFuture=library.interestInFutureCalculator(messages[i].MoneyToLend,messages[i].InterestRate,messages[i].MonthPeriod);
@@ -370,14 +382,30 @@ function autoConfirm(req,res,sorter,lendID){
 										}
 									}
 									
-									if(sorterReserve=='-SpecialA'){
-										messages.sort(function(a,b) { return parseFloat(b.InterestInFuture) - parseFloat(a.InterestInFuture)} );
-									}else if(sorterReserve=='-SpecialA'){
-										messages.sort(function(a,b) { return parseFloat(b.InterestInFutureMonth) - parseFloat(a.InterestInFutureMonth)} );
-									}else if(sorterReserve=='-SpecialD'){
-										messages.sort(function(a,b) { return parseFloat(b.InterestInFutureMoneyMonth) - parseFloat(a.InterestInFutureMoneyMonth) } );
-									}else if(sorterReserve=='-SpecialD'){
-										messages.sort(function(a,b) { return parseFloat(b.InterestInFutureDivMoney) - parseFloat(a.InterestInFutureDivMoney) } );
+									if(sorter=='SpecialA'){
+										if(director=='minus'){
+											messages.sort(function(a,b) { return parseFloat(b.InterestInFuture) - parseFloat(a.InterestInFuture)} );
+										}else if(director=='plus'){
+											messages.sort(function(a,b) { return parseFloat(a.InterestInFuture) - parseFloat(b.InterestInFuture)} );
+										}
+									}else if(sorter=='SpecialB'){
+										if(director=='minus'){
+											messages.sort(function(a,b) { return parseFloat(b.InterestInFutureMonth) - parseFloat(a.InterestInFutureMonth)} );
+										}else if(director=='plus'){
+											messages.sort(function(a,b) { return parseFloat(a.InterestInFutureMonth) - parseFloat(b.InterestInFutureMonth)} );
+										}
+									}else if(sorter=='SpecialC'){
+										if(director=='minus'){
+											messages.sort(function(a,b) { return parseFloat(b.InterestInFutureMoneyMonth) - parseFloat(a.InterestInFutureMoneyMonth)} );
+										}else if(director=='plus'){
+											messages.sort(function(a,b) { return parseFloat(a.InterestInFutureMoneyMonth) - parseFloat(b.InterestInFutureMoneyMonth)} );
+										}
+									}else if(sorter=='SpecialD'){
+										if(director=='minus'){
+											messages.sort(function(a,b) { return parseFloat(b.InterestInFutureDivMoney) - parseFloat(a.InterestInFutureDivMoney)} );
+										}else if(director=='plus'){
+											messages.sort(function(a,b) { return parseFloat(a.InterestInFutureDivMoney) - parseFloat(b.InterestInFutureDivMoney)} );
+										}
 									}
 								}
 								

@@ -1,4 +1,4 @@
-<%- include('layout_header',{nav_cur:'lenderReturnRecord',actionDefault:'最新',keywordDefault:'',categoryDefault:'不分類'}); -%>
+<%- include('layout_header',{searchTitle:oneidDefault,nav_cur:'lenderReturnRecord',actionDefault:'建立日期',directorDefault:'大至小',keywordDefault:'',categoryDefault:'不分類'}); -%>
 <div class="container">
 	<div class="row">
 		<div class="col-md-9">
@@ -9,7 +9,7 @@
 					<div class="btn-group">
 				<%}else{%>
 				<div class="input-group">
-					<input type="text" style="height:40px;" class="form-control" id="oneidIpt" placeholder="搜尋故事標題或用戶名稱" value="<%=oneidDefault%>" onkeypress="if(event.keyCode==13){window.open('/lender/lenderReturnRecord?oneid='+encodeURIComponent($('#oneidIpt').val())+'&id=<%=encodeURIComponent(idDefault)%>&sorter='+encodeURIComponent($('#sorter0').text())+'&page=1','_self');}">	
+					<input type="text" style="height:40px;" class="form-control" id="oneidIpt" placeholder="搜尋故事標題或用戶名稱" value="<%=oneidDefault%>" onkeypress="if(event.keyCode==13){linker();}">	
 					<span class="input-group-btn">
 				<%}%>
 						<div class="btn-group">
@@ -18,41 +18,56 @@
 							</button>
 							<ul class="dropdown-menu">
 								<li style="display:none"><a href="#" id="sorter0"><%=sorterDefault%></a></li>
-								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter1').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter1">最新</a></li>
-								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter2').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter2">實收金額最多</a></li>
-								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter3').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter3">應收金額最多</a></li>
-								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter4').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter4">未收金額最多</a></li>
-								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter5').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter5">超收金額最多</a></li>
-								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter6').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter6">實收本金最多</a></li>
-								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter7').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter7">應收本金最多</a></li>
-								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter8').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter8">未收本金最多</a></li>
-								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter9').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter9">超收本金最多</a></li>
-								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter10').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter10">實收利息最多</a></li>
-								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter11').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter11">應收利息最多</a></li>
-								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter12').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter12">未收利息最多</a></li>
-								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter13').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter13">超收利息最多</a></li>
-								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter14').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter14">收款前未還本金最多</a></li>
-								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter15').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter15">收款前已還本金最多</a></li>
-								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter16').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter16">收款前累積利息最多</a></li>
-								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter17').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter17">收款前累積本利和最多</a></li>
-								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter18').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter18">收款後未還本金最多</a></li>
-								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter19').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter19">收款後已還本金最多</a></li>
-								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter20').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter20">收款後累積利息最多</a></li>
-								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter21').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter21">收款後累積本利和最多</a></li>
-								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter22').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter22">對方信用等級最高</a></li>
-								<li><a href="#" onclick="$('#sorterSelected').html('');$('#sorterSelected').html($('#sorter23').text());$('#sorter0').html($('#sorterSelected').text());$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); return false;" id="sorter23">最後更新</a></li>
+								<li id="slis1"<%if(sorterDefault=='建立日期'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(1);return false;" id="sorter1">建立日期</a></li>
+								<li id="slis2"<%if(sorterDefault=='更新日期'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(2);return false;" id="sorter2">更新日期</a></li>
+								<li id="slis3"<%if(sorterDefault=='實收金額'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(3);return false;" id="sorter3">實收金額</a></li>
+								<li id="slis4"<%if(sorterDefault=='應收金額'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(4);return false;" id="sorter4">應收金額</a></li>
+								<li id="slis5"<%if(sorterDefault=='未收金額'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(5);return false;" id="sorter5">未收金額</a></li>
+								<li id="slis6"<%if(sorterDefault=='超收金額'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(6);return false;" id="sorter6">超收金額</a></li>
+								<li id="slis7"<%if(sorterDefault=='實收本金'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(7);return false;" id="sorter7">實收本金</a></li>
+								<li id="slis8"<%if(sorterDefault=='應收本金'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(8);return false;" id="sorter8">應收本金</a></li>
+								<li id="slis9"<%if(sorterDefault=='未收本金'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(9);return false;" id="sorter9">未收本金</a></li>
+								<li id="slis10"<%if(sorterDefault=='超收本金'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(10);return false;" id="sorter10">超收本金</a></li>
+								<li id="slis11"<%if(sorterDefault=='實收利息'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(11);return false;" id="sorter11">實收利息</a></li>
+								<li id="slis12"<%if(sorterDefault=='應收利息'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(12);return false;" id="sorter12">應收利息</a></li>
+								<li id="slis13"<%if(sorterDefault=='未收利息'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(13);return false;" id="sorter13">未收利息</a></li>
+								<li id="slis14"<%if(sorterDefault=='超收利息'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(14);return false;" id="sorter14">超收利息</a></li>
+								<li id="slis15"<%if(sorterDefault=='收款前未還本金'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(15);return false;" id="sorter15">收款前未還本金</a></li>
+								<li id="slis16"<%if(sorterDefault=='收款前已還本金'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(16);return false;" id="sorter16">收款前已還本金</a></li>
+								<li id="slis17"<%if(sorterDefault=='收款前累積利息'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(17);return false;" id="sorter17">收款前累積利息</a></li>
+								<li id="slis18"<%if(sorterDefault=='收款前累積本利和'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(18);return false;" id="sorter18">收款前累積本利和</a></li>
+								<li id="slis19"<%if(sorterDefault=='收款後未還本金'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(19);return false;" id="sorter19">收款後未還本金</a></li>
+								<li id="slis20"<%if(sorterDefault=='收款後已還本金'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(20);return false;" id="sorter20">收款後已還本金</a></li>
+								<li id="slis21"<%if(sorterDefault=='收款後累積利息'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(21);return false;" id="sorter21">收款後累積利息</a></li>
+								<li id="slis22"<%if(sorterDefault=='收款後累積本利和'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(22);return false;" id="sorter22">收款後累積本利和</a></li>
+								<li id="slis23"<%if(sorterDefault=='對方信用等級'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(23);return false;" id="sorter23">對方信用等級</a></li>
 							</ul>
 						</div>
-						<%if(idDefault!=''){%>
-							<button type="button" style="height:40px;" class="btn btn-default" onclick="window.open('/lender/lenderReturnRecord?oneid=<%=encodeURIComponent(oneidDefault)%>&id=<%=encodeURIComponent(idDefault)%>&sorter='+encodeURIComponent($('#sorter0').text())+'&page=1','_self');">Go!</button>
-						<%}else{%>
-							<button type="button" style="height:40px;" class="btn btn-default" onclick="window.open('/lender/lenderReturnRecord?oneid='+encodeURIComponent($('#oneidIpt').val())+'&id=<%=encodeURIComponent(idDefault)%>&sorter='+encodeURIComponent($('#sorter0').text())+'&page=1','_self');">Go!</button>
-						<%}%>	
+						<div class="btn-group">
+							<button type="button" style="height:40px;" class="btn btn-default" id="directorSelected" data-toggle="dropdown" aria-expanded="false"><%=directorDefault%> <span class='caret'></span></button>
+							<ul class="dropdown-menu" role="menu">
+								<li style="display:none"><a href="#" id="director0"><%=directorDefault%></a></li>
+								<li id="dlis1"<%if(directorDefault=='大至小'){%> class="active"<%}%>><a href="#" onclick="directorSelector(1);return false;" id="director1">大至小</a></li>
+								<li id="dlis2"<%if(directorDefault=='小至大'){%> class="active"<%}%>><a href="#" onclick="directorSelector(2);return false;" id="director2">小至大</a></li>
+							</ul>
+						</div>
+						<button type="button" style="height:40px;" class="btn btn-default" onclick="linker();">Go!</button>
 				<%if(idDefault!=''){%>
 					</div>
+					<br>
 				<%}else{%>
 					</span>
 				</div>
+				<%}%>
+				<br>
+				<%if((sorterDefault=='建立日期')||(sorterDefault=='更新日期')){%>
+					<input style="height:32px;width:180px;display:inline;" type="date" placeholder="" class="form-control" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode==13){linker();}">
+					&nbsp;~&nbsp;
+					<input style="height:32px;width:180px;display:inline;" type="date" placeholder="" class="form-control" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode==13){linker();}">
+				<%}else{%>
+					<input style="height:32px;width:180px;display:inline;" type="text" placeholder="下限(元/級)" class="form-control" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode==13){linker();}">
+					&nbsp;~&nbsp;
+					<input style="height:32px;width:180px;display:inline;" type="text" placeholder="上限(元/級)" class="form-control" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode==13){linker();}">
 				<%}%>
 				<br>
 				<br>
@@ -61,7 +76,7 @@
 						<table width="100%">
 							<tr>
 								<td>
-									<a style="font-size:15px;" href="/lender/lenderTransactionRecord?oneid=<%=jsonReturns[i].ToTransaction._id%>&filter=<%if(jsonReturns[i].ToTransaction.InsuranceFeePaid==0){%><%=encodeURIComponent('未保險')%><%}else if(jsonReturns[i].ToTransaction.InsuranceFeePaid>0){%><%=encodeURIComponent('已保險')%><%}%>&sorter=<%=encodeURIComponent('最新')%>&page=1">查看來源交易</a>
+									<a style="font-size:15px;" href="/lender/lenderTransactionRecord?oneid=<%=jsonReturns[i].ToTransaction._id%>&filter=<%if(jsonReturns[i].ToTransaction.InsuranceFeePaid==0){%><%=encodeURIComponent('未保險')%><%}else if(jsonReturns[i].ToTransaction.InsuranceFeePaid>0){%><%=encodeURIComponent('已保險')%><%}%>&sorter=<%=encodeURIComponent("建立日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">查看來源交易</a>
 								</td>
 							</tr>
 						</table>
@@ -363,15 +378,17 @@
 								</div>
 							</div>
 						</div>
-					<table width="100%">
-					<tr>
-						<td align="right">
-							<div>
-								Updated：<%=jsonReturns[i].Updated.getFullYear()%>/<%=jsonReturns[i].Updated.getMonth()+1%>/<%=jsonReturns[i].Updated.getDate()%>
-							</div>
-						</td>
-					<tr>
-					</table>
+					<div style="border-top-style: none;border-right-style: none;border-bottom-style: none;border-left-style: none;margin-top: 0px;margin-bottom: 0px;" class="table-responsive">
+						<table style="margin-bottom: 0px;margin-top: 0px;" class="table" width="100%">
+						<tr>
+							<td align="right" style="border-bottom-style: none;border-top-style: none;">
+								<div>
+									Updated：<%=jsonReturns[i].Updated.getFullYear()%>/<%=jsonReturns[i].Updated.getMonth()+1%>/<%=jsonReturns[i].Updated.getDate()%>&nbsp;&nbsp;&nbsp;&nbsp;Created：<%=jsonReturns[i].Created.getFullYear()%>/<%=jsonReturns[i].Created.getMonth()+1%>/<%=jsonReturns[i].Created.getDate()%>
+								</div>
+							</td>
+						<tr>
+						</table>
+					</div>
 					<br>
 				<%}%>
 				<br>
@@ -386,7 +403,7 @@
 									<%}%>
 								>
 								<% if(targetPageNumber!=1){%>
-									<a href="/lender/lenderReturnRecord?oneid=<%=encodeURIComponent(oneidDefault)%>&id=<%=encodeURIComponent(idDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=targetPageNumber-1%>">
+									<a href="/lender/lenderReturnRecord?oneid=<%=encodeURIComponent(oneidDefault)%>&id=<%=encodeURIComponent(idDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=targetPageNumber-1%>">
 								<%}else{%>
 									<a href="#" onclick="return false;">
 								<%}%>
@@ -397,7 +414,7 @@
 											<% if(targetPageNumber==j){%>
 												class="active"
 											<%}%>
-										><a href="/lender/lenderReturnRecord?oneid=<%=encodeURIComponent(oneidDefault)%>&id=<%=encodeURIComponent(idDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=j%>"><%=j%></a></li>
+										><a href="/lender/lenderReturnRecord?oneid=<%=encodeURIComponent(oneidDefault)%>&id=<%=encodeURIComponent(idDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=j%>"><%=j%></a></li>
 									<%}%>
 								<% }else{%>
 									<% if(targetPageNumber>=pageNumber-3){%>
@@ -406,7 +423,7 @@
 											<% if(targetPageNumber==j){%>
 												class="active"
 											<%}%>
-										><a href="/lender/lenderReturnRecord?oneid=<%=encodeURIComponent(oneidDefault)%>&id=<%=encodeURIComponent(idDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=j%>"><%=j%></a></li>
+										><a href="/lender/lenderReturnRecord?oneid=<%=encodeURIComponent(oneidDefault)%>&id=<%=encodeURIComponent(idDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=j%>"><%=j%></a></li>
 										<%}%>
 									<%}else if(targetPageNumber<=5){%>
 										<% for(var j=1; j<=10; j++) { %>
@@ -414,15 +431,15 @@
 											<% if(targetPageNumber==j){%>
 												class="active"
 											<%}%>
-										><a href="/lender/lenderReturnRecord?oneid=<%=encodeURIComponent(oneidDefault)%>&id=<%=encodeURIComponent(idDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=j%>"><%=j%></a></li>
+										><a href="/lender/lenderReturnRecord?oneid=<%=encodeURIComponent(oneidDefault)%>&id=<%=encodeURIComponent(idDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=j%>"><%=j%></a></li>
 										<%}%>
 									<%}else{%>
 										<% for(var j=targetPageNumber-5; j<targetPageNumber; j++) { %>
-										<li><a href="/lender/lenderReturnRecord?oneid=<%=encodeURIComponent(oneidDefault)%>&id=<%=encodeURIComponent(idDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=j%>"><%=j%></a></li>
+										<li><a href="/lender/lenderReturnRecord?oneid=<%=encodeURIComponent(oneidDefault)%>&id=<%=encodeURIComponent(idDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=j%>"><%=j%></a></li>
 										<%}%>
-										<li class="active"><a href="/lender/lenderReturnRecord?oneid=<%=encodeURIComponent(oneidDefault)%>&id=<%=encodeURIComponent(idDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=targetPageNumber%>"><%=targetPageNumber%></a></li>
+										<li class="active"><a href="/lender/lenderReturnRecord?oneid=<%=encodeURIComponent(oneidDefault)%>&id=<%=encodeURIComponent(idDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=targetPageNumber%>"><%=targetPageNumber%></a></li>
 										<% for(var j=targetPageNumber+1; j<=targetPageNumber+4; j++) { %>
-										<li><a href="/lender/lenderReturnRecord?oneid=<%=encodeURIComponent(oneidDefault)%>&id=<%=encodeURIComponent(idDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=j%>"><%=j%></a></li>
+										<li><a href="/lender/lenderReturnRecord?oneid=<%=encodeURIComponent(oneidDefault)%>&id=<%=encodeURIComponent(idDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=j%>"><%=j%></a></li>
 										<%}%>
 									<%}%>
 								<%}%>
@@ -432,7 +449,7 @@
 									<%}%>
 								>	
 								<% if(targetPageNumber!=pageNumber){%>
-									<a href="/lender/lenderReturnRecord?oneid=<%=encodeURIComponent(oneidDefault)%>&id=<%=encodeURIComponent(idDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&page=<%=targetPageNumber+1%>">
+									<a href="/lender/lenderReturnRecord?oneid=<%=encodeURIComponent(oneidDefault)%>&id=<%=encodeURIComponent(idDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=targetPageNumber+1%>">
 								<%}else{%>
 									<a href="#" onclick="return false;">
 								<%}%>
@@ -448,4 +465,67 @@
 		</div>
 	</div>
 </div>
+<script>
+	function sorterSelector(index){
+		$('#lbound').val('');
+		$('#ubound').val('');
+		if(($('#sorter'+index).text()=='建立日期')||($('#sorter'+index).text()=='更新日期')){
+			enableDater();
+		}else{
+			disableDater();
+		}
+		$('#sorterSelected').html('');
+		$('#sorterSelected').html($('#sorter'+index).text());
+		$('#sorter0').html($('#sorterSelected').text());
+		$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); 
+		for(i=1;i<=23;i++){
+			$('#slis'+i).attr('class','');
+		}
+		$('#slis'+index).attr('class','active');
+	}
+	
+	function directorSelector(index){
+		$('#directorSelected').html('');
+		$('#directorSelected').html($('#director'+index).text());
+		$('#director0').html($('#directorSelected').text());
+		$('#directorSelected').append(' <span class=\'caret\'><\/span>');
+		for(i=1;i<=2;i++){
+			$('#dlis'+i).attr('class','');
+		}
+		$('#dlis'+index).attr('class','active');
+	}
+	
+	<%if((sorterDefault=='建立日期')||(sorterDefault=='更新日期')){%>
+		var ifDater=true;
+	<%}else{%>
+		var ifDater=false;
+	<%}%>
+	function enableDater(){
+		if(!ifDater){
+			$('#lbound').attr('type','date');
+			$('#ubound').attr('type','date');
+			$('#lbound').attr('placeholder','');
+			$('#ubound').attr('placeholder','');
+			ifDater=true;
+		}
+	}
+	
+	function disableDater(){
+		if(ifDater){
+			$('#lbound').attr('type','text');
+			$('#ubound').attr('type','text');
+			$('#lbound').attr('placeholder','下限(元/級)');
+			$('#ubound').attr('placeholder','上限(元/級)');
+			ifDater=false;
+		}
+	}
+	
+	function linker(){
+		<%if(idDefault!=''){%>
+			window.open('/lender/lenderReturnRecord?oneid=<%=encodeURIComponent(oneidDefault)%>&id=<%=encodeURIComponent(idDefault)%>&sorter='+encodeURIComponent($('#sorter0').text())+'&director='+encodeURIComponent($('#director0').text())+'&lbound='+encodeURIComponent($('#lbound').val().trim())+'&ubound='+encodeURIComponent($('#ubound').val().trim())+'&page=1','_self');
+		<%}else{%>
+			window.open('/lender/lenderReturnRecord?oneid='+encodeURIComponent($('#oneidIpt').val())+'&id=<%=encodeURIComponent(idDefault)%>&sorter='+encodeURIComponent($('#sorter0').text())+'&director='+encodeURIComponent($('#director0').text())+'&lbound='+encodeURIComponent($('#lbound').val().trim())+'&ubound='+encodeURIComponent($('#ubound').val().trim())+'&page=1','_self');
+		<%}%>
+	}
+</script>
 <%- include('layout_footer',{imgSettingCode:"var ifLoadedCount=0;",imgDrawingCode:""}); -%>

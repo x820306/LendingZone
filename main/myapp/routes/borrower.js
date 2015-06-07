@@ -8,10 +8,10 @@ var express = require('express');
 var router = express.Router();
 
 router.get('/borrowPage',library.loginFormChecker, library.ensureAuthenticated, library.newMsgChecker, function(req, res) {
-	var stringArray=req.flash('borrowForm');
+	var stringArrayFlash=req.flash('borrowForm');
 	var borrowFormJson=null;
-	if(stringArray.length>0){
-		borrowFormJson=JSON.parse(stringArray[0]);
+	if(stringArrayFlash.length>0){
+		borrowFormJson=JSON.parse(stringArrayFlash[0]);
 	}
 	
 	library.formIdfrCtr+=1;

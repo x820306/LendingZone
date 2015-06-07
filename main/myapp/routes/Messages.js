@@ -355,8 +355,8 @@ function toLendCreatePart(res,req,borrow,lenderBankaccount,outterPara){
 																														from: 'LendingZone <lendingzonesystem@gmail.com>', // sender address
 																														to: lenderBankaccount.OwnedBy.Username+' <'+lenderBankaccount.OwnedBy.Email+'>', // list of receivers
 																														subject: borrow.CreatedBy.Username+'同意了您方才送出的欲借出訊息!', // Subject line
-																														text: '親愛的 '+lenderBankaccount.OwnedBy.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+borrow.CreatedBy.Username+' 同意了您方才在「'+borrow.StoryTitle+'("http://'+req.headers.host+'/lender/story?id='+borrow._id+'")」送出的欲借出訊息！'+String.fromCharCode(10)+'您的交易紅利代碼為： '+library.randomString(8)+String.fromCharCode(10)+'您可至 玉山銀行網站("http://www.esunbank.com.tw/") 兌換紅利喔!'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看訊息與交易結果:'+String.fromCharCode(10)+'"http://'+req.headers.host+'/lender/lenderSendMessages?msgKeyword='+newCreateUpdated._id+'&filter='+encodeURIComponent('已被同意')+'&sorter='+encodeURIComponent('最新')+'&page=1"', // plaintext body
-																														html: '<img src="cid:bpng" /><br><br>親愛的 '+lenderBankaccount.OwnedBy.Username+' 您好：<br><br>'+borrow.CreatedBy.Username+' 同意了您方才在「<a href="http://'+req.headers.host+'/lender/story?id='+borrow._id+'">'+borrow.StoryTitle+'</a>」送出的欲借出訊息！<br>您的交易紅利代碼為： <div style="color:#FF0000;display:inline;">'+library.randomString(8)+'</div><br>您可至 <a href="http://www.esunbank.com.tw/">玉山銀行網站</a> 兌換紅利喔!<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://'+req.headers.host+'/lender/lenderSendMessages?msgKeyword='+newCreateUpdated._id+'&filter='+encodeURIComponent('已被同意')+'&sorter='+encodeURIComponent('最新')+'&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看訊息與交易結果</span></a></td></tr></table>', 
+																														text: '親愛的 '+lenderBankaccount.OwnedBy.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+borrow.CreatedBy.Username+' 同意了您方才在「'+borrow.StoryTitle+'("http://'+req.headers.host+'/lender/story?id='+borrow._id+'")」送出的欲借出訊息！'+String.fromCharCode(10)+'您的交易紅利代碼為： '+library.randomString(8)+String.fromCharCode(10)+'您可至 玉山銀行網站("http://www.esunbank.com.tw/") 兌換紅利喔!'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看訊息與交易結果:'+String.fromCharCode(10)+'"http://'+req.headers.host+'/lender/lenderSendMessages?msgKeyword='+newCreateUpdated._id+'&filter='+encodeURIComponent('已被同意')+'&sorter='+encodeURIComponent('更新日期')+'&director='+encodeURIComponent('大至小')+'&lbound=&ubound=&page=1"', // plaintext body
+																														html: '<img src="cid:bpng" /><br><br>親愛的 '+lenderBankaccount.OwnedBy.Username+' 您好：<br><br>'+borrow.CreatedBy.Username+' 同意了您方才在「<a href="http://'+req.headers.host+'/lender/story?id='+borrow._id+'">'+borrow.StoryTitle+'</a>」送出的欲借出訊息！<br>您的交易紅利代碼為： <div style="color:#FF0000;display:inline;">'+library.randomString(8)+'</div><br>您可至 <a href="http://www.esunbank.com.tw/">玉山銀行網站</a> 兌換紅利喔!<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://'+req.headers.host+'/lender/lenderSendMessages?msgKeyword='+newCreateUpdated._id+'&filter='+encodeURIComponent('已被同意')+'&sorter='+encodeURIComponent('更新日期')+'&director='+encodeURIComponent('大至小')+'&lbound=&ubound=&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看訊息與交易結果</span></a></td></tr></table>', 
 																														attachments: [{
 																															filename: 'b.png',
 																															path: __dirname+'/../public/images/b.png',
@@ -374,8 +374,8 @@ function toLendCreatePart(res,req,borrow,lenderBankaccount,outterPara){
 																														from: 'LendingZone <lendingzonesystem@gmail.com>', // sender address
 																														to: borrow.CreatedBy.Username+' <'+borrow.CreatedBy.Email+'>', // list of receivers
 																														subject: '您同意了'+lenderBankaccount.OwnedBy.Username+'方才送來的欲借出訊息!', // Subject line
-																														text: '親愛的 '+borrow.CreatedBy.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+'您同意了 '+lenderBankaccount.OwnedBy.Username+' 方才在「'+borrow.StoryTitle+'("http://'+req.headers.host+'/lender/story?id='+borrow._id+'")」送來的欲借出訊息！'+String.fromCharCode(10)+'您的交易紅利代碼為： '+library.randomString(8)+String.fromCharCode(10)+'您可至 玉山銀行網站("http://www.esunbank.com.tw/") 兌換紅利喔!'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看訊息與交易結果:'+String.fromCharCode(10)+'"http://'+req.headers.host+'/lender/lenderSendMessages?msgKeyword='+newCreateUpdated._id+'&filter='+encodeURIComponent('已被同意')+'&sorter='+encodeURIComponent('最新')+'&page=1"', // plaintext body
-																														html: '<img src="cid:bpng" /><br><br>親愛的 '+borrow.CreatedBy.Username+' 您好：<br><br>您同意了 '+lenderBankaccount.OwnedBy.Username+' 方才在「<a href="http://'+req.headers.host+'/lender/story?id='+borrow._id+'">'+borrow.StoryTitle+'</a>」送來的欲借出訊息！<br>您的交易紅利代碼為： <div style="color:#FF0000;display:inline;">'+library.randomString(8)+'</div><br>您可至 <a href="http://www.esunbank.com.tw/">玉山銀行網站</a> 兌換紅利喔!<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://'+req.headers.host+'/lender/lenderSendMessages?msgKeyword='+newCreateUpdated._id+'&filter='+encodeURIComponent('已被同意')+'&sorter='+encodeURIComponent('最新')+'&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看訊息與交易結果</span></a></td></tr></table>', 
+																														text: '親愛的 '+borrow.CreatedBy.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+'您同意了 '+lenderBankaccount.OwnedBy.Username+' 方才在「'+borrow.StoryTitle+'("http://'+req.headers.host+'/lender/story?id='+borrow._id+'")」送來的欲借出訊息！'+String.fromCharCode(10)+'您的交易紅利代碼為： '+library.randomString(8)+String.fromCharCode(10)+'您可至 玉山銀行網站("http://www.esunbank.com.tw/") 兌換紅利喔!'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看訊息與交易結果:'+String.fromCharCode(10)+'"http://'+req.headers.host+'/lender/lenderSendMessages?msgKeyword='+newCreateUpdated._id+'&filter='+encodeURIComponent('已被同意')+'&sorter='+encodeURIComponent('更新日期')+'&director='+encodeURIComponent('大至小')+'&lbound=&ubound=&page=1"', // plaintext body
+																														html: '<img src="cid:bpng" /><br><br>親愛的 '+borrow.CreatedBy.Username+' 您好：<br><br>您同意了 '+lenderBankaccount.OwnedBy.Username+' 方才在「<a href="http://'+req.headers.host+'/lender/story?id='+borrow._id+'">'+borrow.StoryTitle+'</a>」送來的欲借出訊息！<br>您的交易紅利代碼為： <div style="color:#FF0000;display:inline;">'+library.randomString(8)+'</div><br>您可至 <a href="http://www.esunbank.com.tw/">玉山銀行網站</a> 兌換紅利喔!<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://'+req.headers.host+'/lender/lenderSendMessages?msgKeyword='+newCreateUpdated._id+'&filter='+encodeURIComponent('已被同意')+'&sorter='+encodeURIComponent('更新日期')+'&director='+encodeURIComponent('大至小')+'&lbound=&ubound=&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看訊息與交易結果</span></a></td></tr></table>', 
 																														attachments: [{
 																															filename: 'b.png',
 																															path: __dirname+'/../public/images/b.png',
@@ -420,8 +420,8 @@ function toLendCreatePart(res,req,borrow,lenderBankaccount,outterPara){
 														from: 'LendingZone <lendingzonesystem@gmail.com>', // sender address
 														to: borrow.CreatedBy.Username+' <'+borrow.CreatedBy.Email+'>', // list of receivers
 														subject: '您收到了來自'+lenderBankaccount.OwnedBy.Username+'的欲借出訊息!', // Subject line
-														text: '親愛的 '+borrow.CreatedBy.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+lenderBankaccount.OwnedBy.Username+' 想要資助您在「'+borrow.StoryTitle+'("http://'+req.headers.host+'/lender/story?id='+borrow._id+'")」的借款需求！'+String.fromCharCode(10)+'了解他所提供的資訊來決定是否要接受資助吧！'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看:'+String.fromCharCode(10)+'"http://'+req.headers.host+'/lender/lenderSendMessages?msgKeyword='+newCreate._id+'&filter='+encodeURIComponent('未被確認')+'&sorter='+encodeURIComponent('最新')+'&page=1"', // plaintext body
-														html: '<img src="cid:dpng" /><br><br>親愛的 '+borrow.CreatedBy.Username+' 您好：<br><br>'+lenderBankaccount.OwnedBy.Username+' 想要資助您在「<a href="http://'+req.headers.host+'/lender/story?id='+borrow._id+'">'+borrow.StoryTitle+'</a>」的借款需求！<br>了解他所提供的資訊來決定是否要接受資助吧！<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://'+req.headers.host+'/lender/lenderSendMessages?msgKeyword='+newCreate._id+'&filter='+encodeURIComponent('未被確認')+'&sorter='+encodeURIComponent('最新')+'&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看</span></a></td></tr></table>', 
+														text: '親愛的 '+borrow.CreatedBy.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+lenderBankaccount.OwnedBy.Username+' 想要資助您在「'+borrow.StoryTitle+'("http://'+req.headers.host+'/lender/story?id='+borrow._id+'")」的借款需求！'+String.fromCharCode(10)+'了解他所提供的資訊來決定是否要接受資助吧！'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看:'+String.fromCharCode(10)+'"http://'+req.headers.host+'/lender/lenderSendMessages?msgKeyword='+newCreate._id+'&filter='+encodeURIComponent('未被確認')+'&sorter='+encodeURIComponent('更新日期')+'&director='+encodeURIComponent('大至小')+'&lbound=&ubound=&page=1"', // plaintext body
+														html: '<img src="cid:dpng" /><br><br>親愛的 '+borrow.CreatedBy.Username+' 您好：<br><br>'+lenderBankaccount.OwnedBy.Username+' 想要資助您在「<a href="http://'+req.headers.host+'/lender/story?id='+borrow._id+'">'+borrow.StoryTitle+'</a>」的借款需求！<br>了解他所提供的資訊來決定是否要接受資助吧！<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://'+req.headers.host+'/lender/lenderSendMessages?msgKeyword='+newCreate._id+'&filter='+encodeURIComponent('未被確認')+'&sorter='+encodeURIComponent('更新日期')+'&director='+encodeURIComponent('大至小')+'&lbound=&ubound=&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看</span></a></td></tr></table>', 
 														attachments: [{
 															filename: 'd.png',
 															path: __dirname+'/../public/images/d.png',
@@ -439,8 +439,8 @@ function toLendCreatePart(res,req,borrow,lenderBankaccount,outterPara){
 														from: 'LendingZone <lendingzonesystem@gmail.com>', // sender address
 														to: lenderBankaccount.OwnedBy.Username+' <'+lenderBankaccount.OwnedBy.Email+'>', // list of receivers
 														subject: '您向'+borrow.CreatedBy.Username+'送出了欲借出訊息!', // Subject line
-														text: '親愛的 '+lenderBankaccount.OwnedBy.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+'您在「'+borrow.StoryTitle+'("http://'+req.headers.host+'/lender/story?id='+borrow._id+'")」向 '+borrow.CreatedBy.Username+' 送出了欲借出訊息！'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看:'+String.fromCharCode(10)+'"http://'+req.headers.host+'/lender/lenderSendMessages?msgKeyword='+newCreate._id+'&filter='+encodeURIComponent('未被確認')+'&sorter='+encodeURIComponent('最新')+'&page=1"', // plaintext body
-														html: '<img src="cid:dpng" /><br><br>親愛的 '+lenderBankaccount.OwnedBy.Username+' 您好：<br><br>您在「<a href="http://'+req.headers.host+'/lender/story?id='+borrow._id+'">'+borrow.StoryTitle+'</a>」向 '+borrow.CreatedBy.Username+' 送出了欲借出訊息！<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://'+req.headers.host+'/lender/lenderSendMessages?msgKeyword='+newCreate._id+'&filter='+encodeURIComponent('未被確認')+'&sorter='+encodeURIComponent('最新')+'&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看</span></a></td></tr></table>', 
+														text: '親愛的 '+lenderBankaccount.OwnedBy.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+'您在「'+borrow.StoryTitle+'("http://'+req.headers.host+'/lender/story?id='+borrow._id+'")」向 '+borrow.CreatedBy.Username+' 送出了欲借出訊息！'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看:'+String.fromCharCode(10)+'"http://'+req.headers.host+'/lender/lenderSendMessages?msgKeyword='+newCreate._id+'&filter='+encodeURIComponent('未被確認')+'&sorter='+encodeURIComponent('更新日期')+'&director='+encodeURIComponent('大至小')+'&lbound=&ubound=&page=1"', // plaintext body
+														html: '<img src="cid:dpng" /><br><br>親愛的 '+lenderBankaccount.OwnedBy.Username+' 您好：<br><br>您在「<a href="http://'+req.headers.host+'/lender/story?id='+borrow._id+'">'+borrow.StoryTitle+'</a>」向 '+borrow.CreatedBy.Username+' 送出了欲借出訊息！<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://'+req.headers.host+'/lender/lenderSendMessages?msgKeyword='+newCreate._id+'&filter='+encodeURIComponent('未被確認')+'&sorter='+encodeURIComponent('更新日期')+'&director='+encodeURIComponent('大至小')+'&lbound=&ubound=&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看</span></a></td></tr></table>', 
 														attachments: [{
 															filename: 'd.png',
 															path: __dirname+'/../public/images/d.png',
@@ -494,8 +494,8 @@ function toLendUpdatePart(res,req,innerPara,innerPara2,message){
 						from: 'LendingZone <lendingzonesystem@gmail.com>', // sender address
 						to: message.SendTo.Username+' <'+message.SendTo.Email+'>', // list of receivers
 						subject: message.CreatedBy.Username+'更新了他先前送來的欲借出訊息!', // Subject line
-						text: '親愛的 '+message.SendTo.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+message.CreatedBy.Username+' 更新了他先前在「'+message.FromBorrowRequest.StoryTitle+'("http://'+req.headers.host+'/lender/story?id='+message.FromBorrowRequest._id+'")」送來的欲借出訊息！'+String.fromCharCode(10)+'了解他所提供的資訊來決定是否要接受資助吧！'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看:'+String.fromCharCode(10)+'"http://'+req.headers.host+'/lender/lenderSendMessages?msgKeyword='+newUpdate._id+'&filter='+encodeURIComponent('未被確認')+'&sorter='+encodeURIComponent('最新')+'&page=1"', // plaintext body
-						html: '<img src="cid:dpng" /><br><br>親愛的 '+message.SendTo.Username+' 您好：<br><br>'+message.CreatedBy.Username+' 更新了他先前在「<a href="http://'+req.headers.host+'/lender/story?id='+message.FromBorrowRequest._id+'">'+message.FromBorrowRequest.StoryTitle+'</a>」送來的欲借出訊息！<br>了解他所提供的資訊來決定是否要接受資助吧！<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://'+req.headers.host+'/lender/lenderSendMessages?msgKeyword='+newUpdate._id+'&filter='+encodeURIComponent('未被確認')+'&sorter='+encodeURIComponent('最新')+'&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看</span></a></td></tr></table>', 
+						text: '親愛的 '+message.SendTo.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+message.CreatedBy.Username+' 更新了他先前在「'+message.FromBorrowRequest.StoryTitle+'("http://'+req.headers.host+'/lender/story?id='+message.FromBorrowRequest._id+'")」送來的欲借出訊息！'+String.fromCharCode(10)+'了解他所提供的資訊來決定是否要接受資助吧！'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看:'+String.fromCharCode(10)+'"http://'+req.headers.host+'/lender/lenderSendMessages?msgKeyword='+newUpdate._id+'&filter='+encodeURIComponent('未被確認')+'&sorter='+encodeURIComponent('更新日期')+'&director='+encodeURIComponent('大至小')+'&lbound=&ubound=&page=1"', // plaintext body
+						html: '<img src="cid:dpng" /><br><br>親愛的 '+message.SendTo.Username+' 您好：<br><br>'+message.CreatedBy.Username+' 更新了他先前在「<a href="http://'+req.headers.host+'/lender/story?id='+message.FromBorrowRequest._id+'">'+message.FromBorrowRequest.StoryTitle+'</a>」送來的欲借出訊息！<br>了解他所提供的資訊來決定是否要接受資助吧！<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://'+req.headers.host+'/lender/lenderSendMessages?msgKeyword='+newUpdate._id+'&filter='+encodeURIComponent('未被確認')+'&sorter='+encodeURIComponent('更新日期')+'&director='+encodeURIComponent('大至小')+'&lbound=&ubound=&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看</span></a></td></tr></table>', 
 						attachments: [{
 							filename: 'd.png',
 							path: __dirname+'/../public/images/d.png',
@@ -513,8 +513,8 @@ function toLendUpdatePart(res,req,innerPara,innerPara2,message){
 						from: 'LendingZone <lendingzonesystem@gmail.com>', // sender address
 						to: message.CreatedBy.Username+' <'+message.CreatedBy.Email+'>', // list of receivers
 						subject: '您更新了先前向'+message.SendTo.Username+'送出的欲借出訊息!', // Subject line
-						text: '親愛的 '+message.CreatedBy.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+'您更新了先前在「'+message.FromBorrowRequest.StoryTitle+'("http://'+req.headers.host+'/lender/story?id='+message.FromBorrowRequest._id+'")」向 '+message.SendTo.Username+' 送出的欲借出訊息！'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看:'+String.fromCharCode(10)+'"http://'+req.headers.host+'/lender/lenderSendMessages?msgKeyword='+newUpdate._id+'&filter='+encodeURIComponent('未被確認')+'&sorter='+encodeURIComponent('最新')+'&page=1"', // plaintext body
-						html: '<img src="cid:dpng" /><br><br>親愛的 '+message.CreatedBy.Username+' 您好：<br><br>您更新了先前在「<a href="http://'+req.headers.host+'/lender/story?id='+message.FromBorrowRequest._id+'">'+message.FromBorrowRequest.StoryTitle+'</a>」向 '+message.SendTo.Username+' 送出的欲借出訊息！<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://'+req.headers.host+'/lender/lenderSendMessages?msgKeyword='+newUpdate._id+'&filter='+encodeURIComponent('未被確認')+'&sorter='+encodeURIComponent('最新')+'&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看</span></a></td></tr></table>', 
+						text: '親愛的 '+message.CreatedBy.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+'您更新了先前在「'+message.FromBorrowRequest.StoryTitle+'("http://'+req.headers.host+'/lender/story?id='+message.FromBorrowRequest._id+'")」向 '+message.SendTo.Username+' 送出的欲借出訊息！'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看:'+String.fromCharCode(10)+'"http://'+req.headers.host+'/lender/lenderSendMessages?msgKeyword='+newUpdate._id+'&filter='+encodeURIComponent('未被確認')+'&sorter='+encodeURIComponent('更新日期')+'&director='+encodeURIComponent('大至小')+'&lbound=&ubound=&page=1"', // plaintext body
+						html: '<img src="cid:dpng" /><br><br>親愛的 '+message.CreatedBy.Username+' 您好：<br><br>您更新了先前在「<a href="http://'+req.headers.host+'/lender/story?id='+message.FromBorrowRequest._id+'">'+message.FromBorrowRequest.StoryTitle+'</a>」向 '+message.SendTo.Username+' 送出的欲借出訊息！<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://'+req.headers.host+'/lender/lenderSendMessages?msgKeyword='+newUpdate._id+'&filter='+encodeURIComponent('未被確認')+'&sorter='+encodeURIComponent('更新日期')+'&director='+encodeURIComponent('大至小')+'&lbound=&ubound=&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看</span></a></td></tr></table>', 
 						attachments: [{
 							filename: 'd.png',
 							path: __dirname+'/../public/images/d.png',
@@ -551,7 +551,7 @@ router.post('/rejectToBorrowMessageInLRM',library.loginFormChecker, library.ensu
 	req.body.array=JSONobj.array;
 	if(req.body.array.length>0){
 		var infoJson={counter1:req.body.array.length,counter2:0};
-		library.rejectMessage(true,0,req.body.array.length,null,req,res,false,'/lender/lenderReceiveMessages?msgKeyword=&filter='+encodeURIComponent('已婉拒')+'&sorter='+encodeURIComponent('最新')+'&page=1',infoJson);
+		library.rejectMessage(true,0,req.body.array.length,null,req,res,false,'/lender/lenderReceiveMessages?msgKeyword=&filter='+encodeURIComponent('已婉拒')+'&sorter='+encodeURIComponent('更新日期')+'&director='+encodeURIComponent('大至小')+'&lbound=&ubound=&page=1',infoJson);
 	}
 });
 
@@ -560,38 +560,176 @@ router.post('/confirmToBorrowMessageInLRM',library.loginFormChecker, library.ens
 	req.body.array=JSONobj.array;
 	if(req.body.array.length>0){
 		var infoJson={counter1:req.body.array.length,counter2:0,info1:0,info2:0,info3:0,info4:0};
-		library.confirmToBorrowMessage(true,0,req.body.array.length,null,req,res,false,'/lender/lenderReceiveMessages?msgKeyword=&filter='+encodeURIComponent('已同意')+'&sorter='+encodeURIComponent('最新')+'&page=1',true,infoJson);
+		library.confirmToBorrowMessage(true,0,req.body.array.length,null,req,res,false,'/lender/lenderReceiveMessages?msgKeyword=&filter='+encodeURIComponent('已同意')+'&sorter='+encodeURIComponent('更新日期')+'&director='+encodeURIComponent('大至小')+'&lbound=&ubound=&page=1',true,infoJson);
 	}
 });
 
 router.post('/rejectToBorrowMessageInLRMall',library.loginFormChecker, library.ensureAuthenticated, function(req, res, next) {
 	var msgKeyword=sanitizer.sanitize(req.body.msgKeyword.trim());
 	var sorter=sanitizer.sanitize(req.body.sorter.trim());
-	var sorterRec=null;
-	if(sorter=='最新'){
-		sorterRec="-Updated";
-	}else if(sorter=='利率最高'){
-		sorterRec="-InterestRate";
-	}else if(sorter=='金額最高'){
-		sorterRec="-MoneyToLend";
-	}else if(sorter=='期數最多'){
-		sorterRec="-MonthPeriod";
-	}else if(sorter=='信用等級最高'){
-		sorterRec="-Level";
-	}else if(sorter=='預計總利息最高'){
-		sorterRec="-Updated";
-	}else if(sorter=='預計平均利息最高'){
-		sorterRec="-Updated";
-	}else if(sorter=='預計平均本利和最高'){
-		sorterRec="-Updated";
-	}else if(sorter=='預計利本比最高'){
-		sorterRec="-Updated";
-	}else{
-		sorter='最新';
-		sorterRec="-Updated";
+	var director=sanitizer.sanitize(req.body.director.trim());
+	var lbound=sanitizer.sanitize(req.body.lbound.trim());
+	var ubound=sanitizer.sanitize(req.body.ubound.trim());
+	
+	if((director!='大至小')&&(director!='小至大')){
+		director='大至小';
 	}
 	
-	var stringArray=msgKeyword.replace(/\s\s+/g,' ').split(' ');
+	var sorterRec=null;
+	var sorterRecReserve=null;
+	
+	if(sorter=='更新日期'){
+		sorterRecReserve='Updated';
+	}else if(sorter=='建立日期'){
+		sorterRecReserve='Created';
+	}else if(sorter=='利率'){
+		sorterRecReserve='InterestRate';
+	}else if(sorter=='金額'){
+		sorterRecReserve='MoneyToLend';
+	}else if(sorter=='期數'){
+		sorterRecReserve='MonthPeriod';
+	}else if(sorter=='信用等級'){
+		sorterRecReserve='Level';
+	}else if(sorter=='預計總利息'){
+		sorterRecReserve='Updated';
+	}else if(sorter=='預計平均利息'){
+		sorterRecReserve='Updated';
+	}else if(sorter=='預計平均本利和'){
+		sorterRecReserve='Updated';
+	}else if(sorter=='預計利本比'){
+		sorterRecReserve='Updated';
+	}else{
+		sorterRecReserve='Updated';
+		sorter='更新日期';
+	}
+	sorterRec=library.directorDivider(director,sorterRecReserve,true);
+	
+	var lboundRec=null;
+	var uboundRec=null;
+	var revereDetector1=null;
+	var revereDetector2=null;
+	if((sorter=='利率')||(sorter=='預計利本比')){
+		var tester;
+		if(lbound.trim()!=''){
+			tester=parseFloat(lbound);
+			if(!isNaN(tester)){
+				if(tester>=0){
+					if(sorter=='利率'){
+						lboundRec=(tester/100)+library.serviceChargeRate;//scr
+					}else if(sorter=='預計利本比'){
+						lboundRec=(tester/100);
+					}
+				}else{
+					lbound='';
+				}
+			}else{
+				lbound='';
+			}
+		}
+		if(ubound.trim()!=''){
+			tester=parseFloat(ubound);
+			if(!isNaN(tester)){
+				if(tester>=0){
+					if(sorter=='利率'){
+						uboundRec=(tester/100)+library.serviceChargeRate;//scr
+					}else if(sorter=='預計利本比'){
+						uboundRec=(tester/100);
+					}
+				}else{
+					ubound='';
+				}
+			}else{
+				ubound='';
+			}
+		}
+		revereDetector1=lboundRec;
+		revereDetector2=uboundRec;
+	}else if((sorter=='更新日期')||(sorter=='建立日期')){
+		var tester;
+		if(lbound.trim()!=''){
+			tester=Date.parse(lbound);
+			if(!isNaN(tester)){
+				lboundRec=new Date(tester);
+			}else{
+				lbound='';
+			}
+		}
+		if(ubound.trim()!=''){
+			tester=Date.parse(ubound);
+			if(!isNaN(tester)){
+				uboundRec=new Date(tester);
+			}else{
+				ubound='';
+			}
+		}
+		if(lboundRec!==null){
+			revereDetector1=lboundRec.getTime();
+		}
+		if(uboundRec!==null){
+			revereDetector2=uboundRec.getTime();
+		}
+	}else{
+		var tester;
+		if(lbound.trim()!=''){
+			tester=parseInt(lbound);
+			if(!isNaN(tester)){
+				if(tester>=0){
+					lboundRec=tester;
+				}else{
+					lbound='';
+				}
+			}else{
+				lbound='';
+			}
+		}
+		if(ubound.trim()!=''){
+			tester=parseInt(ubound);
+			if(!isNaN(tester)){
+				if(tester>=0){
+					uboundRec=tester;
+				}else{
+					ubound='';
+				}
+			}else{
+				ubound='';
+			}
+		}
+		revereDetector1=lboundRec;
+		revereDetector2=uboundRec;
+	}
+	if((revereDetector1!==null)&&(revereDetector2!==null)){
+		if(revereDetector1>revereDetector2){
+			var temp;
+			temp=lboundRec;
+			lboundRec=uboundRec;
+			uboundRec=temp;
+			temp=lbound;
+			lbound=ubound;
+			ubound=temp;
+		}
+	}
+	
+	var andFindCmdAry=[];
+	andFindCmdAry.push({"SendTo": req.user._id});
+	andFindCmdAry.push({"Type": "toBorrow"});
+	andFindCmdAry.push({"Status": "NotConfirmed"});
+	
+	if((sorter!='預計總利息')&&(sorter!='預計平均利息')&&(sorter!='預計平均本利和')&&(sorter!='預計利本比')){
+		var jsonTemp={};
+		if((lboundRec!==null)&&(uboundRec!==null)){
+			jsonTemp[sorterRecReserve]={"$gte": lboundRec, "$lte": uboundRec};
+			andFindCmdAry.push(jsonTemp);
+		}else if(lboundRec!==null){
+			jsonTemp[sorterRecReserve]={"$gte": lboundRec};
+			andFindCmdAry.push(jsonTemp);
+		}else if(uboundRec!==null){
+			jsonTemp[sorterRecReserve]={"$lte": uboundRec};
+			andFindCmdAry.push(jsonTemp);
+		}
+	}
+	
+	var msgKeyword=msgKeyword.replace(/\s\s+/g,' ');
+	var stringArray=msgKeyword.split(' ');
 	var keywordArray=[];
 	for(i=0;i<stringArray.length;i++){
 		keywordArray.push(new RegExp(stringArray[i],'i'));
@@ -601,7 +739,7 @@ router.post('/rejectToBorrowMessageInLRMall',library.loginFormChecker, library.e
 		msgObjID=mongoose.Types.ObjectId(stringArray[0]);
 	}
 	
-	Messages.find({$and:[{"SendTo": req.user._id},{"Type": "toBorrow"},{"Status": "NotConfirmed"}]}).populate('CreatedBy', 'Username').populate('FromBorrowRequest', 'StoryTitle').sort(sorterRec).exec(function (err, messages){
+	Messages.find({$and:andFindCmdAry}).populate('CreatedBy', 'Username').populate('FromBorrowRequest', 'StoryTitle').sort(sorterRec).exec(function (err, messages){
 		if (err) {
 			console.log(err);
 			res.redirect('/message?content='+encodeURIComponent('錯誤!'));
@@ -610,12 +748,11 @@ router.post('/rejectToBorrowMessageInLRMall',library.loginFormChecker, library.e
 				res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 			}else{
 				for(j=messages.length-1;j>-1;j--){
+					var testString=messages[j].Message+' '+messages[j].FromBorrowRequest.StoryTitle+' '+messages[j].CreatedBy.Username;
 					var localFlag=[];
 					var ctr;
 					localFlag[0]=false;
 					localFlag[1]=false;
-					localFlag[2]=false;
-					localFlag[3]=false;
 					
 					if(msgObjID){
 						if(msgObjID.equals(messages[j]._id)){
@@ -625,7 +762,7 @@ router.post('/rejectToBorrowMessageInLRMall',library.loginFormChecker, library.e
 					
 					ctr=0;
 					for(k=0;k<keywordArray.length;k++){
-						if(messages[j].Message.search(keywordArray[k])>-1){
+						if(testString.search(keywordArray[k])>-1){
 							ctr++;
 						}
 					}
@@ -633,66 +770,66 @@ router.post('/rejectToBorrowMessageInLRMall',library.loginFormChecker, library.e
 						localFlag[1]=true;
 					}
 					
-					ctr=0;
-					for(k=0;k<keywordArray.length;k++){
-						if(messages[j].FromBorrowRequest.StoryTitle.search(keywordArray[k])>-1){
-							ctr++;
-						}
-					}
-					if(ctr==keywordArray.length){
-						localFlag[2]=true;
-					}
-					
-					ctr=0;
-					for(k=0;k<keywordArray.length;k++){
-						if(messages[j].CreatedBy.Username.search(keywordArray[k])>-1){
-							ctr++;
-						}
-					}
-					if(ctr==keywordArray.length){
-						localFlag[3]=true;
-					}
-					
-					if((!localFlag[0])&&(!localFlag[1])&&(!localFlag[2])&&(!localFlag[3])){
+					if((!localFlag[0])&&(!localFlag[1])){
 						messages.splice(j, 1);
+					}
+				}
+				
+				if((sorter=='預計總利息')||(sorter=='預計利本比')||(sorter=='預計平均利息')||(sorter=='預計平均本利和')){
+					for(i=0;i<messages.length;i++){
+						messages[i].InterestRate-=library.serviceChargeRate;//scr
+						messages[i].InterestInFuture=library.interestInFutureCalculator(messages[i].MoneyToLend,messages[i].InterestRate,messages[i].MonthPeriod);
+						if(messages[i].MoneyToLend>0){
+							messages[i].InterestInFutureDivMoney=messages[i].InterestInFuture/messages[i].MoneyToLend;
+						}else{
+							messages[i].InterestInFutureDivMoney=0;
+						}
+						if(messages[i].MonthPeriod>0){
+							messages[i].InterestInFutureMonth=messages[i].InterestInFuture/messages[i].MonthPeriod;
+						}else{
+							messages[i].InterestInFutureMonth=0;
+						}
+						if(messages[i].MonthPeriod>0){
+							messages[i].InterestInFutureMoneyMonth=(messages[i].InterestInFuture+messages[i].MoneyToLend)/messages[i].MonthPeriod;
+						}else{
+							messages[i].InterestInFutureMoneyMonth=0;
+						}
+					}
+					
+					if(sorter=='預計總利息'){
+						if(director=='大至小'){
+							messages.sort(function(a,b) { return parseFloat(b.InterestInFuture) - parseFloat(a.InterestInFuture)} );
+						}else if(director=='小至大'){
+							messages.sort(function(a,b) { return parseFloat(a.InterestInFuture) - parseFloat(b.InterestInFuture)} );
+						}
+						library.arrayFilter(messages,'InterestInFuture',lboundRec,uboundRec);	
+					}else if(sorter=='預計平均利息'){
+						if(director=='大至小'){
+							messages.sort(function(a,b) { return parseFloat(b.InterestInFutureMonth) - parseFloat(a.InterestInFutureMonth)} );
+						}else if(director=='小至大'){
+							messages.sort(function(a,b) { return parseFloat(a.InterestInFutureMonth) - parseFloat(b.InterestInFutureMonth)} );
+						}
+						library.arrayFilter(messages,'InterestInFutureMonth',lboundRec,uboundRec);	
+					}else if(sorter=='預計平均本利和'){
+						if(director=='大至小'){
+							messages.sort(function(a,b) { return parseFloat(b.InterestInFutureMoneyMonth) - parseFloat(a.InterestInFutureMoneyMonth)} );
+						}else if(director=='小至大'){
+							messages.sort(function(a,b) { return parseFloat(a.InterestInFutureMoneyMonth) - parseFloat(b.InterestInFutureMoneyMonth)} );
+						}
+						library.arrayFilter(messages,'InterestInFutureMoneyMonth',lboundRec,uboundRec);	
+					}else if(sorter=='預計利本比'){
+						if(director=='大至小'){
+							messages.sort(function(a,b) { return parseFloat(b.InterestInFutureDivMoney) - parseFloat(a.InterestInFutureDivMoney)} );
+						}else if(director=='小至大'){
+							messages.sort(function(a,b) { return parseFloat(a.InterestInFutureDivMoney) - parseFloat(b.InterestInFutureDivMoney)} );
+						}
+						library.arrayFilter(messages,'InterestInFutureDivMoney',lboundRec,uboundRec);	
 					}
 				}
 				
 				if(messages.length==0){
 					res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 				}else{
-					if((sorter=='預計總利息最高')||(sorter=='預計利本比最高')||(sorter=='預計平均利息最高')||(sorter=='預計平均本利和最高')){
-						for(i=0;i<messages.length;i++){
-							messages[i].InterestRate-=library.serviceChargeRate;//scr
-							messages[i].InterestInFuture=library.interestInFutureCalculator(messages[i].MoneyToLend,messages[i].InterestRate,messages[i].MonthPeriod);
-							if(messages[i].MoneyToLend>0){
-								messages[i].InterestInFutureDivMoney=messages[i].InterestInFuture/messages[i].MoneyToLend;
-							}else{
-								messages[i].InterestInFutureDivMoney=0;
-							}
-							if(messages[i].MonthPeriod>0){
-								messages[i].InterestInFutureMonth=messages[i].InterestInFuture/messages[i].MonthPeriod;
-							}else{
-								messages[i].InterestInFutureMonth=0;
-							}
-							if(messages[i].MonthPeriod>0){
-								messages[i].InterestInFutureMoneyMonth=(messages[i].InterestInFuture+messages[i].MoneyToLend)/messages[i].MonthPeriod;
-							}else{
-								messages[i].InterestInFutureMoneyMonth=0;
-							}
-						}
-						
-						if(sorter=='預計總利息最高'){
-							messages.sort(function(a,b) { return parseFloat(b.InterestInFuture) - parseFloat(a.InterestInFuture)} );
-						}else if(sorter=='預計平均利息最高'){
-							messages.sort(function(a,b) { return parseFloat(b.InterestInFutureMonth) - parseFloat(a.InterestInFutureMonth)} );
-						}else if(sorter=='預計平均本利和最高'){
-							messages.sort(function(a,b) { return parseFloat(b.InterestInFutureMoneyMonth) - parseFloat(a.InterestInFutureMoneyMonth)} );
-						}else if(sorter=='預計利本比最高'){
-							messages.sort(function(a,b) { return parseFloat(b.InterestInFutureDivMoney) - parseFloat(a.InterestInFutureDivMoney) } );
-						}
-					}
-					
 					var arrayOp=[];
 					for(i=0;i<messages.length;i++){
 						var temp={MessageID:messages[i]._id};
@@ -700,7 +837,7 @@ router.post('/rejectToBorrowMessageInLRMall',library.loginFormChecker, library.e
 					}
 					req.body.array=arrayOp;
 					var infoJson={counter1:req.body.array.length,counter2:0};
-					library.rejectMessage(true,0,req.body.array.length,null,req,res,false,'/lender/lenderReceiveMessages?msgKeyword=&filter='+encodeURIComponent('已婉拒')+'&sorter='+encodeURIComponent('最新')+'&page=1',infoJson);
+					library.rejectMessage(true,0,req.body.array.length,null,req,res,false,'/lender/lenderReceiveMessages?msgKeyword=&filter='+encodeURIComponent('已婉拒')+'&sorter='+encodeURIComponent('更新日期')+'&director='+encodeURIComponent('大至小')+'&lbound=&ubound=&page=1',infoJson);
 				}
 			}
 		}
@@ -710,31 +847,169 @@ router.post('/rejectToBorrowMessageInLRMall',library.loginFormChecker, library.e
 router.post('/confirmToBorrowMessageInLRMall',library.loginFormChecker, library.ensureAuthenticated, function(req, res, next) {
 	var msgKeyword=sanitizer.sanitize(req.body.msgKeyword.trim());
 	var sorter=sanitizer.sanitize(req.body.sorter.trim());
-	var sorterRec=null;
-	if(sorter=='最新'){
-		sorterRec="-Updated";
-	}else if(sorter=='利率最高'){
-		sorterRec="-InterestRate";
-	}else if(sorter=='金額最高'){
-		sorterRec="-MoneyToLend";
-	}else if(sorter=='期數最多'){
-		sorterRec="-MonthPeriod";
-	}else if(sorter=='信用等級最高'){
-		sorterRec="-Level";
-	}else if(sorter=='預計總利息最高'){
-		sorterRec="-Updated";
-	}else if(sorter=='預計平均利息最高'){
-		sorterRec="-Updated";
-	}else if(sorter=='預計平均本利和最高'){
-		sorterRec="-Updated";
-	}else if(sorter=='預計利本比最高'){
-		sorterRec="-Updated";
-	}else{
-		sorter='最新';
-		sorterRec="-Updated";
+	var director=sanitizer.sanitize(req.body.director.trim());
+	var lbound=sanitizer.sanitize(req.body.lbound.trim());
+	var ubound=sanitizer.sanitize(req.body.ubound.trim());
+	
+	if((director!='大至小')&&(director!='小至大')){
+		director='大至小';
 	}
 	
-	var stringArray=msgKeyword.replace(/\s\s+/g,' ').split(' ');
+	var sorterRec=null;
+	var sorterRecReserve=null;
+	
+	if(sorter=='更新日期'){
+		sorterRecReserve='Updated';
+	}else if(sorter=='建立日期'){
+		sorterRecReserve='Created';
+	}else if(sorter=='利率'){
+		sorterRecReserve='InterestRate';
+	}else if(sorter=='金額'){
+		sorterRecReserve='MoneyToLend';
+	}else if(sorter=='期數'){
+		sorterRecReserve='MonthPeriod';
+	}else if(sorter=='信用等級'){
+		sorterRecReserve='Level';
+	}else if(sorter=='預計總利息'){
+		sorterRecReserve='Updated';
+	}else if(sorter=='預計平均利息'){
+		sorterRecReserve='Updated';
+	}else if(sorter=='預計平均本利和'){
+		sorterRecReserve='Updated';
+	}else if(sorter=='預計利本比'){
+		sorterRecReserve='Updated';
+	}else{
+		sorterRecReserve='Updated';
+		sorter='更新日期';
+	}
+	sorterRec=library.directorDivider(director,sorterRecReserve,true);
+	
+	var lboundRec=null;
+	var uboundRec=null;
+	var revereDetector1=null;
+	var revereDetector2=null;
+	if((sorter=='利率')||(sorter=='預計利本比')){
+		var tester;
+		if(lbound.trim()!=''){
+			tester=parseFloat(lbound);
+			if(!isNaN(tester)){
+				if(tester>=0){
+					if(sorter=='利率'){
+						lboundRec=(tester/100)+library.serviceChargeRate;//scr
+					}else if(sorter=='預計利本比'){
+						lboundRec=(tester/100);
+					}
+				}else{
+					lbound='';
+				}
+			}else{
+				lbound='';
+			}
+		}
+		if(ubound.trim()!=''){
+			tester=parseFloat(ubound);
+			if(!isNaN(tester)){
+				if(tester>=0){
+					if(sorter=='利率'){
+						uboundRec=(tester/100)+library.serviceChargeRate;//scr
+					}else if(sorter=='預計利本比'){
+						uboundRec=(tester/100);
+					}
+				}else{
+					ubound='';
+				}
+			}else{
+				ubound='';
+			}
+		}
+		revereDetector1=lboundRec;
+		revereDetector2=uboundRec;
+	}else if((sorter=='更新日期')||(sorter=='建立日期')){
+		var tester;
+		if(lbound.trim()!=''){
+			tester=Date.parse(lbound);
+			if(!isNaN(tester)){
+				lboundRec=new Date(tester);
+			}else{
+				lbound='';
+			}
+		}
+		if(ubound.trim()!=''){
+			tester=Date.parse(ubound);
+			if(!isNaN(tester)){
+				uboundRec=new Date(tester);
+			}else{
+				ubound='';
+			}
+		}
+		if(lboundRec!==null){
+			revereDetector1=lboundRec.getTime();
+		}
+		if(uboundRec!==null){
+			revereDetector2=uboundRec.getTime();
+		}
+	}else{
+		var tester;
+		if(lbound.trim()!=''){
+			tester=parseInt(lbound);
+			if(!isNaN(tester)){
+				if(tester>=0){
+					lboundRec=tester;
+				}else{
+					lbound='';
+				}
+			}else{
+				lbound='';
+			}
+		}
+		if(ubound.trim()!=''){
+			tester=parseInt(ubound);
+			if(!isNaN(tester)){
+				if(tester>=0){
+					uboundRec=tester;
+				}else{
+					ubound='';
+				}
+			}else{
+				ubound='';
+			}
+		}
+		revereDetector1=lboundRec;
+		revereDetector2=uboundRec;
+	}
+	if((revereDetector1!==null)&&(revereDetector2!==null)){
+		if(revereDetector1>revereDetector2){
+			var temp;
+			temp=lboundRec;
+			lboundRec=uboundRec;
+			uboundRec=temp;
+			temp=lbound;
+			lbound=ubound;
+			ubound=temp;
+		}
+	}
+	
+	var andFindCmdAry=[];
+	andFindCmdAry.push({"SendTo": req.user._id});
+	andFindCmdAry.push({"Type": "toBorrow"});
+	andFindCmdAry.push({"Status": "NotConfirmed"});
+	
+	if((sorter!='預計總利息')&&(sorter!='預計平均利息')&&(sorter!='預計平均本利和')&&(sorter!='預計利本比')){
+		var jsonTemp={};
+		if((lboundRec!==null)&&(uboundRec!==null)){
+			jsonTemp[sorterRecReserve]={"$gte": lboundRec, "$lte": uboundRec};
+			andFindCmdAry.push(jsonTemp);
+		}else if(lboundRec!==null){
+			jsonTemp[sorterRecReserve]={"$gte": lboundRec};
+			andFindCmdAry.push(jsonTemp);
+		}else if(uboundRec!==null){
+			jsonTemp[sorterRecReserve]={"$lte": uboundRec};
+			andFindCmdAry.push(jsonTemp);
+		}
+	}
+	
+	var msgKeyword=msgKeyword.replace(/\s\s+/g,' ');
+	var stringArray=msgKeyword.split(' ');
 	var keywordArray=[];
 	for(i=0;i<stringArray.length;i++){
 		keywordArray.push(new RegExp(stringArray[i],'i'));
@@ -744,7 +1019,7 @@ router.post('/confirmToBorrowMessageInLRMall',library.loginFormChecker, library.
 		msgObjID=mongoose.Types.ObjectId(stringArray[0]);
 	}
 	
-	Messages.find({$and:[{"SendTo": req.user._id},{"Type": "toBorrow"},{"Status": "NotConfirmed"}]}).populate('CreatedBy', 'Username').populate('FromBorrowRequest', 'StoryTitle').sort(sorterRec).exec(function (err, messages){
+	Messages.find({$and:andFindCmdAry}).populate('CreatedBy', 'Username').populate('FromBorrowRequest', 'StoryTitle').sort(sorterRec).exec(function (err, messages){
 		if (err) {
 			console.log(err);
 			res.redirect('/message?content='+encodeURIComponent('錯誤!'));
@@ -753,12 +1028,11 @@ router.post('/confirmToBorrowMessageInLRMall',library.loginFormChecker, library.
 				res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 			}else{
 				for(j=messages.length-1;j>-1;j--){
+					var testString=messages[j].Message+' '+messages[j].FromBorrowRequest.StoryTitle+' '+messages[j].CreatedBy.Username;
 					var localFlag=[];
 					var ctr;
 					localFlag[0]=false;
 					localFlag[1]=false;
-					localFlag[2]=false;
-					localFlag[3]=false;
 					
 					if(msgObjID){
 						if(msgObjID.equals(messages[j]._id)){
@@ -768,7 +1042,7 @@ router.post('/confirmToBorrowMessageInLRMall',library.loginFormChecker, library.
 					
 					ctr=0;
 					for(k=0;k<keywordArray.length;k++){
-						if(messages[j].Message.search(keywordArray[k])>-1){
+						if(testString.search(keywordArray[k])>-1){
 							ctr++;
 						}
 					}
@@ -776,66 +1050,66 @@ router.post('/confirmToBorrowMessageInLRMall',library.loginFormChecker, library.
 						localFlag[1]=true;
 					}
 					
-					ctr=0;
-					for(k=0;k<keywordArray.length;k++){
-						if(messages[j].FromBorrowRequest.StoryTitle.search(keywordArray[k])>-1){
-							ctr++;
-						}
-					}
-					if(ctr==keywordArray.length){
-						localFlag[2]=true;
-					}
-					
-					ctr=0;
-					for(k=0;k<keywordArray.length;k++){
-						if(messages[j].CreatedBy.Username.search(keywordArray[k])>-1){
-							ctr++;
-						}
-					}
-					if(ctr==keywordArray.length){
-						localFlag[3]=true;
-					}
-					
-					if((!localFlag[0])&&(!localFlag[1])&&(!localFlag[2])&&(!localFlag[3])){
+					if((!localFlag[0])&&(!localFlag[1])){
 						messages.splice(j, 1);
+					}
+				}
+				
+				if((sorter=='預計總利息')||(sorter=='預計利本比')||(sorter=='預計平均利息')||(sorter=='預計平均本利和')){
+					for(i=0;i<messages.length;i++){
+						messages[i].InterestRate-=library.serviceChargeRate;//scr
+						messages[i].InterestInFuture=library.interestInFutureCalculator(messages[i].MoneyToLend,messages[i].InterestRate,messages[i].MonthPeriod);
+						if(messages[i].MoneyToLend>0){
+							messages[i].InterestInFutureDivMoney=messages[i].InterestInFuture/messages[i].MoneyToLend;
+						}else{
+							messages[i].InterestInFutureDivMoney=0;
+						}
+						if(messages[i].MonthPeriod>0){
+							messages[i].InterestInFutureMonth=messages[i].InterestInFuture/messages[i].MonthPeriod;
+						}else{
+							messages[i].InterestInFutureMonth=0;
+						}
+						if(messages[i].MonthPeriod>0){
+							messages[i].InterestInFutureMoneyMonth=(messages[i].InterestInFuture+messages[i].MoneyToLend)/messages[i].MonthPeriod;
+						}else{
+							messages[i].InterestInFutureMoneyMonth=0;
+						}
+					}
+					
+					if(sorter=='預計總利息'){
+						if(director=='大至小'){
+							messages.sort(function(a,b) { return parseFloat(b.InterestInFuture) - parseFloat(a.InterestInFuture)} );
+						}else if(director=='小至大'){
+							messages.sort(function(a,b) { return parseFloat(a.InterestInFuture) - parseFloat(b.InterestInFuture)} );
+						}
+						library.arrayFilter(messages,'InterestInFuture',lboundRec,uboundRec);	
+					}else if(sorter=='預計平均利息'){
+						if(director=='大至小'){
+							messages.sort(function(a,b) { return parseFloat(b.InterestInFutureMonth) - parseFloat(a.InterestInFutureMonth)} );
+						}else if(director=='小至大'){
+							messages.sort(function(a,b) { return parseFloat(a.InterestInFutureMonth) - parseFloat(b.InterestInFutureMonth)} );
+						}
+						library.arrayFilter(messages,'InterestInFutureMonth',lboundRec,uboundRec);	
+					}else if(sorter=='預計平均本利和'){
+						if(director=='大至小'){
+							messages.sort(function(a,b) { return parseFloat(b.InterestInFutureMoneyMonth) - parseFloat(a.InterestInFutureMoneyMonth)} );
+						}else if(director=='小至大'){
+							messages.sort(function(a,b) { return parseFloat(a.InterestInFutureMoneyMonth) - parseFloat(b.InterestInFutureMoneyMonth)} );
+						}
+						library.arrayFilter(messages,'InterestInFutureMoneyMonth',lboundRec,uboundRec);	
+					}else if(sorter=='預計利本比'){
+						if(director=='大至小'){
+							messages.sort(function(a,b) { return parseFloat(b.InterestInFutureDivMoney) - parseFloat(a.InterestInFutureDivMoney)} );
+						}else if(director=='小至大'){
+							messages.sort(function(a,b) { return parseFloat(a.InterestInFutureDivMoney) - parseFloat(b.InterestInFutureDivMoney)} );
+						}
+						library.arrayFilter(messages,'InterestInFutureDivMoney',lboundRec,uboundRec);	
 					}
 				}
 				
 				if(messages.length==0){
 					res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 				}else{
-					if((sorter=='預計總利息最高')||(sorter=='預計利本比最高')||(sorter=='預計平均利息最高')||(sorter=='預計平均本利和最高')){
-						for(i=0;i<messages.length;i++){
-							messages[i].InterestRate-=library.serviceChargeRate;//scr
-							messages[i].InterestInFuture=library.interestInFutureCalculator(messages[i].MoneyToLend,messages[i].InterestRate,messages[i].MonthPeriod);
-							if(messages[i].MoneyToLend>0){
-								messages[i].InterestInFutureDivMoney=messages[i].InterestInFuture/messages[i].MoneyToLend;
-							}else{
-								messages[i].InterestInFutureDivMoney=0;
-							}
-							if(messages[i].MonthPeriod>0){
-								messages[i].InterestInFutureMonth=messages[i].InterestInFuture/messages[i].MonthPeriod;
-							}else{
-								messages[i].InterestInFutureMonth=0;
-							}
-							if(messages[i].MonthPeriod>0){
-								messages[i].InterestInFutureMoneyMonth=(messages[i].InterestInFuture+messages[i].MoneyToLend)/messages[i].MonthPeriod;
-							}else{
-								messages[i].InterestInFutureMoneyMonth=0;
-							}
-						}
-						
-						if(sorter=='預計總利息最高'){
-							messages.sort(function(a,b) { return parseFloat(b.InterestInFuture) - parseFloat(a.InterestInFuture)} );
-						}else if(sorter=='預計平均利息最高'){
-							messages.sort(function(a,b) { return parseFloat(b.InterestInFutureMonth) - parseFloat(a.InterestInFutureMonth)} );
-						}else if(sorter=='預計平均本利和最高'){
-							messages.sort(function(a,b) { return parseFloat(b.InterestInFutureMoneyMonth) - parseFloat(a.InterestInFutureMoneyMonth)} );
-						}else if(sorter=='預計利本比最高'){
-							messages.sort(function(a,b) { return parseFloat(b.InterestInFutureDivMoney) - parseFloat(a.InterestInFutureDivMoney) } );
-						}
-					}
-					
 					var arrayOp=[];
 					for(i=0;i<messages.length;i++){
 						var temp={FromBorrowRequest:messages[i].FromBorrowRequest,MessageID:messages[i]._id};
@@ -843,7 +1117,7 @@ router.post('/confirmToBorrowMessageInLRMall',library.loginFormChecker, library.
 					}
 					req.body.array=arrayOp;
 					var infoJson={counter1:req.body.array.length,counter2:0,info1:0,info2:0,info3:0,info4:0};
-					library.confirmToBorrowMessage(true,0,req.body.array.length,null,req,res,false,'/lender/lenderReceiveMessages?msgKeyword=&filter='+encodeURIComponent('已同意')+'&sorter='+encodeURIComponent('最新')+'&page=1',true,infoJson);
+					library.confirmToBorrowMessage(true,0,req.body.array.length,null,req,res,false,'/lender/lenderReceiveMessages?msgKeyword=&filter='+encodeURIComponent('已同意')+'&sorter='+encodeURIComponent('更新日期')+'&director='+encodeURIComponent('大至小')+'&lbound=&ubound=&page=1',true,infoJson);
 				}
 			}
 		}
@@ -856,7 +1130,7 @@ router.post('/deleteToLendMessageInLRM',library.loginFormChecker, library.ensure
 	req.body.array=JSONobj.array;
 	if(req.body.array.length>0){
 		var infoJson={counter1:req.body.array.length,counter2:0};
-		var address='/lender/lenderSendMessages?msgKeyword=&filter='+encodeURIComponent('未被確認')+'&sorter='+encodeURIComponent('最新')+'&page=1';
+		var address='/lender/lenderSendMessages?msgKeyword=&filter='+encodeURIComponent('未被確認')+'&sorter='+encodeURIComponent('更新日期')+'&director='+encodeURIComponent('大至小')+'&lbound=&ubound=&page=1';
 		deleteMessage(0,req.body.array.length,null,req,res,infoJson,address);
 	}
 });
@@ -864,31 +1138,169 @@ router.post('/deleteToLendMessageInLRM',library.loginFormChecker, library.ensure
 router.post('/deleteToLendMessageInLRMall',library.loginFormChecker, library.ensureAuthenticated, function(req, res, next) {
 	var msgKeyword=sanitizer.sanitize(req.body.msgKeyword.trim());
 	var sorter=sanitizer.sanitize(req.body.sorter.trim());
-	var sorterRec=null;
-	if(sorter=='最新'){
-		sorterRec="-Updated";
-	}else if(sorter=='利率最高'){
-		sorterRec="-InterestRate";
-	}else if(sorter=='金額最高'){
-		sorterRec="-MoneyToLend";
-	}else if(sorter=='期數最多'){
-		sorterRec="-MonthPeriod";
-	}else if(sorter=='信用等級最高'){
-		sorterRec="-Level";
-	}else if(sorter=='預計總利息最高'){
-		sorterRec="-Updated";
-	}else if(sorter=='預計平均利息最高'){
-		sorterRec="-Updated";
-	}else if(sorter=='預計平均本利和最高'){
-		sorterRec="-Updated";
-	}else if(sorter=='預計利本比最高'){
-		sorterRec="-Updated";
-	}else{
-		sorter='最新';
-		sorterRec="-Updated";
+	var director=sanitizer.sanitize(req.body.director.trim());
+	var lbound=sanitizer.sanitize(req.body.lbound.trim());
+	var ubound=sanitizer.sanitize(req.body.ubound.trim());
+	
+	if((director!='大至小')&&(director!='小至大')){
+		director='大至小';
 	}
 	
-	var stringArray=msgKeyword.replace(/\s\s+/g,' ').split(' ');
+	var sorterRec=null;
+	var sorterRecReserve=null;
+	
+	if(sorter=='更新日期'){
+		sorterRecReserve='Updated';
+	}else if(sorter=='建立日期'){
+		sorterRecReserve='Created';
+	}else if(sorter=='利率'){
+		sorterRecReserve='InterestRate';
+	}else if(sorter=='金額'){
+		sorterRecReserve='MoneyToLend';
+	}else if(sorter=='期數'){
+		sorterRecReserve='MonthPeriod';
+	}else if(sorter=='信用等級'){
+		sorterRecReserve='Level';
+	}else if(sorter=='預計總利息'){
+		sorterRecReserve='Updated';
+	}else if(sorter=='預計平均利息'){
+		sorterRecReserve='Updated';
+	}else if(sorter=='預計平均本利和'){
+		sorterRecReserve='Updated';
+	}else if(sorter=='預計利本比'){
+		sorterRecReserve='Updated';
+	}else{
+		sorterRecReserve='Updated';
+		sorter='更新日期';
+	}
+	sorterRec=library.directorDivider(director,sorterRecReserve,true);
+	
+	var lboundRec=null;
+	var uboundRec=null;
+	var revereDetector1=null;
+	var revereDetector2=null;
+	if((sorter=='利率')||(sorter=='預計利本比')){
+		var tester;
+		if(lbound.trim()!=''){
+			tester=parseFloat(lbound);
+			if(!isNaN(tester)){
+				if(tester>=0){
+					if(sorter=='利率'){
+						lboundRec=(tester/100)+library.serviceChargeRate;//scr
+					}else if(sorter=='預計利本比'){
+						lboundRec=(tester/100);
+					}
+				}else{
+					lbound='';
+				}
+			}else{
+				lbound='';
+			}
+		}
+		if(ubound.trim()!=''){
+			tester=parseFloat(ubound);
+			if(!isNaN(tester)){
+				if(tester>=0){
+					if(sorter=='利率'){
+						uboundRec=(tester/100)+library.serviceChargeRate;//scr
+					}else if(sorter=='預計利本比'){
+						uboundRec=(tester/100);
+					}
+				}else{
+					ubound='';
+				}
+			}else{
+				ubound='';
+			}
+		}
+		revereDetector1=lboundRec;
+		revereDetector2=uboundRec;
+	}else if((sorter=='更新日期')||(sorter=='建立日期')){
+		var tester;
+		if(lbound.trim()!=''){
+			tester=Date.parse(lbound);
+			if(!isNaN(tester)){
+				lboundRec=new Date(tester);
+			}else{
+				lbound='';
+			}
+		}
+		if(ubound.trim()!=''){
+			tester=Date.parse(ubound);
+			if(!isNaN(tester)){
+				uboundRec=new Date(tester);
+			}else{
+				ubound='';
+			}
+		}
+		if(lboundRec!==null){
+			revereDetector1=lboundRec.getTime();
+		}
+		if(uboundRec!==null){
+			revereDetector2=uboundRec.getTime();
+		}
+	}else{
+		var tester;
+		if(lbound.trim()!=''){
+			tester=parseInt(lbound);
+			if(!isNaN(tester)){
+				if(tester>=0){
+					lboundRec=tester;
+				}else{
+					lbound='';
+				}
+			}else{
+				lbound='';
+			}
+		}
+		if(ubound.trim()!=''){
+			tester=parseInt(ubound);
+			if(!isNaN(tester)){
+				if(tester>=0){
+					uboundRec=tester;
+				}else{
+					ubound='';
+				}
+			}else{
+				ubound='';
+			}
+		}
+		revereDetector1=lboundRec;
+		revereDetector2=uboundRec;
+	}
+	if((revereDetector1!==null)&&(revereDetector2!==null)){
+		if(revereDetector1>revereDetector2){
+			var temp;
+			temp=lboundRec;
+			lboundRec=uboundRec;
+			uboundRec=temp;
+			temp=lbound;
+			lbound=ubound;
+			ubound=temp;
+		}
+	}
+	
+	var andFindCmdAry=[];
+	andFindCmdAry.push({"CreatedBy": req.user._id});
+	andFindCmdAry.push({"Type": "toLend"});
+	andFindCmdAry.push({"Status": "NotConfirmed"});
+	
+	if((sorter!='預計總利息')&&(sorter!='預計平均利息')&&(sorter!='預計平均本利和')&&(sorter!='預計利本比')){
+		var jsonTemp={};
+		if((lboundRec!==null)&&(uboundRec!==null)){
+			jsonTemp[sorterRecReserve]={"$gte": lboundRec, "$lte": uboundRec};
+			andFindCmdAry.push(jsonTemp);
+		}else if(lboundRec!==null){
+			jsonTemp[sorterRecReserve]={"$gte": lboundRec};
+			andFindCmdAry.push(jsonTemp);
+		}else if(uboundRec!==null){
+			jsonTemp[sorterRecReserve]={"$lte": uboundRec};
+			andFindCmdAry.push(jsonTemp);
+		}
+	}
+	
+	var msgKeyword=msgKeyword.replace(/\s\s+/g,' ');
+	var stringArray=msgKeyword.split(' ');
 	var keywordArray=[];
 	for(i=0;i<stringArray.length;i++){
 		keywordArray.push(new RegExp(stringArray[i],'i'));
@@ -898,7 +1310,7 @@ router.post('/deleteToLendMessageInLRMall',library.loginFormChecker, library.ens
 		msgObjID=mongoose.Types.ObjectId(stringArray[0]);
 	}
 	
-	Messages.find({$and:[{"CreatedBy": req.user._id},{"Type": "toLend"},{"Status": "NotConfirmed"}]}).populate('SendTo', 'Username').populate('FromBorrowRequest', 'StoryTitle').sort(sorterRec).exec(function (err, messages){
+	Messages.find({$and:andFindCmdAry}).populate('SendTo', 'Username').populate('FromBorrowRequest', 'StoryTitle').sort(sorterRec).exec(function (err, messages){
 		if (err) {
 			console.log(err);
 			res.redirect('/message?content='+encodeURIComponent('錯誤!'));
@@ -907,12 +1319,11 @@ router.post('/deleteToLendMessageInLRMall',library.loginFormChecker, library.ens
 				res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 			}else{
 				for(j=messages.length-1;j>-1;j--){
+					var testString=messages[j].Message+' '+messages[j].FromBorrowRequest.StoryTitle+' '+messages[j].SendTo.Username;
 					var localFlag=[];
 					var ctr;
 					localFlag[0]=false;
 					localFlag[1]=false;
-					localFlag[2]=false;
-					localFlag[3]=false;
 					
 					if(msgObjID){
 						if(msgObjID.equals(messages[j]._id)){
@@ -922,7 +1333,7 @@ router.post('/deleteToLendMessageInLRMall',library.loginFormChecker, library.ens
 					
 					ctr=0;
 					for(k=0;k<keywordArray.length;k++){
-						if(messages[j].Message.search(keywordArray[k])>-1){
+						if(testString.search(keywordArray[k])>-1){
 							ctr++;
 						}
 					}
@@ -930,66 +1341,66 @@ router.post('/deleteToLendMessageInLRMall',library.loginFormChecker, library.ens
 						localFlag[1]=true;
 					}
 					
-					ctr=0;
-					for(k=0;k<keywordArray.length;k++){
-						if(messages[j].FromBorrowRequest.StoryTitle.search(keywordArray[k])>-1){
-							ctr++;
-						}
-					}
-					if(ctr==keywordArray.length){
-						localFlag[2]=true;
-					}
-					
-					ctr=0;
-					for(k=0;k<keywordArray.length;k++){
-						if(messages[j].SendTo.Username.search(keywordArray[k])>-1){
-							ctr++;
-						}
-					}
-					if(ctr==keywordArray.length){
-						localFlag[3]=true;
-					}
-					
-					if((!localFlag[0])&&(!localFlag[1])&&(!localFlag[2])&&(!localFlag[3])){
+					if((!localFlag[0])&&(!localFlag[1])){
 						messages.splice(j, 1);
+					}
+				}
+				
+				if((sorter=='預計總利息')||(sorter=='預計利本比')||(sorter=='預計平均利息')||(sorter=='預計平均本利和')){
+					for(i=0;i<messages.length;i++){
+						messages[i].InterestRate-=library.serviceChargeRate;//scr
+						messages[i].InterestInFuture=library.interestInFutureCalculator(messages[i].MoneyToLend,messages[i].InterestRate,messages[i].MonthPeriod);
+						if(messages[i].MoneyToLend>0){
+							messages[i].InterestInFutureDivMoney=messages[i].InterestInFuture/messages[i].MoneyToLend;
+						}else{
+							messages[i].InterestInFutureDivMoney=0;
+						}
+						if(messages[i].MonthPeriod>0){
+							messages[i].InterestInFutureMonth=messages[i].InterestInFuture/messages[i].MonthPeriod;
+						}else{
+							messages[i].InterestInFutureMonth=0;
+						}
+						if(messages[i].MonthPeriod>0){
+							messages[i].InterestInFutureMoneyMonth=(messages[i].InterestInFuture+messages[i].MoneyToLend)/messages[i].MonthPeriod;
+						}else{
+							messages[i].InterestInFutureMoneyMonth=0;
+						}
+					}
+					
+					if(sorter=='預計總利息'){
+						if(director=='大至小'){
+							messages.sort(function(a,b) { return parseFloat(b.InterestInFuture) - parseFloat(a.InterestInFuture)} );
+						}else if(director=='小至大'){
+							messages.sort(function(a,b) { return parseFloat(a.InterestInFuture) - parseFloat(b.InterestInFuture)} );
+						}
+						library.arrayFilter(messages,'InterestInFuture',lboundRec,uboundRec);	
+					}else if(sorter=='預計平均利息'){
+						if(director=='大至小'){
+							messages.sort(function(a,b) { return parseFloat(b.InterestInFutureMonth) - parseFloat(a.InterestInFutureMonth)} );
+						}else if(director=='小至大'){
+							messages.sort(function(a,b) { return parseFloat(a.InterestInFutureMonth) - parseFloat(b.InterestInFutureMonth)} );
+						}
+						library.arrayFilter(messages,'InterestInFutureMonth',lboundRec,uboundRec);	
+					}else if(sorter=='預計平均本利和'){
+						if(director=='大至小'){
+							messages.sort(function(a,b) { return parseFloat(b.InterestInFutureMoneyMonth) - parseFloat(a.InterestInFutureMoneyMonth)} );
+						}else if(director=='小至大'){
+							messages.sort(function(a,b) { return parseFloat(a.InterestInFutureMoneyMonth) - parseFloat(b.InterestInFutureMoneyMonth)} );
+						}
+						library.arrayFilter(messages,'InterestInFutureMoneyMonth',lboundRec,uboundRec);	
+					}else if(sorter=='預計利本比'){
+						if(director=='大至小'){
+							messages.sort(function(a,b) { return parseFloat(b.InterestInFutureDivMoney) - parseFloat(a.InterestInFutureDivMoney)} );
+						}else if(director=='小至大'){
+							messages.sort(function(a,b) { return parseFloat(a.InterestInFutureDivMoney) - parseFloat(b.InterestInFutureDivMoney)} );
+						}
+						library.arrayFilter(messages,'InterestInFutureDivMoney',lboundRec,uboundRec);	
 					}
 				}
 				
 				if(messages.length==0){
 					res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 				}else{
-					if((sorter=='預計總利息最高')||(sorter=='預計利本比最高')||(sorter=='預計平均利息最高')||(sorter=='預計平均本利和最高')){
-						for(i=0;i<messages.length;i++){
-							messages[i].InterestRate-=library.serviceChargeRate;//scr
-							messages[i].InterestInFuture=library.interestInFutureCalculator(messages[i].MoneyToLend,messages[i].InterestRate,messages[i].MonthPeriod);
-							if(messages[i].MoneyToLend>0){
-								messages[i].InterestInFutureDivMoney=messages[i].InterestInFuture/messages[i].MoneyToLend;
-							}else{
-								messages[i].InterestInFutureDivMoney=0;
-							}
-							if(messages[i].MonthPeriod>0){
-								messages[i].InterestInFutureMonth=messages[i].InterestInFuture/messages[i].MonthPeriod;
-							}else{
-								messages[i].InterestInFutureMonth=0;
-							}
-							if(messages[i].MonthPeriod>0){
-								messages[i].InterestInFutureMoneyMonth=(messages[i].InterestInFuture+messages[i].MoneyToLend)/messages[i].MonthPeriod;
-							}else{
-								messages[i].InterestInFutureMoneyMonth=0;
-							}
-						}
-						
-						if(sorter=='預計總利息最高'){
-							messages.sort(function(a,b) { return parseFloat(b.InterestInFuture) - parseFloat(a.InterestInFuture)} );
-						}else if(sorter=='預計平均利息最高'){
-							messages.sort(function(a,b) { return parseFloat(b.InterestInFutureMonth) - parseFloat(a.InterestInFutureMonth)} );
-						}else if(sorter=='預計平均本利和最高'){
-							messages.sort(function(a,b) { return parseFloat(b.InterestInFutureMoneyMonth) - parseFloat(a.InterestInFutureMoneyMonth)} );
-						}else if(sorter=='預計利本比最高'){
-							messages.sort(function(a,b) { return parseFloat(b.InterestInFutureDivMoney) - parseFloat(a.InterestInFutureDivMoney) } );
-						}
-					}
-					
 					var arrayOp=[];
 					for(i=0;i<messages.length;i++){
 						var temp={MessageID:messages[i]._id};
@@ -997,7 +1408,7 @@ router.post('/deleteToLendMessageInLRMall',library.loginFormChecker, library.ens
 					}
 					req.body.array=arrayOp;
 					var infoJson={counter1:req.body.array.length,counter2:0};
-					var address='/lender/lenderSendMessages?msgKeyword=&filter='+encodeURIComponent('未被確認')+'&sorter='+encodeURIComponent('最新')+'&page=1';
+					var address='/lender/lenderSendMessages?msgKeyword=&filter='+encodeURIComponent('未被確認')+'&sorter='+encodeURIComponent('更新日期')+'&director='+encodeURIComponent('大至小')+'&lbound=&ubound=&page=1';
 					deleteMessage(0,req.body.array.length,null,req,res,infoJson,address);
 				}
 			}

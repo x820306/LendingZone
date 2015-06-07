@@ -213,6 +213,11 @@ app.get('/test2', function (req, res) {
 	res.json(library.formIdfrArray);
 });
 
+app.get('/test3', function (req, res) {
+	console.log(library.autoComfirmToBorrowMsgArray);
+	res.json(library.autoComfirmToBorrowMsgArray);
+});
+
 //database models routers
 app.use('/Users', Users);
 app.use('/Borrows', Borrows);
