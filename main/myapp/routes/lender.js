@@ -715,11 +715,16 @@ router.get('/lenderTransactionRecord/:oneid?/:filter?/:sorter?/:director?/:lboun
 			andFindCmdAry.push({"Lender": req.user._id});
 			if(filter=='未保險'){
 				andFindCmdAry.push({"InsuranceFeePaid": 0});
+				andFindCmdAry.push({"Principal":{'$gt': 0 }});
 			}else if(filter=='已保險'){
-				andFindCmdAry.push({"InsuranceFeePaid": {'$ne': 0 }});
+				andFindCmdAry.push({"InsuranceFeePaid": {'$gt': 0 }});
+				andFindCmdAry.push({"Principal":{'$gt': 0 }});
+			}else if(filter=='已結清'){
+				andFindCmdAry.push({"Principal":0});
 			}else{
-				filter='未保險';
-				andFindCmdAry.push({"InsuranceFeePaid": 0});
+				if(filter!='不分類'){
+					filter='不分類';
+				}
 			}
 
 			if((sorter!='預計總利息')&&(sorter!='預計平均利息')&&(sorter!='預計平均本利和')&&(sorter!='預計利本比')&&(sorter!='收款記錄')&&(sorter!='上次成功收款日期')&&(sorter!='下次應收款日期')){
@@ -1138,7 +1143,7 @@ router.get('/lenderReturnRecord/:oneid?/:id?/:sorter?/:director?/:lbound?/:uboun
 			var Messages  = mongoose.model('Messages');
 			var Transactions  = mongoose.model('Transactions');
 			var Returns  = mongoose.model('Returns');
-			Returns.find({$and:andFindCmdAry,$where: function() { return (this.InterestShouldPaid-this.InterestNotPaid) > 0 }}).populate('Borrower', 'Username').populate('ToTransaction','CreatedFrom InsuranceFeePaid').sort(sorterRec).exec( function (err, returns, count){
+			Returns.find({$and:andFindCmdAry,$where: function() { return (this.InterestShouldPaid-this.InterestNotPaid) > 0 }}).populate('Borrower', 'Username').populate('ToTransaction','CreatedFrom InsuranceFeePaid Principal').sort(sorterRec).exec( function (err, returns, count){
 				if (err) {
 					console.log(err);
 					res.redirect('/message?content='+encodeURIComponent('錯誤!'));
@@ -1606,19 +1611,6 @@ router.get('/lenderSendMessages/:msgKeyword?/:filter?/:sorter?/:director?/:lboun
 			var pageNum=0
 			var totalResultNumber=0;
 			
-			var filterRec=null;
-			
-			if(filter=='未被確認'){
-				filterRec="NotConfirmed";
-			}else if(filter=='已被同意'){
-				filterRec="Confirmed";
-			}else if(filter=='已被婉拒'){
-				filterRec="Rejected";
-			}else{
-				filter='未被確認';
-				filterRec="NotConfirmed";
-			}
-			
 			if((director!='大至小')&&(director!='小至大')){
 				director='大至小';
 			}
@@ -1760,7 +1752,17 @@ router.get('/lenderSendMessages/:msgKeyword?/:filter?/:sorter?/:director?/:lboun
 			var andFindCmdAry=[];
 			andFindCmdAry.push({"CreatedBy": req.user._id});
 			andFindCmdAry.push({"Type": "toLend"});
-			andFindCmdAry.push({"Status": filterRec});
+			if(filter=='未被確認'){
+				andFindCmdAry.push({"Status": "NotConfirmed"});
+			}else if(filter=='已被同意'){
+				andFindCmdAry.push({"Status": "Confirmed"});
+			}else if(filter=='已被婉拒'){
+				andFindCmdAry.push({"Status": "Rejected"});
+			}else{
+				if(filter!='不分類'){
+					filter='不分類';
+				}
+			}
 			
 			if((sorter!='預計總利息')&&(sorter!='預計平均利息')&&(sorter!='預計平均本利和')&&(sorter!='預計利本比')){
 				var jsonTemp={};
@@ -2000,19 +2002,6 @@ router.get('/lenderReceiveMessages/:msgKeyword?/:filter?/:sorter?/:director?/:lb
 			var value3ALL=0;
 			var value4ALL=0;
 			
-			var filterRec=null;
-			
-			if(filter=='未確認'){
-				filterRec="NotConfirmed";
-			}else if(filter=='已同意'){
-				filterRec="Confirmed";
-			}else if(filter=='已婉拒'){
-				filterRec="Rejected";
-			}else{
-				filter='未確認';
-				filterRec="NotConfirmed";
-			}
-			
 			if((director!='大至小')&&(director!='小至大')){
 				director='大至小';
 			}
@@ -2154,7 +2143,17 @@ router.get('/lenderReceiveMessages/:msgKeyword?/:filter?/:sorter?/:director?/:lb
 			var andFindCmdAry=[];
 			andFindCmdAry.push({"SendTo": req.user._id});
 			andFindCmdAry.push({"Type": "toBorrow"});
-			andFindCmdAry.push({"Status": filterRec});
+			if(filter=='未確認'){
+				andFindCmdAry.push({"Status": "NotConfirmed"});
+			}else if(filter=='已同意'){
+				andFindCmdAry.push({"Status": "Confirmed"});
+			}else if(filter=='已婉拒'){
+				andFindCmdAry.push({"Status": "Rejected"});
+			}else{
+				if(filter!='不分類'){
+					filter='不分類';
+				}
+			}
 			
 			if((sorter!='預計總利息')&&(sorter!='預計平均利息')&&(sorter!='預計平均本利和')&&(sorter!='預計利本比')){
 				var jsonTemp={};

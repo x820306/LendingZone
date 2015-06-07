@@ -76,7 +76,7 @@
 						<table width="100%">
 							<tr>
 								<td>
-									<a style="font-size:15px;" href="/lender/lenderTransactionRecord?oneid=<%=jsonReturns[i].ToTransaction._id%>&filter=<%if(jsonReturns[i].ToTransaction.InsuranceFeePaid==0){%><%=encodeURIComponent('未保險')%><%}else if(jsonReturns[i].ToTransaction.InsuranceFeePaid>0){%><%=encodeURIComponent('已保險')%><%}%>&sorter=<%=encodeURIComponent("建立日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">查看來源交易</a>
+									<a style="font-size:15px;" href="/lender/lenderTransactionRecord?oneid=<%=jsonReturns[i].ToTransaction._id%>&filter=<%if(jsonReturns[i].ToTransaction.Principal>0){%><%if(jsonReturns[i].ToTransaction.InsuranceFeePaid>0){%><%=encodeURIComponent('已保險')%><%}else{%><%=encodeURIComponent('未保險')%><%}%><%}else{%><%=encodeURIComponent('已結清')%><%}%>&sorter=<%=encodeURIComponent("建立日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">查看來源交易</a>
 								</td>
 							</tr>
 						</table>
@@ -96,140 +96,140 @@
 													&nbsp;&nbsp;&nbsp;&nbsp;實收金額：
 												</div>
 											</td>
-										<tr>
+										</tr>
 										<tr>
 											<td>
 												<div>
 													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].MoneyReallyPaid.toFixed(0)%>元
 												</div>	
 											</td>
-										<tr>
+										</tr>
 										<tr>
 											<td>
 												<div class="myTitle">
 													&nbsp;&nbsp;&nbsp;&nbsp;應收金額：
 												</div>
 											</td>
-										<tr>
+										</tr>
 										<tr>
 											<td>
 												<div>
 													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].MoneyShouldPaid.toFixed(0)%>元
 												</div>	
 											</td>
-										<tr>
+										</tr>
 										<tr>
 											<td>
 												<div class="myTitle">
 													&nbsp;&nbsp;&nbsp;&nbsp;<%if(jsonReturns[i].MoneyNotPaid>=0){%>未收金額：<%}else{%>超收金額：<%}%>
 												</div>
 											</td>
-										<tr>
+										</tr>
 										<tr>
 											<td>
 												<div>
 													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%if(jsonReturns[i].MoneyNotPaid>=0){%><%=jsonReturns[i].MoneyNotPaid.toFixed(0)%><%}else{%><%=(jsonReturns[i].MoneyNotPaid*-1).toFixed(0)%><%}%>元
 												</div>	
 											</td>
-										<tr>
+										</tr>
 										<tr>
 											<td>
 												<div class="myTitle">
 													&nbsp;&nbsp;&nbsp;&nbsp;實收本金：
 												</div>
 											</td>
-										<tr>
+										</tr>
 										<tr>
 											<td>
 												<div>
 													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=(jsonReturns[i].PrincipalShouldPaid-jsonReturns[i].PrincipalNotPaid).toFixed(0)%>元
 												</div>	
 											</td>
-										<tr>
+										</tr>
 										<tr>
 											<td>
 												<div class="myTitle">
 													&nbsp;&nbsp;&nbsp;&nbsp;應收本金：
 												</div>
 											</td>
-										<tr>
+										</tr>
 										<tr>
 											<td>
 												<div>
 													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].PrincipalShouldPaid.toFixed(0)%>元
 												</div>	
 											</td>
-										<tr>
+										</tr>
 										<tr>
 											<td>
 												<div class="myTitle">
 													&nbsp;&nbsp;&nbsp;&nbsp;<%if(jsonReturns[i].PrincipalNotPaid>=0){%>未收本金：<%}else{%>超收本金：<%}%>
 												</div>
 											</td>
-										<tr>
+										</tr>
 										<tr>
 											<td>
 												<div>
 													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%if(jsonReturns[i].PrincipalNotPaid>=0){%><%=jsonReturns[i].PrincipalNotPaid.toFixed(0)%><%}else{%><%=(jsonReturns[i].PrincipalNotPaid*-1).toFixed(0)%><%}%>元
 												</div>	
 											</td>
-										<tr>
+										</tr>
 										<tr>
 											<td>
 												<div class="myTitle">
 													&nbsp;&nbsp;&nbsp;&nbsp;實收利息：
 												</div>
 											</td>
-										<tr>
+										</tr>
 										<tr>
 											<td>
 												<div>
 													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=(jsonReturns[i].InterestShouldPaid-jsonReturns[i].InterestNotPaid).toFixed(0)%>元
 												</div>	
 											</td>
-										<tr>
+										</tr>
 										<tr>
 											<td>
 												<div class="myTitle">
 													&nbsp;&nbsp;&nbsp;&nbsp;應收利息：
 												</div>
 											</td>
-										<tr>
+										</tr>
 										<tr>
 											<td>
 												<div>
 													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].InterestShouldPaid.toFixed(0)%>元
 												</div>	
 											</td>
-										<tr>
+										</tr>
 										<tr>
 											<td>
 												<div class="myTitle">
 													&nbsp;&nbsp;&nbsp;&nbsp;<%if(jsonReturns[i].InterestNotPaid>=0){%>未收利息：<%}else{%>超收利息：<%}%>
 												</div>
 											</td>
-										<tr>
+										</tr>
 										<tr>
 											<td>
 												<div>
 													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%if(jsonReturns[i].InterestNotPaid>=0){%><%=jsonReturns[i].InterestNotPaid.toFixed(0)%><%}else{%><%=(jsonReturns[i].InterestNotPaid*-1).toFixed(0)%><%}%>元
 												</div>	
 											</td>
-										<tr>
+										</tr>
 										<tr>
 											<td>
 												<div class="myTitle">
 													&nbsp;&nbsp;&nbsp;&nbsp;收款日期:
 												</div>
 											</td>
-										<tr>
+										</tr>
 										<tr>
 											<td>
 												<div>
 													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].Created.getFullYear()%>/<%=jsonReturns[i].Created.getMonth()+1%>/<%=jsonReturns[i].Created.getDate()%>
 												</div>	
 											</td>
-										<tr>
+										</tr>
 									</table>
 								</div>
 								<div class="col-md-6">
@@ -240,140 +240,140 @@
 													&nbsp;&nbsp;&nbsp;&nbsp;收款前未還本金:
 												</div>
 											</td>
-										<tr>
+										</tr>
 										<tr>
 											<td>
 												<div>
 													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].PrincipalBeforePaid%>元
 												</div>	
 											</td>
-										<tr>
+										</tr>
 										<tr>
 											<td>
 												<div class="myTitle">
 													&nbsp;&nbsp;&nbsp;&nbsp;收款後未還本金:
 												</div>
 											</td>
-										<tr>
+										</tr>
 										<tr>
 											<td>
 												<div>
 													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].PrincipalAfterPaid%>元
 												</div>	
 											</td>
-										<tr>
+										</tr>
 										<tr>
 											<td>
 												<div class="myTitle">
 													&nbsp;&nbsp;&nbsp;&nbsp;收款前已還本金:
 												</div>
 											</td>
-										<tr>
+										</tr>
 										<tr>
 											<td>
 												<div>
 													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].PrincipalReturnedCumulatedBeforePaid%>元
 												</div>	
 											</td>
-										<tr>
+										</tr>
 										<tr>
 											<td>
 												<div class="myTitle">
 													&nbsp;&nbsp;&nbsp;&nbsp;收款後已還本金:
 												</div>
 											</td>
-										<tr>
+										</tr>
 										<tr>
 											<td>
 												<div>
 													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].PrincipalReturnedCumulatedAfterPaid%>元
 												</div>	
 											</td>
-										<tr>
+										</tr>
 										<tr>
 											<td>
 												<div class="myTitle">
 													&nbsp;&nbsp;&nbsp;&nbsp;收款前累積利息:
 												</div>
 											</td>
-										<tr>
+										</tr>
 										<tr>
 											<td>
 												<div>
 													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].InterestCumulatedBeforePaid%>元
 												</div>	
 											</td>
-										<tr>
+										</tr>
 										<tr>
 											<td>
 												<div class="myTitle">
 													&nbsp;&nbsp;&nbsp;&nbsp;收款後累積利息:
 												</div>
 											</td>
-										<tr>
+										</tr>
 										<tr>
 											<td>
 												<div>
 													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].InterestCumulatedAfterPaid%>元
 												</div>	
 											</td>
-										<tr>
+										</tr>
 										<tr>
 											<td>
 												<div class="myTitle">
 													&nbsp;&nbsp;&nbsp;&nbsp;收款前累積本利和:
 												</div>
 											</td>
-										<tr>
+										</tr>
 										<tr>
 											<td>
 												<div>
 													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].PICumulatedBeforePaid%>元
 												</div>	
 											</td>
-										<tr>
+										</tr>
 										<tr>
 											<td>
 												<div class="myTitle">
 													&nbsp;&nbsp;&nbsp;&nbsp;收款後累積本利和:
 												</div>
 											</td>
-										<tr>
+										</tr>
 										<tr>
 											<td>
 												<div>
 													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].PICumulatedAfterPaid%>元
 												</div>	
 											</td>
-										<tr>
+										</tr>
 										<tr>
 											<td>
 												<div class="myTitle">
 													&nbsp;&nbsp;&nbsp;&nbsp;對方信用等級:
 												</div>
 											</td>
-										<tr>
+										</tr>
 										<tr>
 											<td>
 												<div>
 													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].Level.toFixed(0)%>級
 												</div>	
 											</td>
-										<tr>
+										</tr>
 										<tr>
 											<td>
 												<div class="myTitle">
 													&nbsp;&nbsp;&nbsp;&nbsp;對方銀行帳號:
 												</div>
 											</td>
-										<tr>
+										</tr>
 										<tr>
 											<td>
 												<div>
 													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].BorrowerBankAccountNumber%>
 												</div>	
 											</td>
-										<tr>
+										</tr>
 									</table>
 								</div>
 							</div>

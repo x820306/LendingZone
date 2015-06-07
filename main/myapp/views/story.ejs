@@ -54,98 +54,98 @@
 									需要金額：
 								</div>
 							</td>
-						<tr>
+						</tr>
 						<tr>
 							<td>
 								<div>
 									&nbsp;&nbsp;&nbsp;&nbsp;<%=json.MoneyToBorrow.toFixed(0)%>元
 								</div>	
 							</td>
-						<tr>
+						</tr>
 						<tr>
 							<td>
 								<div class="myTitle">
 									已經借到：
 								</div>
 							</td>
-						<tr>
+						</tr>
 						<tr>
 							<td>
 								<div>
 									&nbsp;&nbsp;&nbsp;&nbsp;<%=json.MoneyToBorrowCumulated.toFixed(0)%>元
 								</div>	
 							</td>
-						<tr>
+						</tr>
 						<tr>
 							<td>
 								<div class="myTitle">
 									還需要：
 								</div>
 							</td>
-						<tr>
+						</tr>
 						<tr>
 							<td>
 								<div>
 									&nbsp;&nbsp;&nbsp;&nbsp;<%=json.MoneyToBorrow-json.MoneyToBorrowCumulated.toFixed(0)%>元
 								</div>	
 							</td>
-						<tr>
+						</tr>
 						<tr>
 							<td>
 								<div class="myTitle">
 									可接受年利率：
 								</div>							
 							</td>
-						<tr>
+						</tr>
 						<tr>
 							<td>
 								<div>
 									&nbsp;&nbsp;&nbsp;&nbsp;<%=(json.MaxInterestRateAccepted*100).toFixed(2)%>%
 								</div>		
 							</td>
-						<tr>
+						</tr>
 						<tr>
 							<td>
 								<div class="myTitle">
 									可接受期數（單位/月）:
 								</div>
 							</td>
-						<tr>
+						</tr>
 						<tr>
 							<td>
 								<div>
 									&nbsp;&nbsp;&nbsp;&nbsp;<%=json.MonthPeriodAccepted.toFixed(0)%>個月
 								</div>
 							</td>
-						<tr>
+						</tr>
 						<tr>
 							<td>
 								<div class="myTitle">
 									希望於幾號前借到錢：
 								</div>
 							</td>
-						<tr>
+						</tr>
 						<tr>
 							<td>
 								<div>
 									&nbsp;&nbsp;&nbsp;&nbsp;<%=json.TimeLimit.getFullYear()%>/<%=json.TimeLimit.getMonth()+1%>/<%=json.TimeLimit.getDate()%>
 								</div>
 							</td>
-						<tr>
+						</tr>
 						<tr>
 							<td>
 								<div class="myTitle">
 									信用等級：
 								</div>
 							</td>
-						<tr>
+						</tr>
 						<tr>
 							<td>
 								<div>
 									&nbsp;&nbsp;&nbsp;&nbsp;<%=json.Level.toFixed(0)%>級
 								</div>
 							</td>
-						<tr>
+						</tr>
 					</table>
 				</div>
 				<div class="tab-pane" id="tab3">
