@@ -65,7 +65,7 @@ router.post('/borrowCreate',library.loginFormChecker, library.ensureAuthenticate
 	if(passFlag){
 		var ifTitleRepeat=false;
 		var titleTester;
-		if(sanitizer.sanitize(req.body.StoryTitle.trim())==''){
+		if((sanitizer.sanitize(req.body.StoryTitle.trim())=='')||(sanitizer.sanitize(req.body.StoryTitle.trim())=='無標題')){
 			titleTester=null
 		}else{
 			titleTester=sanitizer.sanitize(req.body.StoryTitle.trim());
@@ -125,7 +125,7 @@ router.post('/borrowCreate',library.loginFormChecker, library.ensureAuthenticate
 				
 				if(ifTitleRepeat){
 					errorTarget[3]=true;
-					errorMessage[3]='故事標題重覆或不合規定!';
+					errorMessage[3]='故事標題重覆!';
 				}
 				
 				var valiFlag=true;
