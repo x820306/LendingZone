@@ -54,7 +54,7 @@
     </div>
 
     <div class="borrowBlock">
-        <div class="borrowBlockTitle">借款原因/故事</div>
+        <div class="borrowBlockTitle">借款原因/故事</div><span id="s5" style="color:red;"><%if(bfJSON){%><%if(bfJSON.Target[4]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=bfJSON.Message[4]%><%}%><%}%></span>
         <div>選擇性填寫，不限字數，也可附上相關網頁/影片連結</div>
         <textarea id="f6" name="Story"><%if(bfJSON){%><%=bfJSON.FormContent.F6%><%}%></textarea>
     </div>

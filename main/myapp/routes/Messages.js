@@ -147,7 +147,7 @@ function toLendSamePart(res,req,differentPart,outterPara){
 							
 							var errorTarget=[];
 							var errorMessage=[];
-							for(i=0;i<3;i++){
+							for(i=0;i<4;i++){
 								errorTarget.push(false);
 								errorMessage.push('');
 							}
@@ -195,6 +195,11 @@ function toLendSamePart(res,req,differentPart,outterPara){
 							}else if(month>maxMonth){
 								errorTarget[2]=true;
 								errorMessage[2]='超過對方可接受之最大期數：'+maxMonth.toFixed(0)+'個月!';
+							}
+							
+							if(sanitizer.sanitize(req.body.Message.trim())=='無內容'){
+								errorTarget[3]=true;
+								errorMessage[3]='訊息內容不合規定!';
 							}
 							
 							var valiFlag=true;
