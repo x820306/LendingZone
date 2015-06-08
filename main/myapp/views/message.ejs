@@ -1,11 +1,17 @@
 <%- include('layout_header',{searchTitle:null,nav_cur:'message',actionDefault:'建立日期',directorDefault:'大至小',keywordDefault:'',categoryDefault:'不分類'}); -%>
 <div class="container">
 	<div class="row">
-		<div class="col-md-9">
-			<%=content%>
-		</div>
-		<div class="col-md-3">
-		</div>
+		<center>
+			<br><br><br><br><br><br><br>
+			<h4><%=content%></h4>
+			<%if((content=='您的密碼已變更成功!')||(content=='您的密碼已重設成功!')){%>
+				<br>
+				<button id="cancelBtnID" type="button" class="btn btn-default btn-lg" onClick = "javascript:location.href='/'" >
+					  <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> 回首頁
+				</button></div>
+			<%}%>
+			<br><br><br><br><br><br><br>
+		</center>
 	</div>
 </div>
 <%- include('layout_footer',{imgSettingCode:"var ifLoadedCount=0;",imgDrawingCode:""}); -%>

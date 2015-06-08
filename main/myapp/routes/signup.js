@@ -76,6 +76,9 @@ router.post('/changeData',library.loginFormChecker, library.ensureAuthenticated,
 	if(sanitizer.sanitize(req.body.IdCardNumber.trim())==''){
 		errorTarget[3]=true;
 		errorMessage[3]='必要參數未填!';
+	}else if(!library.checkSsnID(sanitizer.sanitize(req.body.IdCardNumber.trim()))){
+		errorTarget[3]=true;
+		errorMessage[3]='格式錯誤!';
 	}
 	
 	if(sanitizer.sanitize(req.body.Phone.trim())==''){
@@ -197,11 +200,50 @@ function redirectorCD(req,res,target,message){
 	res.redirect(req.get('referer'));
 }
 
+function redirectorNewACC(req,res,target,message){
+	var formContent={
+		F1:req.body.nameIpt,
+		F2:req.body.genderIpt,
+		F3:req.body.birthIpt,
+		F4:req.body.ssnIpt,
+		F7:req.body.telIpt,
+		F8:req.body.emailIpt,
+		F9:req.body.addrIpt,
+		F10:req.body.cardIpt,
+		F11:req.body.cardPwdIpt
+	};
+	
+	var json={FormContent:formContent,Target:target,Message:message};
+	var string=JSON.stringify(json);
+	
+	req.flash('newAccForm',string);
+	res.redirect(req.get('referer'));
+}
+
+function redirectorCardData(req,res,target,message){
+	var formContent={
+		F1:req.body.cardIpt,
+		F2:req.body.cardPwdIpt
+	};
+	
+	var json={FormContent:formContent,Target:target,Message:message};
+	var string=JSON.stringify(json);
+	
+	req.flash('cardDataForm',string);
+	res.redirect(req.get('referer'));
+}
+
 // this is the basic type when page no need to ensure authenticated. U can try this by /signup/signupExample
 router.get('/cardData',library.loginFormChecker,library.newMsgChecker, function (req, res) {
 	var auRst=null;
 	if(req.isAuthenticated()){
 		auRst=req.user.Username;
+	}
+	
+	var stringArrayFlash=req.flash('cardDataForm');
+	var cardDataFormJson=null;
+	if(stringArrayFlash.length>0){
+		cardDataFormJson=JSON.parse(stringArrayFlash[0]);
 	}
 	
 	library.formIdfrCtr+=1;
@@ -212,7 +254,7 @@ router.get('/cardData',library.loginFormChecker,library.newMsgChecker, function 
 	//get data from database and process them here
 	
 	//pass what u get from database and send them into ejs in this line
-	res.render('cardData_1',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,formSession1:tempIdfr});
+	res.render('cardData_1',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,formSession1:tempIdfr,cdfJSON:cardDataFormJson});
 });
 
 // this is the basic type when page no need to ensure authenticated. U can try this by /signup/signupExample
@@ -229,17 +271,46 @@ router.post('/checkPro',library.loginFormChecker,library.newMsgChecker, function
 	}
 	
 	if(passFlag){
-		var auRst=null;
-		if(req.isAuthenticated()){
-			auRst=req.user.Username;
+		var errorTarget=[];
+		var errorMessage=[];
+		for(i=0;i<2;i++){
+			errorTarget.push(false);
+			errorMessage.push('');
 		}
 		
-		library.formIdfrCtr+=1;
-		var tempIdfr=library.formIdfrCtr;
-		library.formIdfrArray.push(tempIdfr);
-		library.setFormTimer();
+		if(sanitizer.sanitize(req.body.cardIpt.trim())==''){
+			errorTarget[0]=true;
+			errorMessage[0]='必要參數未填!';
+		}
 		
-		res.render('checkPro_1',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,BankAccountNumber:req.body.cardIpt,BankAccountPassword:req.body.cardPwdIpt,formSession1:req.body.FormSession1,formSession2:tempIdfr});
+		if(sanitizer.sanitize(req.body.cardPwdIpt.trim())==''){
+			errorTarget[1]=true;
+			errorMessage[1]='必要參數未填!';
+		}
+		
+		var valiFlag=true;
+		for(i=0;i<errorTarget.length;i++){
+			if(errorTarget[i]){
+				valiFlag=false;
+				break;
+			}
+		}
+		
+		if(valiFlag){
+			var auRst=null;
+			if(req.isAuthenticated()){
+				auRst=req.user.Username;
+			}
+			
+			library.formIdfrCtr+=1;
+			var tempIdfr=library.formIdfrCtr;
+			library.formIdfrArray.push(tempIdfr);
+			library.setFormTimer();
+			
+			res.render('checkPro_1',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,BankAccountNumber:req.body.cardIpt,BankAccountPassword:req.body.cardPwdIpt,formSession1:req.body.FormSession1,formSession2:tempIdfr});
+		}else{
+			redirectorCardData(req,res,errorTarget,errorMessage);
+		}
 	}else{
 		res.redirect('/signupTest');
 	}
@@ -252,6 +323,12 @@ router.get('/newAcc',library.loginFormChecker,library.newMsgChecker, function (r
 		auRst=req.user.Username;
 	}
 	
+	var stringArrayFlash=req.flash('newAccForm');
+	var newAccFormJson=null;
+	if(stringArrayFlash.length>0){
+		newAccFormJson=JSON.parse(stringArrayFlash[0]);
+	}
+	
 	library.formIdfrCtr+=1;
 	var tempIdfr=library.formIdfrCtr;
 	library.formIdfrArray.push(tempIdfr);
@@ -260,7 +337,7 @@ router.get('/newAcc',library.loginFormChecker,library.newMsgChecker, function (r
 	//get data from database and process them here
 	
 	//pass what u get from database and send them into ejs in this line
-	res.render('newAcc_2',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,formSession1:tempIdfr});
+	res.render('newAcc_2',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,formSession1:tempIdfr,nafJSON:newAccFormJson});
 });
 
 // this is the basic type when page no need to ensure authenticated. U can try this by /signup/signupExample
@@ -277,19 +354,33 @@ router.post('/apply',library.loginFormChecker,library.newMsgChecker, function (r
 	}
 	
 	if(passFlag){
-		var auRst=null;
-		if(req.isAuthenticated()){
-			auRst=req.user.Username;
-		}
+		if((sanitizer.sanitize(req.body.nameIpt.trim())!='')&&(sanitizer.sanitize(req.body.genderIpt.trim())!='')&&(sanitizer.sanitize(req.body.birthIpt.trim())!='')&&(sanitizer.sanitize(req.body.ssnIpt.trim())!='')&&(sanitizer.sanitize(req.body.telIpt.trim())!='')&&(sanitizer.sanitize(req.body.emailIpt.trim())!='')&&(sanitizer.sanitize(req.body.addrIpt.trim())!='')&&(sanitizer.sanitize(req.body.BankAccountNumber.trim())!='')&&(sanitizer.sanitize(req.body.BankAccountPassword.trim())!='')&&(req.body.IdCard!='')&&(req.body.IdCardType!='')&&(sanitizer.sanitize(req.body.SecondCard.trim())!='')&&(sanitizer.sanitize(req.body.SecondCardType.trim())!='')){
+			var tester=Date.parse(sanitizer.sanitize(req.body.birthIpt.trim()));
+			var emailFlag=false;
+			if(sanitizer.sanitize(req.body.emailIpt.trim()).search(/@/)>-1){
+				emailFlag=true;
+			}
+			var tester2=sanitizer.sanitize(req.body.ssnIpt.trim());
+			if((!isNaN(tester))&&(emailFlag)&&(library.checkSsnID(tester2))){
+				var auRst=null;
+				if(req.isAuthenticated()){
+					auRst=req.user.Username;
+				}
 
-		library.formIdfrCtr+=1;
-		var tempIdfr=library.formIdfrCtr;
-		library.formIdfrArray.push(tempIdfr);
-		library.setFormTimer();
-		
-		res.render('apply_1',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst, Name:req.body.nameIpt, Email:req.body.emailIpt, Gender:req.body.genderIpt,
-			BirthDay:req.body.birthIpt, Phone:req.body.telIpt, Address:req.body.addrIpt,IdCardNumber:req.body.ssnIpt,IdCard:req.body.IdCard,IdCardType:req.body.IdCardType,SecondCard:req.body.SecondCard,SecondCardType:req.body.SecondCardType,
-			BankAccountNumber:req.body.BankAccountNumber,BankAccountPassword:req.body.BankAccountPassword,formSession1:req.body.FormSession1,formSession2:req.body.FormSession2,formSession3:tempIdfr});
+				library.formIdfrCtr+=1;
+				var tempIdfr=library.formIdfrCtr;
+				library.formIdfrArray.push(tempIdfr);
+				library.setFormTimer();
+				
+				res.render('apply_1',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst, Name:req.body.nameIpt, Email:req.body.emailIpt, Gender:req.body.genderIpt,
+					BirthDay:req.body.birthIpt, Phone:req.body.telIpt, Address:req.body.addrIpt,IdCardNumber:req.body.ssnIpt,IdCard:req.body.IdCard,IdCardType:req.body.IdCardType,SecondCard:req.body.SecondCard,SecondCardType:req.body.SecondCardType,
+					BankAccountNumber:req.body.BankAccountNumber,BankAccountPassword:req.body.BankAccountPassword,formSession1:req.body.FormSession1,formSession2:req.body.FormSession2,formSession3:tempIdfr});
+			}else{
+				res.redirect('/message?content='+encodeURIComponent('資料填寫不全或錯誤！'));
+			}
+		}else{
+			res.redirect('/message?content='+encodeURIComponent('資料填寫不全或錯誤！'));
+		}
 	}else{
 		res.redirect('/signupTest');
 	}
@@ -308,36 +399,126 @@ router.post('/_apply',library.loginFormChecker,library.newMsgChecker, function (
 	}
 	
 	if(passFlag){
-		var auRst=null;
-		if(req.isAuthenticated()){
-			auRst=req.user.Username;
-		}
-		var varIdCardType='';
-		if(req.files.ssnImg){
-			varIdCardType=req.files.ssnImg.mimetype;
-		}
-		var varSecondCardType='';
-		if(req.files.cerImg){
-			varSecondCardType=req.files.cerImg.mimetype;
-		}
-		var IdCardBase64='';
-		if(req.files.ssnImg){
-			IdCardBase64=req.files.ssnImg.buffer.toString('base64');
-		}
-		var SecondCardBase64='';
-		if(req.files.cerImg){
-			SecondCardBase64=req.files.cerImg.buffer.toString('base64');
+		var errorTarget=[];
+		var errorMessage=[];
+		for(i=0;i<11;i++){
+			errorTarget.push(false);
+			errorMessage.push('');
 		}
 		
-		library.formIdfrCtr+=1;
-		var tempIdfr=library.formIdfrCtr;
-		library.formIdfrArray.push(tempIdfr);
-		library.setFormTimer();
+		if(sanitizer.sanitize(req.body.nameIpt.trim())==''){
+			errorTarget[0]=true;
+			errorMessage[0]='必要參數未填!';
+		}
 		
-		//pass what u get from database and send them into ejs in this line
-		res.render('apply_2',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst, Name:req.body.nameIpt, Email:req.body.emailIpt, Gender:req.body.genderIpt,
-			BirthDay:req.body.birthIpt, Phone:req.body.telIpt, Address:req.body.addrIpt,IdCardNumber:req.body.ssnIpt,IdCard:IdCardBase64,IdCardType:varIdCardType,SecondCard:SecondCardBase64,SecondCardType:varSecondCardType,
-			BankAccountNumber:req.body.cardIpt,BankAccountPassword:req.body.cardPwdIpt,formSession1:req.body.FormSession1,formSession2:tempIdfr});
+		if(sanitizer.sanitize(req.body.genderIpt.trim())==''){
+			errorTarget[1]=true;
+			errorMessage[1]='必要參數未填!';
+		}
+		
+		if(sanitizer.sanitize(req.body.birthIpt.trim())==''){
+			errorTarget[2]=true;
+			errorMessage[2]='必要參數未填!';
+		}else{
+			var tester=Date.parse(sanitizer.sanitize(req.body.birthIpt.trim()));
+			if(isNaN(tester)){
+				errorTarget[2]=true;
+				errorMessage[2]='日期格式錯誤!';
+			}
+		}
+		
+		if(sanitizer.sanitize(req.body.ssnIpt.trim())==''){
+			errorTarget[3]=true;
+			errorMessage[3]='必要參數未填!';
+		}else if(!library.checkSsnID(sanitizer.sanitize(req.body.ssnIpt.trim()))){
+			errorTarget[3]=true;
+			errorMessage[3]='格式錯誤!';
+		}
+		
+		if(!req.files.ssnImg){
+			errorTarget[4]=true;
+			errorMessage[4]='重新上傳檔案';
+		}
+		
+		if(!req.files.cerImg){
+			errorTarget[5]=true;
+			errorMessage[5]='重新上傳檔案';
+		}
+		
+		if(sanitizer.sanitize(req.body.telIpt.trim())==''){
+			errorTarget[6]=true;
+			errorMessage[6]='必要參數未填!';
+		}
+		
+		if(sanitizer.sanitize(req.body.emailIpt.trim())==''){
+			errorTarget[7]=true;
+			errorMessage[7]='必要參數未填!';
+		}else if(sanitizer.sanitize(req.body.emailIpt.trim()).search(/@/)==-1){
+			errorTarget[7]=true;
+			errorMessage[7]='Email格式錯誤!';
+		}
+		
+		if(sanitizer.sanitize(req.body.addrIpt.trim())==''){
+			errorTarget[8]=true;
+			errorMessage[8]='必要參數未填!';
+		}
+		
+		if(sanitizer.sanitize(req.body.cardIpt.trim())==''){
+			errorTarget[9]=true;
+			errorMessage[9]='必要參數未填!';
+		}
+		
+		if(sanitizer.sanitize(req.body.cardPwdIpt.trim())==''){
+			errorTarget[10]=true;
+			errorMessage[10]='必要參數未填!';
+		}
+		
+		var valiFlag=true;
+		for(i=0;i<errorTarget.length;i++){
+			if(errorTarget[i]){
+				valiFlag=false;
+				break;
+			}
+		}
+		
+		if(valiFlag){
+			var auRst=null;
+			if(req.isAuthenticated()){
+				auRst=req.user.Username;
+			}
+			var varIdCardType='';
+			if(req.files.ssnImg){
+				varIdCardType=req.files.ssnImg.mimetype;
+			}
+			var varSecondCardType='';
+			if(req.files.cerImg){
+				varSecondCardType=req.files.cerImg.mimetype;
+			}
+			var IdCardBase64='';
+			if(req.files.ssnImg){
+				IdCardBase64=req.files.ssnImg.buffer.toString('base64');
+			}
+			var SecondCardBase64='';
+			if(req.files.cerImg){
+				SecondCardBase64=req.files.cerImg.buffer.toString('base64');
+			}
+			
+			library.formIdfrCtr+=1;
+			var tempIdfr=library.formIdfrCtr;
+			library.formIdfrArray.push(tempIdfr);
+			library.setFormTimer();
+			
+			//pass what u get from database and send them into ejs in this line
+			res.render('apply_2',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst, Name:req.body.nameIpt, Email:req.body.emailIpt, Gender:req.body.genderIpt,
+				BirthDay:req.body.birthIpt, Phone:req.body.telIpt, Address:req.body.addrIpt,IdCardNumber:req.body.ssnIpt,IdCard:IdCardBase64,IdCardType:varIdCardType,SecondCard:SecondCardBase64,SecondCardType:varSecondCardType,
+				BankAccountNumber:req.body.cardIpt,BankAccountPassword:req.body.cardPwdIpt,formSession1:req.body.FormSession1,formSession2:tempIdfr});
+		}else{
+			errorTarget[4]=true;
+			errorMessage[4]='重新上傳檔案';
+			errorTarget[5]=true;
+			errorMessage[5]='重新上傳檔案';
+			redirectorNewACC(req,res,errorTarget,errorMessage);
+		}
 	}else{
 		res.redirect('/signupTest');
 	}
@@ -491,7 +672,8 @@ function userCreator(req,res,callback){
 		if(sanitizer.sanitize(req.body.Email.trim()).search(/@/)>-1){
 			emailFlag=true;
 		}
-		if((!isNaN(tester))&&(emailFlag)){
+		var tester2=sanitizer.sanitize(req.body.IdCardNumber.trim());
+		if((!isNaN(tester))&&(emailFlag)&&(library.checkSsnID(tester2))){
 			var temp=sanitizer.sanitize(req.body.Username.trim());
 			Users.findOne({Username:temp}).exec(function (err, user){
 				if (err) {
@@ -502,7 +684,7 @@ function userCreator(req,res,callback){
 						res.redirect('/message?content='+encodeURIComponent('此帳號已存在!'));
 					}else{
 						if(sanitizer.sanitize(req.body.Password.trim())==sanitizer.sanitize(req.body.Password2nd.trim())){
-							if((sanitizer.sanitize(req.body.Username.trim()).search(/[^\w\.\/]/ig)==-1)&&(sanitizer.sanitize(req.body.Password.trim()).search(/[^\w\.\/]/ig)==-1)&&(sanitizer.sanitize(req.body.Password.trim()).length>=6)){
+							if((sanitizer.sanitize(req.body.Username.trim()).search(/[^\w\.\/]/ig)==-1)&&(sanitizer.sanitize(req.body.Password.trim()).search(/[^\w\.\/]/ig)==-1)&&(sanitizer.sanitize(req.body.Password.trim()).length>6)){
 								var toCreate = new Users();
 								toCreate.Username=sanitizer.sanitize(req.body.Username.trim());
 								toCreate.Password=sanitizer.sanitize(req.body.Password.trim());
