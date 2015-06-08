@@ -30,7 +30,7 @@
     <div class="borrowBlock">
 		<div class="borrowBlockTitle">預期還款期數</div><span id="s3" style="color:red;"><%if(bfJSON){%><%if(bfJSON.Target[2]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=bfJSON.Message[2]%><%}%><%}%></span>
 		<div>最高36個月</div>
-		<select id="f3" name="MonthPeriodAccepted">
+		<select id="f3" name="MonthPeriodAccepted" required>
             <%for(i=1;i<=36;i++){%>
 				<option value="<%=i%>"<%if(bfJSON){%><%if(bfJSON.FormContent.F3==i){%> selected<%}%><%}%>><%=i%></option>
 			<%}%>
@@ -38,14 +38,14 @@
     </div>
 
     <div class="borrowBlock">
-        <div class="borrowBlockTitle">標題</div>
+        <div class="borrowBlockTitle">標題</div><span id="s4" style="color:red;"><%if(bfJSON){%><%if(bfJSON.Target[3]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=bfJSON.Message[3]%><%}%><%}%></span>
 		<div>選擇性填寫，但"標題"與"借款原因"均有填寫才會出現在供借出者閱覽的故事列表中！</div>
-        <input id="f4" name="StoryTitle" required<%if(bfJSON){%> value="<%=bfJSON.FormContent.F4%>"<%}%>>
+        <input id="f4" name="StoryTitle"<%if(bfJSON){%> value="<%=bfJSON.FormContent.F4%>"<%}%>>
     </div>
 
     <div class="borrowBlock">
         <div class="borrowBlockTitle">類別</div>
-        <select id="f5" name="Category">
+        <select id="f5" name="Category" required>
             <option value="general"<%if(bfJSON){%><%if(bfJSON.FormContent.F5=='general'){%> selected<%}%><%}%>>一般</option>
             <option value="education"<%if(bfJSON){%><%if(bfJSON.FormContent.F5=='education'){%> selected<%}%><%}%>>教育</option>
             <option value="family"<%if(bfJSON){%><%if(bfJSON.FormContent.F5=='family'){%> selected<%}%><%}%>>家庭</option>
@@ -70,7 +70,7 @@
 			重寫
 		</button>
 		&nbsp;
-		<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#chkModal1">
+		<button type="button" class="btn btn-primary" onclick="checkAndOpenModal('#chkModal1');";>
 			確認
 		</button>
     </div>
@@ -116,6 +116,25 @@
 					</button>
 					&nbsp;
 					<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="modal fade" id="msgModal">
+		<div class="modal-dialog modal-sm">
+			<div class="modal-content">
+				<div class="modal-header" style="text-align: center;">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title">錯誤</h4>
+				</div>
+				<div class="modal-body" style="text-align: center;">
+					<br>
+					必填欄位未填或已填欄位數值錯誤
+					<br>
+					<br>
+				</div>
+				<div class="modal-footer" style="text-align: center;">
+					<button type="button" class="btn btn-default" data-dismiss="modal">關閉</button>
 				</div>
 			</div>
 		</div>
@@ -188,6 +207,20 @@
 		$('.hastip').draggable();
 	});
 	
+	function checkAndOpenModal(target){
+		var a=$("input[name='MoneyToBorrow']").val().trim();
+		var b=$("input[name='MaxInterestRateAccepted']").val().trim();
+		var aa=parseInt(a);
+		var bb=parseFloat(b);
+		
+		if((a!='')&&(b!='')&&(aa>=5000)&&(aa<=150000)&&(bb>=<%=(scr*100)+0.01%>)&&(bb<=99)){
+			$("input[name='MoneyToBorrow']").val(aa);
+			$("input[name='MaxInterestRateAccepted']").val(bb);
+			$(target).modal('show');
+		}else{
+			$('#msgModal').modal('show');
+		}
+	}
 	
 	function clearForm(){
 		$('#f1').val('');

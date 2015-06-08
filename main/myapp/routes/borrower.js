@@ -63,93 +63,116 @@ router.post('/borrowCreate',library.loginFormChecker, library.ensureAuthenticate
 	}
 	
 	if(passFlag){
-		var nowMoney=parseInt(sanitizer.sanitize(req.body.MoneyToBorrow.trim()));
-		var rate=parseFloat(sanitizer.sanitize(req.body.MaxInterestRateAccepted.trim()))/100;
-		var month=parseInt(sanitizer.sanitize(req.body.MonthPeriodAccepted.trim()));
-		
-		var errorTarget=[];
-		var errorMessage=[];
-		for(i=0;i<3;i++){
-			errorTarget.push(false);
-			errorMessage.push('');
-		}
-		
-		if(sanitizer.sanitize(req.body.MoneyToBorrow.trim())==''){
-			errorTarget[0]=true;
-			errorMessage[0]='必要參數未填!';
-		}else if(isNaN(nowMoney)){
-			errorTarget[0]=true;
-			errorMessage[0]='非數字參數!';
-		}else if((nowMoney<5000)||(nowMoney>150000)){
-			errorTarget[0]=true;
-			errorMessage[0]='錯誤參數!';
-		}
-		
-		if(sanitizer.sanitize(req.body.MaxInterestRateAccepted.trim())==''){
-			errorTarget[1]=true;
-			errorMessage[1]='必要參數未填!';
-		}else if(isNaN(rate)){
-			errorTarget[1]=true;
-			errorMessage[1]='非數字參數!';
-		}else if((rate<=library.serviceChargeRate)||(rate>0.99)){
-			errorTarget[1]=true;
-			errorMessage[1]='錯誤參數!';
-		}
-		
-		if(sanitizer.sanitize(req.body.MonthPeriodAccepted.trim())==''){
-			errorTarget[2]=true;
-			errorMessage[2]='必要參數未填!';
-		}else if(isNaN(month)){
-			errorTarget[2]=true;
-			errorMessage[2]='非數字參數!';
-		}else if((month<1)||(month>36)){
-			errorTarget[2]=true;
-			errorMessage[2]='錯誤參數!';
-		}
-		
-		var valiFlag=true;
-		for(i=0;i<errorTarget.length;i++){
-			if(errorTarget[i]){
-				valiFlag=false;
-				break;
-			}
-		}
-		
-		if(valiFlag){
-			var toCreate = new Borrows();
-			toCreate.MoneyToBorrow = parseInt(sanitizer.sanitize(req.body.MoneyToBorrow.trim()));
-			toCreate.MaxInterestRateAccepted = parseFloat(sanitizer.sanitize(req.body.MaxInterestRateAccepted.trim()))/100;
-			toCreate.MonthPeriodAccepted = parseInt(sanitizer.sanitize(req.body.MonthPeriodAccepted.trim()));
-			if(sanitizer.sanitize(req.body.TimeLimit.trim())!=''){
-				toCreate.TimeLimit = sanitizer.sanitize(req.body.TimeLimit.trim());
-			}else{
-				var tempDate=new Date();
-				tempDate.setTime(tempDate.getTime()+1000*60*60*24*3);
-				toCreate.TimeLimit = tempDate;
-			}
-			toCreate.Category = sanitizer.sanitize(req.body.Category.trim());
-			if (sanitizer.sanitize(req.body.StoryTitle.trim()) != '') {
-				toCreate.StoryTitle = sanitizer.sanitize(req.body.StoryTitle.trim());
-			}
-			if (sanitizer.sanitize(req.body.Story.trim()) != '') {
-				toCreate.Story = sanitizer.sanitize(req.body.Story.trim());
-			}
-			toCreate.CreatedBy =req.user._id;
-			toCreate.Level = req.user.Level;
-
-			toCreate.save(function(err, newCreate) {
-				if (err) {
-					res.redirect('/message?content='+encodeURIComponent('新建失敗!'));
-				} else {
-					if(ctr>-1){
-						library.formIdfrArray.splice(ctr, 1);
-					}
-					res.redirect('/borrower/borrowSuccess');
-				}
-			});
+		var ifTitleRepeat=false;
+		var titleTester;
+		if(sanitizer.sanitize(req.body.StoryTitle.trim())==''){
+			titleTester=null
 		}else{
-			redirector(req,res,errorTarget,errorMessage);
-		}	
+			titleTester=sanitizer.sanitize(req.body.StoryTitle.trim());
+		}
+		
+		Borrows.findOne({"StoryTitle":titleTester}).exec(function (err, borrow){
+			if (err) {
+				console.log(err);
+				res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+			}else{
+				if(borrow){
+					ifTitleRepeat=true;
+				}
+				var nowMoney=parseInt(sanitizer.sanitize(req.body.MoneyToBorrow.trim()));
+				var rate=parseFloat(sanitizer.sanitize(req.body.MaxInterestRateAccepted.trim()))/100;
+				var month=parseInt(sanitizer.sanitize(req.body.MonthPeriodAccepted.trim()));
+				
+				var errorTarget=[];
+				var errorMessage=[];
+				for(i=0;i<4;i++){
+					errorTarget.push(false);
+					errorMessage.push('');
+				}
+				
+				if(sanitizer.sanitize(req.body.MoneyToBorrow.trim())==''){
+					errorTarget[0]=true;
+					errorMessage[0]='必要參數未填!';
+				}else if(isNaN(nowMoney)){
+					errorTarget[0]=true;
+					errorMessage[0]='非數字參數!';
+				}else if((nowMoney<5000)||(nowMoney>150000)){
+					errorTarget[0]=true;
+					errorMessage[0]='錯誤參數!';
+				}
+				
+				if(sanitizer.sanitize(req.body.MaxInterestRateAccepted.trim())==''){
+					errorTarget[1]=true;
+					errorMessage[1]='必要參數未填!';
+				}else if(isNaN(rate)){
+					errorTarget[1]=true;
+					errorMessage[1]='非數字參數!';
+				}else if((rate<(0.0001+library.serviceChargeRate))||(rate>0.99)){
+					errorTarget[1]=true;
+					errorMessage[1]='錯誤參數!';
+				}
+				
+				if(sanitizer.sanitize(req.body.MonthPeriodAccepted.trim())==''){
+					errorTarget[2]=true;
+					errorMessage[2]='必要參數未填!';
+				}else if(isNaN(month)){
+					errorTarget[2]=true;
+					errorMessage[2]='非數字參數!';
+				}else if((month<1)||(month>36)){
+					errorTarget[2]=true;
+					errorMessage[2]='錯誤參數!';
+				}
+				
+				if(ifTitleRepeat){
+					errorTarget[3]=true;
+					errorMessage[3]='故事標題重覆或不合規定!';
+				}
+				
+				var valiFlag=true;
+				for(i=0;i<errorTarget.length;i++){
+					if(errorTarget[i]){
+						valiFlag=false;
+						break;
+					}
+				}
+				
+				if(valiFlag){
+					var toCreate = new Borrows();
+					toCreate.MoneyToBorrow = parseInt(sanitizer.sanitize(req.body.MoneyToBorrow.trim()));
+					toCreate.MaxInterestRateAccepted = parseFloat(sanitizer.sanitize(req.body.MaxInterestRateAccepted.trim()))/100;
+					toCreate.MonthPeriodAccepted = parseInt(sanitizer.sanitize(req.body.MonthPeriodAccepted.trim()));
+					if(sanitizer.sanitize(req.body.TimeLimit.trim())!=''){
+						toCreate.TimeLimit = sanitizer.sanitize(req.body.TimeLimit.trim());
+					}else{
+						var tempDate=new Date();
+						tempDate.setTime(tempDate.getTime()+1000*60*60*24*3);
+						toCreate.TimeLimit = tempDate;
+					}
+					toCreate.Category = sanitizer.sanitize(req.body.Category.trim());
+					if (sanitizer.sanitize(req.body.StoryTitle.trim()) != '') {
+						toCreate.StoryTitle = sanitizer.sanitize(req.body.StoryTitle.trim());
+					}
+					if (sanitizer.sanitize(req.body.Story.trim()) != '') {
+						toCreate.Story = sanitizer.sanitize(req.body.Story.trim());
+					}
+					toCreate.CreatedBy =req.user._id;
+					toCreate.Level = req.user.Level;
+
+					toCreate.save(function(err, newCreate) {
+						if (err) {
+							res.redirect('/message?content='+encodeURIComponent('新建失敗!'));
+						} else {
+							if(ctr>-1){
+								library.formIdfrArray.splice(ctr, 1);
+							}
+							res.redirect('/borrower/borrowSuccess');
+						}
+					});
+				}else{
+					redirector(req,res,errorTarget,errorMessage);
+				}	
+			}
+		});
 	}else{
 		res.redirect('/message?content='+encodeURIComponent('表單已成功提交過或過期，請重新整理頁面！'));
 	}
