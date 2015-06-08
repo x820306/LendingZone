@@ -49,9 +49,9 @@
 				</div> 
 				<br>
 				<%if((sorterDefault=='建立日期')||(sorterDefault=='更新日期')){%>
-					<input style="height:32px;width:180px;display:inline;" type="date" placeholder="" class="form-control" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode==13){linker();}">
+					<input style="height:32px;width:180px;display:inline;" type="date" placeholder="下限(yyyy/mm/dd)" class="form-control" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode==13){linker();}">
 					&nbsp;~&nbsp;
-					<input style="height:32px;width:180px;display:inline;" type="date" placeholder="" class="form-control" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode==13){linker();}">
+					<input style="height:32px;width:180px;display:inline;" type="date" placeholder="上限(yyyy/mm/dd)" class="form-control" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode==13){linker();}">
 				<%}else{%>
 					<input style="height:32px;width:180px;display:inline;" type="text" placeholder="下限(元/%/個月/級)" class="form-control" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode==13){linker();}">
 					&nbsp;~&nbsp;
@@ -108,6 +108,7 @@
 							</tr>
 						</tbody>
 					</table>
+					<br>
 				<%}%>
 				<%if((rjJSON)&&(filterDefault=='已婉拒')){%>
 					<br>
@@ -144,6 +145,7 @@
 								</tr>
 							</tbody>
 						</table>
+						<br>
 						<%if(jsonLend){%>
 							<br>
 							<button id="lendChangerBtn" type="button" class="btn btn-default" onclick="lendChanger();">變更</button>
@@ -197,32 +199,55 @@
 							</tbody>
 						</table>
 						<br>
+						<br>
 						<button type="button" class="btn btn-info" data-toggle="modal" data-target="#chkModal1">
 							同意全部收到之請求
 						</button>
-						<div class="modal fade" id="chkModal1">
-							<div class="modal-dialog modal-sm">
-								<div class="modal-content">
-									<div class="modal-header" style="text-align: center;">
-										<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-										<h4 class="modal-title">再次確認</h4>
-									</div>
-									<div class="modal-body" style="text-align: center;">
-										<br>
-										您確定要同意全部收到之請求嗎?
-										<br>
-										<br>
-									</div>
-									<div class="modal-footer" style="text-align: center;">
-										<button class="btn btn-primary" id="confirmAllBtn" onclick="confirmAll();">
-											確定
-										</button>
-										&nbsp;
-										<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+						<%if(jsonLend){%>
+							<div class="modal fade" id="chkModal1">
+								<div class="modal-dialog modal-sm">
+									<div class="modal-content">
+										<div class="modal-header" style="text-align: center;">
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+											<h4 class="modal-title">再次確認</h4>
+										</div>
+										<div class="modal-body" style="text-align: center;">
+											<br>
+											您確定要同意全部收到之請求嗎?
+											<br>
+											<br>
+										</div>
+										<div class="modal-footer" style="text-align: center;">
+											<button class="btn btn-primary" id="confirmAllBtn" onclick="confirmAll();">
+												確定
+											</button>
+											&nbsp;
+											<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+										</div>
 									</div>
 								</div>
 							</div>
-						</div>
+						<%}else{%>
+							<div class="modal fade" id="chkModal1">
+								<div class="modal-dialog modal-sm">
+									<div class="modal-content">
+										<div class="modal-header" style="text-align: center;">
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+											<h4 class="modal-title">錯誤</h4>
+										</div>
+										<div class="modal-body" style="text-align: center;">
+											<br>
+											未找到自動出借設定！
+											<br>
+											<br>
+										</div>
+										<div class="modal-footer" style="text-align: center;">
+											<button type="button" class="btn btn-default" data-dismiss="modal">關閉</button>
+										</div>
+									</div>
+								</div>
+							</div>
+						<%}%>
 						&nbsp;&nbsp;
 						<button type="button" class="btn btn-danger" data-toggle="modal" data-target="#chkModal2">
 							婉拒全部收到之請求
@@ -294,32 +319,55 @@
 							</tbody>
 						</table>
 						<br>
+						<br>
 						<input type="checkbox" id="selectAll" onclick="selectAllFun();"> 全選&nbsp;&nbsp;&nbsp;&nbsp;
 						<button type="button" class="btn btn-info" onclick="checkAndOpenModal('#chkModal3')">
 							同意
 						</button>
-						<div class="modal fade" id="chkModal3">
-							<div class="modal-dialog modal-sm">
-								<div class="modal-content">
-									<div class="modal-header" style="text-align: center;">
-										<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-										<h4 class="modal-title">再次確認</h4>
-									</div>
-									<div class="modal-body" style="text-align: center;">
-										<br>
-										您確定要同意已選之<div id="seCtr1" style="display:inline;"></div>筆請求嗎?
-										<br>
-										<br>
-									</div>
-									<div class="modal-footer" style="text-align: center;">
-										<button class="btn btn-primary" id="confirmBtn" onclick="confirm();">
-											確定
-										</button>
-										<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+						<%if(jsonLend){%>
+							<div class="modal fade" id="chkModal3">
+								<div class="modal-dialog modal-sm">
+									<div class="modal-content">
+										<div class="modal-header" style="text-align: center;">
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+											<h4 class="modal-title">再次確認</h4>
+										</div>
+										<div class="modal-body" style="text-align: center;">
+											<br>
+											您確定要同意已選之<div id="seCtr1" style="display:inline;"></div>筆請求嗎?
+											<br>
+											<br>
+										</div>
+										<div class="modal-footer" style="text-align: center;">
+											<button class="btn btn-primary" id="confirmBtn" onclick="confirm();">
+												確定
+											</button>
+											<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+										</div>
 									</div>
 								</div>
 							</div>
-						</div>
+						<%}else{%>
+							<div class="modal fade" id="chkModal3">
+								<div class="modal-dialog modal-sm">
+									<div class="modal-content">
+										<div class="modal-header" style="text-align: center;">
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+											<h4 class="modal-title">錯誤</h4>
+										</div>
+										<div class="modal-body" style="text-align: center;">
+											<br>
+											未找到自動出借設定！
+											<br>
+											<br>
+										</div>
+										<div class="modal-footer" style="text-align: center;">
+											<button type="button" class="btn btn-default" data-dismiss="modal">關閉</button>
+										</div>
+									</div>
+								</div>
+							</div>
+						<%}%>
 						&nbsp;&nbsp;
 						<button type="button" class="btn btn-danger" onclick="checkAndOpenModal('#chkModal4')">
 							婉拒
@@ -939,8 +987,8 @@ function enableDater(){
 	if(!ifDater){
 		$('#lbound').attr('type','date');
 		$('#ubound').attr('type','date');
-		$('#lbound').attr('placeholder','');
-		$('#ubound').attr('placeholder','');
+		$('#lbound').attr('placeholder','下限(yyyy/mm/dd)');
+		$('#ubound').attr('placeholder','上限(yyyy/mm/dd)');
 		ifDater=true;
 	}
 }
@@ -1046,7 +1094,9 @@ function checkAndOpenModal(target){
 	});
 	if(ctr>0){
 		if(target=='#chkModal3'){
-			$('#seCtr1').html(ctr);
+			<%if(jsonLend){%>
+				$('#seCtr1').html(ctr);
+			<%}%>
 		}else if(target=='#chkModal4'){
 			$('#seCtr2').html(ctr);
 		}
@@ -1178,15 +1228,17 @@ function selectFun(index){
 }
 
 <%if(pageNumber>1){%>
-var confirmAllFlag=false;
-function confirmAll(){
-	if(!confirmAllFlag){
-		$('#chkModal1').modal('hide');
-		disableButton();
-		var form=document.getElementById('formID0');
-		form.submit();
-	}
-}
+	<%if(jsonLend){%>
+		var confirmAllFlag=false;
+		function confirmAll(){
+			if(!confirmAllFlag){
+				$('#chkModal1').modal('hide');
+				disableButton();
+				var form=document.getElementById('formID0');
+				form.submit();
+			}
+		}
+	<%}%>
 
 var rejectAllFlag=false;
 function rejectAll(){
@@ -1200,6 +1252,7 @@ function rejectAll(){
 }
 <%}%>
 
+<%if(jsonLend){%>
 var confirmFlag=false;
 function confirm(){
 	if(!confirmFlag){
@@ -1208,6 +1261,7 @@ function confirm(){
 		samepart(confirmInner);
 	}
 }
+<%}%>
 
 var rejectFlag=false;
 function reject(){
@@ -1219,12 +1273,14 @@ function reject(){
 }
 
 function disableButton(){
-	confirmFlag=true;
-	var orig=$('#confirmBtn').attr('class');
-	if(orig.search(' disabled')<0){
-		orig=orig+' disabled';
-		$('#confirmBtn').attr('class',orig);
-	}
+	<%if(jsonLend){%>
+		confirmFlag=true;
+		var orig=$('#confirmBtn').attr('class');
+		if(orig.search(' disabled')<0){
+			orig=orig+' disabled';
+			$('#confirmBtn').attr('class',orig);
+		}
+	<%}%>
 	
 	rejectFlag=true;
 	orig=$('#rejectBtn').attr('class');
@@ -1234,13 +1290,15 @@ function disableButton(){
 	}
 	
 	<%if(pageNumber>1){%>
-	confirmAllFlag=true;
-	orig=$('#confirmAllBtn').attr('class');
-	if(orig.search(' disabled')<0){
-		orig=orig+' disabled';
-		$('#confirmAllBtn').attr('class',orig);
-	}
-
+		<%if(jsonLend){%>	
+			confirmAllFlag=true;
+			orig=$('#confirmAllBtn').attr('class');
+			if(orig.search(' disabled')<0){
+				orig=orig+' disabled';
+				$('#confirmAllBtn').attr('class',orig);
+			}
+		<%}%>
+			
 	rejectAllFlag=true;
 	orig=$('#rejectAllBtn').attr('class');
 	if(orig.search(' disabled')<0){
@@ -1251,10 +1309,12 @@ function disableButton(){
 }
 
 function enableButton(){
-	confirmFlag=false;
-	var orig=$('#confirmBtn').attr('class');
-	orig=orig.replace(/ disabled/g, '');
-	$('#confirmBtn').attr('class',orig);
+	<%if(jsonLend){%>
+		confirmFlag=false;
+		var orig=$('#confirmBtn').attr('class');
+		orig=orig.replace(/ disabled/g, '');
+		$('#confirmBtn').attr('class',orig);
+	<%}%>
 	
 	rejectFlag=false;
 	orig=$('#rejectBtn').attr('class');
@@ -1262,10 +1322,12 @@ function enableButton(){
 	$('#rejectBtn').attr('class',orig);
 	
 	<%if(pageNumber>1){%>
-		confirmAllFlag=false;
-		orig=$('#confirmAllBtn').attr('class');
-		orig=orig.replace(/ disabled/g, '');
-		$('#confirmAllBtn').attr('class',orig);
+		<%if(jsonLend){%>
+			confirmAllFlag=false;
+			orig=$('#confirmAllBtn').attr('class');
+			orig=orig.replace(/ disabled/g, '');
+			$('#confirmAllBtn').attr('class',orig);
+		<%}%>
 
 		rejectAllFlag=false;
 		orig=$('#rejectAllBtn').attr('class');
@@ -1275,11 +1337,12 @@ function enableButton(){
 }
 
 
-
-function confirmInner(){
-	var form=document.getElementById('formID');
-	form.submit();
-}
+<%if(jsonLend){%>
+	function confirmInner(){
+		var form=document.getElementById('formID');
+		form.submit();
+	}
+<%}%>
 
 function rejectInner(){
 	var form=document.getElementById('formID');

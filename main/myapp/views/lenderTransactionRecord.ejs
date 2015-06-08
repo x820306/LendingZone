@@ -59,9 +59,9 @@
 				</div>
 				<br>
 				<%if((sorterDefault=='建立日期')||(sorterDefault=='更新日期')||(sorterDefault=='上次成功收款日期')||(sorterDefault=='下次應收款日期')){%>
-					<input style="height:32px;width:180px;display:inline;" type="date" placeholder="" class="form-control" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode==13){linker();}">
+					<input style="height:32px;width:180px;display:inline;" type="date" placeholder="下限(yyyy/mm/dd)" class="form-control" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode==13){linker();}">
 					&nbsp;~&nbsp;
-					<input style="height:32px;width:180px;display:inline;" type="date" placeholder="" class="form-control" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode==13){linker();}">
+					<input style="height:32px;width:180px;display:inline;" type="date" placeholder="上限(yyyy/mm/dd)" class="form-control" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode==13){linker();}">
 				<%}else{%>
 					<input style="height:32px;width:180px;display:inline;" type="text" placeholder="下限(元/%/個月/級/筆)" class="form-control" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode==13){linker();}">
 					&nbsp;~&nbsp;
@@ -90,6 +90,7 @@
 							</tr>
 						</tbody>
 					</table>
+					<br>
 				<%}%>
 				<% if(totalResultNum!=0){ %>
 					<% if(filterDefault=='未保險'){%>
@@ -112,6 +113,7 @@
 								</tr>
 							</tbody>
 						</table>
+						<br>
 						<br>
 						<button type="button" class="btn btn-default" data-toggle="modal" data-target="#chkModal1">
 							<span class="myTitle2">為所有交易購買保險</span>
@@ -158,6 +160,7 @@
 								</tr>
 							</tbody>
 						</table>
+						<br>
 						<br>
 						<input type="checkbox" id="selectAll" onclick="selectAllFun();"> 全選&nbsp;&nbsp;&nbsp;&nbsp;
 						<button type="button" class="btn btn-default" onclick="checkAndOpenModal('#chkModal2')">
@@ -223,7 +226,7 @@
 								</td>
 							</tr>
 						</table>
-						<div style="height: 420px;" class="panel panel-default pd">
+						<div style="height: 440px;" class="panel panel-default pd">
 							<div class="panel-body">
 								<div style="font-size:25px;display:inline;">借給 </div>
 								<div style="font-size:25px;display:inline;" class="myTitle"><%=jsonTransaction[i].Borrower.Username%></div>
@@ -645,8 +648,8 @@ function enableDater(){
 	if(!ifDater){
 		$('#lbound').attr('type','date');
 		$('#ubound').attr('type','date');
-		$('#lbound').attr('placeholder','');
-		$('#ubound').attr('placeholder','');
+		$('#lbound').attr('placeholder','下限(yyyy/mm/dd)');
+		$('#ubound').attr('placeholder','上限(yyyy/mm/dd)');
 		ifDater=true;
 	}
 }
