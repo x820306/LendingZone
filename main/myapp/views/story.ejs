@@ -636,19 +636,19 @@
 								<h4 class="modal-title" id="myModalLabel">借款請求 - <%if(jsonBorrowMessage.Status=='Confirmed'){ %>已同意<%}else if(jsonBorrowMessage.Status=='NotConfirmed'){%>未確認<%}else if(jsonBorrowMessage.Status=='Rejected'){%>已婉拒<%}%></h4>
 							</div>
 							<div class="modal-body">
-								<h4>欲借入金額：</h4>
+								<h4>金額：</h4>
 								<div class="input-group">
 									<input type="number" class="form-control" name="MoneyToLend" readonly="readonly" value="<%=jsonBorrowMessage.MoneyToLend.toFixed(0)%>">
 									<span class="input-group-addon">元</span>
 								</div>
 								<br>
-								<h4>欲借入年利率：</h4>
+								<h4>年利率：</h4>
 								<div class="input-group">
 									<input type="text" class="form-control" name="InterestRate" readonly="readonly" value="<%=(jsonBorrowMessage.InterestRate*100).toFixed(2)%>">
 									<span class="input-group-addon">%</span>
 								</div>
 								<br>
-								<h4>欲借入期數（單位/月）：</h4>
+								<h4>期數（單位/月）：</h4>
 								<div class="input-group">
 									<input type="number" class="form-control" name="MonthPeriod" readonly="readonly" value="<%=jsonBorrowMessage.MonthPeriod.toFixed(0)%>">
 									<span class="input-group-addon">個月</span>
@@ -758,20 +758,20 @@
 									<span class="input-group-addon">元</span>
 								</div>
 								<br>
-							<form action="/Messages/confirmToBorrowMessageInStory" method="post" id="confirmFormID" onsubmit="return disableButton();">
-								<h4>欲借入金額：<i style="color:red;">*</i><span id="s1" style="color:red;"><%if(cfJSON){%><%if(cfJSON.Target[0]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=cfJSON.Message[0]%><%}%><%}%></span></h4>
+							<form action="/Messages/confirmToBorrowMessageInStory" method="post" id="confirmFormID" onsubmit="return disableButton(1);">
+								<h4>金額：<i style="color:red;">*</i><span id="s1" style="color:red;"><%if(cfJSON){%><%if(cfJSON.Target[0]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=cfJSON.Message[0]%><%}%><%}%></span></h4>
 								<div class="input-group">
 									<input id="f1" type="number" class="form-control" name="MoneyToLend" value="<%if(cfJSON){%><%=cfJSON.FormContent.F1%><%}else{%><%=jsonBorrowMessage.MoneyToLend.toFixed(0)%><%}%>" required="required">
 									<span class="input-group-addon">元</span>
 								</div>
 								<br>
-								<h4>欲借入年利率：<i style="color:red;">*</i><span id="s2" style="color:red;"><%if(cfJSON){%><%if(cfJSON.Target[1]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=cfJSON.Message[1]%><%}%><%}%></span></h4>
+								<h4>年利率：<i style="color:red;">*</i><span id="s2" style="color:red;"><%if(cfJSON){%><%if(cfJSON.Target[1]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=cfJSON.Message[1]%><%}%><%}%></span></h4>
 								<div class="input-group">
 									<input id="f2" type="text" class="form-control" name="InterestRate" value="<%if(cfJSON){%><%=cfJSON.FormContent.F2%><%}else{%><%=(jsonBorrowMessage.InterestRate*100).toFixed(2)%><%}%>" required="required">
 									<span class="input-group-addon">%</span>
 								</div>
 								<br>
-								<h4>欲借入期數（單位/月，最大36個月）：<i style="color:red;">*</i><br><span id="s3" style="color:red;"><%if(cfJSON){%><%if(cfJSON.Target[2]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=cfJSON.Message[2]%><%}%><%}%></span></h4>
+								<h4>期數（單位/月，最大36個月）：<i style="color:red;">*</i><br><span id="s3" style="color:red;"><%if(cfJSON){%><%if(cfJSON.Target[2]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=cfJSON.Message[2]%><%}%><%}%></span></h4>
 								<div class="input-group">
 									<input id="f3" type="number" class="form-control" name="MonthPeriod" value="<%if(cfJSON){%><%=cfJSON.FormContent.F3%><%}else{%><%=jsonBorrowMessage.MonthPeriod.toFixed(0)%><%}%>" required="required">
 									<span class="input-group-addon">個月</span>
@@ -811,9 +811,11 @@
 							<div class="modal-footer">
 								<div style="float:left;" class="btn-toolbar" role="toolbar">
 									<div class="btn-group" role="group">
-										<button type="button" class="btn btn-info" onclick="checkAndOpenModal(chkModal4,mdlCnt4,'同意此借款請求嗎?',true);">
-											同意
-										</button>
+										<%if(jsonLend){%>
+											<button type="button" class="btn btn-info" onclick="checkAndOpenModal(chkModal4,mdlCnt4,'同意此借款請求嗎?',true);">同意</button>
+										<%}else{%>
+											<button type="button" class="btn btn-info" data-toggle="modal" data-target="#chkModal4">同意</button>
+										<%}%>
 									</div>
 									<div class="btn-group" role="group">
 										<button type="button" class="btn btn-danger" onclick="checkAndOpenModal(chkModal5,mdlCnt5,'您確定要婉拒此借款請求嗎?',false);">
@@ -831,22 +833,41 @@
 						</div>
 					</div>
 				</div>
-				<div class="modal fade" id="chkModal4">
-					<div class="modal-dialog modal-sm">
-						<div class="modal-content">
-							<div class="modal-header" style="text-align: center;">
-								<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-								<h4 class="modal-title">再次確認</h4>
-							</div>
-							<div id="mdlCnt4" class="modal-body" style="text-align: center;">
-							</div>
-							<div class="modal-footer" style="text-align: center;">
-								<button type="submit" class="btn btn-primary"  onclick="agree();" id="argBtnID">確定</button>
-								<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+				<%if(jsonLend){%>
+					<div class="modal fade" id="chkModal4">
+						<div class="modal-dialog modal-sm">
+							<div class="modal-content">
+								<div class="modal-header" style="text-align: center;">
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+									<h4 class="modal-title">再次確認</h4>
+								</div>
+								<div id="mdlCnt4" class="modal-body" style="text-align: center;">
+								</div>
+								<div class="modal-footer" style="text-align: center;">
+									<button type="submit" class="btn btn-primary"  onclick="agree();" id="argBtnID">確定</button>
+									<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+								</div>
 							</div>
 						</div>
 					</div>
-				</div>
+				<%}else{%>
+					<div class="modal fade" id="chkModal4">
+						<div class="modal-dialog modal-sm">
+							<div class="modal-content">
+								<div class="modal-header" style="text-align: center;">
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+									<h4 class="modal-title">錯誤</h4>
+								</div>
+								<div class="modal-body" style="text-align: center;">
+									未找到自動出借設定！
+								</div>
+								<div class="modal-footer" style="text-align: center;">
+									<button type="button" class="btn btn-default" data-dismiss="modal">關閉</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				<%}%>
 				<div class="modal fade" id="chkModal5">
 					<div class="modal-dialog modal-sm">
 						<div class="modal-content">
@@ -1483,35 +1504,60 @@
 						}
 					<%}%>
 					
-					function agree(){
-						$('#chkModal4').modal('hide');
-					}
+					<%if(jsonLend){%>
+						function agree(){
+							$('#chkModal4').modal('hide');
+						}
+					<%}%>
 					
 					function refuse(){
 						$('#chkModal5').modal('hide');
-						disableButton();
+						disableButton(2);
 						
 						var form=document.getElementById('confirmFormID');
 						form.action="/Messages/rejectToBorrowMessageInStory";
 						form.submit();
 					}
 					
+					<%if(jsonLend){%>
+						var jsonLendFlag=true;
+					<%}else{%>
+						var jsonLendFlag=false;
+					<%}%>
+					
 					var submitFlag=false;
-					function disableButton(){
+					function disableButton(side){
 						if(!submitFlag){
-							var orig=$('#argBtnID').attr('class');
-							if(orig.search(' disabled')<0){
-								orig=orig+' disabled';
-								$('#argBtnID').attr('class',orig);
-							}
+							if(jsonLendFlag){
+								var orig=$('#argBtnID').attr('class');
+								if(orig.search(' disabled')<0){
+									orig=orig+' disabled';
+									$('#argBtnID').attr('class',orig);
+								}
 							
-							orig=$('#rfsBtnID').attr('class');
-							if(orig.search(' disabled')<0){
-								orig=orig+' disabled';
-								$('#rfsBtnID').attr('class',orig);
+								orig=$('#rfsBtnID').attr('class');
+								if(orig.search(' disabled')<0){
+									orig=orig+' disabled';
+									$('#rfsBtnID').attr('class',orig);
+								}
+								
+								submitFlag=true;
+								return true;
+							}else{
+								if(side==1){
+									$('#chkModal4').modal('show');
+									return false;
+								}else if(side==2){
+									orig=$('#rfsBtnID').attr('class');
+									if(orig.search(' disabled')<0){
+										orig=orig+' disabled';
+										$('#rfsBtnID').attr('class',orig);
+									}
+									
+									submitFlag=true;
+									return true;
+								}
 							}
-							submitFlag=true;
-							return true;
 						}else{
 							return false;
 						}

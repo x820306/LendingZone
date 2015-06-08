@@ -61,9 +61,9 @@
 				<%}%>
 				<br>
 				<%if((sorterDefault=='建立日期')||(sorterDefault=='更新日期')){%>
-					<input style="height:32px;width:180px;display:inline;" type="date" placeholder="" class="form-control" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode==13){linker();}">
+					<input style="height:32px;width:180px;display:inline;" type="date" placeholder="下限(yyyy/mm/dd)" class="form-control" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode==13){linker();}">
 					&nbsp;~&nbsp;
-					<input style="height:32px;width:180px;display:inline;" type="date" placeholder="" class="form-control" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode==13){linker();}">
+					<input style="height:32px;width:180px;display:inline;" type="date" placeholder="上限(yyyy/mm/dd)" class="form-control" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode==13){linker();}">
 				<%}else{%>
 					<input style="height:32px;width:180px;display:inline;" type="text" placeholder="下限(元/級)" class="form-control" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode==13){linker();}">
 					&nbsp;~&nbsp;
@@ -80,7 +80,7 @@
 								</td>
 							</tr>
 						</table>
-						<div style="height: 500px;" class="panel panel-default pd">
+						<div style="height: 520px;" class="panel panel-default pd">
 							<div class="panel-body">
 								<div style="font-size:25px;display:inline;">來自 </div>
 								<div style="font-size:25px;display:inline;" class="myTitle"><%=jsonReturns[i].Borrower.Username%></div>
@@ -504,8 +504,8 @@
 		if(!ifDater){
 			$('#lbound').attr('type','date');
 			$('#ubound').attr('type','date');
-			$('#lbound').attr('placeholder','');
-			$('#ubound').attr('placeholder','');
+			$('#lbound').attr('placeholder','下限(yyyy/mm/dd)');
+			$('#ubound').attr('placeholder','上限(yyyy/mm/dd)');
 			ifDater=true;
 		}
 	}

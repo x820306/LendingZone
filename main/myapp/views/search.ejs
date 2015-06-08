@@ -49,9 +49,9 @@
 				</div> 
 				<br>
 				<%if((actionDefault=='建立日期')||(actionDefault=='更新日期')||(actionDefault=='最晚媒合日期')){%>
-					<input style="height:32px;width:180px;display:inline;" type="date" placeholder="" class="form-control" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode==13){ linker();}">
+					<input style="height:32px;width:180px;display:inline;" type="date" placeholder="下限(yyyy/mm/dd)" class="form-control" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode==13){ linker();}">
 					&nbsp;~&nbsp;
-					<input style="height:32px;width:180px;display:inline;" type="date" placeholder="" class="form-control" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode==13){ linker();}">
+					<input style="height:32px;width:180px;display:inline;" type="date" placeholder="上限(yyyy/mm/dd)" class="form-control" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode==13){ linker();}">
 				<%}else{%>
 					<input style="height:32px;width:180px;display:inline;" type="text" placeholder="下限(元/%/個月/級/次)" class="form-control" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode==13){ linker();}">
 					&nbsp;~&nbsp;
@@ -276,8 +276,8 @@
 		if(!ifDater){
 			$('#lbound').attr('type','date');
 			$('#ubound').attr('type','date');
-			$('#lbound').attr('placeholder','');
-			$('#ubound').attr('placeholder','');
+			$('#lbound').attr('placeholder','下限(yyyy/mm/dd)');
+			$('#ubound').attr('placeholder','上限(yyyy/mm/dd)');
 			ifDater=true;
 		}
 	}
