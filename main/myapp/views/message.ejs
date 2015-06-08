@@ -4,9 +4,9 @@
 		<center>
 			<br><br><br><br><br><br><br>
 			<h4><%=content%></h4>
-			<%if((content=='您的密碼已變更成功!')||(content=='您的密碼已重設成功!')){%>
+			<%if((content=='您的密碼已變更成功!')||(content=='您的密碼已重設成功!')||(content=='已重啟!')){%>
 				<br>
-				<button id="cancelBtnID" type="button" class="btn btn-default btn-lg" onClick = "javascript:location.href='/'" >
+				<button type="button" class="btn btn-default btn-lg" onClick = "javascript:location.href='/'" >
 					  <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> 回首頁
 				</button></div>
 			<%}%>

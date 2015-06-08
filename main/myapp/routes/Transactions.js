@@ -84,12 +84,42 @@ router.post('/destroyTest', function(req, res, next) {
 									console.log(err);
 									res.json({error: err.name}, 500);
 								}else{	
-									transaction.remove(function (err,removedItem){
-										if (err){
+									Borrows.findById(updatedMessage.FromBorrowRequest).exec(function (err, borrow){
+										if (err) {
 											console.log(err);
 											res.json({error: err.name}, 500);
 										}else{
-											res.json(removedItem);
+											if(!borrow){
+												res.json({error: 'no such borrow'}, 500);
+											}else{
+												if(!borrow.IfReadable){
+													borrow.IfReadable=true;
+													borrow.save(function (err,updatedBorrow){
+														if (err){
+															console.log(err);
+															res.json({error: err.name}, 500);
+														}else{
+															transaction.remove(function (err,removedItem){
+																if (err){
+																	console.log(err);
+																	res.json({error: err.name}, 500);
+																}else{
+																	res.json(removedItem);
+																}
+															});
+														}
+													});
+												}else{
+													transaction.remove(function (err,removedItem){
+														if (err){
+															console.log(err);
+															res.json({error: err.name}, 500);
+														}else{
+															res.json(removedItem);
+														}
+													});
+												}
+											}
 										}
 									});
 								}
@@ -384,23 +414,23 @@ router.post('/buyInsuranceAll',library.loginFormChecker,library.ensureAuthentica
 							
 							if(sorter=='預計總利息'){
 								if(director=='大至小'){
-									transactions.sort(function(a,b) { return parseFloat(b.InterestInFuture) - parseFloat(a.InterestInFuture)} );
+									transactions.sort(function(a,b) { return parseInt(b.InterestInFuture) - parseInt(a.InterestInFuture)} );
 								}else if(director=='小至大'){
-									transactions.sort(function(a,b) { return parseFloat(a.InterestInFuture) - parseFloat(b.InterestInFuture)} );
+									transactions.sort(function(a,b) { return parseInt(a.InterestInFuture) - parseInt(b.InterestInFuture)} );
 								}
 								library.arrayFilter(transactions,'InterestInFuture',lboundRec,uboundRec);	
 							}else if(sorter=='預計平均利息'){
 								if(director=='大至小'){
-									transactions.sort(function(a,b) { return parseFloat(b.InterestInFutureMonth) - parseFloat(a.InterestInFutureMonth)} );
+									transactions.sort(function(a,b) { return parseInt(b.InterestInFutureMonth) - parseInt(a.InterestInFutureMonth)} );
 								}else if(director=='小至大'){
-									transactions.sort(function(a,b) { return parseFloat(a.InterestInFutureMonth) - parseFloat(b.InterestInFutureMonth)} );
+									transactions.sort(function(a,b) { return parseInt(a.InterestInFutureMonth) - parseInt(b.InterestInFutureMonth)} );
 								}
 								library.arrayFilter(transactions,'InterestInFutureMonth',lboundRec,uboundRec);	
 							}else if(sorter=='預計平均本利和'){
 								if(director=='大至小'){
-									transactions.sort(function(a,b) { return parseFloat(b.InterestInFutureMoneyMonth) - parseFloat(a.InterestInFutureMoneyMonth)} );
+									transactions.sort(function(a,b) { return parseInt(b.InterestInFutureMoneyMonth) - parseInt(a.InterestInFutureMoneyMonth)} );
 								}else if(director=='小至大'){
-									transactions.sort(function(a,b) { return parseFloat(a.InterestInFutureMoneyMonth) - parseFloat(b.InterestInFutureMoneyMonth)} );
+									transactions.sort(function(a,b) { return parseInt(a.InterestInFutureMoneyMonth) - parseInt(b.InterestInFutureMoneyMonth)} );
 								}
 								library.arrayFilter(transactions,'InterestInFutureMoneyMonth',lboundRec,uboundRec);	
 							}else if(sorter=='預計利本比'){
@@ -428,29 +458,29 @@ router.post('/buyInsuranceAll',library.loginFormChecker,library.ensureAuthentica
 									tempDate.setTime(tempDate.getTime()+1000*60*60*24*30*(transactions[i].MonthPeriodHasPast+1));
 									transactions[i].nextPayDateNum=tempDate.getTime();
 								}else{
-									transactions[i].nextPayDateNum=Infinity;
+									transactions[i].nextPayDateNum=9999999999999;
 								}
 							}
 							
 							if(sorter=='收款記錄'){
 								if(director=='大至小'){
-									transactions.sort(function(a,b) { return parseFloat(b.ReturnCount) - parseFloat(a.ReturnCount)} );
+									transactions.sort(function(a,b) { return parseInt(b.ReturnCount) - parseInt(a.ReturnCount)} );
 								}else if(director=='小至大'){
-									transactions.sort(function(a,b) { return parseFloat(a.ReturnCount) - parseFloat(b.ReturnCount)} );
+									transactions.sort(function(a,b) { return parseInt(a.ReturnCount) - parseInt(b.ReturnCount)} );
 								}
 								library.arrayFilter(transactions,'ReturnCount',lboundRec,uboundRec);
 							}else if(sorter=='上次成功收款日期'){
 								if(director=='大至小'){
-									transactions.sort(function(a,b) { return parseFloat(b.previousPayDateNum) - parseFloat(a.previousPayDateNum)} );
+									transactions.sort(function(a,b) { return parseInt(b.previousPayDateNum) - parseInt(a.previousPayDateNum)} );
 								}else if(director=='小至大'){
-									transactions.sort(function(a,b) { return parseFloat(a.previousPayDateNum) - parseFloat(b.previousPayDateNum)} );
+									transactions.sort(function(a,b) { return parseInt(a.previousPayDateNum) - parseInt(b.previousPayDateNum)} );
 								}
 								library.arrayFilter(transactions,'previousPayDateNum',lboundRec,uboundRec);
 							}else if(sorter=='下次應收款日期'){
 								if(director=='大至小'){
-									transactions.sort(function(a,b) { return parseFloat(b.nextPayDateNum) - parseFloat(a.nextPayDateNum)} );
+									transactions.sort(function(a,b) { return parseInt(b.nextPayDateNum) - parseInt(a.nextPayDateNum)} );
 								}else if(director=='小至大'){
-									transactions.sort(function(a,b) { return parseFloat(a.nextPayDateNum) - parseFloat(b.nextPayDateNum)} );
+									transactions.sort(function(a,b) { return parseInt(a.nextPayDateNum) - parseInt(b.nextPayDateNum)} );
 								}
 								library.arrayFilter(transactions,'nextPayDateNum',lboundRec,uboundRec);
 							}

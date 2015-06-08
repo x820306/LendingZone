@@ -6,7 +6,6 @@ var SALT_WORK_FACTOR = 10;
 
 var Borrows = new Schema({
 	MoneyToBorrow: { type: Number, default: 0 },//想借多少錢
-	MoneyToBorrowCumulated: { type: Number, default: 0 },//已經借到多少錢，以上前者減後者可得還需要多少錢
 	MaxInterestRateAccepted: { type: Number, default: 0.01 },
 	MonthPeriodAccepted: { type: Number, default: 1 },
 	TimeLimit: { type: Date, default: Date.now },

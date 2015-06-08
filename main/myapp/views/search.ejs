@@ -29,11 +29,13 @@
 								<li id="alis1"<%if(actionDefault=='建立日期'){%> class="active"<%}%>><a href="#" onclick="searchActionSelector(1);sorterSelector(1);return false;" id="sorter1">建立日期</a></li>
 								<li id="alis2"<%if(actionDefault=='更新日期'){%> class="active"<%}%>><a href="#" onclick="searchActionSelector(2);sorterSelector(2);return false;" id="sorter2">更新日期</a></li>
 								<li id="alis3"<%if(actionDefault=='最晚媒合日期'){%> class="active"<%}%>><a href="#" onclick="searchActionSelector(3);sorterSelector(3);return false;" id="sorter3">最晚媒合日期</a></li>
-								<li id="alis4"<%if(actionDefault=='金額'){%> class="active"<%}%>><a href="#" onclick="searchActionSelector(4);sorterSelector(4);return false;" id="sorter4">金額</a></li>
-								<li id="alis5"<%if(actionDefault=='利率'){%> class="active"<%}%>><a href="#" onclick="searchActionSelector(5);sorterSelector(5);return false;" id="sorter5">利率</a></li>
-								<li id="alis6"<%if(actionDefault=='期數'){%> class="active"<%}%>><a href="#" onclick="searchActionSelector(6);sorterSelector(6);return false;" id="sorter6">期數</a></li>
-								<li id="alis7"<%if(actionDefault=='信用等級'){%> class="active"<%}%>><a href="#" onclick="searchActionSelector(7);sorterSelector(7);return false;" id="sorter7">信用等級</a></li>
-								<li id="alis8"<%if(actionDefault=='按讚次數'){%> class="active"<%}%>><a href="#" onclick="searchActionSelector(8);sorterSelector(8);return false;" id="sorter8">按讚次數</a></li>
+								<li id="alis4"<%if(actionDefault=='原始需要金額'){%> class="active"<%}%>><a href="#" onclick="searchActionSelector(4);sorterSelector(4);return false;" id="sorter4">原始需要金額</a></li>
+								<li id="alis5"<%if(actionDefault=='已經借到金額'){%> class="active"<%}%>><a href="#" onclick="searchActionSelector(5);sorterSelector(5);return false;" id="sorter5">已經借到金額</a></li>
+								<li id="alis6"<%if(actionDefault=='還需要金額'){%> class="active"<%}%>><a href="#" onclick="searchActionSelector(6);sorterSelector(6);return false;" id="sorter6">還需要金額</a></li>
+								<li id="alis7"<%if(actionDefault=='利率'){%> class="active"<%}%>><a href="#" onclick="searchActionSelector(7);sorterSelector(7);return false;" id="sorter7">利率</a></li>
+								<li id="alis8"<%if(actionDefault=='期數'){%> class="active"<%}%>><a href="#" onclick="searchActionSelector(8);sorterSelector(8);return false;" id="sorter8">期數</a></li>
+								<li id="alis9"<%if(actionDefault=='信用等級'){%> class="active"<%}%>><a href="#" onclick="searchActionSelector(9);sorterSelector(9);return false;" id="sorter9">信用等級</a></li>
+								<li id="alis10"<%if(actionDefault=='按讚次數'){%> class="active"<%}%>><a href="#" onclick="searchActionSelector(10);sorterSelector(10);return false;" id="sorter10">按讚次數</a></li>
 							</ul>
 						</div>
 						<div class="btn-group">
@@ -66,14 +68,20 @@
 							<tr>
 								<td style="border-bottom-style: none;border-top-style: none;">
 									<div style="font-size:15px;display:inline;">
-										金額：<%=jsonArray[i].MoneyToBorrow.toFixed(0)%>元
-									</div>&nbsp;&nbsp;&nbsp;&nbsp;
+										原始需要：<%=jsonArray[i].MoneyToBorrow.toFixed(0)%>元
+									</div>&nbsp;&nbsp;
+									<div style="font-size:15px;display:inline;">
+										已經借到：<%=jsonArray[i].Got.toFixed(0)%>元
+									</div>&nbsp;&nbsp;
+									<div style="font-size:15px;display:inline;">
+										還需要：<%=jsonArray[i].Need.toFixed(0)%>元
+									</div>&nbsp;&nbsp;
 									<div style="font-size:15px;display:inline;">
 										年利率：<%=(jsonArray[i].MaxInterestRateAccepted*100).toFixed(2)%>%
-									</div>&nbsp;&nbsp;&nbsp;&nbsp;
+									</div>&nbsp;&nbsp;
 									<div style="font-size:15px;display:inline;">
 										期數：<%=jsonArray[i].MonthPeriodAccepted.toFixed(0)%>個月
-									</div>&nbsp;&nbsp;&nbsp;&nbsp;
+									</div>&nbsp;&nbsp;
 									<div style="font-size:15px;display:inline;">
 										信用：<%=jsonArray[i].Level.toFixed(0)%>級
 									</div>
@@ -139,6 +147,10 @@
 									&nbsp;&nbsp;&nbsp;&nbsp;
 									<div style="font-size:15px;display:inline;">
 										Updated：<%=jsonArray[i].Updated.getFullYear()%>/<%=jsonArray[i].Updated.getMonth()+1%>/<%=jsonArray[i].Updated.getDate()%>
+									</div>
+									&nbsp;&nbsp;&nbsp;&nbsp;
+									<div style="font-size:15px;display:inline;">
+										No.<%=i+1%>
 									</div>
 								</td>
 							</tr>
@@ -250,7 +262,7 @@
 		$('#sorterSelected').html($('#sorter'+index).text());
 		$('#sorter0').html($('#sorterSelected').text());
 		$('#sorterSelected').append(' <span class=\'caret\'><\/span>');
-		for(i=1;i<=8;i++){
+		for(i=1;i<=10;i++){
 			$('#alis'+i).attr('class','');
 		}
 		$('#alis'+index).attr('class','active');

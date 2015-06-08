@@ -194,6 +194,10 @@ app.get('/logout', function (req, res) {
     res.redirect('/');
 });
 
+app.get('/autoRestarterPage',library.loginFormChecker,library.ensureAuthenticated,library.newMsgChecker,library.ensureAdmin, function (req, res) {
+    res.render('autoRestarterPage',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username});
+});
+
 app.get('/signupTest',library.loginFormChecker,library.newMsgChecker, function (req, res) {
 	var auRst=null;
 	if(req.isAuthenticated()){
@@ -314,7 +318,7 @@ function routeChecker(req){
 	var subString=stringArray[stringArray.length-1];
 	var subStringArray=subString.split('?');
 	var target=subStringArray[0];
-	if((target=='message')||(target=='borrowCreate')||(target=='readable')||(target=='buyInsurance')||(target=='buyInsuranceAll')||(target=='rejectToBorrowMessageInStory')||(target=='confirmToBorrowMessageInStory')||(target=='rejectToBorrowMessageInLRM')||(target=='confirmToBorrowMessageInLRM')||(target=='rejectToBorrowMessageInLRMall')||(target=='confirmToBorrowMessageInLRMall')||(target=='toLendCreate')||(target=='toLendUpdate')||(target=='destroy')||(target=='create')||(target=='update')||(target=='changeData')||(target=='changePW')||(target=='deleteToLendMessageInLRMall')||(target=='buyInsuranceAll')||(target=='rejectToBorrowMessageInLRMall')||(target=='confirmToBorrowMessageInLRMall')){
+	if((target=='message')||(target=='borrowCreate')||(target=='readable')||(target=='buyInsurance')||(target=='buyInsuranceAll')||(target=='rejectToBorrowMessageInStory')||(target=='confirmToBorrowMessageInStory')||(target=='rejectToBorrowMessageInLRM')||(target=='confirmToBorrowMessageInLRM')||(target=='rejectToBorrowMessageInLRMall')||(target=='confirmToBorrowMessageInLRMall')||(target=='toLendCreate')||(target=='toLendUpdate')||(target=='destroy')||(target=='create')||(target=='update')||(target=='changeData')||(target=='changePW')||(target=='deleteToLendMessageInLRMall')||(target=='buyInsuranceAll')||(target=='rejectToBorrowMessageInLRMall')||(target=='confirmToBorrowMessageInLRMall')||(target=='autoRestarter')){
 		return false;
 	}else{
 		return true;

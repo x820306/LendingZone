@@ -168,6 +168,11 @@ router.post('/levelSetter', function(req, res, next) {
 		console.log(numberAffected);
 		res.end('end');
 	});*/
+	
+	/*Borrows.update({},{$unset: {MoneyToBorrowCumulated: 1 }},{multi:true}, function(err, numberAffected){  
+		console.log(numberAffected);
+		res.end('end');
+	});*/
 	//for adding a new field into existed documents 
 });
 

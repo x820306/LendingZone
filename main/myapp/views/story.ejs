@@ -51,7 +51,7 @@
 						<tr>
 							<td>
 								<div class="myTitle">
-									需要金額：
+									原始需要金額：
 								</div>
 							</td>
 						</tr>
@@ -65,28 +65,28 @@
 						<tr>
 							<td>
 								<div class="myTitle">
-									已經借到：
+									已經借到金額：
 								</div>
 							</td>
 						</tr>
 						<tr>
 							<td>
 								<div>
-									&nbsp;&nbsp;&nbsp;&nbsp;<%=json.MoneyToBorrowCumulated.toFixed(0)%>元
+									&nbsp;&nbsp;&nbsp;&nbsp;<%=json.Got.toFixed(0)%>元
 								</div>	
 							</td>
 						</tr>
 						<tr>
 							<td>
 								<div class="myTitle">
-									還需要：
+									還需要金額：
 								</div>
 							</td>
 						</tr>
 						<tr>
 							<td>
 								<div>
-									&nbsp;&nbsp;&nbsp;&nbsp;<%=json.MoneyToBorrow-json.MoneyToBorrowCumulated.toFixed(0)%>元
+									&nbsp;&nbsp;&nbsp;&nbsp;<%=json.Need.toFixed(0)%>元
 								</div>	
 							</td>
 						</tr>

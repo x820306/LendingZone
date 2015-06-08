@@ -149,8 +149,17 @@
 						<br>
 						<br>
 					<%}%>
+					<ul class="nav nav-pills">
+						<li class="active"><a data-toggle="pill" href="#" onclick="piller(1);return false;">訊息</a></li>
+						<li><a data-toggle="pill" href="#" onclick="piller(2);return false;">資訊</a></li>
+						<% if((filterDefault=='已被同意')||(filterDefault=='不分類')){%>
+							<li><a data-toggle="pill" href="#" onclick="piller(3);return false;">交易紀錄</a></li>
+						<%}%>
+					</ul>
+					<br>
+					<br>
 					<% for(var i=0; i<jsonMessage.length; i++) { %>
-					<ul class="nav nav-tabs">
+					<ul class="nav nav-tabs" id="myTab<%=i%>">
 						<li class="active"><a href="#tab1<%=i%>" data-toggle="tab">訊息</a></li>
 						<li><a href="#tab2<%=i%>" data-toggle="tab">資訊</a></li>
 						<% if(jsonMessage[i].Status=='Confirmed'){%>
@@ -561,8 +570,22 @@
 								</td>
 							<%}%>
 							<td align="right" style="border-bottom-style: none;border-top-style: none;">
-								<div>
-									<%if(jsonMessage[i].Status=='Confirmed'){%><a href="/lender/lenderTransactionRecord?oneid=<%=jsonMessage[i].Transaction[0]._id%>&filter=<%if(jsonMessage[i].Transaction[0].Principal>0){%><%if(jsonMessage[i].Transaction[0].InsuranceFeePaid>0){%><%=encodeURIComponent('已保險')%><%}else{%><%=encodeURIComponent('未保險')%><%}%><%}else{%><%=encodeURIComponent('已結清')%><%}%>&sorter=<%=encodeURIComponent("建立日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">查詢該筆交易</a>&nbsp;&nbsp;&nbsp;&nbsp;<%}%>Updated：<%=jsonMessage[i].Updated.getFullYear()%>/<%=jsonMessage[i].Updated.getMonth()+1%>/<%=jsonMessage[i].Updated.getDate()%>&nbsp;&nbsp;&nbsp;&nbsp;Created：<%=jsonMessage[i].Created.getFullYear()%>/<%=jsonMessage[i].Created.getMonth()+1%>/<%=jsonMessage[i].Created.getDate()%>
+								<%if(jsonMessage[i].Status=='Confirmed'){%>
+									<div style="font-size:15px;display:inline;">
+										<a href="/lender/lenderTransactionRecord?oneid=<%=jsonMessage[i].Transaction[0]._id%>&filter=<%if(jsonMessage[i].Transaction[0].Principal>0){%><%if(jsonMessage[i].Transaction[0].InsuranceFeePaid>0){%><%=encodeURIComponent('已保險')%><%}else{%><%=encodeURIComponent('未保險')%><%}%><%}else{%><%=encodeURIComponent('已結清')%><%}%>&sorter=<%=encodeURIComponent("建立日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">查詢該筆交易</a>
+									</div>
+									&nbsp;&nbsp;&nbsp;&nbsp;
+								<%}%>
+								<div style="font-size:15px;display:inline;">
+									Updated：<%=jsonMessage[i].Updated.getFullYear()%>/<%=jsonMessage[i].Updated.getMonth()+1%>/<%=jsonMessage[i].Updated.getDate()%>
+								</div>
+								&nbsp;&nbsp;&nbsp;&nbsp;
+								<div style="font-size:15px;display:inline;">
+									Created：<%=jsonMessage[i].Created.getFullYear()%>/<%=jsonMessage[i].Created.getMonth()+1%>/<%=jsonMessage[i].Created.getDate()%>
+								</div>
+								&nbsp;&nbsp;&nbsp;&nbsp;
+								<div style="font-size:15px;display:inline;">
+									No.<%=i+1%>
 								</div>
 							</td>
 						<tr>
@@ -736,143 +759,162 @@ function linker(){
 	window.open('/lender/lenderSendMessages?msgKeyword='+encodeURIComponent($('#msgKeywordIpt').val().trim())+'&filter='+encodeURIComponent($('#filter0').text())+'&sorter='+encodeURIComponent($('#sorter0').text())+'&director='+encodeURIComponent($('#director0').text())+'&lbound='+encodeURIComponent($('#lbound').val().trim())+'&ubound='+encodeURIComponent($('#ubound').val().trim())+'&page=1','_self');
 }
 
-<% if((filterDefault=='未被確認')&&(totalResultNum>0)){%>
-$(document).ready(function(){
-	$("#selectAll").prop("checked", false);
-	$("input[name='selectCheckBox']").each(function() {
-		$(this).prop("checked", false);
-	});
-});
 
-function checkAndOpenModal(target){
-	var ctr=0;
-	$("input[name='selectCheckBox']").each(function() {
-			if($(this).prop("checked")){
-				ctr+=1;
+<% if(totalResultNum>0){%>
+	function piller(target){
+		if(target==1){
+			for(k=0;k<<%=jsonMessage.length%>;k++){
+				$('#myTab'+k+' a[href="#tab1'+k+'"]').tab('show');
 			}
-	});
-	if(ctr>0){
-		if(target=='#chkModal2'){
-			$('#seCtr1').html(ctr);
-		}
-		$(target).modal('show');
-	}else{
-		$('#msgModal').modal('show');
+		}else if(target==2){
+			for(k=0;k<<%=jsonMessage.length%>;k++){
+				$('#myTab'+k+' a[href="#tab2'+k+'"]').tab('show');
+			}
+		}<% if((filterDefault=='已被同意')||(filterDefault=='不分類')){%>else if(target==3){
+			for(k=0;k<<%=jsonMessage.length%>;k++){
+				$('#myTab'+k+' a[href="#tab3'+k+'"]').tab('show');
+			}
+		}<%}%>
 	}
-}
-
-function selectAllFun(){
-	if($("#selectAll").prop("checked"))
-	{
-		$("input[name='selectCheckBox']").each(function() {
-			$(this).prop("checked", true);
-		});
-	}else{
-		$("input[name='selectCheckBox']").each(function() {
-			$(this).prop("checked", false);
-		});
-	}
-}
-
-function selectFun(index){
-	if($("#selectCheckBoxId"+index).prop("checked"))
-	{	
-		var ctr=0;
-		$("input[name='selectCheckBox']").each(function() {
-			if($(this).prop("checked")){
-				ctr+=1;
-			}
-		});
-		if(ctr==$("input[name='selectCheckBox']").length){
-			$("#selectAll").prop("checked", true);
-		}
-	}else{
-		var ctr=0;
-		$("input[name='selectCheckBox']").each(function() {
-			if($(this).prop("checked")){
-				ctr+=1;
-			}
-		});
-		if(ctr<$("input[name='selectCheckBox']").length){
+	
+	<% if(filterDefault=='未被確認'){%>
+		$(document).ready(function(){
 			$("#selectAll").prop("checked", false);
-		}		
-	}
-}
+			$("input[name='selectCheckBox']").each(function() {
+				$(this).prop("checked", false);
+			});
+		});
 
-<%if(pageNumber>1){%>
-var deleteAllFlag=false;
-function deleteAll(){
-	if(!deleteAllFlag){
-		$('#chkModal1').modal('hide');
-		disableButton();
-		var form=document.getElementById('formID0');
-		form.submit();
-	}
-}
-<%}%>
-
-var deleteSelectedFlag=false;
-function deleteSelected(){
-	if(!deleteSelectedFlag){
-		$('#chkModal2').modal('hide');
-		disableButton();
-		samepart(deleteInner);
-	}
-}
-
-function disableButton(){
-	deleteSelectedFlag=true;
-	var orig=$('#deleteBtn').attr('class');
-	if(orig.search(' disabled')<0){
-		orig=orig+' disabled';
-		$('#deleteBtn').attr('class',orig);
-	}
-	
-	<%if(pageNumber>1){%>
-	deleteAllFlag=true;
-	orig=$('#deleteAllBtn').attr('class');
-	if(orig.search(' disabled')<0){
-		orig=orig+' disabled';
-		$(deleteAllBtn).attr('class',orig);
-	}
-	<%}%>
-}
-
-function enableButton(){
-	deleteSelectedFlag=false;
-	var orig=$('#deleteBtn').attr('class');
-	orig=orig.replace(/ disabled/g, '');
-	$('#deleteBtn').attr('class',orig);
-	
-	<%if(pageNumber>1){%>
-		deleteAllFlag=false;
-		orig=$('#deleteAllBtn').attr('class');
-		orig=orig.replace(/ disabled/g, '');
-		$(deleteAllBtn).attr('class',orig);
-	<%}%>
-}
-
-
-function deleteInner(){
-	var form=document.getElementById('formID');
-	form.submit();
-}
-
-function samepart(toDO){
-	var JSONarrayString='{"array":['
-	$("input[name='selectCheckBox']").each(function() {
-			if($(this).prop("checked")){
-				JSONarrayString+=$(this).val();
-				JSONarrayString+=',';
+		function checkAndOpenModal(target){
+			var ctr=0;
+			$("input[name='selectCheckBox']").each(function() {
+					if($(this).prop("checked")){
+						ctr+=1;
+					}
+			});
+			if(ctr>0){
+				if(target=='#chkModal2'){
+					$('#seCtr1').html(ctr);
+				}
+				$(target).modal('show');
+			}else{
+				$('#msgModal').modal('show');
 			}
-	});
-	if(JSONarrayString!='{"array":['){
-		JSONarrayString=JSONarrayString.substr(0,JSONarrayString.length-1);
-		JSONarrayString+=']}';
-		$("#hdnIpt").val(JSONarrayString);
-		toDO();
-	}
-}
+		}
+
+		function selectAllFun(){
+			if($("#selectAll").prop("checked"))
+			{
+				$("input[name='selectCheckBox']").each(function() {
+					$(this).prop("checked", true);
+				});
+			}else{
+				$("input[name='selectCheckBox']").each(function() {
+					$(this).prop("checked", false);
+				});
+			}
+		}
+
+		function selectFun(index){
+			if($("#selectCheckBoxId"+index).prop("checked"))
+			{	
+				var ctr=0;
+				$("input[name='selectCheckBox']").each(function() {
+					if($(this).prop("checked")){
+						ctr+=1;
+					}
+				});
+				if(ctr==$("input[name='selectCheckBox']").length){
+					$("#selectAll").prop("checked", true);
+				}
+			}else{
+				var ctr=0;
+				$("input[name='selectCheckBox']").each(function() {
+					if($(this).prop("checked")){
+						ctr+=1;
+					}
+				});
+				if(ctr<$("input[name='selectCheckBox']").length){
+					$("#selectAll").prop("checked", false);
+				}		
+			}
+		}
+
+		<%if(pageNumber>1){%>
+		var deleteAllFlag=false;
+		function deleteAll(){
+			if(!deleteAllFlag){
+				$('#chkModal1').modal('hide');
+				disableButton();
+				var form=document.getElementById('formID0');
+				form.submit();
+			}
+		}
+		<%}%>
+
+		var deleteSelectedFlag=false;
+		function deleteSelected(){
+			if(!deleteSelectedFlag){
+				$('#chkModal2').modal('hide');
+				disableButton();
+				samepart(deleteInner);
+			}
+		}
+
+		function disableButton(){
+			deleteSelectedFlag=true;
+			var orig=$('#deleteBtn').attr('class');
+			if(orig.search(' disabled')<0){
+				orig=orig+' disabled';
+				$('#deleteBtn').attr('class',orig);
+			}
+			
+			<%if(pageNumber>1){%>
+			deleteAllFlag=true;
+			orig=$('#deleteAllBtn').attr('class');
+			if(orig.search(' disabled')<0){
+				orig=orig+' disabled';
+				$(deleteAllBtn).attr('class',orig);
+			}
+			<%}%>
+		}
+
+		function enableButton(){
+			deleteSelectedFlag=false;
+			var orig=$('#deleteBtn').attr('class');
+			orig=orig.replace(/ disabled/g, '');
+			$('#deleteBtn').attr('class',orig);
+			
+			<%if(pageNumber>1){%>
+				deleteAllFlag=false;
+				orig=$('#deleteAllBtn').attr('class');
+				orig=orig.replace(/ disabled/g, '');
+				$(deleteAllBtn).attr('class',orig);
+			<%}%>
+		}
+
+
+		function deleteInner(){
+			var form=document.getElementById('formID');
+			form.submit();
+		}
+
+		function samepart(toDO){
+			var JSONarrayString='{"array":['
+			$("input[name='selectCheckBox']").each(function() {
+					if($(this).prop("checked")){
+						JSONarrayString+=$(this).val();
+						JSONarrayString+=',';
+					}
+			});
+			if(JSONarrayString!='{"array":['){
+				JSONarrayString=JSONarrayString.substr(0,JSONarrayString.length-1);
+				JSONarrayString+=']}';
+				$("#hdnIpt").val(JSONarrayString);
+				toDO();
+			}
+		}
+	<%}%>
 <%}%>
 </script>
 <%- include('layout_footer',{imgSettingCode:"var ifLoadedCount=0;",imgDrawingCode:""}); -%>

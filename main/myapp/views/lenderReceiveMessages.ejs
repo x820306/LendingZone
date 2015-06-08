@@ -420,8 +420,17 @@
 						<br>
 						<br>
 					<%}%>
+					<ul class="nav nav-pills">
+						<li class="active"><a data-toggle="pill" href="#" onclick="piller(1);return false;">訊息</a></li>
+						<li><a data-toggle="pill" href="#" onclick="piller(2);return false;">資訊</a></li>
+						<% if((filterDefault=='已同意')||(filterDefault=='不分類')){%>
+							<li><a data-toggle="pill" href="#" onclick="piller(3);return false;">交易紀錄</a></li>
+						<%}%>
+					</ul>
+					<br>
+					<br>
 					<% for(var i=0; i<jsonMessage.length; i++) { %>
-					<ul class="nav nav-tabs">
+					<ul class="nav nav-tabs" id="myTab<%=i%>">
 						<li class="active"><a href="#tab1<%=i%>" data-toggle="tab">訊息</a></li>
 						<li><a href="#tab2<%=i%>" data-toggle="tab">資訊</a></li>
 						<% if(jsonMessage[i].Status=='Confirmed'){%>
@@ -832,8 +841,22 @@
 									</td>
 								<%}%>
 								<td align="right" style="border-bottom-style: none;border-top-style: none;">
-									<div>
-										<%if(jsonMessage[i].Status=='Confirmed'){%><a href="/lender/lenderTransactionRecord?oneid=<%=jsonMessage[i].Transaction[0]._id%>&filter=<%if(jsonMessage[i].Transaction[0].Principal>0){%><%if(jsonMessage[i].Transaction[0].InsuranceFeePaid>0){%><%=encodeURIComponent('已保險')%><%}else{%><%=encodeURIComponent('未保險')%><%}%><%}else{%><%=encodeURIComponent('已結清')%><%}%>&sorter=<%=encodeURIComponent("建立日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">查詢該筆交易</a>&nbsp;&nbsp;&nbsp;&nbsp;<%}%>Updated：<%=jsonMessage[i].Updated.getFullYear()%>/<%=jsonMessage[i].Updated.getMonth()+1%>/<%=jsonMessage[i].Updated.getDate()%>&nbsp;&nbsp;&nbsp;&nbsp;Created：<%=jsonMessage[i].Created.getFullYear()%>/<%=jsonMessage[i].Created.getMonth()+1%>/<%=jsonMessage[i].Created.getDate()%>
+									<%if(jsonMessage[i].Status=='Confirmed'){%>
+										<div style="font-size:15px;display:inline;">
+											<a href="/lender/lenderTransactionRecord?oneid=<%=jsonMessage[i].Transaction[0]._id%>&filter=<%if(jsonMessage[i].Transaction[0].Principal>0){%><%if(jsonMessage[i].Transaction[0].InsuranceFeePaid>0){%><%=encodeURIComponent('已保險')%><%}else{%><%=encodeURIComponent('未保險')%><%}%><%}else{%><%=encodeURIComponent('已結清')%><%}%>&sorter=<%=encodeURIComponent("建立日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">查詢該筆交易</a>
+										</div>
+										&nbsp;&nbsp;&nbsp;&nbsp;
+									<%}%>
+									<div style="font-size:15px;display:inline;">
+										Updated：<%=jsonMessage[i].Updated.getFullYear()%>/<%=jsonMessage[i].Updated.getMonth()+1%>/<%=jsonMessage[i].Updated.getDate()%>
+									</div>
+									&nbsp;&nbsp;&nbsp;&nbsp;
+									<div style="font-size:15px;display:inline;">
+										Created：<%=jsonMessage[i].Created.getFullYear()%>/<%=jsonMessage[i].Created.getMonth()+1%>/<%=jsonMessage[i].Created.getDate()%>
+									</div>
+									&nbsp;&nbsp;&nbsp;&nbsp;
+									<div style="font-size:15px;display:inline;">
+										No.<%=i+1%>
 									</div>
 								</td>
 							<tr>
@@ -1007,364 +1030,382 @@ function linker(){
 	window.open('/lender/lenderReceiveMessages?msgKeyword='+encodeURIComponent($('#msgKeywordIpt').val().trim())+'&filter='+encodeURIComponent($('#filter0').text())+'&sorter='+encodeURIComponent($('#sorter0').text())+'&director='+encodeURIComponent($('#director0').text())+'&lbound='+encodeURIComponent($('#lbound').val().trim())+'&ubound='+encodeURIComponent($('#ubound').val().trim())+'&page=1','_self');
 }
 
-<% if((filterDefault=='未確認')&&(totalResultNum>0)){%>
-$(document).ready(function(){
-	$("#selectAll").prop("checked", false);
-	$("input[name='selectCheckBox']").each(function() {
-		$(this).prop("checked", false);
-	});
-});
-
-<%if(jsonLend){%>				
-var lendChangerFlag=false;
-function lendChanger(){
-	if(!lendChangerFlag){
-		var temp=$('#lendChangerIpt').val().trim();
-		if(temp!==''){
-			ajaxer(temp);
-		}else{
-			$('#s0').html('&nbsp;&nbsp;&nbsp;&nbsp;不可為空值！');
-		}
-	}
-}
-
-function ajaxer(value){
-	$('#s0').html('&nbsp;&nbsp;&nbsp;&nbsp;處理中...');
-	starter();
-	$.ajax({ 
-		url: '/Lends/changer',
-		type: 'POST',
-		data:{Value:value,TargetID:"<%=jsonLend._id%>"},
-		dataType: 'json',
-		success: function(Jdata) {
-			var origInner;
-			if(Jdata.success){
-				$('#lendChangerIpt0').val(Jdata.result0.toFixed(0));
-				$('#lendChangerIpt').val(Jdata.result.toFixed(0));
-				$('#s0').html('&nbsp;&nbsp;&nbsp;&nbsp;成功修改！');
-			}else{
-				if(Jdata.result0){
-					$('#lendChangerIpt0').val(Jdata.result0.toFixed(0));
-				}
-				if(Jdata.origValue){
-					$('#lendChangerIpt').val(Jdata.origValue.toFixed(0));
-				}
-				$('#s0').html('&nbsp;&nbsp;&nbsp;&nbsp;'+Jdata.error);
+<% if(totalResultNum>0){%>
+	function piller(target){
+		if(target==1){
+			for(k=0;k<<%=jsonMessage.length%>;k++){
+				$('#myTab'+k+' a[href="#tab1'+k+'"]').tab('show');
 			}
-			ender();
-		},
-		error: function() {
-			$('#s0').html('&nbsp;&nbsp;&nbsp;&nbsp;something wrong!');
-			ender();
-		}
-	});	
-}
-
-function starter(){
-	lendChangerFlag=true;
-	$('#lendChangerIpt').attr('onkeypress','');
-	$('#lendChangerIpt').attr('readonly','readonly');
-	var orig=$('#lendChangerBtn').attr('class');
-	if(orig.search(' disabled')<0){
-		orig=orig+' disabled';
-		$('#lendChangerBtn').attr('class',orig);
+		}else if(target==2){
+			for(k=0;k<<%=jsonMessage.length%>;k++){
+				$('#myTab'+k+' a[href="#tab2'+k+'"]').tab('show');
+			}
+		}<% if((filterDefault=='已同意')||(filterDefault=='不分類')){%>else if(target==3){
+			for(k=0;k<<%=jsonMessage.length%>;k++){
+				$('#myTab'+k+' a[href="#tab3'+k+'"]').tab('show');
+			}
+		}<%}%>
 	}
 	
-	disableButton();
-}
-
-function ender(){
-	lendChangerFlag=false;
-	$('#lendChangerIpt').attr('onkeypress','if(event.keyCode==13){lendChanger();}');
-	$('#lendChangerIpt').removeAttr("readonly");
-	var orig=$('#lendChangerBtn').attr('class');
-	orig=orig.replace(/ disabled/g, '');
-	$('#lendChangerBtn').attr('class',orig);
-	
-	enableButton();
-}
-<%}%>
-
-function checkAndOpenModal(target){
-	var ctr=0;
-	$("input[name='selectCheckBox']").each(function() {
-			if($(this).prop("checked")){
-				ctr+=1;
-			}
-	});
-	if(ctr>0){
-		if(target=='#chkModal3'){
-			<%if(jsonLend){%>
-				$('#seCtr1').html(ctr);
-			<%}%>
-		}else if(target=='#chkModal4'){
-			$('#seCtr2').html(ctr);
-		}
-		$(target).modal('show');
-	}else{
-		$('#msgModal').modal('show');
-	}
-}
-
-function selectAllFun(){
-	if($("#selectAll").prop("checked"))
-	{
-		$("input[name='selectCheckBox']").each(function() {
-			$(this).prop("checked", true);
-		});
-		var value1R=0;
-		var value2R=0;
-		var value3R=0;
-		var value4R=0;
-		var value5;
-		for(i=0;i<<%=jsonMessage.length%>;i++){
-			value1R+=parseFloat($("#value1"+i).text());
-			value2R+=parseFloat($("#value2"+i).text());
-			value3R+=parseFloat($("#value3"+i).text());
-			value4R+=parseFloat($("#value4"+i).text());
-		}
-		
-		if(value1R>0){
-			value5=value2R/value1R*100;
-		}else{
-			value5=0;
-		}
-		$("#value1").text(Math.round(value1R).toFixed(0));
-		$("#value2").text(Math.round(value2R).toFixed(0));
-		$("#value3").text(Math.round(value3R).toFixed(0));
-		$("#value4").text(Math.round(value4R).toFixed(0));
-		$("#value1R").text(value1R);
-		$("#value2R").text(value2R);
-		$("#value3R").text(value3R);
-		$("#value4R").text(value4R);
-		$("#value5").text((Math.round(value5*100)/100).toFixed(2));
-	}else{
-		$("input[name='selectCheckBox']").each(function() {
-			$(this).prop("checked", false);
-		});
-		$("#value1").text(0);
-		$("#value2").text(0);
-		$("#value3").text(0);
-		$("#value4").text(0);
-		$("#value1R").text(0);
-		$("#value2R").text(0);
-		$("#value3R").text(0);
-		$("#value4R").text(0);
-		$("#value5").text('0.00');		
-	}
-}
-
-function selectFun(index){
-	var value1R=parseFloat($("#value1R").text());
-	var fee1=parseFloat($("#value1"+index).text());
-	var value2R=parseFloat($("#value2R").text());
-	var fee2=parseFloat($("#value2"+index).text());
-	var value3R=parseFloat($("#value3R").text());
-	var fee3=parseFloat($("#value3"+index).text());
-	var value4R=parseFloat($("#value4R").text());
-	var fee4=parseFloat($("#value4"+index).text());
-	var value5;
-	
-	if($("#selectCheckBoxId"+index).prop("checked"))
-	{
-		value1R+=fee1;
-		value2R+=fee2;
-		value3R+=fee3;
-		value4R+=fee4;
-		if(value1R>0){
-			value5=value2R/value1R*100;
-		}else{
-			value5=0;
-		}
-		$("#value1").text(Math.round(value1R).toFixed(0));
-		$("#value2").text(Math.round(value2R).toFixed(0));
-		$("#value3").text(Math.round(value3R).toFixed(0));
-		$("#value4").text(Math.round(value4R).toFixed(0));
-		$("#value1R").text(value1R);
-		$("#value2R").text(value2R);
-		$("#value3R").text(value3R);
-		$("#value4R").text(value4R);
-		$("#value5").text((Math.round(value5*100)/100).toFixed(2));
-		
-		var ctr=0;
-		$("input[name='selectCheckBox']").each(function() {
-			if($(this).prop("checked")){
-				ctr+=1;
-			}
-		});
-		if(ctr==$("input[name='selectCheckBox']").length){
-			$("#selectAll").prop("checked", true);
-		}
-	}else{
-		value1R-=fee1;
-		value2R-=fee2;
-		value3R-=fee3;
-		value4R-=fee4;
-		if(value1R>0){
-			value5=value2R/value1R*100;
-		}else{
-			value5=0;
-		}
-		$("#value1").text(Math.round(value1R).toFixed(0));
-		$("#value2").text(Math.round(value2R).toFixed(0));
-		$("#value3").text(Math.round(value3R).toFixed(0));
-		$("#value4").text(Math.round(value4R).toFixed(0));
-		$("#value1R").text(value1R);
-		$("#value2R").text(value2R);
-		$("#value3R").text(value3R);
-		$("#value4R").text(value4R);
-		$("#value5").text((Math.round(value5*100)/100).toFixed(2));
-
-		var ctr=0;
-		$("input[name='selectCheckBox']").each(function() {
-			if($(this).prop("checked")){
-				ctr+=1;
-			}
-		});
-		if(ctr<$("input[name='selectCheckBox']").length){
+	<% if(filterDefault=='未確認'){%>
+		$(document).ready(function(){
 			$("#selectAll").prop("checked", false);
-		}		
-	}
-}
+			$("input[name='selectCheckBox']").each(function() {
+				$(this).prop("checked", false);
+			});
+		});
 
-<%if(pageNumber>1){%>
-	<%if(jsonLend){%>
-		var confirmAllFlag=false;
-		function confirmAll(){
-			if(!confirmAllFlag){
-				$('#chkModal1').modal('hide');
+		<%if(jsonLend){%>				
+		var lendChangerFlag=false;
+		function lendChanger(){
+			if(!lendChangerFlag){
+				var temp=$('#lendChangerIpt').val().trim();
+				if(temp!==''){
+					ajaxer(temp);
+				}else{
+					$('#s0').html('&nbsp;&nbsp;&nbsp;&nbsp;不可為空值！');
+				}
+			}
+		}
+
+		function ajaxer(value){
+			$('#s0').html('&nbsp;&nbsp;&nbsp;&nbsp;處理中...');
+			starter();
+			$.ajax({ 
+				url: '/Lends/changer',
+				type: 'POST',
+				data:{Value:value,TargetID:"<%=jsonLend._id%>"},
+				dataType: 'json',
+				success: function(Jdata) {
+					var origInner;
+					if(Jdata.success){
+						$('#lendChangerIpt0').val(Jdata.result0.toFixed(0));
+						$('#lendChangerIpt').val(Jdata.result.toFixed(0));
+						$('#s0').html('&nbsp;&nbsp;&nbsp;&nbsp;成功修改！');
+					}else{
+						if(Jdata.result0){
+							$('#lendChangerIpt0').val(Jdata.result0.toFixed(0));
+						}
+						if(Jdata.origValue){
+							$('#lendChangerIpt').val(Jdata.origValue.toFixed(0));
+						}
+						$('#s0').html('&nbsp;&nbsp;&nbsp;&nbsp;'+Jdata.error);
+					}
+					ender();
+				},
+				error: function() {
+					$('#s0').html('&nbsp;&nbsp;&nbsp;&nbsp;something wrong!');
+					ender();
+				}
+			});	
+		}
+
+		function starter(){
+			lendChangerFlag=true;
+			$('#lendChangerIpt').attr('onkeypress','');
+			$('#lendChangerIpt').attr('readonly','readonly');
+			var orig=$('#lendChangerBtn').attr('class');
+			if(orig.search(' disabled')<0){
+				orig=orig+' disabled';
+				$('#lendChangerBtn').attr('class',orig);
+			}
+			
+			disableButton();
+		}
+
+		function ender(){
+			lendChangerFlag=false;
+			$('#lendChangerIpt').attr('onkeypress','if(event.keyCode==13){lendChanger();}');
+			$('#lendChangerIpt').removeAttr("readonly");
+			var orig=$('#lendChangerBtn').attr('class');
+			orig=orig.replace(/ disabled/g, '');
+			$('#lendChangerBtn').attr('class',orig);
+			
+			enableButton();
+		}
+		<%}%>
+
+		function checkAndOpenModal(target){
+			var ctr=0;
+			$("input[name='selectCheckBox']").each(function() {
+					if($(this).prop("checked")){
+						ctr+=1;
+					}
+			});
+			if(ctr>0){
+				if(target=='#chkModal3'){
+					<%if(jsonLend){%>
+						$('#seCtr1').html(ctr);
+					<%}%>
+				}else if(target=='#chkModal4'){
+					$('#seCtr2').html(ctr);
+				}
+				$(target).modal('show');
+			}else{
+				$('#msgModal').modal('show');
+			}
+		}
+
+		function selectAllFun(){
+			if($("#selectAll").prop("checked"))
+			{
+				$("input[name='selectCheckBox']").each(function() {
+					$(this).prop("checked", true);
+				});
+				var value1R=0;
+				var value2R=0;
+				var value3R=0;
+				var value4R=0;
+				var value5;
+				for(i=0;i<<%=jsonMessage.length%>;i++){
+					value1R+=parseFloat($("#value1"+i).text());
+					value2R+=parseFloat($("#value2"+i).text());
+					value3R+=parseFloat($("#value3"+i).text());
+					value4R+=parseFloat($("#value4"+i).text());
+				}
+				
+				if(value1R>0){
+					value5=value2R/value1R*100;
+				}else{
+					value5=0;
+				}
+				$("#value1").text(Math.round(value1R).toFixed(0));
+				$("#value2").text(Math.round(value2R).toFixed(0));
+				$("#value3").text(Math.round(value3R).toFixed(0));
+				$("#value4").text(Math.round(value4R).toFixed(0));
+				$("#value1R").text(value1R);
+				$("#value2R").text(value2R);
+				$("#value3R").text(value3R);
+				$("#value4R").text(value4R);
+				$("#value5").text((Math.round(value5*100)/100).toFixed(2));
+			}else{
+				$("input[name='selectCheckBox']").each(function() {
+					$(this).prop("checked", false);
+				});
+				$("#value1").text(0);
+				$("#value2").text(0);
+				$("#value3").text(0);
+				$("#value4").text(0);
+				$("#value1R").text(0);
+				$("#value2R").text(0);
+				$("#value3R").text(0);
+				$("#value4R").text(0);
+				$("#value5").text('0.00');		
+			}
+		}
+
+		function selectFun(index){
+			var value1R=parseFloat($("#value1R").text());
+			var fee1=parseFloat($("#value1"+index).text());
+			var value2R=parseFloat($("#value2R").text());
+			var fee2=parseFloat($("#value2"+index).text());
+			var value3R=parseFloat($("#value3R").text());
+			var fee3=parseFloat($("#value3"+index).text());
+			var value4R=parseFloat($("#value4R").text());
+			var fee4=parseFloat($("#value4"+index).text());
+			var value5;
+			
+			if($("#selectCheckBoxId"+index).prop("checked"))
+			{
+				value1R+=fee1;
+				value2R+=fee2;
+				value3R+=fee3;
+				value4R+=fee4;
+				if(value1R>0){
+					value5=value2R/value1R*100;
+				}else{
+					value5=0;
+				}
+				$("#value1").text(Math.round(value1R).toFixed(0));
+				$("#value2").text(Math.round(value2R).toFixed(0));
+				$("#value3").text(Math.round(value3R).toFixed(0));
+				$("#value4").text(Math.round(value4R).toFixed(0));
+				$("#value1R").text(value1R);
+				$("#value2R").text(value2R);
+				$("#value3R").text(value3R);
+				$("#value4R").text(value4R);
+				$("#value5").text((Math.round(value5*100)/100).toFixed(2));
+				
+				var ctr=0;
+				$("input[name='selectCheckBox']").each(function() {
+					if($(this).prop("checked")){
+						ctr+=1;
+					}
+				});
+				if(ctr==$("input[name='selectCheckBox']").length){
+					$("#selectAll").prop("checked", true);
+				}
+			}else{
+				value1R-=fee1;
+				value2R-=fee2;
+				value3R-=fee3;
+				value4R-=fee4;
+				if(value1R>0){
+					value5=value2R/value1R*100;
+				}else{
+					value5=0;
+				}
+				$("#value1").text(Math.round(value1R).toFixed(0));
+				$("#value2").text(Math.round(value2R).toFixed(0));
+				$("#value3").text(Math.round(value3R).toFixed(0));
+				$("#value4").text(Math.round(value4R).toFixed(0));
+				$("#value1R").text(value1R);
+				$("#value2R").text(value2R);
+				$("#value3R").text(value3R);
+				$("#value4R").text(value4R);
+				$("#value5").text((Math.round(value5*100)/100).toFixed(2));
+
+				var ctr=0;
+				$("input[name='selectCheckBox']").each(function() {
+					if($(this).prop("checked")){
+						ctr+=1;
+					}
+				});
+				if(ctr<$("input[name='selectCheckBox']").length){
+					$("#selectAll").prop("checked", false);
+				}		
+			}
+		}
+
+		<%if(pageNumber>1){%>
+			<%if(jsonLend){%>
+				var confirmAllFlag=false;
+				function confirmAll(){
+					if(!confirmAllFlag){
+						$('#chkModal1').modal('hide');
+						disableButton();
+						var form=document.getElementById('formID0');
+						form.submit();
+					}
+				}
+			<%}%>
+
+		var rejectAllFlag=false;
+		function rejectAll(){
+			if(!rejectAllFlag){
+				$('#chkModal2').modal('hide');
 				disableButton();
 				var form=document.getElementById('formID0');
+				form.action="/Messages/rejectToBorrowMessageInLRMall";
 				form.submit();
 			}
 		}
-	<%}%>
+		<%}%>
 
-var rejectAllFlag=false;
-function rejectAll(){
-	if(!rejectAllFlag){
-		$('#chkModal2').modal('hide');
-		disableButton();
-		var form=document.getElementById('formID0');
-		form.action="/Messages/rejectToBorrowMessageInLRMall";
-		form.submit();
-	}
-}
-<%}%>
-
-<%if(jsonLend){%>
-var confirmFlag=false;
-function confirm(){
-	if(!confirmFlag){
-		$('#chkModal3').modal('hide');
-		disableButton();
-		samepart(confirmInner);
-	}
-}
-<%}%>
-
-var rejectFlag=false;
-function reject(){
-	if(!rejectFlag){
-		$('#chkModal4').modal('hide');
-		disableButton();
-		samepart(rejectInner);
-	}
-}
-
-function disableButton(){
-	<%if(jsonLend){%>
-		confirmFlag=true;
-		var orig=$('#confirmBtn').attr('class');
-		if(orig.search(' disabled')<0){
-			orig=orig+' disabled';
-			$('#confirmBtn').attr('class',orig);
+		<%if(jsonLend){%>
+		var confirmFlag=false;
+		function confirm(){
+			if(!confirmFlag){
+				$('#chkModal3').modal('hide');
+				disableButton();
+				samepart(confirmInner);
+			}
 		}
-	<%}%>
-	
-	rejectFlag=true;
-	orig=$('#rejectBtn').attr('class');
-	if(orig.search(' disabled')<0){
-		orig=orig+' disabled';
-		$(rejectBtn).attr('class',orig);
-	}
-	
-	<%if(pageNumber>1){%>
-		<%if(jsonLend){%>	
-			confirmAllFlag=true;
-			orig=$('#confirmAllBtn').attr('class');
+		<%}%>
+
+		var rejectFlag=false;
+		function reject(){
+			if(!rejectFlag){
+				$('#chkModal4').modal('hide');
+				disableButton();
+				samepart(rejectInner);
+			}
+		}
+
+		function disableButton(){
+			<%if(jsonLend){%>
+				confirmFlag=true;
+				var orig=$('#confirmBtn').attr('class');
+				if(orig.search(' disabled')<0){
+					orig=orig+' disabled';
+					$('#confirmBtn').attr('class',orig);
+				}
+			<%}%>
+			
+			rejectFlag=true;
+			orig=$('#rejectBtn').attr('class');
 			if(orig.search(' disabled')<0){
 				orig=orig+' disabled';
-				$('#confirmAllBtn').attr('class',orig);
+				$(rejectBtn).attr('class',orig);
 			}
-		<%}%>
 			
-	rejectAllFlag=true;
-	orig=$('#rejectAllBtn').attr('class');
-	if(orig.search(' disabled')<0){
-		orig=orig+' disabled';
-		$('#rejectAllBtn').attr('class',orig);
-	}
-	<%}%>
-}
+			<%if(pageNumber>1){%>
+				<%if(jsonLend){%>	
+					confirmAllFlag=true;
+					orig=$('#confirmAllBtn').attr('class');
+					if(orig.search(' disabled')<0){
+						orig=orig+' disabled';
+						$('#confirmAllBtn').attr('class',orig);
+					}
+				<%}%>
+					
+			rejectAllFlag=true;
+			orig=$('#rejectAllBtn').attr('class');
+			if(orig.search(' disabled')<0){
+				orig=orig+' disabled';
+				$('#rejectAllBtn').attr('class',orig);
+			}
+			<%}%>
+		}
 
-function enableButton(){
-	<%if(jsonLend){%>
-		confirmFlag=false;
-		var orig=$('#confirmBtn').attr('class');
-		orig=orig.replace(/ disabled/g, '');
-		$('#confirmBtn').attr('class',orig);
-	<%}%>
-	
-	rejectFlag=false;
-	orig=$('#rejectBtn').attr('class');
-	orig=orig.replace(/ disabled/g, '');
-	$('#rejectBtn').attr('class',orig);
-	
-	<%if(pageNumber>1){%>
-		<%if(jsonLend){%>
-			confirmAllFlag=false;
-			orig=$('#confirmAllBtn').attr('class');
+		function enableButton(){
+			<%if(jsonLend){%>
+				confirmFlag=false;
+				var orig=$('#confirmBtn').attr('class');
+				orig=orig.replace(/ disabled/g, '');
+				$('#confirmBtn').attr('class',orig);
+			<%}%>
+			
+			rejectFlag=false;
+			orig=$('#rejectBtn').attr('class');
 			orig=orig.replace(/ disabled/g, '');
-			$('#confirmAllBtn').attr('class',orig);
+			$('#rejectBtn').attr('class',orig);
+			
+			<%if(pageNumber>1){%>
+				<%if(jsonLend){%>
+					confirmAllFlag=false;
+					orig=$('#confirmAllBtn').attr('class');
+					orig=orig.replace(/ disabled/g, '');
+					$('#confirmAllBtn').attr('class',orig);
+				<%}%>
+
+				rejectAllFlag=false;
+				orig=$('#rejectAllBtn').attr('class');
+				orig=orig.replace(/ disabled/g, '');
+				$('#rejectAllBtn').attr('class',orig);
+			<%}%>
+		}
+
+
+		<%if(jsonLend){%>
+			function confirmInner(){
+				var form=document.getElementById('formID');
+				form.submit();
+			}
 		<%}%>
 
-		rejectAllFlag=false;
-		orig=$('#rejectAllBtn').attr('class');
-		orig=orig.replace(/ disabled/g, '');
-		$('#rejectAllBtn').attr('class',orig);
-	<%}%>
-}
+		function rejectInner(){
+			var form=document.getElementById('formID');
+			form.action="/Messages/rejectToBorrowMessageInLRM";
+			form.submit();
+		}
 
-
-<%if(jsonLend){%>
-	function confirmInner(){
-		var form=document.getElementById('formID');
-		form.submit();
-	}
-<%}%>
-
-function rejectInner(){
-	var form=document.getElementById('formID');
-	form.action="/Messages/rejectToBorrowMessageInLRM";
-	form.submit();
-}
-
-function samepart(toDO){
-	var JSONarrayString='{"array":['
-	$("input[name='selectCheckBox']").each(function() {
-			if($(this).prop("checked")){
-				JSONarrayString+=$(this).val();
-				JSONarrayString+=',';
+		function samepart(toDO){
+			var JSONarrayString='{"array":['
+			$("input[name='selectCheckBox']").each(function() {
+					if($(this).prop("checked")){
+						JSONarrayString+=$(this).val();
+						JSONarrayString+=',';
+					}
+			});
+			if(JSONarrayString!='{"array":['){
+				JSONarrayString=JSONarrayString.substr(0,JSONarrayString.length-1);
+				JSONarrayString+=']}';
+				$("#hdnIpt").val(JSONarrayString);
+				toDO();
 			}
-	});
-	if(JSONarrayString!='{"array":['){
-		JSONarrayString=JSONarrayString.substr(0,JSONarrayString.length-1);
-		JSONarrayString+=']}';
-		$("#hdnIpt").val(JSONarrayString);
-		toDO();
-	}
-}
+		}
+	<%}%>
 <%}%>
 </script>
 <%- include('layout_footer',{imgSettingCode:"var ifLoadedCount=0;",imgDrawingCode:""}); -%>
