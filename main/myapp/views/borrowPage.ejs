@@ -66,14 +66,60 @@
     </div>
 	<input type="hidden" name="Idfr" value="<%=idfr%>">
     <div class="borrowBlock" >
-		<button type="button" id="buttonReset" class="btn btn-danger" onclick="clearForm();">
+		<button type="button" class="btn btn-danger" data-toggle="modal" data-target="#chkModal2">
 			重寫
 		</button>
 		&nbsp;
-		<button type="submit" id="btnSbmt" class="btn btn-primary">
+		<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#chkModal1">
 			確認
 		</button>
     </div>
+	<div class="modal fade" id="chkModal1">
+		<div class="modal-dialog modal-sm">
+			<div class="modal-content">
+				<div class="modal-header" style="text-align: center;">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title">再次確認</h4>
+				</div>
+				<div class="modal-body" style="text-align: center;">
+					<br>
+					您確定要送出借款要求嗎？
+					<br>
+					<br>
+				</div>
+				<div class="modal-footer" style="text-align: center;">
+					<button type="submit" class="btn btn-primary" id="btnSbmt" onclick="$('#chkModal1').modal('hide');">
+						確定
+					</button>
+					&nbsp;
+					<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="modal fade" id="chkModal2">
+		<div class="modal-dialog modal-sm">
+			<div class="modal-content">
+				<div class="modal-header" style="text-align: center;">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title">再次確認</h4>
+				</div>
+				<div class="modal-body" style="text-align: center;">
+					<br>
+					您確定要重填表單嗎？
+					<br>
+					<br>
+				</div>
+				<div class="modal-footer" style="text-align: center;">
+					<button type="button" class="btn btn-danger" id="buttonReset" onclick="$('#chkModal2').modal('hide');clearForm();">
+						確定
+					</button>
+					&nbsp;
+					<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+				</div>
+			</div>
+		</div>
+	</div>
 
 <!--
     <div id="borrowDialog" class="borrowBlock"  style="display:none;">
