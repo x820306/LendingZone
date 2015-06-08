@@ -19,17 +19,17 @@
 <center>
 	<form method="post" action= "/signup/_community" onsubmit="return disableButton();">
 		<h3>申請新帳號<br></h3>
-		<div class="input-group">
+		<div class="input-group" style="text-align:center;">
 			<label for="nAccIpt">帳號</label>
 			<input type="text" class="form-control" id="AccIpt" name="Username" placeholder="帳號" required="required" onblur="ifUsernameExist(true);return false;" onkeyup="value=value.replace(/[^\w\.\/]/ig,'');return false;"><br><span id="confirmMessage1" class="confirmMessage1"></span>
 		</div>
 		<br>
-		<div class="input-group">
+		<div class="input-group" style="text-align:center;">
 			<label for="nPwdIpt">密碼</label>
 			<input type="password" class="form-control" id="PwdIpt" name="Password" placeholder="密碼" required="required" onkeyup="value=value.replace(/[^\w\.\/]/ig,'');checkLength(); return false;"><br><span id="confirmMessage2" class="confirmMessage2"></span>
 		</div>
 		<br>
-		<div class="input-group">
+		<div class="input-group" style="text-align:center;">
 			<label for="n2PwdIpt">密碼確認</label>
 			<input type="password" class="form-control" id="2PwdIpt" name="Password2nd" placeholder="密碼確認" required="required" onkeyup="value=value.replace(/[^\w\.\/]/ig,'');checkPwd(); return false;"> <br><span id="confirmMessage3" class="confirmMessage3"></span>
 		</div>

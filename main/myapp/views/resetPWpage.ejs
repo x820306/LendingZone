@@ -4,12 +4,12 @@
 		<center>
 			<form method = "post" action= "/Users/resetPW" onsubmit="return disableButton();">
 				<h3>重設密碼<br></h3>
-				<div class="input-group">
+				<div class="input-group" style="text-align:center;">
 					<label for="nPwdIpt">新密碼</label>
 					<input type="password" class="form-control" id="PwdIpt" name="Password" placeholder="新密碼" required="required" onkeyup="value=value.replace(/[^\w\.\/]/ig,'');checkLength(); return false;"><br><span id="confirmMessage1" class="confirmMessage1"></span>
 				</div>
 				<br>
-				<div class="input-group">
+				<div class="input-group" style="text-align:center;">
 					<label for="n2PwdIpt">新密碼確認</label>
 					<input type="password" class="form-control" id="2PwdIpt" name="Password2nd" placeholder="新密碼確認" required="required" onkeyup="value=value.replace(/[^\w\.\/]/ig,'');checkPwd(); return false;"> <br><span id="confirmMessage2" class="confirmMessage2"></span>
 				</div>
