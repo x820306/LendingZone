@@ -1089,7 +1089,7 @@ exports.ensureAdmin=function (req, res, next) {
 	res.render('login',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:null,msg:'請以管理員身分登入'});
 }
 
-exports.loginFormChecker=function (req, res, next) {
+exports.loginFormChecker=function(req, res, next) {
 	var lgfArray=req.flash('loginForm');
 	var loginFormJson=null;
 	if(lgfArray.length>0){
@@ -1097,6 +1097,31 @@ exports.loginFormChecker=function (req, res, next) {
 	}
 	req.loginFormJson=loginFormJson;
 	return next();
+}
+
+exports.checkSsnID=function(id) {
+	var ifDoThis=true;
+	if(ifDoThis){
+		tab = "ABCDEFGHJKLMNPQRSTUVXYWZIO"                     
+		A1 = new Array (1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,3,3,3,3,3,3 );
+		A2 = new Array (0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5 );
+		Mx = new Array (9,8,7,6,5,4,3,2,1,1);
+
+		if ( id.length != 10 ) return false;
+		i = tab.indexOf( id.charAt(0) );
+		if ( i == -1 ) return false;
+		sum = A1[i] + A2[i]*9;
+
+		for ( i=1; i<10; i++ ) {
+			v = parseInt( id.charAt(i) );
+			if ( isNaN(v) ) return false;
+			sum = sum + v * Mx[i];
+		}
+		if ( sum % 10 != 0 ) return false;
+		return true;
+	}else{
+		return true;
+	}
 }
 
 function confirmRedirector(req,res,content,info,address){

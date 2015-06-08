@@ -281,7 +281,7 @@ router.post('/resetPW', function(req, res, next) {
 			}else{
 				if((sanitizer.sanitize(req.body.Password.trim())!='')&&(sanitizer.sanitize(req.body.Password2nd.trim())!='')){
 					if(sanitizer.sanitize(req.body.Password.trim())==sanitizer.sanitize(req.body.Password2nd.trim())){
-						if((sanitizer.sanitize(req.body.Password.trim()).search(/[^\w\.\/]/ig)==-1)&&(sanitizer.sanitize(req.body.Password.trim()).length>=6)){
+						if((sanitizer.sanitize(req.body.Password.trim()).search(/[^\w\.\/]/ig)==-1)&&(sanitizer.sanitize(req.body.Password.trim()).length>6)){
 							user.Password = sanitizer.sanitize(req.body.Password.trim());
 							user.Updated=Date.now();
 							user.resetPasswordToken = undefined;
@@ -327,7 +327,7 @@ router.post('/changePW',library.loginFormChecker,library.ensureAuthenticated,fun
 								res.redirect('/message?content='+encodeURIComponent('舊密碼輸入錯誤!'));
 							}else{
 								if(sanitizer.sanitize(req.body.Password.trim())==sanitizer.sanitize(req.body.Password2nd.trim())){
-									if((sanitizer.sanitize(req.body.Password.trim()).search(/[^\w\.\/]/ig)==-1)&&(sanitizer.sanitize(req.body.Password.trim()).length>=6)){
+									if((sanitizer.sanitize(req.body.Password.trim()).search(/[^\w\.\/]/ig)==-1)&&(sanitizer.sanitize(req.body.Password.trim()).length>6)){
 										user.Password = sanitizer.sanitize(req.body.Password.trim());
 										user.Updated=Date.now();
 										user.save(function (err,newUpdated){
