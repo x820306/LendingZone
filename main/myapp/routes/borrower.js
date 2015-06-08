@@ -65,7 +65,7 @@ router.post('/borrowCreate',library.loginFormChecker, library.ensureAuthenticate
 	if(passFlag){
 		var ifTitleRepeat=false;
 		var titleTester;
-		if((sanitizer.sanitize(req.body.StoryTitle.trim())=='')||(sanitizer.sanitize(req.body.StoryTitle.trim())=='無標題')){
+		if(sanitizer.sanitize(req.body.StoryTitle.trim())==''){
 			titleTester=null
 		}else{
 			titleTester=sanitizer.sanitize(req.body.StoryTitle.trim());
@@ -85,7 +85,7 @@ router.post('/borrowCreate',library.loginFormChecker, library.ensureAuthenticate
 				
 				var errorTarget=[];
 				var errorMessage=[];
-				for(i=0;i<4;i++){
+				for(i=0;i<5;i++){
 					errorTarget.push(false);
 					errorMessage.push('');
 				}
@@ -123,9 +123,14 @@ router.post('/borrowCreate',library.loginFormChecker, library.ensureAuthenticate
 					errorMessage[2]='錯誤參數!';
 				}
 				
-				if(ifTitleRepeat){
+				if((ifTitleRepeat)||(sanitizer.sanitize(req.body.StoryTitle.trim())=='無標題')){
 					errorTarget[3]=true;
-					errorMessage[3]='故事標題重覆!';
+					errorMessage[3]='故事標題重覆或不合規定!';
+				}
+				
+				if(sanitizer.sanitize(req.body.Story.trim())=='無內容'){
+					errorTarget[4]=true;
+					errorMessage[4]='故事內容不合規定!';
 				}
 				
 				var valiFlag=true;

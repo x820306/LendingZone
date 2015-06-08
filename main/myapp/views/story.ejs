@@ -364,7 +364,7 @@
 										<span class="input-group-addon">%</span>
 									</div>
 									<br>
-									<h4>訊息（選填）：</h4>
+									<h4>訊息（選填）：<span id="s4" style="color:red;"><%if(hlfJSON){%><%if(hlfJSON.Target[3]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=hlfJSON.Message[3]%><%}%><%}%></span></h4>
 									<textarea class="form-control" name="Message" rows="3"><%if(hlfJSON){%><%=hlfJSON.FormContent.F4%><%}%></textarea>
 								</div>
 									<input type="hidden" name="FromBorrowRequest" value="<%=json._id%>">
@@ -563,8 +563,8 @@
 										<span class="input-group-addon">%</span>
 									</div>
 									<br>
-									<h4>訊息（選填）：</h4>
-									<textarea class="form-control" name="Message" rows="3"><%if(hlfJSON){%><%=hlfJSON.FormContent.F4%><%}else{%><%=jsonMessage.Message%><%}%></textarea>
+									<h4>訊息（選填）：<span id="s4" style="color:red;"><%if(hlfJSON){%><%if(hlfJSON.Target[3]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=hlfJSON.Message[3]%><%}%><%}%></span></h4>
+									<textarea class="form-control" name="Message" rows="3"><%if(hlfJSON){%><%=hlfJSON.FormContent.F4%><%}else{%><%if(jsonMessage.Message.trim()!='無內容'){%><%=jsonMessage.Message%><%}%><%}%></textarea>
 								</div>
 								<input type="hidden" name="FromBorrowRequest" value="<%=json._id%>">
 								<input type="hidden" name="_id" value="<%=jsonMessage._id%>">
