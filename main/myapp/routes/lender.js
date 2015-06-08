@@ -36,8 +36,12 @@ router.get('/search/:keyword?/:category?/:action?/:director?/:lbound?/:ubound?/:
 				actionRecReserve='Updated';
 			}else if(action=='最晚媒合日期'){
 				actionRecReserve='TimeLimit';
-			}else if(action=='金額'){
+			}else if(action=='原始需要金額'){
 				actionRecReserve='MoneyToBorrow';
+			}else if(action=='已經借到金額'){
+				actionRecReserve='Created';
+			}else if(action=='還需要金額'){
+				actionRecReserve='Created';
 			}else if(action=='利率'){
 				actionRecReserve='MaxInterestRateAccepted';
 			}else if(action=='期數'){
@@ -173,16 +177,18 @@ router.get('/search/:keyword?/:category?/:action?/:director?/:lbound?/:ubound?/:
 				andFindCmdAry.push({"Category": categoryRec});
 			}
 			
-			var jsonTemp={};
-			if((lboundRec!==null)&&(uboundRec!==null)){
-				jsonTemp[actionRecReserve]={"$gte": lboundRec, "$lte": uboundRec};
-				andFindCmdAry.push(jsonTemp);
-			}else if(lboundRec!==null){
-				jsonTemp[actionRecReserve]={"$gte": lboundRec};
-				andFindCmdAry.push(jsonTemp);
-			}else if(uboundRec!==null){
-				jsonTemp[actionRecReserve]={"$lte": uboundRec};
-				andFindCmdAry.push(jsonTemp);
+			if((action!='還需要金額')&&(action!='已經借到金額')){
+				var jsonTemp={};
+				if((lboundRec!==null)&&(uboundRec!==null)){
+					jsonTemp[actionRecReserve]={"$gte": lboundRec, "$lte": uboundRec};
+					andFindCmdAry.push(jsonTemp);
+				}else if(lboundRec!==null){
+					jsonTemp[actionRecReserve]={"$gte": lboundRec};
+					andFindCmdAry.push(jsonTemp);
+				}else if(uboundRec!==null){
+					jsonTemp[actionRecReserve]={"$lte": uboundRec};
+					andFindCmdAry.push(jsonTemp);
+				}
 			}
 			
 			var keyword=keyword.replace(/\s\s+/g,' ');
@@ -197,7 +203,7 @@ router.get('/search/:keyword?/:category?/:action?/:director?/:lbound?/:ubound?/:
 			}
 			
 			var Borrows  = mongoose.model('Borrows');
-			Borrows.find({$and:andFindCmdAry}).populate('CreatedBy', 'Username').populate('Message','CreatedBy SendTo Type Status').sort(actionRec).exec( function (err, borrows, count){
+			Borrows.find({$and:andFindCmdAry}).populate('CreatedBy', 'Username').populate('Message','CreatedBy SendTo Type Status Transaction').sort(actionRec).exec( function (err, borrows, count){
 				if (err) {
 					console.log(err);
 					res.redirect('/message?content='+encodeURIComponent('錯誤!'));
@@ -209,93 +215,139 @@ router.get('/search/:keyword?/:category?/:action?/:director?/:lbound?/:ubound?/:
 							res.render('search',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,keywordDefault:keyword,actionDefault:action,categoryDefault:category,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,jsonArray:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage});
 						}
 					}else{
-						for(j=borrows.length-1;j>-1;j--){
-							var testString=borrows[j].StoryTitle+' '+borrows[j].Story+' '+borrows[j].CreatedBy.Username;
-							var localFlag=[];
-							var ctr;
-							localFlag[0]=false;
-							localFlag[1]=false;
-							
-							if(keyObjID){
-								if(keyObjID.equals(borrows[j]._id)){
-									localFlag[0]=true;
-								}
-							}
-							
-							ctr=0;
-							for(k=0;k<keywordArray.length;k++){
-								if(testString.search(keywordArray[k])>-1){
-									ctr++;
-								}
-							}
-							if(ctr==keywordArray.length){
-								localFlag[1]=true;
-							}
-							
-							if((!localFlag[0])&&(!localFlag[1])){
-								borrows.splice(j, 1);
-							}
-						}
-						totalResultNumber=borrows.length;
-						
-						if(totalResultNumber==0){
-							if(targetPage>1){
-								res.redirect('/message?content='+encodeURIComponent('錯誤頁碼!'));
+						var Transactions  = mongoose.model('Transactions');
+						var Messages  = mongoose.model('Messages');
+						var optionsX = {
+							path: 'Message.Transaction',
+							model: Transactions,
+							select: 'Principal PrincipalReturnedCumulated'
+						};
+						Messages.populate(borrows, optionsX, function(err, borrows){
+							if(err){
+								console.log(err);
+								res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 							}else{
-								res.render('search',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,keywordDefault:keyword,actionDefault:action,categoryDefault:category,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,jsonArray:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage});
-							}
-						}else{
-							var divider=10;
-							pageNum=Math.ceil(totalResultNumber/divider);
-							
-							if(pageNum<targetPage){
-								res.redirect('/message?content='+encodeURIComponent('錯誤頁碼!'));
-							}else{
-								var starter=divider*(targetPage-1);
-								var ender;
-								if(targetPage==pageNum){
-									ender=totalResultNumber;
-								}else{
-									ender=starter+divider;
-								}
-								for(i=starter;i<ender;i++){
-									resArrays.push(borrows[i]);
-								}
-								for(i=0;i<resArrays.length;i++){
-									resArrays[i].MaxInterestRateAccepted-=library.serviceChargeRate;//scr
-									if(auRst===null){
-										resArrays[i].TitleColor='default';
-									}else{
-										for(j=0;j<resArrays[i].Message.length;j++){
-											if((req.user._id==resArrays[i].Message[j].CreatedBy)&&(resArrays[i].Message[j].Type=="toLend")){
-												if(resArrays[i].Message[j].Status=="NotConfirmed"){
-													resArrays[i].TitleColor='color1';
-												}else{
-													resArrays[i].TitleColor='color2';
-												}
-											}else if((req.user._id==resArrays[i].Message[j].SendTo)&&(resArrays[i].Message[j].Type=="toBorrow")){
-												if(resArrays[i].Message[j].Status=="NotConfirmed"){
-													resArrays[i].TitleColor='color3';
-												}else{
-													resArrays[i].TitleColor='color2';
-												}
-											}
+								for(j=borrows.length-1;j>-1;j--){
+									var testString=borrows[j].StoryTitle+' '+borrows[j].Story+' '+borrows[j].CreatedBy.Username;
+									var localFlag=[];
+									var ctr;
+									localFlag[0]=false;
+									localFlag[1]=false;
+									
+									if(keyObjID){
+										if(keyObjID.equals(borrows[j]._id)){
+											localFlag[0]=true;
 										}
-										if(req.user._id==resArrays[i].CreatedBy._id){
-											resArrays[i].TitleColor='color4';
+									}
+									
+									ctr=0;
+									for(k=0;k<keywordArray.length;k++){
+										if(testString.search(keywordArray[k])>-1){
+											ctr++;
 										}
-										resArrays[i].ifLiked=false;
-										for(j=0;j<resArrays[i].Likes.length;j++){
-											if(resArrays[i].Likes[j]==req.user._id){
-												resArrays[i].ifLiked=true;
-												break;
+									}
+									if(ctr==keywordArray.length){
+										localFlag[1]=true;
+									}
+									
+									if((!localFlag[0])&&(!localFlag[1])){
+										borrows.splice(j, 1);
+									}
+								}
+								
+								for(i=0;i<borrows.length;i++){
+									borrows[i].Got=0;
+									for(r=0;r<borrows[i].Message.length;r++){
+										if(borrows[i].Message[r].Status=='Confirmed'){
+											if(borrows[i].Message[r].Transaction.length>=1){
+												borrows[i].Got+=(borrows[i].Message[r].Transaction[0].PrincipalReturnedCumulated+borrows[i].Message[r].Transaction[0].Principal);
 											}
 										}
 									}
+									borrows[i].Need=borrows[i].MoneyToBorrow-borrows[i].Got;
+									if(borrows[i].Need<0){
+										borrows[i].Need=0;
+									}
 								}
-								res.render('search',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,keywordDefault:keyword,actionDefault:action,categoryDefault:category,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,jsonArray:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage});
+								
+								if(action=='還需要金額'){
+									if(director=='大至小'){
+										borrows.sort(function(a,b) { return parseInt(b.Need) - parseInt(a.Need)} );
+									}else if(director=='小至大'){
+										borrows.sort(function(a,b) { return parseInt(a.Need) - parseInt(b.Need)} );
+									}
+									library.arrayFilter(borrows,'Need',lboundRec,uboundRec);	
+								}else if(action=='已經借到金額'){
+									if(director=='大至小'){
+										borrows.sort(function(a,b) { return parseInt(b.Got) - parseInt(a.Got)} );
+									}else if(director=='小至大'){
+										borrows.sort(function(a,b) { return parseInt(a.Got) - parseInt(b.Got)} );
+									}
+									library.arrayFilter(borrows,'Got',lboundRec,uboundRec);	
+								}
+								
+								totalResultNumber=borrows.length;
+								
+								if(totalResultNumber==0){
+									if(targetPage>1){
+										res.redirect('/message?content='+encodeURIComponent('錯誤頁碼!'));
+									}else{
+										res.render('search',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,keywordDefault:keyword,actionDefault:action,categoryDefault:category,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,jsonArray:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage});
+									}
+								}else{
+									var divider=10;
+									pageNum=Math.ceil(totalResultNumber/divider);
+									
+									if(pageNum<targetPage){
+										res.redirect('/message?content='+encodeURIComponent('錯誤頁碼!'));
+									}else{
+										var starter=divider*(targetPage-1);
+										var ender;
+										if(targetPage==pageNum){
+											ender=totalResultNumber;
+										}else{
+											ender=starter+divider;
+										}
+										for(i=starter;i<ender;i++){
+											resArrays.push(borrows[i]);
+										}
+										for(i=0;i<resArrays.length;i++){
+											resArrays[i].MaxInterestRateAccepted-=library.serviceChargeRate;//scr
+											if(auRst===null){
+												resArrays[i].TitleColor='default';
+											}else{
+												for(j=0;j<resArrays[i].Message.length;j++){
+													if((req.user._id==resArrays[i].Message[j].CreatedBy)&&(resArrays[i].Message[j].Type=="toLend")){
+														if(resArrays[i].Message[j].Status=="NotConfirmed"){
+															resArrays[i].TitleColor='color1';
+														}else{
+															resArrays[i].TitleColor='color2';
+														}
+													}else if((req.user._id==resArrays[i].Message[j].SendTo)&&(resArrays[i].Message[j].Type=="toBorrow")){
+														if(resArrays[i].Message[j].Status=="NotConfirmed"){
+															resArrays[i].TitleColor='color3';
+														}else{
+															resArrays[i].TitleColor='color2';
+														}
+													}
+												}
+												if(req.user._id==resArrays[i].CreatedBy._id){
+													resArrays[i].TitleColor='color4';
+												}
+												resArrays[i].ifLiked=false;
+												for(j=0;j<resArrays[i].Likes.length;j++){
+													if(resArrays[i].Likes[j]==req.user._id){
+														resArrays[i].ifLiked=true;
+														break;
+													}
+												}
+											}
+										}
+										res.render('search',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,keywordDefault:keyword,actionDefault:action,categoryDefault:category,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,jsonArray:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage});
+									}
+								}
 							}
-						}
+						});
 					}
 				}
 			});
@@ -307,7 +359,7 @@ router.get('/search/:keyword?/:category?/:action?/:director?/:lbound?/:ubound?/:
 	}
 });
 
-router.get('/story/:id?',library.loginFormChecker,library.newMsgChecker, function (req, res) {
+router.get('/story/:id?',library.loginFormChecker,library.newMsgChecker, function (req, res){
 	if(typeof(req.query.id) !== "undefined"){
 		var auRst=null;
 		if(req.isAuthenticated()){
@@ -340,132 +392,157 @@ router.get('/story/:id?',library.loginFormChecker,library.newMsgChecker, functio
 				if(!borrow){
 					res.redirect('/message?content='+encodeURIComponent('錯誤ID!'));
 				}else{
-					var options = {
-						path: 'Discussion.CreatedBy',
-						model: Users,
-						select: 'Username'
+					var optionsX = {
+						path: 'Message.Transaction',
+						model: Transactions,
+						select: 'Principal PrincipalReturnedCumulated'
 					};
-					Discussions.populate(borrow, options, function(err, borrow) {
+					Messages.populate(borrow, optionsX, function(err, borrow){
 						if(err){
 							console.log(err);
 							res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 						}else{
-							borrow.TitleColor="default";
-							borrow.MaxInterestRateAccepted-=library.serviceChargeRate;//scr
-							var ifSelfValue=false;
-							var ifLikedValue=false;
-							if(auRst===null){
-								res.render('story',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,ifSelf:ifSelfValue,ifLiked:ifLikedValue,json:borrow,jsonMessage:null,jsonBorrowMessage:null,jsonLend:null,MoneyInBankAccountValue:0,MoneyLended:0,hlfJSON:hendLendFormJson,cfJSON:confirmFormJson});
-							}else{
-								if(req.user._id==borrow.CreatedBy._id){
-									borrow.TitleColor='color4';
-									ifSelfValue=true;
-									res.render('story',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,ifSelf:ifSelfValue,ifLiked:ifLikedValue,json:borrow,jsonMessage:null,jsonBorrowMessage:null,jsonLend:null,MoneyInBankAccountValue:0,MoneyLended:0,hlfJSON:hendLendFormJson,cfJSON:confirmFormJson});
+							var options = {
+								path: 'Discussion.CreatedBy',
+								model: Users,
+								select: 'Username'
+							};
+							Discussions.populate(borrow, options, function(err, borrow) {
+								if(err){
+									console.log(err);
+									res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 								}else{
-									var j = 0;
-									for (j = 0; j < borrow.Likes.length; j++) {
-										if (borrow.Likes[j].toString() == req.user._id.toString()) {
-											ifLikedValue = true;
+									borrow.TitleColor="default";
+									borrow.MaxInterestRateAccepted-=library.serviceChargeRate;//scr
+									borrow.Got=0;
+									for(r=0;r<borrow.Message.length;r++){
+										if(borrow.Message[r].Status=='Confirmed'){
+											if(borrow.Message[r].Transaction.length>=1){
+												borrow.Got+=(borrow.Message[r].Transaction[0].PrincipalReturnedCumulated+borrow.Message[r].Transaction[0].Principal);
+											}
 										}
 									}
-									BankAccounts.findOne({"OwnedBy": req.user._id}).exec(function (err, bankaccount){
-										if (err) {
-											console.log(err);
-											res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+									borrow.Need=borrow.MoneyToBorrow-borrow.Got;
+									if(borrow.Need<0){
+										borrow.Need=0;
+									}
+									
+									var ifSelfValue=false;
+									var ifLikedValue=false;
+									if(auRst===null){
+										res.render('story',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,ifSelf:ifSelfValue,ifLiked:ifLikedValue,json:borrow,jsonMessage:null,jsonBorrowMessage:null,jsonLend:null,MoneyInBankAccountValue:0,MoneyLended:0,hlfJSON:hendLendFormJson,cfJSON:confirmFormJson});
+									}else{
+										if(req.user._id==borrow.CreatedBy._id){
+											borrow.TitleColor='color4';
+											ifSelfValue=true;
+											res.render('story',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,ifSelf:ifSelfValue,ifLiked:ifLikedValue,json:borrow,jsonMessage:null,jsonBorrowMessage:null,jsonLend:null,MoneyInBankAccountValue:0,MoneyLended:0,hlfJSON:hendLendFormJson,cfJSON:confirmFormJson});
 										}else{
-											if(!bankaccount){
-												res.redirect('/message?content='+encodeURIComponent('無銀行帳戶!'));
-											}else{
-												var moneyLendedCumulated=0
-												Transactions.find({"Lender": req.user._id}).exec(function (err, transactions){
-													if (err) {
-														console.log(err);
-														res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+											var j = 0;
+											for (j = 0; j < borrow.Likes.length; j++) {
+												if (borrow.Likes[j].toString() == req.user._id.toString()) {
+													ifLikedValue = true;
+												}
+											}
+											BankAccounts.findOne({"OwnedBy": req.user._id}).exec(function (err, bankaccount){
+												if (err) {
+													console.log(err);
+													res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+												}else{
+													if(!bankaccount){
+														res.redirect('/message?content='+encodeURIComponent('無銀行帳戶!'));
 													}else{
-														if(transactions.length>0){
-															for(i=0;i<transactions.length;i++){
-																moneyLendedCumulated+=transactions[i].Principal;
-															}
-														}
-														var message=null;
-														var borrowMessage=null;
-														for(j=0;j<borrow.Message.length;j++){
-															if((req.user._id==borrow.Message[j].CreatedBy)&&(borrow.Message[j].Type=="toLend")){
-																message=borrow.Message[j];
-																if(message.Status=="NotConfirmed"){
-																	borrow.TitleColor='color1';
-																	break;
-																}else{
-																	borrow.TitleColor='color2';
-																	break;
-																}
-															}else if((req.user._id==borrow.Message[j].SendTo)&&(borrow.Message[j].Type=="toBorrow")){
-																borrowMessage=borrow.Message[j];
-																if(borrowMessage.Status=="NotConfirmed"){
-																	borrow.TitleColor='color3';
-																	break;
-																}else{
-																	borrow.TitleColor='color2';
-																	break;
-																}
-															}
-														}
-
-														if(message){
-															message.InterestRate-=library.serviceChargeRate;//scr
-															message.InterestInFuture=library.interestInFutureCalculator(message.MoneyToLend,message.InterestRate,message.MonthPeriod);
-															if(message.MoneyToLend>0){
-																message.InterestInFutureDivMoney=message.InterestInFuture/message.MoneyToLend*100;
-															}else{
-																message.InterestInFutureDivMoney=0;
-															}
-															if(message.MonthPeriod>0){
-																message.InterestInFutureMonth=message.InterestInFuture/message.MonthPeriod;
-															}else{
-																message.InterestInFutureMonth=0;
-															}
-															if(message.MonthPeriod>0){
-																message.InterestInFutureMoneyMonth=(message.InterestInFuture+message.MoneyToLend)/message.MonthPeriod;
-															}else{
-																message.InterestInFutureMoneyMonth=0;
-															}
-														}
-														if(borrowMessage){
-															borrowMessage.InterestRate-=library.serviceChargeRate;//scr
-															borrowMessage.InterestInFuture=library.interestInFutureCalculator(borrowMessage.MoneyToLend,borrowMessage.InterestRate,borrowMessage.MonthPeriod);
-															if(borrowMessage.MoneyToLend>0){
-																borrowMessage.InterestInFutureDivMoney=borrowMessage.InterestInFuture/borrowMessage.MoneyToLend*100;
-															}else{
-																borrowMessage.InterestInFutureDivMoney=0;
-															}
-															if(borrowMessage.MonthPeriod>0){
-																borrowMessage.InterestInFutureMonth=borrowMessage.InterestInFuture/borrowMessage.MonthPeriod;
-															}else{
-																borrowMessage.InterestInFutureMonth=0;
-															}
-															if(borrowMessage.MonthPeriod>0){
-																borrowMessage.InterestInFutureMoneyMonth=(borrowMessage.InterestInFuture+borrowMessage.MoneyToLend)/borrowMessage.MonthPeriod;
-															}else{
-																borrowMessage.InterestInFutureMoneyMonth=0;
-															}
-														}	
-														
-														var Lends = mongoose.model('Lends');
-														Lends.findOne({"CreatedBy": req.user._id}).exec( function (err, lend){
+														var moneyLendedCumulated=0
+														Transactions.find({"Lender": req.user._id}).exec(function (err, transactions){
 															if (err) {
 																console.log(err);
 																res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 															}else{
-																res.render('story',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,ifSelf:ifSelfValue,ifLiked:ifLikedValue,json:borrow,jsonMessage:message,jsonBorrowMessage:borrowMessage,jsonLend:lend,MoneyInBankAccountValue:bankaccount.MoneyInBankAccount,MoneyLended:moneyLendedCumulated,hlfJSON:hendLendFormJson,cfJSON:confirmFormJson});
+																if(transactions.length>0){
+																	for(i=0;i<transactions.length;i++){
+																		moneyLendedCumulated+=transactions[i].Principal;
+																	}
+																}
+																var message=null;
+																var borrowMessage=null;
+																for(j=0;j<borrow.Message.length;j++){
+																	if((req.user._id==borrow.Message[j].CreatedBy)&&(borrow.Message[j].Type=="toLend")){
+																		message=borrow.Message[j];
+																		if(message.Status=="NotConfirmed"){
+																			borrow.TitleColor='color1';
+																			break;
+																		}else{
+																			borrow.TitleColor='color2';
+																			break;
+																		}
+																	}else if((req.user._id==borrow.Message[j].SendTo)&&(borrow.Message[j].Type=="toBorrow")){
+																		borrowMessage=borrow.Message[j];
+																		if(borrowMessage.Status=="NotConfirmed"){
+																			borrow.TitleColor='color3';
+																			break;
+																		}else{
+																			borrow.TitleColor='color2';
+																			break;
+																		}
+																	}
+																}
+
+																if(message){
+																	message.InterestRate-=library.serviceChargeRate;//scr
+																	message.InterestInFuture=library.interestInFutureCalculator(message.MoneyToLend,message.InterestRate,message.MonthPeriod);
+																	if(message.MoneyToLend>0){
+																		message.InterestInFutureDivMoney=message.InterestInFuture/message.MoneyToLend*100;
+																	}else{
+																		message.InterestInFutureDivMoney=0;
+																	}
+																	if(message.MonthPeriod>0){
+																		message.InterestInFutureMonth=message.InterestInFuture/message.MonthPeriod;
+																	}else{
+																		message.InterestInFutureMonth=0;
+																	}
+																	if(message.MonthPeriod>0){
+																		message.InterestInFutureMoneyMonth=(message.InterestInFuture+message.MoneyToLend)/message.MonthPeriod;
+																	}else{
+																		message.InterestInFutureMoneyMonth=0;
+																	}
+																}
+																if(borrowMessage){
+																	borrowMessage.InterestRate-=library.serviceChargeRate;//scr
+																	borrowMessage.InterestInFuture=library.interestInFutureCalculator(borrowMessage.MoneyToLend,borrowMessage.InterestRate,borrowMessage.MonthPeriod);
+																	if(borrowMessage.MoneyToLend>0){
+																		borrowMessage.InterestInFutureDivMoney=borrowMessage.InterestInFuture/borrowMessage.MoneyToLend*100;
+																	}else{
+																		borrowMessage.InterestInFutureDivMoney=0;
+																	}
+																	if(borrowMessage.MonthPeriod>0){
+																		borrowMessage.InterestInFutureMonth=borrowMessage.InterestInFuture/borrowMessage.MonthPeriod;
+																	}else{
+																		borrowMessage.InterestInFutureMonth=0;
+																	}
+																	if(borrowMessage.MonthPeriod>0){
+																		borrowMessage.InterestInFutureMoneyMonth=(borrowMessage.InterestInFuture+borrowMessage.MoneyToLend)/borrowMessage.MonthPeriod;
+																	}else{
+																		borrowMessage.InterestInFutureMoneyMonth=0;
+																	}
+																}	
+																
+																var Lends = mongoose.model('Lends');
+																Lends.findOne({"CreatedBy": req.user._id}).exec( function (err, lend){
+																	if (err) {
+																		console.log(err);
+																		res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+																	}else{
+																		res.render('story',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,ifSelf:ifSelfValue,ifLiked:ifLikedValue,json:borrow,jsonMessage:message,jsonBorrowMessage:borrowMessage,jsonLend:lend,MoneyInBankAccountValue:bankaccount.MoneyInBankAccount,MoneyLended:moneyLendedCumulated,hlfJSON:hendLendFormJson,cfJSON:confirmFormJson});
+																	}
+																});
 															}
 														});
 													}
-												});
-											}
+												}
+											});
 										}
-									});
+									}
 								}
-							}
+							});
 						}
 					});
 				}
@@ -843,29 +920,29 @@ router.get('/lenderTransactionRecord/:oneid?/:filter?/:sorter?/:director?/:lboun
 										transactions[i].nextPayDateNum=tempDate.getTime();
 									}else{
 										transactions[i].nextPayDate=null;
-										transactions[i].nextPayDateNum=Infinity;
+										transactions[i].nextPayDateNum=9999999999999;
 									}
 								}
 								
 								if(sorter=='預計總利息'){
 									if(director=='大至小'){
-										transactions.sort(function(a,b) { return parseFloat(b.InterestInFuture) - parseFloat(a.InterestInFuture)} );
+										transactions.sort(function(a,b) { return parseInt(b.InterestInFuture) - parseInt(a.InterestInFuture)} );
 									}else if(director=='小至大'){
-										transactions.sort(function(a,b) { return parseFloat(a.InterestInFuture) - parseFloat(b.InterestInFuture)} );
+										transactions.sort(function(a,b) { return parseInt(a.InterestInFuture) - parseInt(b.InterestInFuture)} );
 									}
 									library.arrayFilter(transactions,'InterestInFuture',lboundRec,uboundRec);	
 								}else if(sorter=='預計平均利息'){
 									if(director=='大至小'){
-										transactions.sort(function(a,b) { return parseFloat(b.InterestInFutureMonth) - parseFloat(a.InterestInFutureMonth)} );
+										transactions.sort(function(a,b) { return parseInt(b.InterestInFutureMonth) - parseInt(a.InterestInFutureMonth)} );
 									}else if(director=='小至大'){
-										transactions.sort(function(a,b) { return parseFloat(a.InterestInFutureMonth) - parseFloat(b.InterestInFutureMonth)} );
+										transactions.sort(function(a,b) { return parseInt(a.InterestInFutureMonth) - parseInt(b.InterestInFutureMonth)} );
 									}
 									library.arrayFilter(transactions,'InterestInFutureMonth',lboundRec,uboundRec);	
 								}else if(sorter=='預計平均本利和'){
 									if(director=='大至小'){
-										transactions.sort(function(a,b) { return parseFloat(b.InterestInFutureMoneyMonth) - parseFloat(a.InterestInFutureMoneyMonth)} );
+										transactions.sort(function(a,b) { return parseInt(b.InterestInFutureMoneyMonth) - parseInt(a.InterestInFutureMoneyMonth)} );
 									}else if(director=='小至大'){
-										transactions.sort(function(a,b) { return parseFloat(a.InterestInFutureMoneyMonth) - parseFloat(b.InterestInFutureMoneyMonth)} );
+										transactions.sort(function(a,b) { return parseInt(a.InterestInFutureMoneyMonth) - parseInt(b.InterestInFutureMoneyMonth)} );
 									}
 									library.arrayFilter(transactions,'InterestInFutureMoneyMonth',lboundRec,uboundRec);	
 								}else if(sorter=='預計利本比'){
@@ -877,23 +954,23 @@ router.get('/lenderTransactionRecord/:oneid?/:filter?/:sorter?/:director?/:lboun
 									library.arrayFilter(transactions,'InterestInFutureDivMoney',lboundRec,uboundRec);	
 								}else if(sorter=='收款記錄'){
 									if(director=='大至小'){
-										transactions.sort(function(a,b) { return parseFloat(b.ReturnCount) - parseFloat(a.ReturnCount)} );
+										transactions.sort(function(a,b) { return parseInt(b.ReturnCount) - parseInt(a.ReturnCount)} );
 									}else if(director=='小至大'){
-										transactions.sort(function(a,b) { return parseFloat(a.ReturnCount) - parseFloat(b.ReturnCount)} );
+										transactions.sort(function(a,b) { return parseInt(a.ReturnCount) - parseInt(b.ReturnCount)} );
 									}
 									library.arrayFilter(transactions,'ReturnCount',lboundRec,uboundRec);
 								}else if(sorter=='上次成功收款日期'){
 									if(director=='大至小'){
-										transactions.sort(function(a,b) { return parseFloat(b.previousPayDateNum) - parseFloat(a.previousPayDateNum)} );
+										transactions.sort(function(a,b) { return parseInt(b.previousPayDateNum) - parseInt(a.previousPayDateNum)} );
 									}else if(director=='小至大'){
-										transactions.sort(function(a,b) { return parseFloat(a.previousPayDateNum) - parseFloat(b.previousPayDateNum)} );
+										transactions.sort(function(a,b) { return parseInt(a.previousPayDateNum) - parseInt(b.previousPayDateNum)} );
 									}
 									library.arrayFilter(transactions,'previousPayDateNum',lboundRec,uboundRec);
 								}else if(sorter=='下次應收款日期'){
 									if(director=='大至小'){
-										transactions.sort(function(a,b) { return parseFloat(b.nextPayDateNum) - parseFloat(a.nextPayDateNum)} );
+										transactions.sort(function(a,b) { return parseInt(b.nextPayDateNum) - parseInt(a.nextPayDateNum)} );
 									}else if(director=='小至大'){
-										transactions.sort(function(a,b) { return parseFloat(a.nextPayDateNum) - parseFloat(b.nextPayDateNum)} );
+										transactions.sort(function(a,b) { return parseInt(a.nextPayDateNum) - parseInt(b.nextPayDateNum)} );
 									}
 									library.arrayFilter(transactions,'nextPayDateNum',lboundRec,uboundRec);
 								}
@@ -1217,58 +1294,58 @@ router.get('/lenderReturnRecord/:oneid?/:id?/:sorter?/:director?/:lbound?/:uboun
 										
 										if(sorter=='實收金額'){
 											if(director=='大至小'){
-												returns.sort(function(a,b) { return parseFloat(b.MoneyReallyPaid) - parseFloat(a.MoneyReallyPaid)} );
+												returns.sort(function(a,b) { return parseInt(b.MoneyReallyPaid) - parseInt(a.MoneyReallyPaid)} );
 											}else if(director=='小至大'){
-												returns.sort(function(a,b) { return parseFloat(a.MoneyReallyPaid) - parseFloat(b.MoneyReallyPaid)} );
+												returns.sort(function(a,b) { return parseInt(a.MoneyReallyPaid) - parseInt(b.MoneyReallyPaid)} );
 											}
 											library.arrayFilter(returns,'MoneyReallyPaid',lboundRec,uboundRec);	
 										}else if(sorter=='應收金額'){
 											if(director=='大至小'){
-												returns.sort(function(a,b) { return parseFloat(b.MoneyShouldPaid) - parseFloat(a.MoneyShouldPaid)} );
+												returns.sort(function(a,b) { return parseInt(b.MoneyShouldPaid) - parseInt(a.MoneyShouldPaid)} );
 											}else if(director=='小至大'){
-												returns.sort(function(a,b) { return parseFloat(a.MoneyShouldPaid) - parseFloat(b.MoneyShouldPaid)} );
+												returns.sort(function(a,b) { return parseInt(a.MoneyShouldPaid) - parseInt(b.MoneyShouldPaid)} );
 											}
 											library.arrayFilter(returns,'MoneyShouldPaid',lboundRec,uboundRec);
 										}else if(sorter=='未收金額'){
 											if(director=='大至小'){
-												returns.sort(function(a,b) { return parseFloat(b.MoneyNotPaid) - parseFloat(a.MoneyNotPaid)} );
+												returns.sort(function(a,b) { return parseInt(b.MoneyNotPaid) - parseInt(a.MoneyNotPaid)} );
 											}else if(director=='小至大'){
-												returns.sort(function(a,b) { return parseFloat(a.MoneyNotPaid) - parseFloat(b.MoneyNotPaid)} );
+												returns.sort(function(a,b) { return parseInt(a.MoneyNotPaid) - parseInt(b.MoneyNotPaid)} );
 											}
 											library.arrayFilter(returns,'MoneyNotPaid',lboundRec,uboundRec);
 										}else if(sorter=='超收金額'){
 											if(director=='大至小'){
-												returns.sort(function(a,b) { return parseFloat(a.MoneyNotPaid) - parseFloat(b.MoneyNotPaid)} );
+												returns.sort(function(a,b) { return parseInt(a.MoneyNotPaid) - parseInt(b.MoneyNotPaid)} );
 											}else if(director=='小至大'){
-												returns.sort(function(a,b) { return parseFloat(b.MoneyNotPaid) - parseFloat(a.MoneyNotPaid)} );
+												returns.sort(function(a,b) { return parseInt(b.MoneyNotPaid) - parseInt(a.MoneyNotPaid)} );
 											}
 											library.arrayFilter(returns,'MoneyNotPaid',lboundRec,uboundRec);
 										}else if(sorter=='實收本金'){
 											if(director=='大至小'){
-												returns.sort(function(a,b) { return parseFloat(b.PrincipalReallyPaid) - parseFloat(a.PrincipalReallyPaid)} );
+												returns.sort(function(a,b) { return parseInt(b.PrincipalReallyPaid) - parseInt(a.PrincipalReallyPaid)} );
 											}else if(director=='小至大'){
-												returns.sort(function(a,b) { return parseFloat(a.PrincipalReallyPaid) - parseFloat(b.PrincipalReallyPaid)} );
+												returns.sort(function(a,b) { return parseInt(a.PrincipalReallyPaid) - parseInt(b.PrincipalReallyPaid)} );
 											}
 											library.arrayFilter(returns,'PrincipalReallyPaid',lboundRec,uboundRec);
 										}else if(sorter=='實收利息'){
 											if(director=='大至小'){
-												returns.sort(function(a,b) { return parseFloat(b.InterestReallyPaid) - parseFloat(a.InterestReallyPaid)} );
+												returns.sort(function(a,b) { return parseInt(b.InterestReallyPaid) - parseInt(a.InterestReallyPaid)} );
 											}else if(director=='小至大'){
-												returns.sort(function(a,b) { return parseFloat(a.InterestReallyPaid) - parseFloat(b.InterestReallyPaid)} );
+												returns.sort(function(a,b) { return parseInt(a.InterestReallyPaid) - parseInt(b.InterestReallyPaid)} );
 											}
 											library.arrayFilter(returns,'InterestReallyPaid',lboundRec,uboundRec);
 										}else if(sorter=='收款前累積本利和'){
 											if(director=='大至小'){
-												returns.sort(function(a,b) { return parseFloat(b.PICumulatedBeforePaid) - parseFloat(a.PICumulatedBeforePaid)} );
+												returns.sort(function(a,b) { return parseInt(b.PICumulatedBeforePaid) - parseInt(a.PICumulatedBeforePaid)} );
 											}else if(director=='小至大'){
-												returns.sort(function(a,b) { return parseFloat(a.PICumulatedBeforePaid) - parseFloat(b.PICumulatedBeforePaid)} );
+												returns.sort(function(a,b) { return parseInt(a.PICumulatedBeforePaid) - parseInt(b.PICumulatedBeforePaid)} );
 											}
 											library.arrayFilter(returns,'PICumulatedBeforePaid',lboundRec,uboundRec);
 										}else if(sorter=='收款後累積本利和'){
 											if(director=='大至小'){
-												returns.sort(function(a,b) { return parseFloat(b.PICumulatedAfterPaid) - parseFloat(a.PICumulatedAfterPaid)} );
+												returns.sort(function(a,b) { return parseInt(b.PICumulatedAfterPaid) - parseInt(a.PICumulatedAfterPaid)} );
 											}else if(director=='小至大'){
-												returns.sort(function(a,b) { return parseFloat(a.PICumulatedAfterPaid) - parseFloat(b.PICumulatedAfterPaid)} );
+												returns.sort(function(a,b) { return parseInt(a.PICumulatedAfterPaid) - parseInt(b.PICumulatedAfterPaid)} );
 											}
 											library.arrayFilter(returns,'PICumulatedAfterPaid',lboundRec,uboundRec);
 										}
@@ -1901,23 +1978,23 @@ router.get('/lenderSendMessages/:msgKeyword?/:filter?/:sorter?/:director?/:lboun
 								
 								if(sorter=='預計總利息'){
 									if(director=='大至小'){
-										messages.sort(function(a,b) { return parseFloat(b.InterestInFuture) - parseFloat(a.InterestInFuture)} );
+										messages.sort(function(a,b) { return parseInt(b.InterestInFuture) - parseInt(a.InterestInFuture)} );
 									}else if(director=='小至大'){
-										messages.sort(function(a,b) { return parseFloat(a.InterestInFuture) - parseFloat(b.InterestInFuture)} );
+										messages.sort(function(a,b) { return parseInt(a.InterestInFuture) - parseInt(b.InterestInFuture)} );
 									}
 									library.arrayFilter(messages,'InterestInFuture',lboundRec,uboundRec);	
 								}else if(sorter=='預計平均利息'){
 									if(director=='大至小'){
-										messages.sort(function(a,b) { return parseFloat(b.InterestInFutureMonth) - parseFloat(a.InterestInFutureMonth)} );
+										messages.sort(function(a,b) { return parseInt(b.InterestInFutureMonth) - parseInt(a.InterestInFutureMonth)} );
 									}else if(director=='小至大'){
-										messages.sort(function(a,b) { return parseFloat(a.InterestInFutureMonth) - parseFloat(b.InterestInFutureMonth)} );
+										messages.sort(function(a,b) { return parseInt(a.InterestInFutureMonth) - parseInt(b.InterestInFutureMonth)} );
 									}
 									library.arrayFilter(messages,'InterestInFutureMonth',lboundRec,uboundRec);	
 								}else if(sorter=='預計平均本利和'){
 									if(director=='大至小'){
-										messages.sort(function(a,b) { return parseFloat(b.InterestInFutureMoneyMonth) - parseFloat(a.InterestInFutureMoneyMonth)} );
+										messages.sort(function(a,b) { return parseInt(b.InterestInFutureMoneyMonth) - parseInt(a.InterestInFutureMoneyMonth)} );
 									}else if(director=='小至大'){
-										messages.sort(function(a,b) { return parseFloat(a.InterestInFutureMoneyMonth) - parseFloat(b.InterestInFutureMoneyMonth)} );
+										messages.sort(function(a,b) { return parseInt(a.InterestInFutureMoneyMonth) - parseInt(b.InterestInFutureMoneyMonth)} );
 									}
 									library.arrayFilter(messages,'InterestInFutureMoneyMonth',lboundRec,uboundRec);	
 								}else if(sorter=='預計利本比'){
@@ -2294,23 +2371,23 @@ router.get('/lenderReceiveMessages/:msgKeyword?/:filter?/:sorter?/:director?/:lb
 								
 								if(sorter=='預計總利息'){
 									if(director=='大至小'){
-										messages.sort(function(a,b) { return parseFloat(b.InterestInFuture) - parseFloat(a.InterestInFuture)} );
+										messages.sort(function(a,b) { return parseInt(b.InterestInFuture) - parseInt(a.InterestInFuture)} );
 									}else if(director=='小至大'){
-										messages.sort(function(a,b) { return parseFloat(a.InterestInFuture) - parseFloat(b.InterestInFuture)} );
+										messages.sort(function(a,b) { return parseInt(a.InterestInFuture) - parseInt(b.InterestInFuture)} );
 									}
 									library.arrayFilter(messages,'InterestInFuture',lboundRec,uboundRec);	
 								}else if(sorter=='預計平均利息'){
 									if(director=='大至小'){
-										messages.sort(function(a,b) { return parseFloat(b.InterestInFutureMonth) - parseFloat(a.InterestInFutureMonth)} );
+										messages.sort(function(a,b) { return parseInt(b.InterestInFutureMonth) - parseInt(a.InterestInFutureMonth)} );
 									}else if(director=='小至大'){
-										messages.sort(function(a,b) { return parseFloat(a.InterestInFutureMonth) - parseFloat(b.InterestInFutureMonth)} );
+										messages.sort(function(a,b) { return parseInt(a.InterestInFutureMonth) - parseInt(b.InterestInFutureMonth)} );
 									}
 									library.arrayFilter(messages,'InterestInFutureMonth',lboundRec,uboundRec);	
 								}else if(sorter=='預計平均本利和'){
 									if(director=='大至小'){
-										messages.sort(function(a,b) { return parseFloat(b.InterestInFutureMoneyMonth) - parseFloat(a.InterestInFutureMoneyMonth)} );
+										messages.sort(function(a,b) { return parseInt(b.InterestInFutureMoneyMonth) - parseInt(a.InterestInFutureMoneyMonth)} );
 									}else if(director=='小至大'){
-										messages.sort(function(a,b) { return parseFloat(a.InterestInFutureMoneyMonth) - parseFloat(b.InterestInFutureMoneyMonth)} );
+										messages.sort(function(a,b) { return parseInt(a.InterestInFutureMoneyMonth) - parseInt(b.InterestInFutureMoneyMonth)} );
 									}
 									library.arrayFilter(messages,'InterestInFutureMoneyMonth',lboundRec,uboundRec);	
 								}else if(sorter=='預計利本比'){

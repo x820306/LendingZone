@@ -96,6 +96,11 @@ router.post('/destroyTest',function(req, res, next) {
 							if(ctr>-1){
 								borrow.Message.splice(ctr, 1);
 							}
+							if(message.Status=='Confirmed'){
+								if(!borrow.IfReadable){
+									borrow.IfReadable=true;
+								}
+							}
 							borrow.save(function (err,updatedBorrow) {
 								if (err){
 									console.log(err);
@@ -120,7 +125,7 @@ router.post('/destroyTest',function(req, res, next) {
 });
 
 function toLendSamePart(res,req,differentPart,outterPara){
-	Borrows.findById(req.body.FromBorrowRequest).populate('CreatedBy', 'Username Email').exec(function (err, borrow){
+	Borrows.findById(req.body.FromBorrowRequest).populate('CreatedBy', 'Username Email').populate("Message","Transaction Status").exec(function (err, borrow){
 		if (err) {
 			console.log(err);
 			res.redirect('/message?content='+encodeURIComponent('錯誤!'));
@@ -128,98 +133,121 @@ function toLendSamePart(res,req,differentPart,outterPara){
 			if(!borrow){
 				res.redirect('/message?content='+encodeURIComponent('錯誤ID!'));
 			}else{
-				BankAccounts.findOne({"OwnedBy": req.user._id}).populate('OwnedBy', 'Username Email').exec(function (err, lenderBankaccount){
-					if (err) {
+				var optionsX = {
+					path: 'Message.Transaction',
+					model: Transactions,
+					select: 'Principal PrincipalReturnedCumulated'
+				};
+				Messages.populate(borrow, optionsX, function(err, borrow){
+					if(err){
 						console.log(err);
 						res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 					}else{
-						if(!lenderBankaccount){
-							res.redirect('/message?content='+encodeURIComponent('無銀行帳戶!'));
-						}else{
-							var maxMoney=parseInt(lenderBankaccount.MoneyInBankAccount);
-							var maxMoney2=parseInt(borrow.MoneyToBorrow)-parseInt(borrow.MoneyToBorrowCumulated);
-							var maxMonth=parseInt(borrow.MonthPeriodAccepted);
-							var maxRate=parseFloat(borrow.MaxInterestRateAccepted);
-							
-							var nowMoney=parseInt(sanitizer.sanitize(req.body.MoneyToLend.trim()));
-							var rate=(parseFloat(sanitizer.sanitize(req.body.InterestRate.trim()))/100)+library.serviceChargeRate;//scr
-							var month=parseInt(sanitizer.sanitize(req.body.MonthPeriod.trim()));
-							
-							var errorTarget=[];
-							var errorMessage=[];
-							for(i=0;i<4;i++){
-								errorTarget.push(false);
-								errorMessage.push('');
-							}
-							
-							if(sanitizer.sanitize(req.body.MoneyToLend.trim())==''){
-								errorTarget[0]=true;
-								errorMessage[0]='必要參數未填!';
-							}else if(isNaN(nowMoney)){
-								errorTarget[0]=true;
-								errorMessage[0]='非數字參數!';
-							}else if(nowMoney<1){
-								errorTarget[0]=true;
-								errorMessage[0]='錯誤參數!';
-							}else if(nowMoney>maxMoney){
-								errorTarget[0]=true;
-								errorMessage[0]='金額超過您的銀行餘額：'+maxMoney.toFixed(0)+'元!';
-							}else if(nowMoney>maxMoney2){
-								errorTarget[0]=true;
-								errorMessage[0]='金額超過對方所需：'+maxMoney2.toFixed(0)+'元!';
-							}
-							
-							if(sanitizer.sanitize(req.body.InterestRate.trim())==''){
-								errorTarget[1]=true;
-								errorMessage[1]='必要參數未填!';
-							}else if(isNaN(rate)){
-								errorTarget[1]=true;
-								errorMessage[1]='非數字參數!';
-							}else if((rate<(0.0001+library.serviceChargeRate))||(rate>(0.99+library.serviceChargeRate))){
-								errorTarget[1]=true;
-								errorMessage[1]='錯誤參數!';
-							}else if(rate>maxRate){
-								errorTarget[1]=true;
-								errorMessage[1]='超過期望利率上限：'+((maxRate-library.serviceChargeRate)*100).toFixed(2)+'%!';//scr
-							}
-							
-							if(sanitizer.sanitize(req.body.MonthPeriod.trim())==''){
-								errorTarget[2]=true;
-								errorMessage[2]='必要參數未填!';
-							}else if(isNaN(month)){
-								errorTarget[2]=true;
-								errorMessage[2]='非數字參數!';
-							}else if((month<1)||(month>36)){
-								errorTarget[2]=true;
-								errorMessage[2]='錯誤參數!';
-							}else if(month>maxMonth){
-								errorTarget[2]=true;
-								errorMessage[2]='超過對方可接受之最大期數：'+maxMonth.toFixed(0)+'個月!';
-							}
-							
-							if(sanitizer.sanitize(req.body.Message.trim())=='無內容'){
-								errorTarget[3]=true;
-								errorMessage[3]='訊息內容不合規定!';
-							}
-							
-							var valiFlag=true;
-							for(i=0;i<errorTarget.length;i++){
-								if(errorTarget[i]){
-									valiFlag=false;
-									break;
-								}
-							}
-							
-							if(valiFlag){
-								if(!borrow.IfReadable){
-									res.redirect('/message?content='+encodeURIComponent('借入方已不需要借款，請回上頁重整頁面!'));
-								}else{
-									differentPart(res,req,borrow,lenderBankaccount,outterPara);
-								}
+						BankAccounts.findOne({"OwnedBy": req.user._id}).populate('OwnedBy', 'Username Email').exec(function (err, lenderBankaccount){
+							if (err) {
+								console.log(err);
+								res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 							}else{
-								redirector(req,res,errorTarget,errorMessage);
-							}	
-						}
+								if(!lenderBankaccount){
+									res.redirect('/message?content='+encodeURIComponent('無銀行帳戶!'));
+								}else{
+									var maxMoney=parseInt(lenderBankaccount.MoneyInBankAccount);
+									borrow.Got=0;
+									for(r=0;r<borrow.Message.length;r++){
+										if(borrow.Message[r].Status=='Confirmed'){
+											if(borrow.Message[r].Transaction.length>=1){
+												borrow.Got+=(borrow.Message[r].Transaction[0].PrincipalReturnedCumulated+borrow.Message[r].Transaction[0].Principal);
+											}
+										}
+									}
+									var maxMoney2=parseInt(borrow.MoneyToBorrow)-parseInt(borrow.Got);
+									if(maxMoney2<0){
+										maxMoney2=0;
+									}
+									var maxMonth=parseInt(borrow.MonthPeriodAccepted);
+									var maxRate=parseFloat(borrow.MaxInterestRateAccepted);
+									
+									var nowMoney=parseInt(sanitizer.sanitize(req.body.MoneyToLend.trim()));
+									var rate=(parseFloat(sanitizer.sanitize(req.body.InterestRate.trim()))/100)+library.serviceChargeRate;//scr
+									var month=parseInt(sanitizer.sanitize(req.body.MonthPeriod.trim()));
+									
+									var errorTarget=[];
+									var errorMessage=[];
+									for(i=0;i<4;i++){
+										errorTarget.push(false);
+										errorMessage.push('');
+									}
+									
+									if(sanitizer.sanitize(req.body.MoneyToLend.trim())==''){
+										errorTarget[0]=true;
+										errorMessage[0]='必要參數未填!';
+									}else if(isNaN(nowMoney)){
+										errorTarget[0]=true;
+										errorMessage[0]='非數字參數!';
+									}else if(nowMoney<1){
+										errorTarget[0]=true;
+										errorMessage[0]='錯誤參數!';
+									}else if(nowMoney>maxMoney){
+										errorTarget[0]=true;
+										errorMessage[0]='金額超過您的銀行餘額：'+maxMoney.toFixed(0)+'元!';
+									}else if(nowMoney>maxMoney2){
+										errorTarget[0]=true;
+										errorMessage[0]='金額超過對方所需：'+maxMoney2.toFixed(0)+'元!';
+									}
+									
+									if(sanitizer.sanitize(req.body.InterestRate.trim())==''){
+										errorTarget[1]=true;
+										errorMessage[1]='必要參數未填!';
+									}else if(isNaN(rate)){
+										errorTarget[1]=true;
+										errorMessage[1]='非數字參數!';
+									}else if((rate<(0.0001+library.serviceChargeRate))||(rate>(0.99+library.serviceChargeRate))){
+										errorTarget[1]=true;
+										errorMessage[1]='錯誤參數!';
+									}else if(rate>maxRate){
+										errorTarget[1]=true;
+										errorMessage[1]='超過期望利率上限：'+((maxRate-library.serviceChargeRate)*100).toFixed(2)+'%!';//scr
+									}
+									
+									if(sanitizer.sanitize(req.body.MonthPeriod.trim())==''){
+										errorTarget[2]=true;
+										errorMessage[2]='必要參數未填!';
+									}else if(isNaN(month)){
+										errorTarget[2]=true;
+										errorMessage[2]='非數字參數!';
+									}else if((month<1)||(month>36)){
+										errorTarget[2]=true;
+										errorMessage[2]='錯誤參數!';
+									}else if(month>maxMonth){
+										errorTarget[2]=true;
+										errorMessage[2]='超過對方可接受之最大期數：'+maxMonth.toFixed(0)+'個月!';
+									}
+									
+									if(sanitizer.sanitize(req.body.Message.trim())=='無內容'){
+										errorTarget[3]=true;
+										errorMessage[3]='訊息內容不合規定!';
+									}
+									
+									var valiFlag=true;
+									for(i=0;i<errorTarget.length;i++){
+										if(errorTarget[i]){
+											valiFlag=false;
+											break;
+										}
+									}
+									
+									if(valiFlag){
+										if(!borrow.IfReadable){
+											res.redirect('/message?content='+encodeURIComponent('借入方已不需要借款，請回上頁重整頁面!'));
+										}else{
+											differentPart(res,req,borrow,lenderBankaccount,outterPara);
+										}
+									}else{
+										redirector(req,res,errorTarget,errorMessage);
+									}	
+								}
+							}
+						});
 					}
 				});
 			}
@@ -312,10 +340,12 @@ function toLendCreatePart(res,req,borrow,lenderBankaccount,outterPara){
 																			console.log(err);
 																			res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 																		}else{				
-																			borrow.MoneyToBorrowCumulated+=newCreateTransaction.Principal;
-																			if(borrow.MoneyToBorrowCumulated>=borrow.MoneyToBorrow){
+																			borrow.Got+=newCreateTransaction.Principal;
+																			if(borrow.Got>=borrow.MoneyToBorrow){
 																				borrow.IfReadable=false;
 																			}
+																			delete borrow.Got;
+																			
 																			borrow.Message.push(newCreate._id);
 																			borrow.save(function (err,updatedBorrow) {
 																				if (err){
@@ -803,23 +833,23 @@ router.post('/rejectToBorrowMessageInLRMall',library.loginFormChecker, library.e
 					
 					if(sorter=='預計總利息'){
 						if(director=='大至小'){
-							messages.sort(function(a,b) { return parseFloat(b.InterestInFuture) - parseFloat(a.InterestInFuture)} );
+							messages.sort(function(a,b) { return parseInt(b.InterestInFuture) - parseInt(a.InterestInFuture)} );
 						}else if(director=='小至大'){
-							messages.sort(function(a,b) { return parseFloat(a.InterestInFuture) - parseFloat(b.InterestInFuture)} );
+							messages.sort(function(a,b) { return parseInt(a.InterestInFuture) - parseInt(b.InterestInFuture)} );
 						}
 						library.arrayFilter(messages,'InterestInFuture',lboundRec,uboundRec);	
 					}else if(sorter=='預計平均利息'){
 						if(director=='大至小'){
-							messages.sort(function(a,b) { return parseFloat(b.InterestInFutureMonth) - parseFloat(a.InterestInFutureMonth)} );
+							messages.sort(function(a,b) { return parseInt(b.InterestInFutureMonth) - parseInt(a.InterestInFutureMonth)} );
 						}else if(director=='小至大'){
-							messages.sort(function(a,b) { return parseFloat(a.InterestInFutureMonth) - parseFloat(b.InterestInFutureMonth)} );
+							messages.sort(function(a,b) { return parseInt(a.InterestInFutureMonth) - parseInt(b.InterestInFutureMonth)} );
 						}
 						library.arrayFilter(messages,'InterestInFutureMonth',lboundRec,uboundRec);	
 					}else if(sorter=='預計平均本利和'){
 						if(director=='大至小'){
-							messages.sort(function(a,b) { return parseFloat(b.InterestInFutureMoneyMonth) - parseFloat(a.InterestInFutureMoneyMonth)} );
+							messages.sort(function(a,b) { return parseInt(b.InterestInFutureMoneyMonth) - parseInt(a.InterestInFutureMoneyMonth)} );
 						}else if(director=='小至大'){
-							messages.sort(function(a,b) { return parseFloat(a.InterestInFutureMoneyMonth) - parseFloat(b.InterestInFutureMoneyMonth)} );
+							messages.sort(function(a,b) { return parseInt(a.InterestInFutureMoneyMonth) - parseInt(b.InterestInFutureMoneyMonth)} );
 						}
 						library.arrayFilter(messages,'InterestInFutureMoneyMonth',lboundRec,uboundRec);	
 					}else if(sorter=='預計利本比'){
@@ -1083,23 +1113,23 @@ router.post('/confirmToBorrowMessageInLRMall',library.loginFormChecker, library.
 					
 					if(sorter=='預計總利息'){
 						if(director=='大至小'){
-							messages.sort(function(a,b) { return parseFloat(b.InterestInFuture) - parseFloat(a.InterestInFuture)} );
+							messages.sort(function(a,b) { return parseInt(b.InterestInFuture) - parseInt(a.InterestInFuture)} );
 						}else if(director=='小至大'){
-							messages.sort(function(a,b) { return parseFloat(a.InterestInFuture) - parseFloat(b.InterestInFuture)} );
+							messages.sort(function(a,b) { return parseInt(a.InterestInFuture) - parseInt(b.InterestInFuture)} );
 						}
 						library.arrayFilter(messages,'InterestInFuture',lboundRec,uboundRec);	
 					}else if(sorter=='預計平均利息'){
 						if(director=='大至小'){
-							messages.sort(function(a,b) { return parseFloat(b.InterestInFutureMonth) - parseFloat(a.InterestInFutureMonth)} );
+							messages.sort(function(a,b) { return parseInt(b.InterestInFutureMonth) - parseInt(a.InterestInFutureMonth)} );
 						}else if(director=='小至大'){
-							messages.sort(function(a,b) { return parseFloat(a.InterestInFutureMonth) - parseFloat(b.InterestInFutureMonth)} );
+							messages.sort(function(a,b) { return parseInt(a.InterestInFutureMonth) - parseInt(b.InterestInFutureMonth)} );
 						}
 						library.arrayFilter(messages,'InterestInFutureMonth',lboundRec,uboundRec);	
 					}else if(sorter=='預計平均本利和'){
 						if(director=='大至小'){
-							messages.sort(function(a,b) { return parseFloat(b.InterestInFutureMoneyMonth) - parseFloat(a.InterestInFutureMoneyMonth)} );
+							messages.sort(function(a,b) { return parseInt(b.InterestInFutureMoneyMonth) - parseInt(a.InterestInFutureMoneyMonth)} );
 						}else if(director=='小至大'){
-							messages.sort(function(a,b) { return parseFloat(a.InterestInFutureMoneyMonth) - parseFloat(b.InterestInFutureMoneyMonth)} );
+							messages.sort(function(a,b) { return parseInt(a.InterestInFutureMoneyMonth) - parseInt(b.InterestInFutureMoneyMonth)} );
 						}
 						library.arrayFilter(messages,'InterestInFutureMoneyMonth',lboundRec,uboundRec);	
 					}else if(sorter=='預計利本比'){
@@ -1374,23 +1404,23 @@ router.post('/deleteToLendMessageInLRMall',library.loginFormChecker, library.ens
 					
 					if(sorter=='預計總利息'){
 						if(director=='大至小'){
-							messages.sort(function(a,b) { return parseFloat(b.InterestInFuture) - parseFloat(a.InterestInFuture)} );
+							messages.sort(function(a,b) { return parseInt(b.InterestInFuture) - parseInt(a.InterestInFuture)} );
 						}else if(director=='小至大'){
-							messages.sort(function(a,b) { return parseFloat(a.InterestInFuture) - parseFloat(b.InterestInFuture)} );
+							messages.sort(function(a,b) { return parseInt(a.InterestInFuture) - parseInt(b.InterestInFuture)} );
 						}
 						library.arrayFilter(messages,'InterestInFuture',lboundRec,uboundRec);	
 					}else if(sorter=='預計平均利息'){
 						if(director=='大至小'){
-							messages.sort(function(a,b) { return parseFloat(b.InterestInFutureMonth) - parseFloat(a.InterestInFutureMonth)} );
+							messages.sort(function(a,b) { return parseInt(b.InterestInFutureMonth) - parseInt(a.InterestInFutureMonth)} );
 						}else if(director=='小至大'){
-							messages.sort(function(a,b) { return parseFloat(a.InterestInFutureMonth) - parseFloat(b.InterestInFutureMonth)} );
+							messages.sort(function(a,b) { return parseInt(a.InterestInFutureMonth) - parseInt(b.InterestInFutureMonth)} );
 						}
 						library.arrayFilter(messages,'InterestInFutureMonth',lboundRec,uboundRec);	
 					}else if(sorter=='預計平均本利和'){
 						if(director=='大至小'){
-							messages.sort(function(a,b) { return parseFloat(b.InterestInFutureMoneyMonth) - parseFloat(a.InterestInFutureMoneyMonth)} );
+							messages.sort(function(a,b) { return parseInt(b.InterestInFutureMoneyMonth) - parseInt(a.InterestInFutureMoneyMonth)} );
 						}else if(director=='小至大'){
-							messages.sort(function(a,b) { return parseFloat(a.InterestInFutureMoneyMonth) - parseFloat(b.InterestInFutureMoneyMonth)} );
+							messages.sort(function(a,b) { return parseInt(a.InterestInFutureMoneyMonth) - parseInt(b.InterestInFutureMoneyMonth)} );
 						}
 						library.arrayFilter(messages,'InterestInFutureMoneyMonth',lboundRec,uboundRec);	
 					}else if(sorter=='預計利本比'){
@@ -1555,7 +1585,7 @@ function deleteMessage(ctr,ctrTarget,returnSring,req,res,infoJson,address){
 										}
 									};
 									if(ctr0>-1){
-										borrow.Message.splice(ctr, 1);
+										borrow.Message.splice(ctr0, 1);
 									}
 									borrow.save(function (err,updatedBorrow) {
 										if (err){

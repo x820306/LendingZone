@@ -1,0 +1,31 @@
+<%- include('layout_header',{searchTitle:null,nav_cur:'autoRestarterPage',actionDefault:'建立日期',directorDefault:'大至小',keywordDefault:'',categoryDefault:'不分類'}); -%>
+<div class="container">
+	<div class="row">
+		<center>
+			<br><br><br><br><br><br><br>
+			<form method = "post" action= "/Lends/autoRestarter" onsubmit="return disableButton();">
+				<button id="goBtn" type="submit" class="btn btn-default btn-lg">
+					  <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> 重啟自動同意
+				</button></div>
+			</form>
+			<br><br><br><br><br><br><br>
+		</center>
+	</div>
+</div>
+<script>
+	var submitFlag=false;
+	function disableButton(){
+		if(!submitFlag){
+			var orig=$('#goBtn').attr('class');
+			if(orig.search(' disabled')<0){
+				orig=orig+' disabled';
+				$('#goBtn').attr('class',orig);
+			}
+			submitFlag=true;
+			return true;
+		}else{
+			return false;
+		}
+	}
+</script>
+<%- include('layout_footer',{imgSettingCode:"var ifLoadedCount=0;",imgDrawingCode:""}); -%>

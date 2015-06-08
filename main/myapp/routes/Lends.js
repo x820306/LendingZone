@@ -254,6 +254,18 @@ function createPart(res,req,outterPara){
 		if (err){
 			res.redirect('/message?content='+encodeURIComponent('新建失敗!'));
 		}else{
+			var ctr=-1;
+			for(i=0;i<library.autoComfirmToBorrowMsgArray.length;i++){
+				if(req.user._id==library.autoComfirmToBorrowMsgArray[i].CreatedBy){
+					ctr=i;
+					break;
+				}
+			}
+			if(ctr>-1){
+				clearInterval(library.autoComfirmToBorrowMsgArray[ctr].CommandID);
+				library.autoComfirmToBorrowMsgArray.splice(ctr,1);
+			}
+			
 			if(newCreate.AutoComfirmToBorrowMsgPeriod>0){
 				var toSaveID=setInterval( function() { autoConfirm(req,res,newCreate.AutoComfirmToBorrowMsgSorter,newCreate.AutoComfirmToBorrowMsgDirector,newCreate._id); }, 86400000*newCreate.AutoComfirmToBorrowMsgPeriod);
 				var toSaveJSON={CreatedBy:req.user._id,CommandID:toSaveID,LendID:newCreate._id};
@@ -314,7 +326,7 @@ function updatePart(res,req,lend){
 		}else{
 			var ctr=-1;
 			for(i=0;i<library.autoComfirmToBorrowMsgArray.length;i++){
-				if((req.user._id==library.autoComfirmToBorrowMsgArray[i].CreatedBy)&&(library.autoComfirmToBorrowMsgArray[i].LendID.equals(newUpdate._id))){
+				if(((req.user._id==library.autoComfirmToBorrowMsgArray[i].CreatedBy)||(library.adminID.equals(library.autoComfirmToBorrowMsgArray[i].CreatedBy)))&&(library.autoComfirmToBorrowMsgArray[i].LendID.equals(newUpdate._id))){
 					ctr=i;
 					break;
 				}
@@ -356,7 +368,7 @@ function autoConfirm(req,res,sorter,director,lendID){
 		}else{
 			if(lend){
 				if(lend.MaxMoneyToLend>0){
-					Messages.find({$and:[{"SendTo": req.user._id},{"Type": "toBorrow"},{"Status": "NotConfirmed"}]}).sort(sorterRec).exec(function (err, messages){
+					Messages.find({$and:[{"SendTo": lend.CreatedBy},{"Type": "toBorrow"},{"Status": "NotConfirmed"}]}).sort(sorterRec).exec(function (err, messages){
 						if (err) {
 							console.log(err);
 						}else{
@@ -384,21 +396,21 @@ function autoConfirm(req,res,sorter,director,lendID){
 									
 									if(sorter=='SpecialA'){
 										if(director=='minus'){
-											messages.sort(function(a,b) { return parseFloat(b.InterestInFuture) - parseFloat(a.InterestInFuture)} );
+											messages.sort(function(a,b) { return parseInt(b.InterestInFuture) - parseInt(a.InterestInFuture)} );
 										}else if(director=='plus'){
-											messages.sort(function(a,b) { return parseFloat(a.InterestInFuture) - parseFloat(b.InterestInFuture)} );
+											messages.sort(function(a,b) { return parseInt(a.InterestInFuture) - parseInt(b.InterestInFuture)} );
 										}
 									}else if(sorter=='SpecialB'){
 										if(director=='minus'){
-											messages.sort(function(a,b) { return parseFloat(b.InterestInFutureMonth) - parseFloat(a.InterestInFutureMonth)} );
+											messages.sort(function(a,b) { return parseInt(b.InterestInFutureMonth) - parseInt(a.InterestInFutureMonth)} );
 										}else if(director=='plus'){
-											messages.sort(function(a,b) { return parseFloat(a.InterestInFutureMonth) - parseFloat(b.InterestInFutureMonth)} );
+											messages.sort(function(a,b) { return parseInt(a.InterestInFutureMonth) - parseInt(b.InterestInFutureMonth)} );
 										}
 									}else if(sorter=='SpecialC'){
 										if(director=='minus'){
-											messages.sort(function(a,b) { return parseFloat(b.InterestInFutureMoneyMonth) - parseFloat(a.InterestInFutureMoneyMonth)} );
+											messages.sort(function(a,b) { return parseInt(b.InterestInFutureMoneyMonth) - parseInt(a.InterestInFutureMoneyMonth)} );
 										}else if(director=='plus'){
-											messages.sort(function(a,b) { return parseFloat(a.InterestInFutureMoneyMonth) - parseFloat(b.InterestInFutureMoneyMonth)} );
+											messages.sort(function(a,b) { return parseInt(a.InterestInFutureMoneyMonth) - parseInt(b.InterestInFutureMoneyMonth)} );
 										}
 									}else if(sorter=='SpecialD'){
 										if(director=='minus'){
@@ -414,13 +426,32 @@ function autoConfirm(req,res,sorter,director,lendID){
 									var temp={FromBorrowRequest:messages[i].FromBorrowRequest,MessageID:messages[i]._id};
 									arrayOp.push(temp);
 								}
-								delete req.body.array;
-								req.body.array=arrayOp;
-								var infoJson={counter1:req.body.array.length,counter2:0,info1:0,info2:0,info3:0,info4:0};
-								library.confirmToBorrowMessage(true,0,req.body.array.length,null,req,res,true,'/',true,infoJson);
+								console.log(arrayOp);
+								var newReq={};
+								newReq['body']={};
+								newReq['user']={};
+								newReq['headers']={};
+								newReq.body.array=arrayOp;
+								newReq.user._id=req.user._id;
+								newReq.headers.host=req.headers.host;
+								
+								var infoJson={counter1:newReq.body.array.length,counter2:0,info1:0,info2:0,info3:0,info4:0};
+								library.confirmToBorrowMessage(true,0,newReq.body.array.length,null,newReq,res,true,'/',true,infoJson);
 							}
 						}
 					});
+				}
+			}else{
+				var ctr=-1;
+				for(j=0;j<library.autoComfirmToBorrowMsgArray.length;j++){
+					if(library.autoComfirmToBorrowMsgArray[j].LendID.equals(lendID)){
+						ctr=j;
+						break;
+					}
+				}
+				if(ctr>-1){
+					clearInterval(library.autoComfirmToBorrowMsgArray[ctr].CommandID);
+					library.autoComfirmToBorrowMsgArray.splice(ctr,1);
 				}
 			}
 		}
@@ -480,7 +511,7 @@ router.post('/destroy',library.loginFormChecker, library.ensureAuthenticated, fu
 						}else{
 							var ctr=-1;
 							for(i=0;i<library.autoComfirmToBorrowMsgArray.length;i++){
-								if((req.user._id==library.autoComfirmToBorrowMsgArray[i].CreatedBy)&&(library.autoComfirmToBorrowMsgArray[i].LendID.equals(removedItem._id))){
+								if(((req.user._id==library.autoComfirmToBorrowMsgArray[i].CreatedBy)||(library.adminID.equals(library.autoComfirmToBorrowMsgArray[i].CreatedBy)))&&(library.autoComfirmToBorrowMsgArray[i].LendID.equals(removedItem._id))){
 									ctr=i;
 									break;
 								}
@@ -497,6 +528,39 @@ router.post('/destroy',library.loginFormChecker, library.ensureAuthenticated, fu
 		}
 	});
 });
+
+router.post('/autoRestarter',library.loginFormChecker, library.ensureAuthenticated,library.ensureAdmin, function(req, res, next) {
+	for(j=0;j<library.autoComfirmToBorrowMsgArray.length;j++){
+		clearInterval(library.autoComfirmToBorrowMsgArray[j].CommandID);
+	}
+	library.autoComfirmToBorrowMsgArray=[];
+	
+	Lends.find({}).exec(function (err,lend){
+		if (err) {
+			console.log(err);
+			res.redirect('/message?content='+encodeURIComponent('失敗!'));
+		}else{
+			autoRestarterRecursive(0,lend.length,lend,req,res,0);
+		}
+	});
+});
+
+function autoRestarterRecursive(ctr,ctrTarget,array,req,res,timer){
+	var localCtr=ctr;
+	setTimeout(function(){
+		var toSaveID=setInterval( function() { autoConfirm(req,res,array[localCtr].AutoComfirmToBorrowMsgSorter,array[localCtr].AutoComfirmToBorrowMsgDirector,array[localCtr]._id); }, 86400000*array[localCtr].AutoComfirmToBorrowMsgPeriod);
+		var toSaveJSON={CreatedBy:array[localCtr].CreatedBy,CommandID:toSaveID,LendID:array[localCtr]._id};
+		library.autoComfirmToBorrowMsgArray.push(toSaveJSON);
+	}, timer);
+	
+	timer+=600000;
+	ctr++;
+	if(ctr<ctrTarget){
+		autoRestarterRecursive(ctr,ctrTarget,array,req,res,timer);
+	}else{
+		res.redirect('/message?content='+encodeURIComponent('已逐步重啟!'));
+	}
+}
 
 router.post('/changer',library.loginFormChecker, library.ensureAuthenticated, function(req, res, next) {
 	Lends.findById(sanitizer.sanitize(req.body.TargetID.trim())).exec(function (err,lend){

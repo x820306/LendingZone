@@ -493,8 +493,20 @@
 								</td>
 							<%}%>
 							<td align="right" style="border-bottom-style: none;border-top-style: none;">
-								<div>
-									<a href="/lender/lenderReturnRecord?oneid=&id=<%=jsonTransaction[i]._id%>&sorter=<%=encodeURIComponent("建立日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">該交易有<%=jsonTransaction[i].ReturnCount%>筆收款記錄</a>&nbsp;&nbsp;&nbsp;&nbsp;Updated：<%=jsonTransaction[i].Updated.getFullYear()%>/<%=jsonTransaction[i].Updated.getMonth()+1%>/<%=jsonTransaction[i].Updated.getDate()%>&nbsp;&nbsp;&nbsp;&nbsp;Created：<%=jsonTransaction[i].Created.getFullYear()%>/<%=jsonTransaction[i].Created.getMonth()+1%>/<%=jsonTransaction[i].Created.getDate()%>
+								<div style="font-size:15px;display:inline;">
+									<a href="/lender/lenderReturnRecord?oneid=&id=<%=jsonTransaction[i]._id%>&sorter=<%=encodeURIComponent("建立日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">該交易有<%=jsonTransaction[i].ReturnCount%>筆收款記錄</a>
+								</div>
+								&nbsp;&nbsp;&nbsp;&nbsp;
+								<div style="font-size:15px;display:inline;">
+									Updated：<%=jsonTransaction[i].Updated.getFullYear()%>/<%=jsonTransaction[i].Updated.getMonth()+1%>/<%=jsonTransaction[i].Updated.getDate()%>
+								</div>
+								&nbsp;&nbsp;&nbsp;&nbsp;
+								<div style="font-size:15px;display:inline;">
+									Created：<%=jsonTransaction[i].Created.getFullYear()%>/<%=jsonTransaction[i].Created.getMonth()+1%>/<%=jsonTransaction[i].Created.getDate()%>
+								</div>
+								&nbsp;&nbsp;&nbsp;&nbsp;
+								<div style="font-size:15px;display:inline;">
+									No.<%=i+1%>
 								</div>
 							</td>
 						<tr>
