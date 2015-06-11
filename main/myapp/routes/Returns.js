@@ -43,16 +43,7 @@ router.post('/destroyTest', function(req, res, next) {
 					}else{
 						if(!transaction){
 							res.json({error: 'no such transaction'}, 500);
-						}else{
-							
-							transaction.MonthPeriodHasPast-=1;
-							transaction.MonthPeriod+=1;
-							transaction.Principal+=(foundReturn.PrincipalShouldPaid-foundReturn.PrincipalNotPaid);
-							transaction.Principal-=foundReturn.InterestNotPaid;
-							transaction.PrincipalReturnedCumulated-=(foundReturn.PrincipalShouldPaid-foundReturn.PrincipalNotPaid);
-							transaction.InterestCumulated-=(foundReturn.InterestShouldPaid-foundReturn.InterestNotPaid);
-							transaction.ServiceChargeCumulated-=(foundReturn.ServiceChargeShouldPaid-foundReturn.ServiceChargeNotPaid);
-							
+						}else{			
 							var ctr = -1;
 							for (i = 0; i < transaction.Return.length; i++) {
 								if (transaction.Return[i].toString() === foundReturn._id.toString()) {
@@ -73,7 +64,11 @@ router.post('/destroyTest', function(req, res, next) {
 											console.log(err);
 											res.json({error: err.name}, 500);
 										}else{
-											res.json(removedItem);
+											library.userLevelAdderReturn(removedItem.Borrower,function(){
+												res.json(removedItem);
+											},function(){
+												res.end('error!');
+											});
 										}
 									});
 								}
@@ -90,7 +85,7 @@ router.post('/pay', function(req, res, next) {
 	var ToTransaction=sanitizer.sanitize(req.body.ToTransaction.trim());
 	var MoneyPaid=parseFloat(sanitizer.sanitize(req.body.MoneyPaid.trim()));
 
-	Transactions.findById(ToTransaction).populate('Lender', 'Username Email').populate('Borrower', 'Username Email').populate('CreatedFrom', 'FromBorrowRequest').exec(function (err, transaction){
+	Transactions.findById(ToTransaction).populate('Lender', 'Username Email').populate('Borrower', 'Username Email').populate('CreatedFrom', 'FromBorrowRequest').populate('Return').exec(function (err, transaction){
 		if (err) {
 			console.log(err);
 			res.end("error");
@@ -108,24 +103,20 @@ router.post('/pay', function(req, res, next) {
 						console.log(err);
 						res.end("error");
 					}else{
-						var PrincipalBeforePaid=transaction.Principal;
-						var PrincipalReturnedCumulatedBeforePaid=transaction.PrincipalReturnedCumulated;
-						var InterestCumulatedBeforePaid=transaction.InterestCumulated;
-						var ServiceChargeCumulatedBeforePaid=transaction.ServiceChargeCumulated;
-		
-						var ServiceChargeShouldPaid=Math.round(transaction.Principal*library.serviceChargeRate/12);//scr
+						library.transactionProcessor(transaction,true);
+						transaction.InterestRate+=library.serviceChargeRate;//scr
+						
+						var ServiceChargeShouldPaid=Math.round(transaction.PrincipalNotReturn*library.serviceChargeRate/12);//scr
 						var PrincipalShouldPaid;
-						if(transaction.MonthPeriod>1){
-							PrincipalShouldPaid=Math.floor(transaction.Principal/transaction.MonthPeriod);
+						if(transaction.MonthPeriodLeft>1){
+							PrincipalShouldPaid=Math.floor(transaction.PrincipalNotReturn/transaction.MonthPeriodLeft);
 						}else{
-							PrincipalShouldPaid=transaction.Principal;
+							PrincipalShouldPaid=transaction.PrincipalNotReturn;
 						}
-						var InterestShouldPaid=Math.round(transaction.Principal*(transaction.InterestRate-library.serviceChargeRate)/12);//scr we should limit borrow.MaxInterestRateAccepted always >=library.serviceChargeRate
+						var InterestShouldPaid=Math.round(transaction.PrincipalNotReturn*(transaction.InterestRate-library.serviceChargeRate)/12);//scr we should limit borrow.MaxInterestRateAccepted always >=library.serviceChargeRate
 						var ServiceChargeNotPaid;
 						var PrincipalNotPaid;
 						var InterestNotPaid;
-						transaction.MonthPeriod-=1;
-						transaction.MonthPeriodHasPast+=1;
 						
 						if(MoneyPaid<=ServiceChargeShouldPaid){
 							ServiceChargeNotPaid=ServiceChargeShouldPaid-MoneyPaid;
@@ -140,18 +131,17 @@ router.post('/pay', function(req, res, next) {
 							}else{
 								var tempMoneyPaid=tempMoneyPaid0-InterestShouldPaid;
 								ServiceChargeNotPaid=0;
-								PrincipalNotPaid=PrincipalShouldPaid-tempMoneyPaid;
+								if(PrincipalShouldPaid>=tempMoneyPaid){
+									PrincipalNotPaid=PrincipalShouldPaid-tempMoneyPaid;
+								}else{
+									if(transaction.MonthPeriodLeft>1){
+										PrincipalNotPaid=PrincipalShouldPaid-tempMoneyPaid;
+									}else{
+										PrincipalNotPaid=0;
+									}
+								}
 								InterestNotPaid=0;
 							}
-						}
-						transaction.Principal-=(PrincipalShouldPaid-PrincipalNotPaid);
-						transaction.Principal+=InterestNotPaid;
-						transaction.PrincipalReturnedCumulated+=(PrincipalShouldPaid-PrincipalNotPaid);
-						transaction.InterestCumulated+=(InterestShouldPaid-InterestNotPaid);
-						transaction.ServiceChargeCumulated+=(ServiceChargeShouldPaid-ServiceChargeNotPaid);
-						
-						if((transaction.MonthPeriod==0)&&(transaction.Principal>0)){
-							transaction.MonthPeriod=1;
 						}
 						
 						var toCreate = new Returns();
@@ -164,15 +154,30 @@ router.post('/pay', function(req, res, next) {
 						toCreate.InterestNotPaid=InterestNotPaid;
 						toCreate.PrincipalShouldPaid=PrincipalShouldPaid;
 						toCreate.PrincipalNotPaid=PrincipalNotPaid;
-						toCreate.PrincipalBeforePaid=PrincipalBeforePaid;
-						toCreate.PrincipalReturnedCumulatedBeforePaid=PrincipalReturnedCumulatedBeforePaid;
-						toCreate.InterestCumulatedBeforePaid=InterestCumulatedBeforePaid;
-						toCreate.ServiceChargeCumulatedBeforePaid=ServiceChargeCumulatedBeforePaid;
-						toCreate.PrincipalAfterPaid=transaction.Principal;
-						toCreate.PrincipalReturnedCumulatedAfterPaid=transaction.PrincipalReturnedCumulated;
-						toCreate.InterestCumulatedAfterPaid=transaction.InterestCumulated;
-						toCreate.ServiceChargeCumulatedAfterPaid=transaction.ServiceChargeCumulated;
 						toCreate.Level=transaction.Level;
+						toCreate.ExtendPrincipalBeforePaid=transaction.ExtendPrincipal;
+						toCreate.TotalPrincipalNowBeforePaid=transaction.TotalPrincipalNow;
+						toCreate.PrincipalNotReturnBeforePaid=transaction.PrincipalNotReturn;
+						toCreate.PrincipalReturnBeforePaid=transaction.PrincipalReturn;
+						toCreate.InterestBeforePaid=transaction.Interest;
+						toCreate.PrincipalInterestBeforePaid=transaction.PrincipalInterest;
+						toCreate.InterestMonthBeforePaid=transaction.InterestMonth;
+						toCreate.PrincipalInterestMonthBeforePaid=transaction.PrincipalInterestMonth;
+						toCreate.InterestDivPrincipalBeforePaid=transaction.InterestDivPrincipal;
+						toCreate.ServiceChargeBeforePaid=transaction.ServiceCharge;
+						toCreate.ExtendMonthPeriodBeforePaid=transaction.ExtendMonthPeriod;
+						toCreate.TotalMonthPeriodNowBeforePaid=transaction.TotalMonthPeriodNow;
+						toCreate.MonthPeriodLeftBeforePaid=transaction.MonthPeriodLeft;
+						toCreate.MonthPeriodPastBeforePaid=transaction.MonthPeriodPast;
+						toCreate.InterestInFutureBeforePaid=transaction.InterestInFuture;
+						toCreate.MoneyFutureBeforePaid=transaction.MoneyFuture;
+						toCreate.InterestInFutureMonthBeforePaid=transaction.InterestInFutureMonth;
+						toCreate.InterestInFutureMoneyMonthBeforePaid=transaction.InterestInFutureMoneyMonth;
+						toCreate.InterestInFutureDivMoneyBeforePaid=transaction.InterestInFutureDivMoney;
+						toCreate.ReturnCountBeforePaid=transaction.ReturnCount;
+						toCreate.previousPayDateBeforePaid=transaction.previousPayDate;
+						toCreate.nextPayDateBeforePaid=transaction.nextPayDate;
+						toCreate.LevelBeforePaid=transaction.Level;
 						
 						toCreate.save(function (err,newCreate) {
 							if (err){
@@ -186,96 +191,145 @@ router.post('/pay', function(req, res, next) {
 										console.log(err);
 										res.end("update Transaction error");
 									}else{
-										BankAccounts.findOne({"OwnedBy": newUpdate.Lender}).exec(function (err, lenderBankaccount){
-											if (err) {
+										var optionsY = {
+											path: 'Return',
+											model: Returns,
+										};
+										Transactions.populate(newUpdate, optionsY, function(err, newUpdate){
+											if(err){
 												console.log(err);
-												res.end("error");
+												res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 											}else{
-												if(!lenderBankaccount){
-													res.end("error");
-												}else{
-													lenderBankaccount.MoneyInBankAccount+=(MoneyPaid-(ServiceChargeShouldPaid-ServiceChargeNotPaid));
-													lenderBankaccount.Updated = Date.now();
-													lenderBankaccount.save(function (err,newUpdate2) {
-														if (err){
-															console.log(err);
+												BankAccounts.findOne({"OwnedBy": newUpdate.Lender}).exec(function (err, lenderBankaccount){
+													if (err) {
+														console.log(err);
+														res.end("error");
+													}else{
+														if(!lenderBankaccount){
 															res.end("error");
 														}else{
-															BankAccounts.findOne({"OwnedBy": newUpdate.Borrower}).exec(function (err, borrowerBankaccount){
-																if (err) {
+															lenderBankaccount.MoneyInBankAccount+=((InterestShouldPaid-InterestNotPaid)+(PrincipalShouldPaid-PrincipalNotPaid));
+															lenderBankaccount.Updated = Date.now();
+															lenderBankaccount.save(function (err,newUpdate2) {
+																if (err){
 																	console.log(err);
 																	res.end("error");
 																}else{
-																	if(!borrowerBankaccount){
-																		res.end("error");
-																	}else{
-																		borrowerBankaccount.MoneyInBankAccount-=MoneyPaid;
-																		borrowerBankaccount.Updated = Date.now();
-																		borrowerBankaccount.save(function (err,newUpdate3) {
-																			if (err){
-																				console.log(err);
+																	BankAccounts.findOne({"OwnedBy": newUpdate.Borrower}).exec(function (err, borrowerBankaccount){
+																		if (err) {
+																			console.log(err);
+																			res.end("error");
+																		}else{
+																			if(!borrowerBankaccount){
 																				res.end("error");
 																			}else{
-																				newCreate.BorrowerBankAccountNumber=newUpdate3.BankAccountNumber;
-																				newCreate.save(function (err,newCreate2){
+																				borrowerBankaccount.MoneyInBankAccount-=((InterestShouldPaid-InterestNotPaid)+(PrincipalShouldPaid-PrincipalNotPaid)+(ServiceChargeShouldPaid-ServiceChargeNotPaid));
+																				borrowerBankaccount.Updated = Date.now();
+																				borrowerBankaccount.save(function (err,newUpdate3) {
 																					if (err){
 																						console.log(err);
-																						res.end("update Return error");
+																						res.end("error");
 																					}else{
-																						var objID=mongoose.Types.ObjectId('5555251bb08002f0068fd00f');//admin account
-																						BankAccounts.findOne({"OwnedBy": objID}).exec(function (err, adminAccount){
-																							if (err) {
-																								console.log(err);
-																								res.end("error");
-																							}else{
-																								if(!adminAccount){
-																									res.end("error");
+																						library.userLevelAdderReturn(newCreate.Borrower,function(){
+																							Returns.findById(newCreate._id).exec(function (err, foundReturn){
+																								if (err) {
+																									console.log(err);
+																									res.json({error: err.name}, 500);
 																								}else{
-																									adminAccount.MoneyInBankAccount+=(ServiceChargeShouldPaid-ServiceChargeNotPaid);
-																									adminAccount.Updated = Date.now();
-																									adminAccount.save(function (err,newUpdate4) {
-																										if (err){
-																											console.log(err);
-																											res.end("error");
-																										}else{
-																											Lends.findOne({"CreatedBy": newUpdate.Lender}).exec(function (err, lend){
-																												if (err) {
-																													console.log(err);
-																													res.end("error");
-																												}else{
-																													if(!lend){
-																														mail(transaction,newUpdate,newCreate2,req);
-																														res.end('success');
+																									if(!foundReturn){
+																										res.json({error: 'no such return'}, 500);
+																									}else{
+																										library.transactionProcessor(newUpdate,true);
+																										foundReturn.BorrowerBankAccountNumber=newUpdate3.BankAccountNumber;
+																										foundReturn.ExtendPrincipalAfterPaid=newUpdate.ExtendPrincipal;
+																										foundReturn.TotalPrincipalNowAfterPaid=newUpdate.TotalPrincipalNow;
+																										foundReturn.PrincipalNotReturnAfterPaid=newUpdate.PrincipalNotReturn;
+																										foundReturn.PrincipalReturnAfterPaid=newUpdate.PrincipalReturn;
+																										foundReturn.InterestAfterPaid=newUpdate.Interest;
+																										foundReturn.PrincipalInterestAfterPaid=newUpdate.PrincipalInterest;
+																										foundReturn.InterestMonthAfterPaid=newUpdate.InterestMonth;
+																										foundReturn.PrincipalInterestMonthAfterPaid=newUpdate.PrincipalInterestMonth;
+																										foundReturn.InterestDivPrincipalAfterPaid=newUpdate.InterestDivPrincipal;
+																										foundReturn.ServiceChargeAfterPaid=newUpdate.ServiceCharge;
+																										foundReturn.ExtendMonthPeriodAfterPaid=newUpdate.ExtendMonthPeriod;
+																										foundReturn.TotalMonthPeriodNowAfterPaid=newUpdate.TotalMonthPeriodNow;
+																										foundReturn.MonthPeriodLeftAfterPaid=newUpdate.MonthPeriodLeft;
+																										foundReturn.MonthPeriodPastAfterPaid=newUpdate.MonthPeriodPast;
+																										foundReturn.InterestInFutureAfterPaid=newUpdate.InterestInFuture;
+																										foundReturn.MoneyFutureAfterPaid=newUpdate.MoneyFuture;
+																										foundReturn.InterestInFutureMonthAfterPaid=newUpdate.InterestInFutureMonth;
+																										foundReturn.InterestInFutureMoneyMonthAfterPaid=newUpdate.InterestInFutureMoneyMonth;
+																										foundReturn.InterestInFutureDivMoneyAfterPaid=newUpdate.InterestInFutureDivMoney;
+																										foundReturn.ReturnCountAfterPaid=newUpdate.ReturnCount;
+																										foundReturn.previousPayDateAfterPaid=newUpdate.previousPayDate;
+																										foundReturn.nextPayDateAfterPaid=newUpdate.nextPayDate;
+																										foundReturn.LevelAfterPaid=foundReturn.Level;
+																										foundReturn.save(function (err,newCreate2){
+																											if (err){
+																												console.log(err);
+																												res.end("update Return error");
+																											}else{
+																												var objID=mongoose.Types.ObjectId('5555251bb08002f0068fd00f');//admin account
+																												BankAccounts.findOne({"OwnedBy": objID}).exec(function (err, adminAccount){
+																													if (err) {
+																														console.log(err);
+																														res.end("error");
 																													}else{
-																														lend.MaxMoneyToLend+=(PrincipalShouldPaid-PrincipalNotPaid);
-																														lend.Updated = Date.now();
-																														lend.save(function (err,newUpdate5) {
-																															if (err){
-																																console.log(err);
-																																res.end("error");
-																															}else{
-																																mail(transaction,newUpdate,newCreate2,req);
-																																res.end('success');
-																															}
-																														});	
+																														if(!adminAccount){
+																															res.end("error");
+																														}else{
+																															adminAccount.MoneyInBankAccount+=(ServiceChargeShouldPaid-ServiceChargeNotPaid);
+																															adminAccount.Updated = Date.now();
+																															adminAccount.save(function (err,newUpdate4) {
+																																if (err){
+																																	console.log(err);
+																																	res.end("error");
+																																}else{
+																																	Lends.findOne({"CreatedBy": newUpdate.Lender}).exec(function (err, lend){
+																																		if (err) {
+																																			console.log(err);
+																																			res.end("error");
+																																		}else{
+																																			if(!lend){
+																																				mail(transaction,newUpdate,newCreate2,req);
+																																				res.end('success');
+																																			}else{
+																																				lend.Updated = Date.now();
+																																				lend.save(function (err,newUpdate5) {
+																																					if (err){
+																																						console.log(err);
+																																						res.end("error");
+																																					}else{
+																																						mail(transaction,newUpdate,newCreate2,req);
+																																						res.end('success');
+																																					}
+																																				});	
+																																			}
+																																		}
+																																	});
+																																}
+																															});
+																														}
 																													}
-																												}
-																											});
-																										}
-																									});
+																												});
+																											}
+																										});
+																									}
 																								}
-																							}
+																							});
+																						},function(){
+																							res.end('error!');
 																						});
 																					}
-																				});
+																				});								
 																			}
-																		});								
-																	}
+																		}
+																	});
 																}
-															});
+															});								
 														}
-													});								
-												}
+													}
+												});
 											}
 										});
 									}
@@ -329,7 +383,7 @@ function mail(transaction,newUpdate,newCreate2,req){
 			}
 		});
 		
-		if((newUpdate.Principal==0)&&(newUpdate.MonthPeriod==0)){
+		if((newUpdate.PrincipalNotReturn==0)&&(newUpdate.MonthPeriodLeft==0)){
 			var mailOptions3 = {
 				from: 'LendingZone <lendingzonesystem@gmail.com>', // sender address
 				to: transaction.Lender.Username+' <'+transaction.Lender.Email+'>', // list of receivers

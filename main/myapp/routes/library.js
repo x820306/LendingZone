@@ -1,5 +1,8 @@
 var mongoose = require('mongoose');
+var async = require('async');
 var Borrows  = mongoose.model('Borrows');
+var Users  = mongoose.model('Users');
+var Returns  = mongoose.model('Returns');
 var Lends  = mongoose.model('Lends');
 var Messages  = mongoose.model('Messages');
 var BankAccounts  = mongoose.model('BankAccounts');
@@ -70,6 +73,7 @@ function redirector(req,res,target,message){
 		F6:req.body.F6,
 		F7:req.body.F7,
 		F8:req.body.F8,
+		F9:req.body.F9
 	};
 	
 	var json={FormContent:formContent,Target:target,Message:message};
@@ -334,284 +338,291 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																		}
 																	}
 																}else{
-																	var maxMoney=parseInt(lenderBankaccount.MoneyInBankAccount);
-																	borrow.Got=0;
-																	for(r=0;r<borrow.Message.length;r++){
-																		if(borrow.Message[r].Status=='Confirmed'){
-																			if(borrow.Message[r].Transaction.length>=1){
-																				borrow.Got+=(borrow.Message[r].Transaction[0].PrincipalReturnedCumulated+borrow.Message[r].Transaction[0].Principal);
-																			}
-																		}
-																	}
-																	var maxMoney2=parseInt(borrow.MoneyToBorrow)-parseInt(borrow.Got);
-																	if(maxMoney2<0){
-																		maxMoney2=0;
-																	}
-																	var maxMoney3=parseInt(lend.MaxMoneyToLend);
-																	var errorTarget=[];
-																	var errorMessage=[];
-																	for(i=0;i<3;i++){
-																		errorTarget.push(false);
-																		errorMessage.push('');
-																	}
-																	
-																	var finalMoneyToLend=null;
-																	var finalInterestRate=null;
-																	var finalMonthPeriod=null;
-																	var returnSringNow=null;
-																	if(!ifRecursive){
-																		var minMoney=parseInt(message.MoneyToLend);
-																		var maxMonth=parseInt(message.MonthPeriod);
-																		var maxRate=parseFloat(message.InterestRate);
-																		
-																		var nowMoney=parseInt(sanitizer.sanitize(req.body.MoneyToLend.trim()));
-																		var rate=(parseFloat(sanitizer.sanitize(req.body.InterestRate.trim()))/100)+exports.serviceChargeRate;//scr
-																		var month=parseInt(sanitizer.sanitize(req.body.MonthPeriod.trim()));
-																		
-																		if(sanitizer.sanitize(req.body.MoneyToLend.trim())==''){
-																			errorTarget[0]=true;
-																			errorMessage[0]='必要參數未填!';
-																		}else if(isNaN(nowMoney)){
-																			errorTarget[0]=true;
-																			errorMessage[0]='非數字參數!';
-																		}else if(nowMoney<1){
-																			errorTarget[0]=true;
-																			errorMessage[0]='錯誤參數!';
-																		}else if(nowMoney>maxMoney){
-																			errorTarget[0]=true;
-																			errorMessage[0]='金額超過您的銀行餘額：'+maxMoney.toFixed(0)+'元!';
-																		}else if(nowMoney>maxMoney2){
-																			errorTarget[0]=true;
-																			errorMessage[0]='金額超過對方所需：'+maxMoney2.toFixed(0)+'元!';
-																		}else if(nowMoney>maxMoney3){
-																			errorTarget[0]=true;
-																			errorMessage[0]='金額超過您所設定之自動借款餘額：'+maxMoney3.toFixed(0)+'元!';
-																		}else if((nowMoney<minMoney)&&(minMoney<=maxMoney2)){
-																			errorTarget[0]=true;
-																			errorMessage[0]='金額少於對方期望：'+minMoney.toFixed(0)+'元!';
-																		}
-																		
-																		if(sanitizer.sanitize(req.body.InterestRate.trim())==''){
-																			errorTarget[1]=true;
-																			errorMessage[1]='必要參數未填!';
-																		}else if(isNaN(rate)){
-																			errorTarget[1]=true;
-																			errorMessage[1]='非數字參數!';
-																		}else if((rate<(0.0001+exports.serviceChargeRate))||(rate>(0.99+exports.serviceChargeRate))){
-																			errorTarget[1]=true;
-																			errorMessage[1]='錯誤參數!';
-																		}else if(rate>maxRate){
-																			errorTarget[1]=true;
-																			errorMessage[1]='超過該訊息希望利率：'+((maxRate-exports.serviceChargeRate)*100).toFixed(2)+'%!';
-																		}
-																		
-																		if(sanitizer.sanitize(req.body.MonthPeriod.trim())==''){
-																			errorTarget[2]=true;
-																			errorMessage[2]='必要參數未填!';
-																		}else if(isNaN(month)){
-																			errorTarget[2]=true;
-																			errorMessage[2]='非數字參數!';
-																		}else if((month<1)||(month>36)){
-																			errorTarget[2]=true;
-																			errorMessage[2]='錯誤參數!';
-																		}else if(month>maxMonth){
-																			errorTarget[2]=true;
-																			errorMessage[2]='超過該訊息希望期數：'+maxMonth.toFixed(0)+'個月!';
-																		}
-																		
-																		var valiFlag=true;
-																		for(k=0;k<errorTarget.length;k++){
-																			if(errorTarget[k]){
-																				valiFlag=false;
-																				break;
-																			}
-																		}
-																		
-																		if(valiFlag){
-																			if(!borrow.IfReadable){
-																				returnSringNow='此訊息因借入方已不需要借款而無法被同意，它已被自動婉拒';
-																				returnSring=returnSringNow;
-																			}else{
-																				finalMoneyToLend=parseInt(sanitizer.sanitize(req.body.MoneyToLend.trim()));
-																				finalInterestRate=(parseFloat(sanitizer.sanitize(req.body.InterestRate.trim()))/100)+exports.serviceChargeRate;//scr
-																				finalMonthPeriod=parseInt(sanitizer.sanitize(req.body.MonthPeriod.trim()));
-																			}
+																	var moneyLendedJson={
+																		autoLendCumulated:0,
+																	};
+																	Transactions.find({"Lender": req.user._id}).populate('Return').populate('CreatedFrom','Type').exec(function (err, transactions){
+																		if (err) {
+																			console.log(err);
+																			res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 																		}else{
-																			returnSringNow='validation failed.';
-																			returnSring=returnSringNow;
-																		}
-																	}else{
-																		var minRate=parseFloat(lend.InterestRate);
-																		var minMonth=parseInt(lend.MonthPeriod);
-																		var minLevel=parseInt(lend.MinLevelAccepted);
-																		var minInterestInFuture=parseInt(lend.MinInterestInFuture);
-																		var minInterestInFutureMonth=parseInt(lend.MinInterestInFutureMonth);
-																		var minInterestInFutureMoneyMonth=parseInt(lend.MinInterestInFutureMoneyMonth);
-																		var minInterestInFutureDivMoney=parseFloat(lend.MinInterestInFutureDivMoney);
-																		
-																		var nowMoney2=parseInt(message.MoneyToLend);
-																		var rate2=parseFloat(message.InterestRate);
-																		var month2=parseInt(message.MonthPeriod);
-																		var level2=parseInt(borrow.CreatedBy.Level);
-																		var interestInFuture2=exports.interestInFutureCalculator(nowMoney2,rate2,month2);
-																		var interestInFutureMonth2=interestInFuture2/month2;
-																		var interestInFutureMoneyMonth2=(nowMoney2+interestInFuture2)/month2;
-																		var interestInFutureDivMoney2=interestInFuture2/nowMoney2;
-																		
-																		if(nowMoney2>maxMoney){
-																			returnSringNow='有訊息因借款金額超過借出方銀行帳戶內的餘額而無法被同意';
-																			returnSring=returnSringNow;
-																		}else if(rate2<minRate){
-																			returnSringNow='有些訊息因借入方已不需要借款或其條件不合您現在的自動出借設定而無法被同意，它們已被自動婉拒';
-																			returnSring=returnSringNow;
-																		}else if(month2<minMonth){
-																			returnSringNow='有些訊息因借入方已不需要借款或其條件不合您現在的自動出借設定而無法被同意，它們已被自動婉拒';
-																			returnSring=returnSringNow;
-																		}else if(level2<minLevel){
-																			returnSringNow='有些訊息因借入方已不需要借款或其條件不合您現在的自動出借設定而無法被同意，它們已被自動婉拒';
-																			returnSring=returnSringNow;
-																		}else if(interestInFuture2<minInterestInFuture){
-																			returnSringNow='有些訊息因借入方已不需要借款或其條件不合您現在的自動出借設定而無法被同意，它們已被自動婉拒';
-																			returnSring=returnSringNow;
-																		}else if(interestInFutureMonth2<minInterestInFutureMonth){
-																			returnSringNow='有些訊息因借入方已不需要借款或其條件不合您現在的自動出借設定而無法被同意，它們已被自動婉拒';
-																			returnSring=returnSringNow;
-																		}else if(interestInFutureMoneyMonth2<minInterestInFutureMoneyMonth){
-																			returnSringNow='有些訊息因借入方已不需要借款或其條件不合您現在的自動出借設定而無法被同意，它們已被自動婉拒';
-																			returnSring=returnSringNow;
-																		}else if(interestInFutureDivMoney2<minInterestInFutureDivMoney){
-																			returnSringNow='有些訊息因借入方已不需要借款或其條件不合您現在的自動出借設定而無法被同意，它們已被自動婉拒';
-																			returnSring=returnSringNow;
-																		}else if(!borrow.IfReadable){
-																			returnSringNow='有些訊息因借入方已不需要借款或其條件不合您現在的自動出借設定而無法被同意，它們已被自動婉拒';
-																			returnSring=returnSringNow;
-																		}else if(nowMoney2>maxMoney2){
-																			if(maxMoney2==0){
-																				returnSringNow='有些訊息因借入方已不需要借款或其條件不合您現在的自動出借設定而無法被同意，它們已被自動婉拒';
-																				returnSring=returnSringNow;
+																			if(transactions.length>0){
+																				for(as=0;as<transactions.length;as++){
+																					if(transactions[as].CreatedFrom.Type=='toBorrow'){
+																						exports.transactionProcessor(transactions[as],false);
+																						moneyLendedJson.autoLendCumulated+=transactions[as].PrincipalNotReturn;
+																					}
+																				}
+																			}
+																			console.log('aaaa');
+																			
+																			var maxMoney3;
+																			maxMoney3=lend.MaxMoneyToLend-moneyLendedJson.autoLendCumulated;
+																			if(maxMoney3<=0){
+																				maxMoney3=0;
+																			}
+																			
+																			var maxMoney=parseInt(lenderBankaccount.MoneyInBankAccount);
+																			borrow.Got=0;
+																			for(r=0;r<borrow.Message.length;r++){
+																				if(borrow.Message[r].Status=='Confirmed'){
+																					if(borrow.Message[r].Transaction.length>=1){
+																						borrow.Got+=(borrow.Message[r].Transaction[0].Principal);
+																					}
+																				}
+																			}
+																			var maxMoney2=parseInt(borrow.MoneyToBorrow)-parseInt(borrow.Got);
+																			if(maxMoney2<0){
+																				maxMoney2=0;
+																			}
+																			
+																			var errorTarget=[];
+																			var errorMessage=[];
+																			for(i=0;i<3;i++){
+																				errorTarget.push(false);
+																				errorMessage.push('');
+																			}
+																			
+																			var finalMoneyToLend=null;
+																			var finalInterestRate=null;
+																			var finalMonthPeriod=null;
+																			var returnSringNow=null;
+																			if(!ifRecursive){
+																				var minMoney=parseInt(message.MoneyToLend);
+																				var maxMonth=parseInt(message.MonthPeriod);
+																				var maxRate=parseFloat(message.InterestRate);
+																				
+																				var nowMoney=parseInt(sanitizer.sanitize(req.body.MoneyToLend.trim()));
+																				var rate=(parseFloat(sanitizer.sanitize(req.body.InterestRate.trim()))/100)+exports.serviceChargeRate;//scr
+																				var month=parseInt(sanitizer.sanitize(req.body.MonthPeriod.trim()));
+																				
+																				if(sanitizer.sanitize(req.body.MoneyToLend.trim())==''){
+																					errorTarget[0]=true;
+																					errorMessage[0]='必要參數未填!';
+																				}else if(isNaN(nowMoney)){
+																					errorTarget[0]=true;
+																					errorMessage[0]='非數字參數!';
+																				}else if(nowMoney<1){
+																					errorTarget[0]=true;
+																					errorMessage[0]='錯誤參數!';
+																				}else if(nowMoney>maxMoney){
+																					errorTarget[0]=true;
+																					errorMessage[0]='金額超過您的銀行餘額：'+maxMoney.toFixed(0)+'元!';
+																				}else if(nowMoney>maxMoney2){
+																					errorTarget[0]=true;
+																					errorMessage[0]='金額超過對方所需：'+maxMoney2.toFixed(0)+'元!';
+																				}else if(nowMoney>maxMoney3){
+																					errorTarget[0]=true;
+																					errorMessage[0]='金額超過尚可自動借出金額：'+maxMoney3.toFixed(0)+'元!';
+																				}else if((nowMoney<minMoney)&&(minMoney<=maxMoney2)){
+																					errorTarget[0]=true;
+																					errorMessage[0]='金額少於對方期望：'+minMoney.toFixed(0)+'元!';
+																				}
+																				
+																				if(sanitizer.sanitize(req.body.InterestRate.trim())==''){
+																					errorTarget[1]=true;
+																					errorMessage[1]='必要參數未填!';
+																				}else if(isNaN(rate)){
+																					errorTarget[1]=true;
+																					errorMessage[1]='非數字參數!';
+																				}else if((rate<(0.0001+exports.serviceChargeRate))||(rate>(0.99+exports.serviceChargeRate))){
+																					errorTarget[1]=true;
+																					errorMessage[1]='錯誤參數!';
+																				}else if(rate>maxRate){
+																					errorTarget[1]=true;
+																					errorMessage[1]='超過該訊息希望利率：'+((maxRate-exports.serviceChargeRate)*100).toFixed(2)+'%!';
+																				}
+																				
+																				if(sanitizer.sanitize(req.body.MonthPeriod.trim())==''){
+																					errorTarget[2]=true;
+																					errorMessage[2]='必要參數未填!';
+																				}else if(isNaN(month)){
+																					errorTarget[2]=true;
+																					errorMessage[2]='非數字參數!';
+																				}else if((month<1)||(month>36)){
+																					errorTarget[2]=true;
+																					errorMessage[2]='錯誤參數!';
+																				}else if(month>maxMonth){
+																					errorTarget[2]=true;
+																					errorMessage[2]='超過該訊息希望期數：'+maxMonth.toFixed(0)+'個月!';
+																				}
+																				
+																				var valiFlag=true;
+																				for(k=0;k<errorTarget.length;k++){
+																					if(errorTarget[k]){
+																						valiFlag=false;
+																						break;
+																					}
+																				}
+																				
+																				if(valiFlag){
+																					if(!borrow.IfReadable){
+																						returnSringNow='此訊息因借入方已不需要借款而無法被同意，它已被自動婉拒';
+																						returnSring=returnSringNow;
+																					}else{
+																						finalMoneyToLend=parseInt(sanitizer.sanitize(req.body.MoneyToLend.trim()));
+																						finalInterestRate=(parseFloat(sanitizer.sanitize(req.body.InterestRate.trim()))/100)+exports.serviceChargeRate;//scr
+																						finalMonthPeriod=parseInt(sanitizer.sanitize(req.body.MonthPeriod.trim()));
+																					}
+																				}else{
+																					returnSringNow='validation failed.';
+																					returnSring=returnSringNow;
+																				}
 																			}else{
-																				 if(nowMoney2>maxMoney3){
+																				var minRate=parseFloat(lend.InterestRate);
+																				var minMonth=parseInt(lend.MonthPeriod);
+																				var minLevel=parseInt(lend.MinLevelAccepted);
+																				var minInterestInFuture=parseInt(lend.MinInterestInFuture);
+																				var minMoneyFuture=parseInt(lend.MinMoneyFuture);
+																				var minInterestInFutureMonth=parseInt(lend.MinInterestInFutureMonth);
+																				var minInterestInFutureMoneyMonth=parseInt(lend.MinInterestInFutureMoneyMonth);
+																				var minInterestInFutureDivMoney=parseFloat(lend.MinInterestInFutureDivMoney);
+																				
+																				var nowMoney2=parseInt(message.MoneyToLend);
+																				var rate2=parseFloat(message.InterestRate);
+																				var month2=parseInt(message.MonthPeriod);
+																				var level2=parseInt(borrow.CreatedBy.Level);
+																				var interestInFuture2=exports.interestInFutureCalculator(nowMoney2,rate2,month2);
+																				var moneyFuture2=nowMoney2+interestInFuture2;
+																				var interestInFutureMonth2=interestInFuture2/month2;
+																				var interestInFutureMoneyMonth2=(nowMoney2+interestInFuture2)/month2;
+																				var interestInFutureDivMoney2=interestInFuture2/nowMoney2;
+																				
+																				if(nowMoney2>maxMoney){
+																					returnSringNow='有訊息因借款金額超過借出方銀行帳戶內的餘額而無法被同意';
+																					returnSring=returnSringNow;
+																				}else if(rate2<minRate){
+																					returnSringNow='有些訊息因借入方已不需要借款或其條件不合您現在的自動出借設定而無法被同意，它們已被自動婉拒';
+																					returnSring=returnSringNow;
+																				}else if(month2<minMonth){
+																					returnSringNow='有些訊息因借入方已不需要借款或其條件不合您現在的自動出借設定而無法被同意，它們已被自動婉拒';
+																					returnSring=returnSringNow;
+																				}else if(level2<minLevel){
+																					returnSringNow='有些訊息因借入方已不需要借款或其條件不合您現在的自動出借設定而無法被同意，它們已被自動婉拒';
+																					returnSring=returnSringNow;
+																				}else if(interestInFuture2<minInterestInFuture){
+																					returnSringNow='有些訊息因借入方已不需要借款或其條件不合您現在的自動出借設定而無法被同意，它們已被自動婉拒';
+																					returnSring=returnSringNow;
+																				}else if(moneyFuture2<minMoneyFuture){
+																					returnSringNow='有些訊息因借入方已不需要借款或其條件不合您現在的自動出借設定而無法被同意，它們已被自動婉拒';
+																					returnSring=returnSringNow;
+																				}else if(interestInFutureMonth2<minInterestInFutureMonth){
+																					returnSringNow='有些訊息因借入方已不需要借款或其條件不合您現在的自動出借設定而無法被同意，它們已被自動婉拒';
+																					returnSring=returnSringNow;
+																				}else if(interestInFutureMoneyMonth2<minInterestInFutureMoneyMonth){
+																					returnSringNow='有些訊息因借入方已不需要借款或其條件不合您現在的自動出借設定而無法被同意，它們已被自動婉拒';
+																					returnSring=returnSringNow;
+																				}else if(interestInFutureDivMoney2<minInterestInFutureDivMoney){
+																					returnSringNow='有些訊息因借入方已不需要借款或其條件不合您現在的自動出借設定而無法被同意，它們已被自動婉拒';
+																					returnSring=returnSringNow;
+																				}else if(!borrow.IfReadable){
+																					returnSringNow='有些訊息因借入方已不需要借款或其條件不合您現在的自動出借設定而無法被同意，它們已被自動婉拒';
+																					returnSring=returnSringNow;
+																				}else if(nowMoney2>maxMoney2){
+																					if(maxMoney2==0){
+																						returnSringNow='有些訊息因借入方已不需要借款或其條件不合您現在的自動出借設定而無法被同意，它們已被自動婉拒';
+																						returnSring=returnSringNow;
+																					}else{
+																						 if(nowMoney2>maxMoney3){
+																							if(maxMoney3==0){
+																								returnSringNow='有些訊息因借出方所設定之自動借款額度已用盡而無法被同意';
+																								returnSring=returnSringNow;
+																							}else{
+																								finalMoneyToLend=maxMoney3;
+																								finalInterestRate=message.InterestRate;
+																								finalMonthPeriod=message.MonthPeriod;
+																							}
+																						}else{
+																							finalMoneyToLend=maxMoney2;
+																							finalInterestRate=message.InterestRate;
+																							finalMonthPeriod=message.MonthPeriod;
+																						}
+																					}
+																				}else if(nowMoney2>maxMoney3){
 																					if(maxMoney3==0){
 																						returnSringNow='有些訊息因借出方所設定之自動借款額度已用盡而無法被同意';
 																						returnSring=returnSringNow;
 																					}else{
-																						if(maxMoney2<=maxMoney3){
-																							finalMoneyToLend=maxMoney2;
-																						}else{
-																							finalMoneyToLend=maxMoney3;
-																						}
+																						finalMoneyToLend=maxMoney3;
 																						finalInterestRate=message.InterestRate;
 																						finalMonthPeriod=message.MonthPeriod;
 																					}
 																				}else{
-																					finalMoneyToLend=maxMoney2;
+																					finalMoneyToLend=message.MoneyToLend;
 																					finalInterestRate=message.InterestRate;
 																					finalMonthPeriod=message.MonthPeriod;
 																				}
 																			}
-																		}else if(nowMoney2>maxMoney3){
-																			if(maxMoney3==0){
-																				returnSringNow='有些訊息因借出方所設定之自動借款額度已用盡而無法被同意';
-																				returnSring=returnSringNow;
-																			}else{
-																				finalMoneyToLend=maxMoney3;
-																				finalInterestRate=message.InterestRate;
-																				finalMonthPeriod=message.MonthPeriod;
-																			}
-																		}else{
-																			finalMoneyToLend=message.MoneyToLend;
-																			finalInterestRate=message.InterestRate;
-																			finalMonthPeriod=message.MonthPeriod;
-																		}
-																	}
-																	if((returnSringNow)||(!finalMoneyToLend)||(!finalInterestRate)||(!finalMonthPeriod)){
-																		if((returnSringNow!='有些訊息因借入方已不需要借款或其條件不合您現在的自動出借設定而無法被同意，它們已被自動婉拒')&&(returnSringNow!='此訊息因借入方已不需要借款而無法被同意，它已被自動婉拒')){
-																			if(ifRecursive){
-																				ctr++;
-																				if(ctr<ctrTarget){
-																					exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,returnSring,req,res,ifAuto,resAddress,ifLenderSide,infoJson);
-																				}else{
-																					if(!ifAuto){
-																						confirmRedirector(req,res,returnSring,infoJson,resAddress);
-																					}
-																				}
-																			}else{
-																				if(!ifAuto){
-																					redirector(req,res,errorTarget,errorMessage);
-																				}
-																			}
-																		}else{
-																			message.Status="Rejected";
-																			message.Updated = Date.now();
-																			message.save(function (err,newUpdate) {
-																				if (err){
-																					console.log(err);
+																			if((returnSringNow)||(!finalMoneyToLend)||(!finalInterestRate)||(!finalMonthPeriod)){
+																				if((returnSringNow!='有些訊息因借入方已不需要借款或其條件不合您現在的自動出借設定而無法被同意，它們已被自動婉拒')&&(returnSringNow!='此訊息因借入方已不需要借款而無法被同意，它已被自動婉拒')){
 																					if(ifRecursive){
 																						ctr++;
 																						if(ctr<ctrTarget){
-																							exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide,infoJson);
-																						}else{
-																							if(!ifAuto){
-																								confirmRedirector(req,res,'有些訊息因錯誤無法被同意!',infoJson,resAddress);
-																							}
-																						}
-																					}else{
-																						if(!ifAuto){
-																							res.redirect('/message?content='+encodeURIComponent('錯誤!'));
-																						}
-																					}
-																				}else{
-																					if(ifRecursive){
-																						ctr++;
-																						if(ctr<ctrTarget){
-																							mailReject(message,newUpdate,req);
 																							exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,returnSring,req,res,ifAuto,resAddress,ifLenderSide,infoJson);
 																						}else{
-																							mailReject(message,newUpdate,req);
 																							if(!ifAuto){
 																								confirmRedirector(req,res,returnSring,infoJson,resAddress);
 																							}
 																						}
 																					}else{
-																						mailReject(message,newUpdate,req);
-																						
 																						if(!ifAuto){
-																							res.redirect('/message?content='+encodeURIComponent(returnSring));
-																						}
-																					}
-																				}
-																			});
-																		}
-																	}else{
-																		var toCreateTransaction = new Transactions();
-																		toCreateTransaction.Principal=finalMoneyToLend;
-																		toCreateTransaction.InterestRate=finalInterestRate;
-																		toCreateTransaction.MonthPeriod=finalMonthPeriod;
-																		toCreateTransaction.CreatedFrom=message._id;
-																		toCreateTransaction.Borrower=message.CreatedBy;
-																		toCreateTransaction.Lender=message.SendTo;
-																		toCreateTransaction.Level=message.Level;
-																		
-																		toCreateTransaction.save(function (err,newCreateTransaction) {
-																			if (err){
-																				console.log(err);
-																				if(ifRecursive){
-																					ctr++;
-																					if(ctr<ctrTarget){
-																						exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide,infoJson);
-																					}else{
-																						if(!ifAuto){
-																							confirmRedirector(req,res,'有些訊息因錯誤無法被同意!',infoJson,resAddress);
+																							redirector(req,res,errorTarget,errorMessage);
 																						}
 																					}
 																				}else{
-																					if(!ifAuto){
-																						res.redirect('/message?content='+encodeURIComponent('錯誤!'));
-																					}
+																					message.Status="Rejected";
+																					message.Updated = Date.now();
+																					message.save(function (err,newUpdate) {
+																						if (err){
+																							console.log(err);
+																							if(ifRecursive){
+																								ctr++;
+																								if(ctr<ctrTarget){
+																									exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide,infoJson);
+																								}else{
+																									if(!ifAuto){
+																										confirmRedirector(req,res,'有些訊息因錯誤無法被同意!',infoJson,resAddress);
+																									}
+																								}
+																							}else{
+																								if(!ifAuto){
+																									res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+																								}
+																							}
+																						}else{
+																							if(ifRecursive){
+																								ctr++;
+																								if(ctr<ctrTarget){
+																									mailReject(message,newUpdate,req);
+																									exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,returnSring,req,res,ifAuto,resAddress,ifLenderSide,infoJson);
+																								}else{
+																									mailReject(message,newUpdate,req);
+																									if(!ifAuto){
+																										confirmRedirector(req,res,returnSring,infoJson,resAddress);
+																									}
+																								}
+																							}else{
+																								mailReject(message,newUpdate,req);
+																								
+																								if(!ifAuto){
+																									res.redirect('/message?content='+encodeURIComponent(returnSring));
+																								}
+																							}
+																						}
+																					});
 																				}
 																			}else{
-																				BankAccounts.findOne({"OwnedBy": newCreateTransaction.Borrower}).exec(function (err, borrowerBankaccount){
-																					if (err) {
+																				var toCreateTransaction = new Transactions();
+																				toCreateTransaction.Principal=finalMoneyToLend;
+																				toCreateTransaction.InterestRate=finalInterestRate;
+																				toCreateTransaction.MonthPeriod=finalMonthPeriod;
+																				toCreateTransaction.CreatedFrom=message._id;
+																				toCreateTransaction.Borrower=message.CreatedBy;
+																				toCreateTransaction.Lender=message.SendTo;
+																				toCreateTransaction.Level=message.Level;
+																				
+																				toCreateTransaction.save(function (err,newCreateTransaction) {
+																					if (err){
 																						console.log(err);
 																						if(ifRecursive){
 																							ctr++;
@@ -628,27 +639,25 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																							}
 																						}
 																					}else{
-																						if(!borrowerBankaccount){
-																							if(ifRecursive){
-																								ctr++;
-																								if(ctr<ctrTarget){
-																									exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide,infoJson);
+																						BankAccounts.findOne({"OwnedBy": newCreateTransaction.Borrower}).exec(function (err, borrowerBankaccount){
+																							if (err) {
+																								console.log(err);
+																								if(ifRecursive){
+																									ctr++;
+																									if(ctr<ctrTarget){
+																										exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide,infoJson);
+																									}else{
+																										if(!ifAuto){
+																											confirmRedirector(req,res,'有些訊息因錯誤無法被同意!',infoJson,resAddress);
+																										}
+																									}
 																								}else{
 																									if(!ifAuto){
-																										confirmRedirector(req,res,'有些訊息因錯誤無法被同意!',infoJson,resAddress);
+																										res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 																									}
 																								}
 																							}else{
-																								if(!ifAuto){
-																									res.redirect('/message?content='+encodeURIComponent('錯誤!'));
-																								}
-																							}
-																						}else{
-																							borrowerBankaccount.MoneyInBankAccount+=newCreateTransaction.Principal;
-																							borrowerBankaccount.Updated=Date.now();
-																							borrowerBankaccount.save(function (err,updatedBorrowerBankaccount) {
-																								if (err){
-																									console.log(err);
+																								if(!borrowerBankaccount){
 																									if(ifRecursive){
 																										ctr++;
 																										if(ctr<ctrTarget){
@@ -664,9 +673,9 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																										}
 																									}
 																								}else{
-																									lenderBankaccount.MoneyInBankAccount-=newCreateTransaction.Principal;
-																									lenderBankaccount.Updated=Date.now();
-																									lenderBankaccount.save(function (err,updatedLenderBankaccount) {
+																									borrowerBankaccount.MoneyInBankAccount+=newCreateTransaction.Principal;
+																									borrowerBankaccount.Updated=Date.now();
+																									borrowerBankaccount.save(function (err,updatedBorrowerBankaccount) {
 																										if (err){
 																											console.log(err);
 																											if(ifRecursive){
@@ -683,15 +692,10 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																													res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 																												}
 																											}
-																										}else{				
-																											borrow.Got+=newCreateTransaction.Principal;
-																											if(borrow.Got>=borrow.MoneyToBorrow){
-																												borrow.IfReadable=false;
-																											}
-																											delete borrow.Got;
-																											
-																											borrow.Updated=Date.now();
-																											borrow.save(function (err,updatedBorrow) {
+																										}else{
+																											lenderBankaccount.MoneyInBankAccount-=newCreateTransaction.Principal;
+																											lenderBankaccount.Updated=Date.now();
+																											lenderBankaccount.save(function (err,updatedLenderBankaccount) {
 																												if (err){
 																													console.log(err);
 																													if(ifRecursive){
@@ -700,25 +704,23 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																															exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide,infoJson);
 																														}else{
 																															if(!ifAuto){
-																																confirmRedirector(req,res,'有些訊息因錯誤無法被同意!',infoJson,resAddress);																													}
+																																confirmRedirector(req,res,'有些訊息因錯誤無法被同意!',infoJson,resAddress);
+																															}
 																														}
 																													}else{
 																														if(!ifAuto){
 																															res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 																														}
 																													}
-																												}else{
-																													if(!updatedBorrow.IfReadable){
-																														var brwObjID=mongoose.Types.ObjectId(updatedBorrow._id.toString());
-																														exports.rejectMessageWhenNotReadable(res,true,'/',brwObjID,req);
+																												}else{				
+																													borrow.Got+=newCreateTransaction.Principal;
+																													if(borrow.Got>=borrow.MoneyToBorrow){
+																														borrow.IfReadable=false;
 																													}
+																													delete borrow.Got;
 																													
-																													lend.MaxMoneyToLend-=newCreateTransaction.Principal;
-																													if(lend.MaxMoneyToLend<0){
-																														lend.MaxMoneyToLend=0;
-																													}
-																													lend.Updated=Date.now();
-																													lend.save(function (err,updatedLend) {
+																													borrow.Updated=Date.now();
+																													borrow.save(function (err,updatedBorrow) {
 																														if (err){
 																															console.log(err);
 																															if(ifRecursive){
@@ -727,19 +729,21 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																																	exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide,infoJson);
 																																}else{
 																																	if(!ifAuto){
-																																		confirmRedirector(req,res,'有些訊息因錯誤無法被同意!',infoJson,resAddress);
-																																	}
+																																		confirmRedirector(req,res,'有些訊息因錯誤無法被同意!',infoJson,resAddress);																													}
 																																}
 																															}else{
 																																if(!ifAuto){
 																																	res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 																																}
 																															}
-																														}else{		
-																															message.Status='Confirmed';
-																															message.Updated=Date.now();
-																															message.Transaction.push(newCreateTransaction._id);
-																															message.save(function (err,newCreateUpdated) {
+																														}else{
+																															if(!updatedBorrow.IfReadable){
+																																var brwObjID=mongoose.Types.ObjectId(updatedBorrow._id.toString());
+																																exports.rejectMessageWhenNotReadable(res,true,'/',brwObjID,req);
+																															}
+																															
+																															lend.Updated=Date.now();
+																															lend.save(function (err,updatedLend) {
 																																if (err){
 																																	console.log(err);
 																																	if(ifRecursive){
@@ -756,47 +760,78 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																																			res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 																																		}
 																																	}
-																																}else{
-																																	infoJson.counter2+=1;
-																																	infoJson.info1+=newCreateUpdated.MoneyToLend;
-																																	var tempRate=newCreateUpdated.InterestRate-exports.serviceChargeRate;//scr
-																																	var temp1=exports.interestInFutureCalculator(newCreateUpdated.MoneyToLend,tempRate,newCreateUpdated.MonthPeriod);
-																																	var temp2;
-																																	if(newCreateUpdated.MonthPeriod>0){
-																																		temp2=temp1/newCreateUpdated.MonthPeriod;
-																																	}else{
-																																		temp2=0;
-																																	}
-																																	var temp3;
-																																	if(newCreateUpdated.MonthPeriod>0){
-																																		temp3=(temp1+newCreateUpdated.MoneyToLend)/newCreateUpdated.MonthPeriod;
-																																	}else{
-																																		temp3=0;
-																																	}
-																																	infoJson.info2+=temp1;
-																																	infoJson.info3+=temp2;
-																																	infoJson.info4+=temp3;
-																																	if(ifRecursive){
-																																		ctr++;
-																																		if(ctr<ctrTarget){
-																																			mailAgree(message,newCreateUpdated,req);
-																																			exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,returnSring,req,res,ifAuto,resAddress,ifLenderSide,infoJson);
-																																		}else{
-																																			mailAgree(message,newCreateUpdated,req);
-																																			if(!ifAuto){
-																																				if(returnSring){	
-																																					confirmRedirector(req,res,returnSring,infoJson,resAddress);
+																																}else{		
+																																	message.OldMoneyToLend=message.MoneyToLend;
+																																	message.OldInterestRate=message.InterestRate;
+																																	message.OldMonthPeriod=message.MonthPeriod;
+																																	message.MoneyToLend=newCreateTransaction.Principal;
+																																	message.InterestRate=newCreateTransaction.InterestRate;
+																																	message.MonthPeriod=newCreateTransaction.MonthPeriod;
+																																	message.Status='Confirmed';
+																																	message.Updated=Date.now();
+																																	message.Transaction.push(newCreateTransaction._id);
+																																	message.save(function (err,newCreateUpdated) {
+																																		if (err){
+																																			console.log(err);
+																																			if(ifRecursive){
+																																				ctr++;
+																																				if(ctr<ctrTarget){
+																																					exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide,infoJson);
 																																				}else{
-																																					confirmRedirector(req,res,'',infoJson,resAddress);
+																																					if(!ifAuto){
+																																						confirmRedirector(req,res,'有些訊息因錯誤無法被同意!',infoJson,resAddress);
+																																					}
+																																				}
+																																			}else{
+																																				if(!ifAuto){
+																																					res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+																																				}
+																																			}
+																																		}else{
+																																			infoJson.counter2+=1;
+																																			infoJson.info1+=newCreateUpdated.MoneyToLend;
+																																			var tempRate=newCreateUpdated.InterestRate-exports.serviceChargeRate;//scr
+																																			var temp1=exports.interestInFutureCalculator(newCreateUpdated.MoneyToLend,tempRate,newCreateUpdated.MonthPeriod);
+																																			var temp2=temp1+newCreateUpdated.MoneyToLend;
+																																			var temp3;
+																																			if(newCreateUpdated.MonthPeriod>0){
+																																				temp3=temp1/newCreateUpdated.MonthPeriod;
+																																			}else{
+																																				temp3=0;
+																																			}
+																																			var temp4;
+																																			if(newCreateUpdated.MonthPeriod>0){
+																																				temp4=(temp1+newCreateUpdated.MoneyToLend)/newCreateUpdated.MonthPeriod;
+																																			}else{
+																																				temp4=0;
+																																			}
+																																			infoJson.info2+=temp1;
+																																			infoJson.info3+=temp2;
+																																			infoJson.info4+=temp3;
+																																			infoJson.info5+=temp4;
+																																			if(ifRecursive){
+																																				ctr++;
+																																				if(ctr<ctrTarget){
+																																					mailAgree(message,newCreateUpdated,req);
+																																					exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,returnSring,req,res,ifAuto,resAddress,ifLenderSide,infoJson);
+																																				}else{
+																																					mailAgree(message,newCreateUpdated,req);
+																																					if(!ifAuto){
+																																						if(returnSring){	
+																																							confirmRedirector(req,res,returnSring,infoJson,resAddress);
+																																						}else{
+																																							confirmRedirector(req,res,'',infoJson,resAddress);
+																																						}
+																																					}
+																																				}
+																																			}else{
+																																				mailAgree(message,newCreateUpdated,req);
+																																				if(!ifAuto){
+																																					res.redirect(resAddress);
 																																				}
 																																			}
 																																		}
-																																	}else{
-																																		mailAgree(message,newCreateUpdated,req);
-																																		if(!ifAuto){
-																																			res.redirect(resAddress);
-																																		}
-																																	}
+																																	});
 																																}
 																															});
 																														}
@@ -806,13 +841,14 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																										}
 																									});
 																								}
-																							});
-																						}
+																							}
+																						});
 																					}
 																				});
 																			}
-																		});
-																	}
+																			
+																		}
+																	});
 																}
 															}
 														});	
@@ -1159,6 +1195,301 @@ exports.checkSsnID=function(id) {
 	}else{
 		return true;
 	}
+}
+
+exports.transactionProcessor=function(target,flag){
+	var temp=0;
+	for(m=0;m<target.Return.length;m++){
+		temp+=target.Return[m].InterestNotPaid;
+	}
+	target.ExtendPrincipal=temp;
+	target.TotalPrincipalNow=target.Principal+target.ExtendPrincipal;
+	temp=0;
+	for(m=0;m<target.Return.length;m++){
+		temp+=(target.Return[m].PrincipalShouldPaid-target.Return[m].PrincipalNotPaid);
+	}
+	target.PrincipalReturn=temp;
+	target.PrincipalNotReturn=target.TotalPrincipalNow-target.PrincipalReturn;
+	target.MonthPeriodPast=target.Return.length;
+	if(target.PrincipalNotReturn<=0){
+		target.MonthPeriodLeft=0;
+	}else{
+		if((target.MonthPeriod-target.MonthPeriodPast)<=0){
+			target.MonthPeriodLeft=1;
+		}else{
+			target.MonthPeriodLeft=(target.MonthPeriod-target.MonthPeriodPast);
+		}
+	}
+	target.TotalMonthPeriodNow=target.MonthPeriodLeft+target.MonthPeriodPast;
+	target.ExtendMonthPeriod=target.TotalMonthPeriodNow-target.MonthPeriod;
+	temp=0;
+	for(m=0;m<target.Return.length;m++){
+		temp+=(target.Return[m].ServiceChargeShouldPaid-target.Return[m].ServiceChargeNotPaid);
+	}
+	target.ServiceCharge=temp;
+	temp=0;
+	for(m=0;m<target.Return.length;m++){
+		temp+=(target.Return[m].InterestShouldPaid-target.Return[m].InterestNotPaid);
+	}
+	target.Interest=temp;
+	target.PrincipalInterest=target.PrincipalReturn+target.Interest;
+	if(target.MonthPeriodPast>0){
+		target.InterestMonth=target.Interest/target.MonthPeriodPast;
+	}else{
+		target.InterestMonth=0;
+	}
+	if(target.MonthPeriodPast>0){
+		target.PrincipalInterestMonth=(target.PrincipalReturn+target.Interest)/target.MonthPeriodPast;
+	}else{
+		target.PrincipalInterestMonth=0;
+	}
+	if(target.PrincipalReturn>0){
+		target.InterestDivPrincipal=target.Interest/target.PrincipalReturn*100;
+	}else{
+		target.InterestDivPrincipal=0;
+	}
+	
+	if(flag){
+		target.InterestRate-=exports.serviceChargeRate;//scr
+		target.InterestInFuture=exports.interestInFutureCalculator(target.PrincipalNotReturn,target.InterestRate,target.MonthPeriodLeft);
+		target.MoneyFuture=target.InterestInFuture+target.PrincipalNotReturn;
+		if(target.PrincipalNotReturn>0){
+			target.InterestInFutureDivMoney=target.InterestInFuture/target.PrincipalNotReturn*100;
+		}else{
+			target.InterestInFutureDivMoney=0;
+		}
+		if(target.MonthPeriodLeft>0){
+			target.InterestInFutureMonth=target.InterestInFuture/target.MonthPeriodLeft;
+		}else{
+			target.InterestInFutureMonth=0;
+		}
+		if(target.MonthPeriodLeft>0){
+			target.InterestInFutureMoneyMonth=(target.InterestInFuture+target.PrincipalNotReturn)/target.MonthPeriodLeft;
+		}else{
+			target.InterestInFutureMoneyMonth=0;
+		}
+		target.ReturnCount=0;
+		target.previousPayDate=null;
+		target.previousPayDateNum=-1;
+		for(u=target.Return.length-1;u>-1;u--){
+			if((target.Return[u].InterestShouldPaid-target.Return[u].InterestNotPaid)>0){
+				target.ReturnCount+=1;
+				if(target.previousPayDate===null){
+					target.previousPayDate=target.Return[u].Created;
+					target.previousPayDateNum=target.Return[u].Created.getTime();
+				}
+			}
+		}
+		if((target.MonthPeriodLeft>0)||(target.PrincipalNotReturn>0)){
+			var tempDate=new Date(target.Created.getTime());
+			tempDate.setTime(tempDate.getTime()+1000*60*60*24*30*(target.MonthPeriodPast+1));
+			target.nextPayDate=tempDate;
+			target.nextPayDateNum=tempDate.getTime();
+		}else{
+			target.nextPayDate=null;
+			target.nextPayDateNum=9999999999999;
+		}
+	}
+}
+
+exports.messageProcessor=function(target){
+	target.InterestRate-=exports.serviceChargeRate;//scr
+	target.InterestInFuture=exports.interestInFutureCalculator(target.MoneyToLend,target.InterestRate,target.MonthPeriod);
+	target.MoneyFuture=target.InterestInFuture+target.MoneyToLend;
+	if(target.MoneyToLend>0){
+		target.InterestInFutureDivMoney=target.InterestInFuture/target.MoneyToLend;
+	}else{
+		target.InterestInFutureDivMoney=0;
+	}
+	if(target.MonthPeriod>0){
+		target.InterestInFutureMonth=target.InterestInFuture/target.MonthPeriod;
+	}else{
+		target.InterestInFutureMonth=0;
+	}
+	if(target.MonthPeriod>0){
+		target.InterestInFutureMoneyMonth=(target.InterestInFuture+target.MoneyToLend)/target.MonthPeriod;
+	}else{
+		target.InterestInFutureMoneyMonth=0;
+	}
+}
+
+exports.userDeleter=function (resRef,uid,successCallback,failCallback,flag){
+	Users.findById(uid).exec(function (err, user){
+		if (err) {
+			console.log(err);
+			failCallback();
+		}else{
+			if(!user){
+				failCallback();
+			}else{
+				user.remove(function (err,removedItem){
+					if (err){
+						console.log(err);
+						failCallback();
+					}else{
+						Users.find({}).exec(function (err, users){
+							if (err) {
+								console.log(err);
+								failCallback();
+							}else{
+								if(users.length>0){
+									async.each(users, function(userFound, callback) {
+										exports.userLevelAdderReturn(userFound._id,callback,callback);
+									},function(err){
+										if(err) throw err;
+											if(!flag){
+												resRef.json(removedItem);
+											}else{
+												successCallback();
+											}
+									});	
+								}else{
+									if(!flag){
+										resRef.json(removedItem);
+									}else{
+										successCallback();
+									}
+								}
+							}
+						});
+					}
+				});
+			}
+		}
+	});
+}
+
+exports.userLevelAdderReturn=function (uid,successCallback,failCallback){
+	Users.findById(uid).exec(function (err, user){
+		if (err) {
+			console.log(err);
+			failCallback();
+		}else{
+			Returns.find({Borrower:user._id}).exec(function (err, returns){
+				if (err) {
+					console.log(err);
+					failCallback();
+				}else{
+					var grade=0;
+					for(i=0;i<returns.length;i++){
+						var tester=returns[i].ServiceChargeNotPaid+returns[i].InterestNotPaid+returns[i].PrincipalNotPaid;
+						if(tester>0){
+							grade-=1;
+						}else{
+							grade+=1;
+						}
+					}
+					var nowGrade=user.OrignalLevel*10;
+					nowGrade+=grade;
+					if(nowGrade<0){
+						nowGrade=0;
+					}
+					if(nowGrade>200){
+						nowGrade=200;
+					}
+
+					newLevel=Math.floor(nowGrade/10);
+					if(newLevel!==user.Level){
+						exports.userLevelSetter(uid,newLevel,successCallback,failCallback);
+					}else{
+						successCallback();
+					}
+				}
+			});
+		}
+	});
+}
+
+exports.userOriginalLevelSetter=function (uid,newOriginalLevel,successCallback,failCallback){
+	Users.findById(uid).exec(function (err, user){
+		if (err) {
+			console.log(err);
+			failCallback();
+		}else{
+			user.OrignalLevel=newOriginalLevel;
+			user.save(function (err,newUpdate) {
+				if (err){
+					console.log(err);
+					failCallback();
+				}else{
+					Returns.find({Borrower:newUpdate._id}).exec(function (err, returns){
+						if (err) {
+							console.log(err);
+							failCallback();
+						}else{
+							var grade=0;
+							for(i=0;i<returns.length;i++){
+								var tester=returns[i].ServiceChargeNotPaid+returns[i].InterestNotPaid+returns[i].PrincipalNotPaid;
+								if(tester>0){
+									grade-=1;
+								}else{
+									grade+=1;
+								}
+							}
+							var nowGrade=newUpdate.OrignalLevel*10;
+							nowGrade+=grade;
+							if(nowGrade<0){
+								nowGrade=0;
+							}
+							if(nowGrade>200){
+								nowGrade=200;
+							}
+							newLevel=Math.floor(nowGrade/10);
+							exports.userLevelSetter(newUpdate._id,newLevel,successCallback,failCallback);
+						}
+					});
+				}
+			});
+		}
+	});
+
+}
+
+exports.userLevelSetter=function (uid,newLevel,successCallback,failCallback){
+	Users.update({_id:uid},{$set:{Level:newLevel}},function(err){
+		if(!err){
+			var nowDate=Date.now();
+			Users.update({_id:uid},{$set:{Updated:nowDate}},function(err){
+				if(!err){
+					Borrows.update({CreatedBy:uid},{$set:{Level:newLevel}}, { multi: true },function(err){
+						if(!err){
+							Messages.update({$or:[{$and:[{CreatedBy:uid},{Type:"toBorrow"}]},{$and:[{SendTo:uid},{Type:"toLend"}]}]},{$set:{Level:newLevel}}, { multi: true },function(err){
+								if(!err){
+									Transactions.update({Borrower:uid},{$set:{Level:newLevel}}, { multi: true },function(err){
+										if(!err){
+											Returns.update({Borrower:uid},{$set:{Level:newLevel}}, { multi: true },function(err){
+												if(!err){
+													successCallback();
+												}else{
+													console.log(err);
+													failCallback();
+												}
+											});
+										}else{
+											console.log(err);
+											failCallback();
+										}
+									});
+								}else{
+									console.log(err);
+									failCallback();
+								}
+							});
+						}else{
+							console.log(err);
+							failCallback();
+						}
+					});
+				}else{
+					console.log(err);
+					failCallback();
+				}
+			});
+		}else{
+			console.log(err);
+			failCallback();
+		}
+	});
 }
 
 function confirmRedirector(req,res,content,info,address){

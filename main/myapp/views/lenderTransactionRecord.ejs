@@ -28,22 +28,33 @@
 								<li style="display:none"><a href="#" id="sorter0"><%=sorterDefault%></a></li>
 								<li id="slis1"<%if(sorterDefault=='建立日期'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(1);return false;" id="sorter1">建立日期</a></li>
 								<li id="slis2"<%if(sorterDefault=='更新日期'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(2);return false;" id="sorter2">更新日期</a></li>
-								<li id="slis3"<%if(sorterDefault=='已獲利'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(3);return false;" id="sorter3">已獲利</a></li>
-								<li id="slis4"<%if(sorterDefault=='利率'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(4);return false;" id="sorter4">利率</a></li>
-								<li id="slis5"<%if(sorterDefault=='未還本金'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(5);return false;" id="sorter5">未還本金</a></li>
-								<li id="slis6"<%if(sorterDefault=='已還本金'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(6);return false;" id="sorter6">已還本金</a></li>
-								<li id="slis7"<%if(sorterDefault=='剩下期數'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(7);return false;" id="sorter7">剩下期數</a></li>
-								<li id="slis8"<%if(sorterDefault=='已過期數'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(8);return false;" id="sorter8">已過期數</a></li>
-								<li id="slis9"<%if(sorterDefault=='信用等級'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(9);return false;" id="sorter9">信用等級</a></li>
-								<li id="slis10"<%if(sorterDefault=='預計總利息'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(10);return false;" id="sorter10">預計總利息</a></li>
-								<li id="slis11"<%if(sorterDefault=='預計平均利息'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(11);return false;" id="sorter11">預計平均利息</a></li>
-								<li id="slis12"<%if(sorterDefault=='預計平均本利和'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(12);return false;" id="sorter12">預計平均本利和</a></li>
-								<li id="slis13"<%if(sorterDefault=='預計利本比'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(13);return false;" id="sorter13">預計利本比</a></li>
-								<li id="slis14"<%if(sorterDefault=='收款記錄'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(14);return false;" id="sorter14">收款記錄</a></li>
-								<li id="slis15"<%if(sorterDefault=='上次成功收款日期'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(15);return false;" id="sorter15">上次成功收款日期</a></li>
-								<li id="slis16"<%if(sorterDefault=='下次應收款日期'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(16);return false;" id="sorter16">下次應收款日期</a></li>
-								<li id="slis17"<%if(sorterDefault=='保險所需費用'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(17);return false;" id="sorter17">保險所需費用</a></li>
-								<li id="slis18"<%if(sorterDefault=='已付保險費用'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(18);return false;" id="sorter18">已付保險費用</a></li>	
+								<li id="slis3"<%if(sorterDefault=='已得利息'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(3);return false;" id="sorter3">已得利息</a></li>
+								<li id="slis4"<%if(sorterDefault=='已得本利和'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(4);return false;" id="sorter4">已得本利和</a></li>
+								<li id="slis5"<%if(sorterDefault=='已得平均利息'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(5);return false;" id="sorter5">已得平均利息</a></li>
+								<li id="slis6"<%if(sorterDefault=='已得平均本利和'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(6);return false;" id="sorter6">已得平均本利和</a></li>
+								<li id="slis7"<%if(sorterDefault=='已得利本比'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(7);return false;" id="sorter7">已得利本比</a></li>
+								<li id="slis8"<%if(sorterDefault=='年利率'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(8);return false;" id="sorter8">年利率</a></li>
+								<li id="slis9"<%if(sorterDefault=='原始本金'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(9);return false;" id="sorter9">原始本金</a></li>
+								<li id="slis10"<%if(sorterDefault=='額外本金'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(10);return false;" id="sorter10">額外本金</a></li>
+								<li id="slis11"<%if(sorterDefault=='目前總本金'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(11);return false;" id="sorter11">目前總本金</a></li>
+								<li id="slis12"<%if(sorterDefault=='未還本金'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(12);return false;" id="sorter12">未還本金</a></li>
+								<li id="slis13"<%if(sorterDefault=='已還本金'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(13);return false;" id="sorter13">已還本金</a></li>
+								<li id="slis14"<%if(sorterDefault=='原始期數'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(14);return false;" id="sorter14">原始期數</a></li>
+								<li id="slis15"<%if(sorterDefault=='額外期數'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(15);return false;" id="sorter15">額外期數</a></li>
+								<li id="slis16"<%if(sorterDefault=='目前總期數'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(16);return false;" id="sorter16">目前總期數</a></li>
+								<li id="slis17"<%if(sorterDefault=='剩下期數'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(17);return false;" id="sorter17">剩下期數</a></li>
+								<li id="slis18"<%if(sorterDefault=='已過期數'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(18);return false;" id="sorter18">已過期數</a></li>
+								<li id="slis19"<%if(sorterDefault=='信用等級'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(19);return false;" id="sorter19">信用等級</a></li>
+								<li id="slis20"<%if(sorterDefault=='預計剩餘利息'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(20);return false;" id="sorter20">預計剩餘利息</a></li>
+								<li id="slis21"<%if(sorterDefault=='預計剩餘本利和'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(21);return false;" id="sorter21">預計剩餘本利和</a></li>
+								<li id="slis22"<%if(sorterDefault=='預計剩餘平均利息'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(22);return false;" id="sorter22">預計剩餘平均利息</a></li>
+								<li id="slis23"<%if(sorterDefault=='預計剩餘平均本利和'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(23);return false;" id="sorter23">預計剩餘平均本利和</a></li>
+								<li id="slis24"<%if(sorterDefault=='預計剩餘利本比'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(24);return false;" id="sorter24">預計剩餘利本比</a></li>
+								<li id="slis25"<%if(sorterDefault=='收款次數'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(25);return false;" id="sorter25">收款次數</a></li>
+								<li id="slis26"<%if(sorterDefault=='上次成功收款日期'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(26);return false;" id="sorter26">上次成功收款日期</a></li>
+								<li id="slis27"<%if(sorterDefault=='下次應收款日期'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(27);return false;" id="sorter27">下次應收款日期</a></li>
+								<li id="slis28"<%if(sorterDefault=='保險所需費用'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(28);return false;" id="sorter28">保險所需費用</a></li>
+								<li id="slis29"<%if(sorterDefault=='已付保險費用'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(29);return false;" id="sorter29">已付保險費用</a></li>	
 							</ul>
 						</div>
 						<div class="btn-group">
@@ -215,18 +226,20 @@
 						<br>
 					<%}%>
 					<% for(var i=0; i<jsonTransaction.length; i++) { %>
-						<table width="100%">
-							<tr>
-								<td>
-									<%if(jsonTransaction[i].CreatedFrom.Type=="toBorrow"){%>
-										<a style="font-size:15px;" href="/lender/lenderReceiveMessages?msgKeyword=<%=jsonTransaction[i].CreatedFrom._id%>&filter=<%if(jsonTransaction[i].CreatedFrom.Status=="NotConfirmed"){%><%=encodeURIComponent('未確認')%><%}else if(jsonTransaction[i].CreatedFrom.Status=="Confirmed"){%><%=encodeURIComponent('已同意')%><%}else if(jsonTransaction[i].CreatedFrom.Status=="Rejected"){%><%=encodeURIComponent('已婉拒')%><%}%>&sorter=<%=encodeURIComponent("更新日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">查看來源訊息</a>
-									<%}else if(jsonTransaction[i].CreatedFrom.Type=="toLend"){%>
-										<a style="font-size:15px;" href="/lender/lenderSendMessages?msgKeyword=<%=jsonTransaction[i].CreatedFrom._id%>&filter=<%if(jsonTransaction[i].CreatedFrom.Status=="NotConfirmed"){%><%=encodeURIComponent('未被確認')%><%}else if(jsonTransaction[i].CreatedFrom.Status=="Confirmed"){%><%=encodeURIComponent('已被同意')%><%}else if(jsonTransaction[i].CreatedFrom.Status=="Rejected"){%><%=encodeURIComponent('已被婉拒')%><%}%>&sorter=<%=encodeURIComponent("更新日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">查看來源訊息</a>
-									<%}%>
-								</td>
-							</tr>
-						</table>
-						<div style="height: 440px;" class="panel panel-default pd">
+						<div style="border-top-style: none;border-right-style: none;border-bottom-style: none;border-left-style: none;margin-top: 0px;margin-bottom: 0px;" class="table-responsive">
+							<table style="margin-bottom: 0px;margin-top: 0px;" class="table" width="100%">
+								<tr>
+									<td style="border-bottom-style: none;border-top-style: none;">
+										<%if(jsonTransaction[i].CreatedFrom.Type=="toBorrow"){%>
+											<a style="font-size:15px;" href="/lender/lenderReceiveMessages?msgKeyword=<%=jsonTransaction[i].CreatedFrom._id%>&filter=<%if(jsonTransaction[i].CreatedFrom.Status=="NotConfirmed"){%><%=encodeURIComponent('未確認')%><%}else if(jsonTransaction[i].CreatedFrom.Status=="Confirmed"){%><%=encodeURIComponent('已同意')%><%}else if(jsonTransaction[i].CreatedFrom.Status=="Rejected"){%><%=encodeURIComponent('已婉拒')%><%}%>&sorter=<%=encodeURIComponent("更新日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">查看來源訊息</a>
+										<%}else if(jsonTransaction[i].CreatedFrom.Type=="toLend"){%>
+											<a style="font-size:15px;" href="/lender/lenderSendMessages?msgKeyword=<%=jsonTransaction[i].CreatedFrom._id%>&filter=<%if(jsonTransaction[i].CreatedFrom.Status=="NotConfirmed"){%><%=encodeURIComponent('未被確認')%><%}else if(jsonTransaction[i].CreatedFrom.Status=="Confirmed"){%><%=encodeURIComponent('已被同意')%><%}else if(jsonTransaction[i].CreatedFrom.Status=="Rejected"){%><%=encodeURIComponent('已被婉拒')%><%}%>&sorter=<%=encodeURIComponent("更新日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">查看來源訊息</a>
+										<%}%>
+									</td>
+								</tr>
+							</table>
+						</div>
+						<div style="height: 580px;" class="panel panel-default pd">
 							<div class="panel-body">
 								<div style="font-size:25px;display:inline;">借給 </div>
 								<div style="font-size:25px;display:inline;" class="myTitle"><%=jsonTransaction[i].Borrower.Username%></div>
@@ -234,12 +247,12 @@
 								&nbsp;&nbsp;在 <a style="font-size:15px;" href="/lender/story?id=<%=jsonTransaction[i].CreatedFrom.FromBorrowRequest._id%>"><%-jsonTransaction[i].CreatedFrom.FromBorrowRequest.StoryTitle.replace(new RegExp(' ','g'),'&nbsp;')%></a>
 								<br>
 								<br>
-								<div class="col-md-6">
-									<table width="100%" height="240px">
+								<div class="col-md-4">
+									<table width="100%" height="460px">
 										<tr>
 											<td>
 												<div class="myTitle">
-													&nbsp;&nbsp;&nbsp;&nbsp;對方未還本金：
+													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault=='原始本金'){%> class="stronger"<%}%>>原始本金：</div>
 												</div>
 											</td>
 										</tr>
@@ -253,21 +266,63 @@
 										<tr>
 											<td>
 												<div class="myTitle">
-													&nbsp;&nbsp;&nbsp;&nbsp;對方已還本金：
+													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault=='額外本金'){%> class="stronger"<%}%>>額外本金：</div>
 												</div>
 											</td>
 										</tr>
 										<tr>
 											<td>
 												<div>
-													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonTransaction[i].PrincipalReturnedCumulated.toFixed(0)%>元
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonTransaction[i].ExtendPrincipal.toFixed(0)%>元
 												</div>	
 											</td>
 										</tr>
 										<tr>
 											<td>
 												<div class="myTitle">
-													&nbsp;&nbsp;&nbsp;&nbsp;年利率：
+													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault=='目前總本金'){%> class="stronger"<%}%>>目前總本金：</div>
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonTransaction[i].TotalPrincipalNow.toFixed(0)%>元
+												</div>	
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<div class="myTitle">
+													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault=='未還本金'){%> class="stronger"<%}%>>未還本金：</div>
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonTransaction[i].PrincipalNotReturn.toFixed(0)%>元
+												</div>	
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<div class="myTitle">
+													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault=='已還本金'){%> class="stronger"<%}%>>已還本金：</div>
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonTransaction[i].PrincipalReturn.toFixed(0)%>元
+												</div>	
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<div class="myTitle">
+													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault=='年利率'){%> class="stronger"<%}%>>年利率：</div>
 												</div>
 											</td>
 										</tr>
@@ -281,21 +336,81 @@
 										<tr>
 											<td>
 												<div class="myTitle">
-													&nbsp;&nbsp;&nbsp;&nbsp;已得利息：
+													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault=='已得利息'){%> class="stronger"<%}%>>已得利息：</div>
 												</div>
 											</td>
 										</tr>
 										<tr>
 											<td>
 												<div>
-													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonTransaction[i].InterestCumulated.toFixed(0)%>元
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonTransaction[i].Interest.toFixed(0)%>元
 												</div>	
 											</td>
 										</tr>
 										<tr>
 											<td>
 												<div class="myTitle">
-													&nbsp;&nbsp;&nbsp;&nbsp;剩下期數：
+													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault=='已得本利和'){%> class="stronger"<%}%>>已得本利和：</div>
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonTransaction[i].PrincipalInterest.toFixed(0)%>元
+												</div>	
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<div class="myTitle">
+													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault=='已得平均利息'){%> class="stronger"<%}%>>已得平均利息：</div>
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonTransaction[i].InterestMonth.toFixed(0)%>元
+												</div>	
+											</td>
+										</tr>
+									</table>
+								</div>	
+								<div class="col-md-4">	
+									<table width="100%" height="460px">
+										<tr>
+											<td>
+												<div class="myTitle">
+													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault=='已得平均本利和'){%> class="stronger"<%}%>>已得平均本利和：</div>
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonTransaction[i].PrincipalInterestMonth.toFixed(0)%>元
+												</div>	
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<div class="myTitle">
+													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault=='已得利本比'){%> class="stronger"<%}%>>已得利本比：</div>
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonTransaction[i].InterestDivPrincipal.toFixed(2)%>%
+												</div>	
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<div class="myTitle">
+													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault=='原始期數'){%> class="stronger"<%}%>>原始期數：</div>
 												</div>
 											</td>
 										</tr>
@@ -305,25 +420,65 @@
 													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonTransaction[i].MonthPeriod.toFixed(0)%>個月
 												</div>	
 											</td>
-										</tr>
-										<tr>
+										</tr><tr>
 											<td>
 												<div class="myTitle">
-													&nbsp;&nbsp;&nbsp;&nbsp;已過期數:
+													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault=='額外期數'){%> class="stronger"<%}%>>額外期數：</div>
 												</div>
 											</td>
 										</tr>
 										<tr>
 											<td>
 												<div>
-													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonTransaction[i].MonthPeriodHasPast.toFixed(0)%>個月
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonTransaction[i].ExtendMonthPeriod.toFixed(0)%>個月
+												</div>	
+											</td>
+										</tr><tr>
+											<td>
+												<div class="myTitle">
+													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault=='目前總期數'){%> class="stronger"<%}%>>目前總期數：</div>
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonTransaction[i].TotalMonthPeriodNow.toFixed(0)%>個月
 												</div>	
 											</td>
 										</tr>
 										<tr>
 											<td>
 												<div class="myTitle">
-													&nbsp;&nbsp;&nbsp;&nbsp;對方信用等級:
+													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault=='剩下期數'){%> class="stronger"<%}%>>剩下期數：</div>
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonTransaction[i].MonthPeriodLeft.toFixed(0)%>個月
+												</div>	
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<div class="myTitle">
+													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault=='已過期數'){%> class="stronger"<%}%>>已過期數：</div>
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonTransaction[i].MonthPeriodPast.toFixed(0)%>個月
+												</div>	
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<div class="myTitle">
+													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault=='信用等級'){%> class="stronger"<%}%>>信用等級：</div>
 												</div>
 											</td>
 										</tr>
@@ -337,7 +492,7 @@
 										<tr>
 											<td>
 												<div class="myTitle">
-													&nbsp;&nbsp;&nbsp;&nbsp;成交日期:
+													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault=='建立日期'){%> class="stronger"<%}%>>成交日期：</div>
 												</div>
 											</td>
 										</tr>
@@ -349,13 +504,13 @@
 											</td>
 										</tr>
 									</table>
-								</div>	
-								<div class="col-md-6">	
-									<table width="100%" height="240px">
+								</div>
+								<div class="col-md-4">	
+									<table width="100%" height="460px">
 										<tr>
 											<td>
 												<div class="myTitle">
-													&nbsp;&nbsp;&nbsp;&nbsp;預計尚可收取利息：
+													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault=='預計剩餘總利息'){%> class="stronger"<%}%>>預計剩餘總利息：</div>
 												</div>
 											</td>
 										</tr>
@@ -369,7 +524,21 @@
 										<tr>
 											<td>
 												<div class="myTitle">
-													&nbsp;&nbsp;&nbsp;&nbsp;預計剩餘每期平均利息：
+													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault=='預計剩餘本利和'){%> class="stronger"<%}%>>預計剩餘本利和：</div>
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonTransaction[i].MoneyFuture.toFixed(0)%>元
+												</div>	
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<div class="myTitle">
+													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault=='預計剩餘平均利息'){%> class="stronger"<%}%>>預計剩餘平均利息：</div>
 												</div>
 											</td>
 										</tr>
@@ -383,7 +552,7 @@
 										<tr>
 											<td>
 												<div class="myTitle">
-													&nbsp;&nbsp;&nbsp;&nbsp;預計剩餘每期平均本利和：
+													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault=='預計剩餘平均本利和'){%> class="stronger"<%}%>>預計剩餘平均本利和：</div>
 												</div>
 											</td>
 										</tr>
@@ -397,7 +566,7 @@
 										<tr>
 											<td>
 												<div class="myTitle">
-													&nbsp;&nbsp;&nbsp;&nbsp;預計尚可收取利息/目前本金比：
+													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault=='預計剩餘利本比'){%> class="stronger"<%}%>>預計剩餘利本比：</div>
 												</div>
 											</td>
 										</tr>
@@ -411,7 +580,7 @@
 										<tr>
 											<td>
 												<div class="myTitle">
-													&nbsp;&nbsp;&nbsp;&nbsp;上次成功收款日期：
+													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault=='上次成功收款日期'){%> class="stronger"<%}%>>上次成功收款日期：</div>
 												</div>
 											</td>
 										</tr>
@@ -426,7 +595,7 @@
 										<tr>
 											<td>
 												<div class="myTitle">
-													&nbsp;&nbsp;&nbsp;&nbsp;下次應收款日期：
+													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault=='下次應收款日期'){%> class="stronger"<%}%>>下次應收款日期：</div>
 												</div>
 											</td>
 										</tr>
@@ -440,21 +609,21 @@
 										<tr>
 											<td>
 												<div class="myTitle">
-													&nbsp;&nbsp;&nbsp;&nbsp;保險所需費用：
+													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault=='保險所需費用'){%> class="stronger"<%}%>>保險所需費用：</div>
 												</div>
 											</td>
 										</tr>
 										<tr>
 											<td>
 												<div>
-													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:none;" id="value1<%=i%>"><%if(jsonTransaction[i].Principal>0){%><%if(jsonTransaction[i].Principal*insuranceRate<1){%>1<%}else{%><%=jsonTransaction[i].Principal*insuranceRate%><%}%><%}else{%>0<%}%></div><%if(jsonTransaction[i].Principal>0){%><%if(jsonTransaction[i].Principal*insuranceRate<1){%>1<%}else{%><%=(jsonTransaction[i].Principal*insuranceRate).toFixed(0)%><%}%><%}else{%>0<%}%>元
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:none;" id="value1<%=i%>"><%if(jsonTransaction[i].PrincipalNotReturn>0){%><%if(jsonTransaction[i].PrincipalNotReturn*insuranceRate<1){%>1<%}else{%><%=jsonTransaction[i].PrincipalNotReturn*insuranceRate%><%}%><%}else{%>0<%}%></div><%if(jsonTransaction[i].PrincipalNotReturn>0){%><%if(jsonTransaction[i].PrincipalNotReturn*insuranceRate<1){%>1<%}else{%><%=(jsonTransaction[i].PrincipalNotReturn*insuranceRate).toFixed(0)%><%}%><%}else{%>0<%}%>元
 												</div>	
 											</td>
 										</tr>
 										<tr>
 											<td>
 												<div class="myTitle">
-													&nbsp;&nbsp;&nbsp;&nbsp;已付保險費用：
+													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault=='已付保險費用'){%> class="stronger"<%}%>>已付保險費用：</div>
 												</div>
 											</td>
 										</tr>
@@ -469,47 +638,46 @@
 								</div>
 							</div>
 						</div>
-					
 					<div style="border-top-style: none;border-right-style: none;border-bottom-style: none;border-left-style: none;margin-top: 0px;margin-bottom: 0px;" class="table-responsive">
 						<table style="margin-bottom: 0px;margin-top: 0px;" class="table" width="100%">
-						<tr>
-							<%if(filterDefault=='未保險'){%>
-							<td style="border-bottom-style: none;border-top-style: none;">
-								<div>
-									<input type="checkbox" name="selectCheckBox" id="selectCheckBoxId<%=i%>" onclick="selectFun(<%=i%>);" value='{"TransactionID":"<%=jsonTransaction[i]._id%>"}'> 選擇
-								</div>
-							</td>
-							<%}else if(filterDefault=='不分類'){%>
+							<tr>
+								<%if(filterDefault=='未保險'){%>
 								<td style="border-bottom-style: none;border-top-style: none;">
-									<%if(jsonTransaction[i].Principal>0){%>
-										<%if(jsonTransaction[i].InsuranceFeePaid>0){%>
-											已保險
-										<%}else{%>
-											<a href="/lender/lenderTransactionRecord?oneid=<%=encodeURIComponent(jsonTransaction[i]._id)%>&filter=<%=encodeURIComponent('未保險')%>&sorter=<%=encodeURIComponent('建立日期')%>&director=<%=encodeURIComponent('大至小')%>&lbound=&ubound=&page=1">未保險</a>	
-										<%}%>
-									<%}else{%>
-										已結清
-									<%}%>
+									<div>
+										<input type="checkbox" name="selectCheckBox" id="selectCheckBoxId<%=i%>" onclick="selectFun(<%=i%>);" value='{"TransactionID":"<%=jsonTransaction[i]._id%>"}'> 選擇
+									</div>
 								</td>
-							<%}%>
-							<td align="right" style="border-bottom-style: none;border-top-style: none;">
-								<div style="font-size:15px;display:inline;">
-									<a href="/lender/lenderReturnRecord?oneid=&id=<%=jsonTransaction[i]._id%>&sorter=<%=encodeURIComponent("建立日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">該交易有<%=jsonTransaction[i].ReturnCount%>筆收款記錄</a>
-								</div>
-								&nbsp;&nbsp;&nbsp;&nbsp;
-								<div style="font-size:15px;display:inline;">
-									Updated：<%=jsonTransaction[i].Updated.getFullYear()%>/<%=jsonTransaction[i].Updated.getMonth()+1%>/<%=jsonTransaction[i].Updated.getDate()%>
-								</div>
-								&nbsp;&nbsp;&nbsp;&nbsp;
-								<div style="font-size:15px;display:inline;">
-									Created：<%=jsonTransaction[i].Created.getFullYear()%>/<%=jsonTransaction[i].Created.getMonth()+1%>/<%=jsonTransaction[i].Created.getDate()%>
-								</div>
-								&nbsp;&nbsp;&nbsp;&nbsp;
-								<div style="font-size:15px;display:inline;">
-									No.<%=i+1%>
-								</div>
-							</td>
-						<tr>
+								<%}else if(filterDefault=='不分類'){%>
+									<td style="border-bottom-style: none;border-top-style: none;">
+										<%if(jsonTransaction[i].PrincipalNotReturn>0){%>
+											<%if(jsonTransaction[i].InsuranceFeePaid>0){%>
+												已保險
+											<%}else{%>
+												<a href="/lender/lenderTransactionRecord?oneid=<%=encodeURIComponent(jsonTransaction[i]._id)%>&filter=<%=encodeURIComponent('未保險')%>&sorter=<%=encodeURIComponent('建立日期')%>&director=<%=encodeURIComponent('大至小')%>&lbound=&ubound=&page=1">未保險</a>	
+											<%}%>
+										<%}else{%>
+											已結清
+										<%}%>
+									</td>
+								<%}%>
+								<td align="right" style="border-bottom-style: none;border-top-style: none;">
+									<div style="font-size:15px;display:inline;">
+										<a<%if(sorterDefault=='收款次數'){%> class="stronger"<%}%> href="/lender/lenderReturnRecord?oneid=&id=<%=jsonTransaction[i]._id%>&sorter=<%=encodeURIComponent("建立日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">該交易有<%=jsonTransaction[i].ReturnCount%>筆收款記錄</a>
+									</div>
+									&nbsp;&nbsp;&nbsp;&nbsp;
+									<div style="font-size:15px;display:inline;">
+										<div style="display:inline;"<%if(sorterDefault=='更新日期'){%> class="stronger"<%}%>>Updated：</div><%=jsonTransaction[i].Updated.getFullYear()%>/<%=jsonTransaction[i].Updated.getMonth()+1%>/<%=jsonTransaction[i].Updated.getDate()%>
+									</div>
+									&nbsp;&nbsp;&nbsp;&nbsp;
+									<div style="font-size:15px;display:inline;">
+										<div style="display:inline;"<%if(sorterDefault=='建立日期'){%> class="stronger"<%}%>>Created：</div><%=jsonTransaction[i].Created.getFullYear()%>/<%=jsonTransaction[i].Created.getMonth()+1%>/<%=jsonTransaction[i].Created.getDate()%>
+									</div>
+									&nbsp;&nbsp;&nbsp;&nbsp;
+									<div style="font-size:15px;display:inline;">
+										No.<%=i+1%>
+									</div>
+								</td>
+							<tr>
 						</table>
 					</div>
 					<br>
@@ -631,7 +799,7 @@ function sorterSelector(index){
 	$('#sorter0').html($('#sorterSelected').text());
 	$('#sorterSelected').append(' <span class=\'caret\'><\/span>');
 	
-	for(i=1;i<=18;i++){
+	for(i=1;i<=29;i++){
 		$('#slis'+i).attr('class','');
 	}
 	$('#slis'+index).attr('class','active');
