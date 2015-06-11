@@ -30,14 +30,15 @@
 								<li style="display:none"><a href="#" id="sorter0"><%=sorterDefault%></a></li>
 								<li id="slis1"<%if(sorterDefault=='更新日期'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(1);return false;" id="sorter1">更新日期</a></li>
 								<li id="slis2"<%if(sorterDefault=='建立日期'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(2);return false;" id="sorter2">建立日期</a></li>
-								<li id="slis3"<%if(sorterDefault=='可借出金額'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(3);return false;" id="sorter3">可借出金額</a></li>
-								<li id="slis4"<%if(sorterDefault=='可接受利率'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(4);return false;" id="sorter4">可接受利率</a></li>
+								<li id="slis3"<%if(sorterDefault=='最大可自動借出金額'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(3);return false;" id="sorter3">最大可自動借出金額</a></li>
+								<li id="slis4"<%if(sorterDefault=='可接受年利率'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(4);return false;" id="sorter4">可接受年利率</a></li>
 								<li id="slis5"<%if(sorterDefault=='可接受期數'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(5);return false;" id="sorter5">可接受期數</a></li>
 								<li id="slis6"<%if(sorterDefault=='可接受信用等級'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(6);return false;" id="sorter6">可接受信用等級</a></li>
 								<li id="slis7"<%if(sorterDefault=='可接受總利息'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(7);return false;" id="sorter7">可接受總利息</a></li>
-								<li id="slis8"<%if(sorterDefault=='可接受平均利息'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(8);return false;" id="sorter8">可接受平均利息</a></li>
-								<li id="slis9"<%if(sorterDefault=='可接受平均本利和'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(9);return false;" id="sorter9">可接受平均本利和</a></li>
-								<li id="slis10"<%if(sorterDefault=='可接受利本比'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(10);return false;" id="sorter10">可接受利本比</a></li>
+								<li id="slis8"<%if(sorterDefault=='可接受本利和'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(8);return false;" id="sorter8">可接受本利和</a></li>
+								<li id="slis9"<%if(sorterDefault=='可接受平均利息'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(9);return false;" id="sorter9">可接受平均利息</a></li>
+								<li id="slis10"<%if(sorterDefault=='可接受平均本利和'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(10);return false;" id="sorter10">可接受平均本利和</a></li>
+								<li id="slis11"<%if(sorterDefault=='可接受利本比'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(11);return false;" id="sorter11">可接受利本比</a></li>
 							</ul>
 						</div>
 						<div class="btn-group">
@@ -75,7 +76,7 @@
 										<tr>
 											<td>
 												<div class="myTitle">
-													&nbsp;&nbsp;&nbsp;&nbsp;最大可借出金額：
+													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault=='最大可自動借出金額'){%> class="stronger"<%}%>>最大可自動借出金額：</div>
 												</div>
 											</td>
 										</tr>
@@ -89,7 +90,7 @@
 										<tr>
 											<td>
 												<div class="myTitle">
-													&nbsp;&nbsp;&nbsp;&nbsp;最低欲借出年利率：
+													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault=='可接受年利率'){%> class="stronger"<%}%>>可接受年利率：</div>
 												</div>
 											</td>
 										</tr>
@@ -103,7 +104,7 @@
 										<tr>
 											<td>
 												<div class="myTitle">
-													&nbsp;&nbsp;&nbsp;&nbsp;最低欲借出期數：
+													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault=='可接受期數'){%> class="stronger"<%}%>>可接受期數：</div>
 												</div>
 											</td>
 										</tr>
@@ -117,7 +118,7 @@
 										<tr>
 											<td>
 												<div class="myTitle">
-													&nbsp;&nbsp;&nbsp;&nbsp;最低可接受信用等級：
+													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault=='可接受信用等級'){%> class="stronger"<%}%>>可接受信用等級：</div>
 												</div>
 											</td>
 										</tr>
@@ -131,7 +132,7 @@
 										<tr>
 											<td>
 												<div class="myTitle">
-													&nbsp;&nbsp;&nbsp;&nbsp;最低可接受總利息
+													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault=='可接受總利息'){%> class="stronger"<%}%>>可接受總利息：</div>
 												</div>
 											</td>
 										</tr>
@@ -145,14 +146,14 @@
 										<tr>
 											<td>
 												<div class="myTitle">
-													&nbsp;&nbsp;&nbsp;&nbsp;最低可接受每期平均利息
+													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault=='可接受本利和'){%> class="stronger"<%}%>>可接受本利和：</div>
 												</div>
 											</td>
 										</tr>
 										<tr>
 											<td>
 												<div>
-													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonLends[i].MinInterestInFutureMonth.toFixed(0)%>元
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonLends[i].MinMoneyFuture.toFixed(0)%>元
 												</div>	
 											</td>
 										</tr>
@@ -163,7 +164,21 @@
 										<tr>
 											<td>
 												<div class="myTitle">
-													&nbsp;&nbsp;&nbsp;&nbsp;最低可接受每期平均本利和
+													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault=='可接受平均利息'){%> class="stronger"<%}%>>可接受平均利息：</div>
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonLends[i].MinInterestInFutureMonth.toFixed(0)%>元
+												</div>	
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<div class="myTitle">
+													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault=='可接受平均本利和'){%> class="stronger"<%}%>>可接受平均本利和：</div>
 												</div>
 											</td>
 										</tr>
@@ -177,7 +192,7 @@
 										<tr>
 											<td>
 												<div class="myTitle">
-													&nbsp;&nbsp;&nbsp;&nbsp;最低可接受總利息/最初本金比
+													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault=='可接受利本比'){%> class="stronger"<%}%>>可接受利本比：</div>
 												</div>
 											</td>
 										</tr>
@@ -191,7 +206,7 @@
 										<tr>
 											<td>
 												<div class="myTitle">
-													&nbsp;&nbsp;&nbsp;&nbsp;自動同意借款請求：
+													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(classOneDefault!='不分類'){%> class="stronger"<%}%>>自動同意借款請求：</div>
 												</div>
 											</td>
 										</tr>
@@ -227,20 +242,22 @@
 													<%if(jsonLends[i].AutoComfirmToBorrowMsgSorter=="invalid"){%>
 														無效
 													<%}else if(jsonLends[i].AutoComfirmToBorrowMsgSorter=="InterestRate"){%>
-														利率
+														欲借入年利率
 													<%}else if(jsonLends[i].AutoComfirmToBorrowMsgSorter=="MoneyToLend"){%>
-														金額
+														欲借入金額
 													<%}else if(jsonLends[i].AutoComfirmToBorrowMsgSorter=="MonthPeriod"){%>
-														期數
+														欲借入期數
 													<%}else if(jsonLends[i].AutoComfirmToBorrowMsgSorter=="Level"){%>
 														信用等級
 													<%}else if(jsonLends[i].AutoComfirmToBorrowMsgSorter=="SpecialA"){%>
 														預計總利息
 													<%}else if(jsonLends[i].AutoComfirmToBorrowMsgSorter=="SpecialB"){%>
-														預計平均利息
+														預計本利和
 													<%}else if(jsonLends[i].AutoComfirmToBorrowMsgSorter=="SpecialC"){%>
-														預計平均本利和
+														預計平均利息
 													<%}else if(jsonLends[i].AutoComfirmToBorrowMsgSorter=="SpecialD"){%>
+														預計平均本利和
+													<%}else if(jsonLends[i].AutoComfirmToBorrowMsgSorter=="SpecialE"){%>
 														預計利本比
 													<%}else if(jsonLends[i].AutoComfirmToBorrowMsgSorter=="Updated"){%>
 														更新日期
@@ -280,11 +297,11 @@
 								<tr>
 									<td align="right" style="border-bottom-style: none;border-top-style: none;">
 										<div style="font-size:15px;display:inline;">
-											Updated：<%=jsonLends[i].Updated.getFullYear()%>/<%=jsonLends[i].Updated.getMonth()+1%>/<%=jsonLends[i].Updated.getDate()%>
+											<div style="display:inline;<%if(sorterDefault=='更新日期'){%>color:red;<%}%>">Updated：</div><%=jsonLends[i].Updated.getFullYear()%>/<%=jsonLends[i].Updated.getMonth()+1%>/<%=jsonLends[i].Updated.getDate()%>
 										</div>
 										&nbsp;&nbsp;&nbsp;&nbsp;
 										<div style="font-size:15px;display:inline;">
-											Creadted：<%=jsonLends[i].Created.getFullYear()%>/<%=jsonLends[i].Created.getMonth()+1%>/<%=jsonLends[i].Created.getDate()%>
+											<div style="display:inline;<%if(sorterDefault=='建立日期'){%>color:red;<%}%>">Creadted：</div><%=jsonLends[i].Created.getFullYear()%>/<%=jsonLends[i].Created.getMonth()+1%>/<%=jsonLends[i].Created.getDate()%>
 										</div>
 										&nbsp;&nbsp;&nbsp;&nbsp;
 										<div style="font-size:15px;display:inline;">
@@ -384,7 +401,7 @@
 		$('#sorterSelected').html($('#sorter'+index).text());
 		$('#sorter0').html($('#sorterSelected').text());
 		$('#sorterSelected').append(' <span class=\'caret\'><\/span>'); 
-		for(i=1;i<=10;i++){
+		for(i=1;i<=11;i++){
 			$('#slis'+i).attr('class','');
 		}
 		$('#slis'+index).attr('class','active');

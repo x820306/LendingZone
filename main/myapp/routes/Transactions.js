@@ -68,6 +68,12 @@ router.post('/destroyTest', function(req, res, next) {
 						if(!message){
 							res.json({error: 'no such message'}, 500);
 						}else{
+							message.MoneyToLend=message.OldMoneyToLend;
+							message.InterestRate=message.OldInterestRate;
+							message.MonthPeriod=message.OldMonthPeriod;
+							message.OldMoneyToLend=0;
+							message.OldInterestRate=0.01;
+							message.OldMonthPeriod=1;
 							message.Status='NotConfirmed';
 							var ctr = -1;
 							for (i = 0; i < message.Transaction.length; i++) {
@@ -104,7 +110,11 @@ router.post('/destroyTest', function(req, res, next) {
 																	console.log(err);
 																	res.json({error: err.name}, 500);
 																}else{
-																	res.json(removedItem);
+																	library.userLevelAdderReturn(removedItem.Borrower,function(){
+																		res.json(removedItem);
+																	},function(){
+																		res.end('error!');
+																	});
 																}
 															});
 														}
@@ -115,7 +125,11 @@ router.post('/destroyTest', function(req, res, next) {
 															console.log(err);
 															res.json({error: err.name}, 500);
 														}else{
-															res.json(removedItem);
+															library.userLevelAdderReturn(removedItem.Borrower,function(){
+																res.json(removedItem);
+															},function(){
+																res.end('error!');
+															});
 														}
 													});
 												}
@@ -160,29 +174,51 @@ router.post('/buyInsuranceAll',library.loginFormChecker,library.ensureAuthentica
 		sorterRecReserve='Created';
 	}else if(sorter=='更新日期'){
 		sorterRecReserve='Updated';
-	}else if(sorter=='已獲利'){
-		sorterRecReserve='InterestCumulated';
-	}else if(sorter=='利率'){
+	}else if(sorter=='已得利息'){
+		sorterRecReserve='Updated';
+	}else if(sorter=='已得本利和'){
+		sorterRecReserve='Updated';
+	}else if(sorter=='已得平均利息'){
+		sorterRecReserve='Updated';
+	}else if(sorter=='已得平均本利和'){
+		sorterRecReserve='Updated';
+	}else if(sorter=='已得利本比'){
+		sorterRecReserve='Updated';
+	}else if(sorter=='年利率'){
 		sorterRecReserve='InterestRate';
-	}else if(sorter=='未還本金'){
+	}else if(sorter=='原始本金'){
 		sorterRecReserve='Principal';
+	}else if(sorter=='額外本金'){
+		sorterRecReserve='Updated';
+	}else if(sorter=='目前總本金'){
+		sorterRecReserve='Updated';
+	}else if(sorter=='未還本金'){
+		sorterRecReserve='Updated';
 	}else if(sorter=='已還本金'){
-		sorterRecReserve='PrincipalReturnedCumulated';
-	}else if(sorter=='剩下期數'){
+		sorterRecReserve='Updated';
+	}else if(sorter=='原始期數'){
 		sorterRecReserve='MonthPeriod';
+	}else if(sorter=='額外期數'){
+		sorterRecReserve='Updated';
+	}else if(sorter=='目前總期數'){
+		sorterRecReserve='Updated';
+	}else if(sorter=='剩下期數'){
+		sorterRecReserve='Updated';
 	}else if(sorter=='已過期數'){
-		sorterRecReserve='MonthPeriodHasPast';
+		sorterRecReserve='Updated';
 	}else if(sorter=='信用等級'){
 		sorterRecReserve='Level';
-	}else if(sorter=='預計總利息'){
+	}else if(sorter=='預計剩餘利息'){
 		sorterRecReserve='Updated';
-	}else if(sorter=='預計平均利息'){
+	}else if(sorter=='預計剩餘本利和'){
 		sorterRecReserve='Updated';
-	}else if(sorter=='預計平均本利和'){
+	}else if(sorter=='預計剩餘平均利息'){
 		sorterRecReserve='Updated';
-	}else if(sorter=='預計利本比'){
+	}else if(sorter=='預計剩餘平均本利和'){
 		sorterRecReserve='Updated';
-	}else if(sorter=='收款記錄'){
+	}else if(sorter=='預計剩餘利本比'){
+		sorterRecReserve='Updated';
+	}else if(sorter=='收款次數'){
 		sorterRecReserve='Updated';
 	}else if(sorter=='上次成功收款日期'){
 		sorterRecReserve='Updated';
@@ -191,7 +227,7 @@ router.post('/buyInsuranceAll',library.loginFormChecker,library.ensureAuthentica
 	}else if(sorter=='已付保險費用'){
 		sorterRecReserve='InsuranceFeePaid';
 	}else if(sorter=='保險所需費用'){
-		sorterRecReserve='Principal';
+		sorterRecReserve='Updated';
 	}else{
 		sorterRecReserve='Created';
 		sorter='建立日期';
@@ -202,15 +238,15 @@ router.post('/buyInsuranceAll',library.loginFormChecker,library.ensureAuthentica
 	var uboundRec=null;
 	var revereDetector1=null;
 	var revereDetector2=null;
-	if((sorter=='利率')||(sorter=='預計利本比')){
+	if((sorter=='年利率')||(sorter=='預計剩餘利本比')||(sorter=='已得利本比')){
 		var tester;
 		if(lbound.trim()!=''){
 			tester=parseFloat(lbound);
 			if(!isNaN(tester)){
 				if(tester>=0){
-					if(sorter=='利率'){
+					if(sorter=='年利率'){
 						lboundRec=(tester/100)+library.serviceChargeRate;//scr
-					}else if(sorter=='預計利本比'){
+					}else{
 						lboundRec=(tester/100);
 					}
 				}else{
@@ -224,9 +260,9 @@ router.post('/buyInsuranceAll',library.loginFormChecker,library.ensureAuthentica
 			tester=parseFloat(ubound);
 			if(!isNaN(tester)){
 				if(tester>=0){
-					if(sorter=='利率'){
+					if(sorter=='年利率'){
 						uboundRec=(tester/100)+library.serviceChargeRate;//scr
-					}else if(sorter=='預計利本比'){
+					}else{
 						uboundRec=(tester/100);
 					}
 				}else{
@@ -316,10 +352,8 @@ router.post('/buyInsuranceAll',library.loginFormChecker,library.ensureAuthentica
 	
 	var andFindCmdAry=[];
 	andFindCmdAry.push({"Lender": req.user._id});
-	andFindCmdAry.push({"InsuranceFeePaid":0});
-	andFindCmdAry.push({"Principal":{'$gt': 0 }});
 	
-	if((sorter!='預計總利息')&&(sorter!='預計平均利息')&&(sorter!='預計平均本利和')&&(sorter!='預計利本比')&&(sorter!='收款記錄')&&(sorter!='上次成功收款日期')&&(sorter!='下次應收款日期')){
+	if((sorter=='建立日期')||(sorter=='更新日期')||(sorter=='年利率')||(sorter=='原始本金')||(sorter=='原始期數')||(sorter=='信用等級')||(sorter=='已付保險費用')){
 		var jsonTemp={};
 		if((lboundRec!==null)&&(uboundRec!==null)){
 			jsonTemp[sorterRecReserve]={"$gte": lboundRec, "$lte": uboundRec};
@@ -344,7 +378,7 @@ router.post('/buyInsuranceAll',library.loginFormChecker,library.ensureAuthentica
 		ObjID=mongoose.Types.ObjectId(stringArray[0]);
 	}
 	
-	Transactions.find({$and:andFindCmdAry}).populate('Borrower', 'Username').populate('CreatedFrom', 'FromBorrowRequest').populate('Return', 'InterestShouldPaid InterestNotPaid Created').sort(sorterRec).exec(function (err, transactions){
+	Transactions.find({$and:andFindCmdAry}).populate('Borrower', 'Username').populate('CreatedFrom', 'FromBorrowRequest').populate('Return').sort(sorterRec).exec(function (err, transactions){
 		if (err) {
 			console.log(err);
 			res.redirect('/message?content='+encodeURIComponent('錯誤!'));
@@ -391,99 +425,170 @@ router.post('/buyInsuranceAll',library.loginFormChecker,library.ensureAuthentica
 							}
 						}
 						
-						if((sorter=='預計總利息')||(sorter=='預計利本比')||(sorter=='預計平均利息')||(sorter=='預計平均本利和')){
-							for(i=0;i<transactions.length;i++){
-								transactions[i].InterestRate-=library.serviceChargeRate;//scr
-								transactions[i].InterestInFuture=library.interestInFutureCalculator(transactions[i].Principal,transactions[i].InterestRate,transactions[i].MonthPeriod);
-								if(transactions[i].Principal>0){
-									transactions[i].InterestInFutureDivMoney=transactions[i].InterestInFuture/transactions[i].Principal;
-								}else{
-									transactions[i].InterestInFutureDivMoney=0;
-								}
-								if(transactions[i].MonthPeriod>0){
-									transactions[i].InterestInFutureMonth=transactions[i].InterestInFuture/transactions[i].MonthPeriod;
-								}else{
-									transactions[i].InterestInFutureMonth=0;
-								}
-								if(transactions[i].MonthPeriod>0){
-									transactions[i].InterestInFutureMoneyMonth=(transactions[i].InterestInFuture+transactions[i].Principal)/transactions[i].MonthPeriod;
-								}else{
-									transactions[i].InterestInFutureMoneyMonth=0;
-								}
+						for(i=0;i<transactions.length;i++){
+							library.transactionProcessor(transactions[i],true);
+						}
+						
+						for(j=transactions.length-1;j>-1;j--){
+							if((transactions[j].InsuranceFeePaid!==0)||(transactions[j].PrincipalNotReturn<=0)){
+								transactions.splice(j, 1);
 							}
-							
-							if(sorter=='預計總利息'){
-								if(director=='大至小'){
-									transactions.sort(function(a,b) { return parseInt(b.InterestInFuture) - parseInt(a.InterestInFuture)} );
-								}else if(director=='小至大'){
-									transactions.sort(function(a,b) { return parseInt(a.InterestInFuture) - parseInt(b.InterestInFuture)} );
-								}
-								library.arrayFilter(transactions,'InterestInFuture',lboundRec,uboundRec);	
-							}else if(sorter=='預計平均利息'){
-								if(director=='大至小'){
-									transactions.sort(function(a,b) { return parseInt(b.InterestInFutureMonth) - parseInt(a.InterestInFutureMonth)} );
-								}else if(director=='小至大'){
-									transactions.sort(function(a,b) { return parseInt(a.InterestInFutureMonth) - parseInt(b.InterestInFutureMonth)} );
-								}
-								library.arrayFilter(transactions,'InterestInFutureMonth',lboundRec,uboundRec);	
-							}else if(sorter=='預計平均本利和'){
-								if(director=='大至小'){
-									transactions.sort(function(a,b) { return parseInt(b.InterestInFutureMoneyMonth) - parseInt(a.InterestInFutureMoneyMonth)} );
-								}else if(director=='小至大'){
-									transactions.sort(function(a,b) { return parseInt(a.InterestInFutureMoneyMonth) - parseInt(b.InterestInFutureMoneyMonth)} );
-								}
-								library.arrayFilter(transactions,'InterestInFutureMoneyMonth',lboundRec,uboundRec);	
-							}else if(sorter=='預計利本比'){
-								if(director=='大至小'){
-									transactions.sort(function(a,b) { return parseFloat(b.InterestInFutureDivMoney) - parseFloat(a.InterestInFutureDivMoney)} );
-								}else if(director=='小至大'){
-									transactions.sort(function(a,b) { return parseFloat(a.InterestInFutureDivMoney) - parseFloat(b.InterestInFutureDivMoney)} );
-								}
-								library.arrayFilter(transactions,'InterestInFutureDivMoney',lboundRec,uboundRec);	
+						}
+						
+						if(sorter=='預計剩餘利息'){
+							if(director=='大至小'){
+								transactions.sort(function(a,b) { return parseInt(b.InterestInFuture) - parseInt(a.InterestInFuture)} );
+							}else if(director=='小至大'){
+								transactions.sort(function(a,b) { return parseInt(a.InterestInFuture) - parseInt(b.InterestInFuture)} );
 							}
-						}else if((sorter=='上次成功收款日期')||(sorter=='下次應收款日期')||(sorter=='收款記錄')){
-							for(i=0;i<transactions.length;i++){
-								transactions[i].ReturnCount=0;
-								transactions[i].previousPayDateNum=-1;
-								for(u=transactions[i].Return.length-1;u>-1;u--){
-									if((transactions[i].Return[u].InterestShouldPaid-transactions[i].Return[u].InterestNotPaid)>0){
-										transactions[i].ReturnCount+=1;
-										if(transactions[i].previousPayDateNum==-1){
-											transactions[i].previousPayDateNum=transactions[i].Return[u].Created.getTime();
-										}
-									}
-								}
-								if(transactions[i].MonthPeriod>0){
-									var tempDate=new Date(transactions[i].Created.getTime());
-									tempDate.setTime(tempDate.getTime()+1000*60*60*24*30*(transactions[i].MonthPeriodHasPast+1));
-									transactions[i].nextPayDateNum=tempDate.getTime();
-								}else{
-									transactions[i].nextPayDateNum=9999999999999;
-								}
+							library.arrayFilter(transactions,'InterestInFuture',lboundRec,uboundRec);	
+						}else if(sorter=='預計剩餘本利和'){
+							if(director=='大至小'){
+								transactions.sort(function(a,b) { return parseInt(b.MoneyFuture) - parseInt(a.MoneyFuture)} );
+							}else if(director=='小至大'){
+								transactions.sort(function(a,b) { return parseInt(a.MoneyFuture) - parseInt(b.MoneyFuture)} );
 							}
-							
-							if(sorter=='收款記錄'){
-								if(director=='大至小'){
-									transactions.sort(function(a,b) { return parseInt(b.ReturnCount) - parseInt(a.ReturnCount)} );
-								}else if(director=='小至大'){
-									transactions.sort(function(a,b) { return parseInt(a.ReturnCount) - parseInt(b.ReturnCount)} );
-								}
-								library.arrayFilter(transactions,'ReturnCount',lboundRec,uboundRec);
-							}else if(sorter=='上次成功收款日期'){
-								if(director=='大至小'){
-									transactions.sort(function(a,b) { return parseInt(b.previousPayDateNum) - parseInt(a.previousPayDateNum)} );
-								}else if(director=='小至大'){
-									transactions.sort(function(a,b) { return parseInt(a.previousPayDateNum) - parseInt(b.previousPayDateNum)} );
-								}
-								library.arrayFilter(transactions,'previousPayDateNum',lboundRec,uboundRec);
-							}else if(sorter=='下次應收款日期'){
-								if(director=='大至小'){
-									transactions.sort(function(a,b) { return parseInt(b.nextPayDateNum) - parseInt(a.nextPayDateNum)} );
-								}else if(director=='小至大'){
-									transactions.sort(function(a,b) { return parseInt(a.nextPayDateNum) - parseInt(b.nextPayDateNum)} );
-								}
-								library.arrayFilter(transactions,'nextPayDateNum',lboundRec,uboundRec);
+							library.arrayFilter(transactions,'MoneyFuture',lboundRec,uboundRec);	
+						}else if(sorter=='預計剩餘平均利息'){
+							if(director=='大至小'){
+								transactions.sort(function(a,b) { return parseInt(b.InterestInFutureMonth) - parseInt(a.InterestInFutureMonth)} );
+							}else if(director=='小至大'){
+								transactions.sort(function(a,b) { return parseInt(a.InterestInFutureMonth) - parseInt(b.InterestInFutureMonth)} );
 							}
+							library.arrayFilter(transactions,'InterestInFutureMonth',lboundRec,uboundRec);	
+						}else if(sorter=='預計剩餘平均本利和'){
+							if(director=='大至小'){
+								transactions.sort(function(a,b) { return parseInt(b.InterestInFutureMoneyMonth) - parseInt(a.InterestInFutureMoneyMonth)} );
+							}else if(director=='小至大'){
+								transactions.sort(function(a,b) { return parseInt(a.InterestInFutureMoneyMonth) - parseInt(b.InterestInFutureMoneyMonth)} );
+							}
+							library.arrayFilter(transactions,'InterestInFutureMoneyMonth',lboundRec,uboundRec);	
+						}else if(sorter=='預計剩餘利本比'){
+							if(director=='大至小'){
+								transactions.sort(function(a,b) { return parseFloat(b.InterestInFutureDivMoney) - parseFloat(a.InterestInFutureDivMoney)} );
+							}else if(director=='小至大'){
+								transactions.sort(function(a,b) { return parseFloat(a.InterestInFutureDivMoney) - parseFloat(b.InterestInFutureDivMoney)} );
+							}
+							library.arrayFilter(transactions,'InterestInFutureDivMoney',lboundRec,uboundRec);	
+						}else if(sorter=='收款次數'){
+							if(director=='大至小'){
+								transactions.sort(function(a,b) { return parseInt(b.ReturnCount) - parseInt(a.ReturnCount)} );
+							}else if(director=='小至大'){
+								transactions.sort(function(a,b) { return parseInt(a.ReturnCount) - parseInt(b.ReturnCount)} );
+							}
+							library.arrayFilter(transactions,'ReturnCount',lboundRec,uboundRec);
+						}else if(sorter=='上次成功收款日期'){
+							if(director=='大至小'){
+								transactions.sort(function(a,b) { return parseInt(b.previousPayDateNum) - parseInt(a.previousPayDateNum)} );
+							}else if(director=='小至大'){
+								transactions.sort(function(a,b) { return parseInt(a.previousPayDateNum) - parseInt(b.previousPayDateNum)} );
+							}
+							library.arrayFilter(transactions,'previousPayDateNum',lboundRec,uboundRec);
+						}else if(sorter=='下次應收款日期'){
+							if(director=='大至小'){
+								transactions.sort(function(a,b) { return parseInt(b.nextPayDateNum) - parseInt(a.nextPayDateNum)} );
+							}else if(director=='小至大'){
+								transactions.sort(function(a,b) { return parseInt(a.nextPayDateNum) - parseInt(b.nextPayDateNum)} );
+							}
+							library.arrayFilter(transactions,'nextPayDateNum',lboundRec,uboundRec);
+						}else if(sorter=='已得利息'){
+							if(director=='大至小'){
+								transactions.sort(function(a,b) { return parseInt(b.nextPayDateNum) - parseInt(a.nextPayDateNum)} );
+							}else if(director=='小至大'){
+								transactions.sort(function(a,b) { return parseInt(a.nextPayDateNum) - parseInt(b.nextPayDateNum)} );
+							}
+							library.arrayFilter(transactions,'nextPayDateNum',lboundRec,uboundRec);
+						}else if(sorter=='已得本利和'){
+							if(director=='大至小'){
+								transactions.sort(function(a,b) { return parseInt(b.PrincipalInterest) - parseInt(a.PrincipalInterest)} );
+							}else if(director=='小至大'){
+								transactions.sort(function(a,b) { return parseInt(a.PrincipalInterest) - parseInt(b.PrincipalInterest)} );
+							}
+							library.arrayFilter(transactions,'PrincipalInterest',lboundRec,uboundRec);
+						}else if(sorter=='已得平均利息'){
+							if(director=='大至小'){
+								transactions.sort(function(a,b) { return parseInt(b.InterestMonth) - parseInt(a.InterestMonth)} );
+							}else if(director=='小至大'){
+								transactions.sort(function(a,b) { return parseInt(a.InterestMonth) - parseInt(b.InterestMonth)} );
+							}
+							library.arrayFilter(transactions,'InterestMonth',lboundRec,uboundRec);
+						}else if(sorter=='已得平均本利和'){
+							if(director=='大至小'){
+								transactions.sort(function(a,b) { return parseInt(b.PrincipalInterestMonth) - parseInt(a.PrincipalInterestMonth)} );
+							}else if(director=='小至大'){
+								transactions.sort(function(a,b) { return parseInt(a.PrincipalInterestMonth) - parseInt(b.PrincipalInterestMonth)} );
+							}
+							library.arrayFilter(transactions,'PrincipalInterestMonth',lboundRec,uboundRec);
+						}else if(sorter=='已得利本比'){
+							if(director=='大至小'){
+								transactions.sort(function(a,b) { return parseInt(b.InterestDivPrincipal) - parseInt(a.InterestDivPrincipal)} );
+							}else if(director=='小至大'){
+								transactions.sort(function(a,b) { return parseInt(a.InterestDivPrincipal) - parseInt(b.InterestDivPrincipal)} );
+							}
+							library.arrayFilter(transactions,'InterestDivPrincipal',lboundRec,uboundRec);
+						}else if(sorter=='額外本金'){
+							if(director=='大至小'){
+								transactions.sort(function(a,b) { return parseInt(b.ExtendPrincipal) - parseInt(a.ExtendPrincipal)} );
+							}else if(director=='小至大'){
+								transactions.sort(function(a,b) { return parseInt(a.ExtendPrincipal) - parseInt(b.ExtendPrincipal)} );
+							}
+							library.arrayFilter(transactions,'ExtendPrincipal',lboundRec,uboundRec);
+						}else if(sorter=='目前總本金'){
+							if(director=='大至小'){
+								transactions.sort(function(a,b) { return parseInt(b.TotalPrincipalNow) - parseInt(a.TotalPrincipalNow)} );
+							}else if(director=='小至大'){
+								transactions.sort(function(a,b) { return parseInt(a.TotalPrincipalNow) - parseInt(b.TotalPrincipalNow)} );
+							}
+							library.arrayFilter(transactions,'TotalPrincipalNow',lboundRec,uboundRec);
+						}else if(sorter=='未還本金'){
+							if(director=='大至小'){
+								transactions.sort(function(a,b) { return parseInt(b.PrincipalNotReturn) - parseInt(a.PrincipalNotReturn)} );
+							}else if(director=='小至大'){
+								transactions.sort(function(a,b) { return parseInt(a.PrincipalNotReturn) - parseInt(b.PrincipalNotReturn)} );
+							}
+							library.arrayFilter(transactions,'PrincipalNotReturn',lboundRec,uboundRec);
+						}else if(sorter=='保險所需費用'){
+							if(director=='大至小'){
+								transactions.sort(function(a,b) { return parseInt(b.PrincipalNotReturn) - parseInt(a.PrincipalNotReturn)} );
+							}else if(director=='小至大'){
+								transactions.sort(function(a,b) { return parseInt(a.PrincipalNotReturn) - parseInt(b.PrincipalNotReturn)} );
+							}
+							library.arrayFilter(transactions,'PrincipalNotReturn',lboundRec,uboundRec);
+						}else if(sorter=='已還本金'){
+							if(director=='大至小'){
+								transactions.sort(function(a,b) { return parseInt(b.PrincipalReturn) - parseInt(a.PrincipalReturn)} );
+							}else if(director=='小至大'){
+								transactions.sort(function(a,b) { return parseInt(a.PrincipalReturn) - parseInt(b.PrincipalReturn)} );
+							}
+							library.arrayFilter(transactions,'PrincipalReturn',lboundRec,uboundRec);
+						}else if(sorter=='額外期數'){
+							if(director=='大至小'){
+								transactions.sort(function(a,b) { return parseInt(b.ExtendMonthPeriod) - parseInt(a.ExtendMonthPeriod)} );
+							}else if(director=='小至大'){
+								transactions.sort(function(a,b) { return parseInt(a.ExtendMonthPeriod) - parseInt(b.ExtendMonthPeriod)} );
+							}
+							library.arrayFilter(transactions,'ExtendMonthPeriod',lboundRec,uboundRec);
+						}else if(sorter=='目前總期數'){
+							if(director=='大至小'){
+								transactions.sort(function(a,b) { return parseInt(b.TotalMonthPeriodNow) - parseInt(a.TotalMonthPeriodNow)} );
+							}else if(director=='小至大'){
+								transactions.sort(function(a,b) { return parseInt(a.TotalMonthPeriodNow) - parseInt(b.TotalMonthPeriodNow)} );
+							}
+							library.arrayFilter(transactions,'TotalMonthPeriodNow',lboundRec,uboundRec);
+						}else if(sorter=='剩下期數'){
+							if(director=='大至小'){
+								transactions.sort(function(a,b) { return parseInt(b.MonthPeriodLeft) - parseInt(a.MonthPeriodLeft)} );
+							}else if(director=='小至大'){
+								transactions.sort(function(a,b) { return parseInt(a.MonthPeriodLeft) - parseInt(b.MonthPeriodLeft)} );
+							}
+							library.arrayFilter(transactions,'MonthPeriodLeft',lboundRec,uboundRec);
+						}else if(sorter=='已過期數'){
+							if(director=='大至小'){
+								transactions.sort(function(a,b) { return parseInt(b.MonthPeriodPast) - parseInt(a.MonthPeriodPast)} );
+							}else if(director=='小至大'){
+								transactions.sort(function(a,b) { return parseInt(a.MonthPeriodPast) - parseInt(b.MonthPeriodPast)} );
+							}
+							library.arrayFilter(transactions,'MonthPeriodPast',lboundRec,uboundRec);
 						}
 						
 						if(transactions.length==0){

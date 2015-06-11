@@ -5,7 +5,7 @@
 			<table width="100%">
 				<tr>
 					<td style="width:90%;">
-						<div style="font-size:30px;" <%if(json.TitleColor=="default"){%>class="default"<%}else if(json.TitleColor=="color1"){%>class="color1"<%}else if(json.TitleColor=="color3"){%>class="color3"<%}else if(json.TitleColor=="color2"){%>class="color2"<%}else if(json.TitleColor=="color4"){%>class="color4"<%}%>>[<%if(json.Category=='general'){%>一般<%}else if(json.Category=='education'){%>教育<%}else if(json.Category=='family'){%>家庭<%}else if(json.Category=='tour'){%>旅遊<%}%>]&nbsp;&nbsp;<%-json.StoryTitle.replace(new RegExp(' ','g'),'&nbsp;')%></div>
+						<div style="font-size:30px;" <%if(json.TitleColor=="default"){%>class="default"<%}else if(json.TitleColor=="color1"){%>class="color1"<%}else if(json.TitleColor=="color3"){%>class="color3"<%}else if(json.TitleColor=="color2"){%>class="color2"<%}else if(json.TitleColor=="color4"){%>class="color4"<%}else if(json.TitleColor=="color5"){%>class="color5"<%}%>>[<%if(json.Category=='general'){%>一般<%}else if(json.Category=='education'){%>教育<%}else if(json.Category=='family'){%>家庭<%}else if(json.Category=='tour'){%>旅遊<%}%>]&nbsp;&nbsp;<%-json.StoryTitle.replace(new RegExp(' ','g'),'&nbsp;')%></div>
 						<div style="font-size:20px;"> by <div id="aiteName" style="display:inline;"><%=json.CreatedBy.Username%></div></div>
 					</td>
 					<td align="right">
@@ -192,30 +192,30 @@
 								<%if(!jsonBorrowMessage){%>
 									<%if(!jsonMessage){ %>
 										<%if(!json.IfReadable){ %>
-											<button class="btn btn-default disabled">
+											<button type="button" class="btn btn-default disabled">
 												<span class="myTitle2">該故事已封存</span>
 											</button>
 										<%}else{%>
-											<button class="btn btn-default" data-toggle="modal" data-target="#hendLendModal">
+											<button type="button" class="btn btn-default" onclick="openForm('#hendLendModal');">
 												<span class="myTitle2">我想借錢給此人</span>
 											</button>
 										<%}%>
 									<% }else{ %>
 										<%if(!json.IfReadable){ %>
-											<button class="btn btn-default" data-toggle="modal" data-target="#hendLendModal">
+											<button type="button" class="btn btn-default" onclick="openForm('#hendLendModal');">
 												<span class="myTitle2">該故事已封存，但您仍可查看訊息</span>
 											</button>
 										<%}else{%>
 											<%if(jsonMessage.Status=='Confirmed'){ %>
-												<button class="btn btn-default" data-toggle="modal" data-target="#hendLendModal">
+												<button type="button" class="btn btn-default" onclick="openForm('#hendLendModal');">
 													<span class="myTitle2">您的出借訊息已被同意</span>
 												</button>
 											<% }else if(jsonMessage.Status=='Rejected'){ %>
-												<button class="btn btn-default" data-toggle="modal" data-target="#hendLendModal">
+												<button type="button" class="btn btn-default" onclick="openForm('#hendLendModal');">
 													<span class="myTitle2">您的出借訊息已被婉拒</span>
 												</button>
 											<% }else if(jsonMessage.Status=='NotConfirmed'){ %>
-												<button class="btn btn-default" data-toggle="modal" data-target="#hendLendModal">
+												<button type="button" class="btn btn-default" onclick="openForm('#hendLendModal');">
 													<span class="myTitle2">我想更新出借訊息</span>
 												</button>
 											<%}%>
@@ -223,20 +223,20 @@
 									<%}%>
 								<%}else{%>
 									<%if(!json.IfReadable){ %>
-										<button class="btn btn-default"  data-toggle="modal" data-target="#confirmModal">
+										<button type="button" class="btn btn-default" onclick="openForm('#confirmModal');">
 											<span class="myTitle2">該故事已封存，但您仍可查看訊息</span>
 										</button>
 									<%}else{%>
 										<%if(jsonBorrowMessage.Status=='Confirmed'){ %>
-											<button class="btn btn-default" data-toggle="modal" data-target="#confirmModal">
+											<button type="button" class="btn btn-default" onclick="openForm('#confirmModal');">
 												<span class="myTitle2">您已同意來自此人的借款請求</span>
 											</button>
 										<% }else if(jsonBorrowMessage.Status=='Rejected'){ %>
-											<button class="btn btn-default" data-toggle="modal" data-target="#confirmModal">
+											<button type="button" class="btn btn-default" onclick="openForm('#confirmModal');">
 												<span class="myTitle2">您已婉拒來自此人的借款請求</span>
 											</button>
 										<% }else if(jsonBorrowMessage.Status=='NotConfirmed'){ %>
-											<button class="btn btn-default" data-toggle="modal" data-target="#confirmModal">
+											<button type="button" class="btn btn-default" onclick="openForm('#confirmModal');">
 												<span class="myTitle2">查看來自此人的訊息</span>
 											</button>
 										<%}%>
@@ -244,11 +244,11 @@
 								<%}%>
 							<%}else{%>
 								<%if(json.IfReadable){ %>
-									<button class="btn btn-default"  data-toggle="modal" data-target="#readableModal">
+									<button type="button" class="btn btn-default"  data-toggle="modal" data-target="#readableModal">
 										<span class="myTitle2">此故事為您所有，點擊可進行封存</span>
 									</button>
 								<%}else{%>
-									<button class="btn btn-default disabled">
+									<button type="button" class="btn btn-default disabled">
 										<span class="myTitle2">此故事為您所有，且已經封存</span>
 									</button>
 								<%}%>
@@ -309,16 +309,62 @@
 								<div class="modal-body">
 									<h4>銀行帳戶內餘額：</h4>
 									<div class="input-group">
-										<input type="text" class="form-control" readonly="readonly" value="<%=MoneyInBankAccountValue.toFixed(0)%>">
+										<input id="lendChangerIpt0" type="text" class="form-control" readonly="readonly" value="<%=MoneyInBankAccountValue.toFixed(0)%>">
 										<span class="input-group-addon">元</span>
 									</div>
 									<br>
-									<h4>已借出金額：</h4>
+									<h4>目前最高可設定自動借出金額：</h4>
 									<div class="input-group">
-										<input type="text" class="form-control" readonly="readonly" value="<%=MoneyLended.toFixed(0)%>">
+										<input id="lendChangerIpt1" type="text" class="form-control" readonly="readonly" value="<%=MoneyLended.maxSettingAutoLend.toFixed(0)%>">
 										<span class="input-group-addon">元</span>
 									</div>
 									<br>
+									<h4>最大可自動借出金額：<%if(jsonLend){%><span id="s0" style="color:red;"></span><%}%></h4>
+									<div class="input-group">
+										<%if(jsonLend){%>
+											<input id="lendChangerIpt" type="text" class="form-control" value="<%=jsonLend.MaxMoneyToLend.toFixed(0)%>" onkeypress="if(event.keyCode==13){lendChanger();}">
+											<span class="input-group-addon">元</span>
+										<%}else{%>
+											<input type="text" class="form-control" readonly="readonly" value="未找到自動出借設定！">
+											<span class="input-group-addon">#</span>
+										<%}%>
+									</div>
+									<br>
+									<%if(jsonLend){%>
+										<button id="lendChangerBtn" type="button" class="btn btn-default" onclick="lendChanger();">變更</button>
+										<br>
+									<%}%>
+									<h4>已借出總金額：</h4>
+									<div class="input-group">
+										<input id="lendChangerIpt2" type="text" class="form-control" readonly="readonly" value="<%=MoneyLended.moneyLendedCumulated.toFixed(0)%>">
+										<span class="input-group-addon">元</span>
+									</div>
+									<br>
+									<h4>已手動借出金額：</h4>
+									<div class="input-group">
+										<input id="lendChangerIpt3" type="text" class="form-control" readonly="readonly" value="<%=MoneyLended.hendLendCumulated.toFixed(0)%>">
+										<span class="input-group-addon">元</span>
+									</div>
+									<br>
+									<h4>尚可手動借出金額：</h4>
+									<div class="input-group">
+										<input id="lendChangerIpt4" type="text" class="form-control" readonly="readonly" value="<%=MoneyLended.moneyLeftToHendLend.toFixed(0)%>">
+										<span class="input-group-addon">元</span>
+									</div>
+									<br>
+									<h4>已自動借出金額：</h4>
+									<div class="input-group">
+										<input id="lendChangerIpt5" type="text" class="form-control" readonly="readonly" value="<%=MoneyLended.autoLendCumulated.toFixed(0)%>">
+										<span class="input-group-addon">元</span>
+									</div>
+									<br>
+									<h4>尚可自動借出金額：</h4>
+									<div class="input-group">
+										<input id="lendChangerIpt6" type="text" class="form-control" readonly="readonly" value="<%=MoneyLended.moneyLeftToAutoLend.toFixed(0)%>">
+										<span class="input-group-addon">元</span>
+									</div>
+									<br>
+									<div class="my-divider"></div>
 								<form action="/Messages/toLendCreate" method="post" onsubmit="return disableButton();">
 									<h4>本次欲借出金額：<i style="color:red;">*</i><span id="s1" style="color:red;"><%if(hlfJSON){%><%if(hlfJSON.Target[0]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=hlfJSON.Message[0]%><%}%><%}%></span></h4>
 									<div class="input-group">
@@ -338,6 +384,7 @@
 										<span class="input-group-addon">個月</span>
 									</div>
 									<br>
+									<div class="my-divider"></div>
 									<button type="button" class="btn btn-default" onclick="interestInFutureCalculator();">試算</button>
 									<br>
 									<h4>預計總利息：</h4>
@@ -346,24 +393,31 @@
 										<span class="input-group-addon">元</span>
 									</div>
 									<br>
+									<h4>預計本利和：</h4>
+									<div class="input-group">
+										<input name="F6" type="text" class="form-control" id="moneyFuture" readonly="readonly" value="<%if(hlfJSON){%><%=hlfJSON.FormContent.F6%><%}else{%>0<%}%>">
+										<span class="input-group-addon">元</span>
+									</div>
+									<br>
 									<h4>預計每期平均利息：</h4>
 									<div class="input-group">
-										<input name="F6" type="text" class="form-control" id="interestFutureMonth" readonly="readonly" value="<%if(hlfJSON){%><%=hlfJSON.FormContent.F6%><%}else{%>0<%}%>">
+										<input name="F7" type="text" class="form-control" id="interestFutureMonth" readonly="readonly" value="<%if(hlfJSON){%><%=hlfJSON.FormContent.F7%><%}else{%>0<%}%>">
 										<span class="input-group-addon">元</span>
 									</div>
 									<br>
 									<h4>預計每期平均本利和：</h4>
 									<div class="input-group">
-										<input name="F7" type="text" class="form-control" id="interestFutureMoneyMonth" readonly="readonly" value="<%if(hlfJSON){%><%=hlfJSON.FormContent.F7%><%}else{%>0<%}%>">
+										<input name="F8" type="text" class="form-control" id="interestFutureMoneyMonth" readonly="readonly" value="<%if(hlfJSON){%><%=hlfJSON.FormContent.F8%><%}else{%>0<%}%>">
 										<span class="input-group-addon">元</span>
 									</div>
 									<br>
 									<h4>預計總利息/最初本金比：</h4>
 									<div class="input-group">
-										<input name="F8" type="text" class="form-control" id="interestFutureDivMoney" readonly="readonly" value="<%if(hlfJSON){%><%=hlfJSON.FormContent.F8%><%}else{%>0<%}%>">
+										<input name="F9" type="text" class="form-control" id="interestFutureDivMoney" readonly="readonly" value="<%if(hlfJSON){%><%=hlfJSON.FormContent.F9%><%}else{%>0<%}%>">
 										<span class="input-group-addon">%</span>
 									</div>
 									<br>
+									<div class="my-divider"></div>
 									<h4>訊息（選填）：<span id="s4" style="color:red;"><%if(hlfJSON){%><%if(hlfJSON.Target[3]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=hlfJSON.Message[3]%><%}%><%}%></span></h4>
 									<textarea class="form-control" name="Message" rows="3"><%if(hlfJSON){%><%=hlfJSON.FormContent.F4%><%}%></textarea>
 								</div>
@@ -429,9 +483,16 @@
 										<span class="input-group-addon">個月</span>
 									</div>
 									<br>
+									<div class="my-divider"></div>
 									<h4>預計總利息：</h4>
 									<div class="input-group">
 										<input type="text" class="form-control" id="interestFuture" readonly="readonly" value="<%=jsonMessage.InterestInFuture.toFixed(0)%>">
+										<span class="input-group-addon">元</span>
+									</div>
+									<br>
+									<h4>預計本利和：</h4>
+									<div class="input-group">
+										<input type="text" class="form-control" id="moneyFuture" readonly="readonly" value="<%=jsonMessage.MoneyFuture.toFixed(0)%>">
 										<span class="input-group-addon">元</span>
 									</div>
 									<br>
@@ -453,6 +514,7 @@
 										<span class="input-group-addon">%</span>
 									</div>
 									<br>
+									<div class="my-divider"></div>
 									<h4>訊息：</h4>
 									<textarea class="form-control" name="Message" rows="3" readonly="readonly"><%=jsonMessage.Message%></textarea>
 									<br>
@@ -506,18 +568,64 @@
 									<h4 class="modal-title" id="myModalLabel">欲借出訊息 - 更新/刪除</h4>
 								</div>
 								<div class="modal-body">
-									<h4>您銀行帳戶內的餘額：</h4>
+									<h4>銀行帳戶內餘額：</h4>
 									<div class="input-group">
-										<input type="text" class="form-control" readonly="readonly" value="<%=MoneyInBankAccountValue.toFixed(0)%>">
+										<input id="lendChangerIpt0" type="text" class="form-control" readonly="readonly" value="<%=MoneyInBankAccountValue.toFixed(0)%>">
 										<span class="input-group-addon">元</span>
 									</div>
 									<br>
-									<h4>您已借出的金額：</h4>
+									<h4>目前最高可設定自動借出金額：</h4>
 									<div class="input-group">
-										<input type="text" class="form-control" readonly="readonly" value="<%=MoneyLended.toFixed(0)%>">
+										<input id="lendChangerIpt1" type="text" class="form-control" readonly="readonly" value="<%=MoneyLended.maxSettingAutoLend.toFixed(0)%>">
 										<span class="input-group-addon">元</span>
 									</div>
 									<br>
+									<h4>最大可自動借出金額：<%if(jsonLend){%><span id="s0" style="color:red;"></span><%}%></h4>
+									<div class="input-group">
+										<%if(jsonLend){%>
+											<input id="lendChangerIpt" type="text" class="form-control" value="<%=jsonLend.MaxMoneyToLend.toFixed(0)%>" onkeypress="if(event.keyCode==13){lendChanger();}">
+											<span class="input-group-addon">元</span>
+										<%}else{%>
+											<input type="text" class="form-control" readonly="readonly" value="未找到自動出借設定！">
+											<span class="input-group-addon">#</span>
+										<%}%>
+									</div>
+									<br>
+									<%if(jsonLend){%>
+										<button id="lendChangerBtn" type="button" class="btn btn-default" onclick="lendChanger();">變更</button>
+										<br>
+									<%}%>
+									<h4>已借出總金額：</h4>
+									<div class="input-group">
+										<input id="lendChangerIpt2" type="text" class="form-control" readonly="readonly" value="<%=MoneyLended.moneyLendedCumulated.toFixed(0)%>">
+										<span class="input-group-addon">元</span>
+									</div>
+									<br>
+									<h4>已手動借出金額：</h4>
+									<div class="input-group">
+										<input id="lendChangerIpt3" type="text" class="form-control" readonly="readonly" value="<%=MoneyLended.hendLendCumulated.toFixed(0)%>">
+										<span class="input-group-addon">元</span>
+									</div>
+									<br>
+									<h4>尚可手動借出金額：</h4>
+									<div class="input-group">
+										<input id="lendChangerIpt4" type="text" class="form-control" readonly="readonly" value="<%=MoneyLended.moneyLeftToHendLend.toFixed(0)%>">
+										<span class="input-group-addon">元</span>
+									</div>
+									<br>
+									<h4>已自動借出金額：</h4>
+									<div class="input-group">
+										<input id="lendChangerIpt5" type="text" class="form-control" readonly="readonly" value="<%=MoneyLended.autoLendCumulated.toFixed(0)%>">
+										<span class="input-group-addon">元</span>
+									</div>
+									<br>
+									<h4>尚可自動借出金額：</h4>
+									<div class="input-group">
+										<input id="lendChangerIpt6" type="text" class="form-control" readonly="readonly" value="<%=MoneyLended.moneyLeftToAutoLend.toFixed(0)%>">
+										<span class="input-group-addon">元</span>
+									</div>
+									<br>
+									<div class="my-divider"></div>
 								<form action="/Messages/toLendUpdate" method="post" id="formID" onsubmit="return disableButton();">
 									<h4>本次欲借出金額：<i style="color:red;">*</i><span id="s1" style="color:red;"><%if(hlfJSON){%><%if(hlfJSON.Target[0]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=hlfJSON.Message[0]%><%}%><%}%></span></h4>
 									<div class="input-group">
@@ -537,6 +645,7 @@
 										<span class="input-group-addon">個月</span>
 									</div>
 									<br>
+									<div class="my-divider"></div>
 									<button type="button" class="btn btn-default" onclick="interestInFutureCalculator();">重新試算</button>
 									<br>
 									<h4>預計總利息：</h4>
@@ -545,24 +654,31 @@
 										<span class="input-group-addon">元</span>
 									</div>
 									<br>
+									<h4>預計本利和：</h4>
+									<div class="input-group">
+										<input name="F6" type="text" class="form-control" id="moneyFuture" readonly="readonly" value="<%if(hlfJSON){%><%=hlfJSON.FormContent.F6%><%}else{%><%=jsonMessage.MoneyFuture.toFixed(0)%><%}%>">
+										<span class="input-group-addon">元</span>
+									</div>
+									<br>
 									<h4>預計每期平均利息：</h4>
 									<div class="input-group">
-										<input name="F6" type="text" class="form-control" id="interestFutureMonth" readonly="readonly" value="<%if(hlfJSON){%><%=hlfJSON.FormContent.F6%><%}else{%><%=jsonMessage.InterestInFutureMonth.toFixed(0)%><%}%>">
+										<input name="F7" type="text" class="form-control" id="interestFutureMonth" readonly="readonly" value="<%if(hlfJSON){%><%=hlfJSON.FormContent.F7%><%}else{%><%=jsonMessage.InterestInFutureMonth.toFixed(0)%><%}%>">
 										<span class="input-group-addon">元</span>
 									</div>
 									<br>
 									<h4>預計每期平均本利和：</h4>
 									<div class="input-group">
-										<input name="F7" type="text" class="form-control" id="interestFutureMoneyMonth" readonly="readonly" value="<%if(hlfJSON){%><%=hlfJSON.FormContent.F7%><%}else{%><%=jsonMessage.InterestInFutureMoneyMonth.toFixed(0)%><%}%>">
+										<input name="F8" type="text" class="form-control" id="interestFutureMoneyMonth" readonly="readonly" value="<%if(hlfJSON){%><%=hlfJSON.FormContent.F8%><%}else{%><%=jsonMessage.InterestInFutureMoneyMonth.toFixed(0)%><%}%>">
 										<span class="input-group-addon">元</span>
 									</div>
 									<br>
 									<h4>預計總利息/最初本金比：</h4>
 									<div class="input-group">
-										<input name="F8" type="text" class="form-control" id="interestFutureDivMoney" readonly="readonly" value="<%if(hlfJSON){%><%=hlfJSON.FormContent.F8%><%}else{%><%=jsonMessage.InterestInFutureDivMoney.toFixed(2)%><%}%>">
+										<input name="F9" type="text" class="form-control" id="interestFutureDivMoney" readonly="readonly" value="<%if(hlfJSON){%><%=hlfJSON.FormContent.F9%><%}else{%><%=jsonMessage.InterestInFutureDivMoney.toFixed(2)%><%}%>">
 										<span class="input-group-addon">%</span>
 									</div>
 									<br>
+									<div class="my-divider"></div>
 									<h4>訊息（選填）：<span id="s4" style="color:red;"><%if(hlfJSON){%><%if(hlfJSON.Target[3]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=hlfJSON.Message[3]%><%}%><%}%></span></h4>
 									<textarea class="form-control" name="Message" rows="3"><%if(hlfJSON){%><%=hlfJSON.FormContent.F4%><%}else{%><%if(jsonMessage.Message.trim()!='無內容'){%><%=jsonMessage.Message%><%}%><%}%></textarea>
 								</div>
@@ -654,9 +770,16 @@
 									<span class="input-group-addon">個月</span>
 								</div>
 								<br>
+								<div class="my-divider"></div>
 								<h4>預計總利息：</h4>
 								<div class="input-group">
 									<input type="text" class="form-control" id="interestFuture" readonly="readonly" value="<%=jsonBorrowMessage.InterestInFuture.toFixed(0)%>">
+									<span class="input-group-addon">元</span>
+								</div>
+								<br>
+								<h4>預計本利和：</h4>
+								<div class="input-group">
+									<input type="text" class="form-control" id="moneyFuture" readonly="readonly" value="<%=jsonBorrowMessage.MoneyFuture.toFixed(0)%>">
 									<span class="input-group-addon">元</span>
 								</div>
 								<br>
@@ -678,6 +801,7 @@
 									<span class="input-group-addon">%</span>
 								</div>
 								<br>
+								<div class="my-divider"></div>
 								<h4>訊息：</h4>
 								<textarea class="form-control" name="Message" rows="3" readonly="readonly"><%=jsonBorrowMessage.Message%></textarea>
 								<br>
@@ -731,13 +855,19 @@
 								<h4 class="modal-title" id="myModalLabel">回覆借款請求</h4>
 							</div>
 							<div class="modal-body">
-								<h4>您銀行帳戶內的餘額：</h4>
+								<h4>銀行帳戶內餘額：</h4>
 								<div class="input-group">
 									<input id="lendChangerIpt0" type="text" class="form-control" readonly="readonly" value="<%=MoneyInBankAccountValue.toFixed(0)%>">
 									<span class="input-group-addon">元</span>
 								</div>
 								<br>
-								<h4>您目前的自動借出額度：<%if(jsonLend){%><span id="s0" style="color:red;"></span><%}%></h4>
+								<h4>目前最高可設定自動借出金額：</h4>
+								<div class="input-group">
+									<input id="lendChangerIpt1" type="text" class="form-control" readonly="readonly" value="<%=MoneyLended.maxSettingAutoLend.toFixed(0)%>">
+									<span class="input-group-addon">元</span>
+								</div>
+								<br>
+								<h4>最大可自動借出金額：<%if(jsonLend){%><span id="s0" style="color:red;"></span><%}%></h4>
 								<div class="input-group">
 									<%if(jsonLend){%>
 										<input id="lendChangerIpt" type="text" class="form-control" value="<%=jsonLend.MaxMoneyToLend.toFixed(0)%>" onkeypress="if(event.keyCode==13){lendChanger();}">
@@ -752,12 +882,37 @@
 									<button id="lendChangerBtn" type="button" class="btn btn-default" onclick="lendChanger();">變更</button>
 									<br>
 								<%}%>
-								<h4>您已借出的金額：</h4>
+								<h4>已借出總金額：</h4>
 								<div class="input-group">
-									<input type="text" class="form-control" readonly="readonly" value="<%=MoneyLended.toFixed(0)%>">
+									<input id="lendChangerIpt2" type="text" class="form-control" readonly="readonly" value="<%=MoneyLended.moneyLendedCumulated.toFixed(0)%>">
 									<span class="input-group-addon">元</span>
 								</div>
 								<br>
+								<h4>已手動借出金額：</h4>
+								<div class="input-group">
+									<input id="lendChangerIpt3" type="text" class="form-control" readonly="readonly" value="<%=MoneyLended.hendLendCumulated.toFixed(0)%>">
+									<span class="input-group-addon">元</span>
+								</div>
+								<br>
+								<h4>尚可手動借出金額：</h4>
+								<div class="input-group">
+									<input id="lendChangerIpt4" type="text" class="form-control" readonly="readonly" value="<%=MoneyLended.moneyLeftToHendLend.toFixed(0)%>">
+									<span class="input-group-addon">元</span>
+								</div>
+								<br>
+								<h4>已自動借出金額：</h4>
+								<div class="input-group">
+									<input id="lendChangerIpt5" type="text" class="form-control" readonly="readonly" value="<%=MoneyLended.autoLendCumulated.toFixed(0)%>">
+									<span class="input-group-addon">元</span>
+								</div>
+								<br>
+								<h4>尚可自動借出金額：</h4>
+								<div class="input-group">
+									<input id="lendChangerIpt6" type="text" class="form-control" readonly="readonly" value="<%=MoneyLended.moneyLeftToAutoLend.toFixed(0)%>">
+									<span class="input-group-addon">元</span>
+								</div>
+								<br>
+								<div class="my-divider"></div>
 							<form action="/Messages/confirmToBorrowMessageInStory" method="post" id="confirmFormID" onsubmit="return disableButton(1);">
 								<h4>金額：<i style="color:red;">*</i><span id="s1" style="color:red;"><%if(cfJSON){%><%if(cfJSON.Target[0]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=cfJSON.Message[0]%><%}%><%}%></span></h4>
 								<div class="input-group">
@@ -777,6 +932,7 @@
 									<span class="input-group-addon">個月</span>
 								</div>
 								<br>
+								<div class="my-divider"></div>
 								<button type="button" class="btn btn-default" onclick="interestInFutureCalculator();">重新試算</button>
 								<br>
 								<h4>預計總利息：</h4>
@@ -785,24 +941,31 @@
 									<span class="input-group-addon">元</span>
 								</div>
 								<br>
+								<h4>預計本利和：</h4>
+								<div class="input-group">
+									<input name="F6" type="text" class="form-control" id="moneyFuture" readonly="readonly" value="<%if(cfJSON){%><%=cfJSON.FormContent.F6%><%}else{%><%=jsonBorrowMessage.MoneyFuture.toFixed(0)%><%}%>">
+									<span class="input-group-addon">元</span>
+								</div>
+								<br>
 								<h4>預計每期平均利息：</h4>
 								<div class="input-group">
-									<input name="F6" type="text" class="form-control" id="interestFutureMonth" readonly="readonly" value="<%if(cfJSON){%><%=cfJSON.FormContent.F6%><%}else{%><%=jsonBorrowMessage.InterestInFutureMonth.toFixed(0)%><%}%>">
+									<input name="F7" type="text" class="form-control" id="interestFutureMonth" readonly="readonly" value="<%if(cfJSON){%><%=cfJSON.FormContent.F7%><%}else{%><%=jsonBorrowMessage.InterestInFutureMonth.toFixed(0)%><%}%>">
 									<span class="input-group-addon">元</span>
 								</div>
 								<br>
 								<h4>預計每期平均本利和：</h4>
 								<div class="input-group">
-									<input name="F7" type="text" class="form-control" id="interestFutureMoneyMonth" readonly="readonly" value="<%if(cfJSON){%><%=cfJSON.FormContent.F7%><%}else{%><%=jsonBorrowMessage.InterestInFutureMoneyMonth.toFixed(0)%><%}%>">
+									<input name="F8" type="text" class="form-control" id="interestFutureMoneyMonth" readonly="readonly" value="<%if(cfJSON){%><%=cfJSON.FormContent.F8%><%}else{%><%=jsonBorrowMessage.InterestInFutureMoneyMonth.toFixed(0)%><%}%>">
 									<span class="input-group-addon">元</span>
 								</div>
 								<br>
 								<h4>預計總利息/最初本金比：</h4>
 								<div class="input-group">
-									<input name="F8" type="text" class="form-control" id="interestFutureDivMoney" readonly="readonly" value="<%if(cfJSON){%><%=cfJSON.FormContent.F8%><%}else{%><%=jsonBorrowMessage.InterestInFutureDivMoney.toFixed(2)%><%}%>">
+									<input name="F9" type="text" class="form-control" id="interestFutureDivMoney" readonly="readonly" value="<%if(cfJSON){%><%=cfJSON.FormContent.F9%><%}else{%><%=jsonBorrowMessage.InterestInFutureDivMoney.toFixed(2)%><%}%>">
 									<span class="input-group-addon">%</span>
 								</div>
 								<br>
+								<div class="my-divider"></div>
 								<h4>訊息：</h4>
 								<textarea class="form-control" name="Message" rows="3" readonly="readonly"><%if(cfJSON){%><%=cfJSON.FormContent.F4%><%}else{%><%=jsonBorrowMessage.Message%><%}%></textarea>
 							</div>
@@ -1028,6 +1191,11 @@
 				});	
 				
 		});
+		
+		function openForm(target){
+			$('#myTab a[href="#tab2"]').tab('show');
+			$(target).modal('show');
+		}
 		
 		function startRenderComments(){
 			$('#iptCtr').attr('onkeypress','');
@@ -1300,6 +1468,7 @@
 								}
 							}
 						}
+						var moneyFuture=interestFuture+money;
 						var interestFutureDivMoney
 						if(money>0){
 							interestFutureDivMoney=interestFuture/money*100;
@@ -1323,19 +1492,102 @@
 						$("#interestFutureMonth").val(interestFutureMonth.toFixed(0));
 						$("#interestFutureMoneyMonth").val(interestFutureMoneyMonth.toFixed(0));
 						$("#interestFutureDivMoney").val(interestFutureDivMoney.toFixed(2));
+						$("#moneyFuture").val(moneyFuture.toFixed(0));
 					}else{
 						$("#interestFuture").val('錯誤參數，無法進行試算!');
 						$("#interestFutureMonth").val('錯誤參數，無法進行試算!');
 						$("#interestFutureMoneyMonth").val('錯誤參數，無法進行試算!');
 						$("#interestFutureDivMoney").val('錯誤參數，無法進行試算!');
+						$("#moneyFuture").val('錯誤參數，無法進行試算!');
 					}					
 				}else{
 					$("#interestFuture").val('錯誤參數，無法進行試算!');
 					$("#interestFutureMonth").val('錯誤參數，無法進行試算!');
 					$("#interestFutureMoneyMonth").val('錯誤參數，無法進行試算!');
 					$("#interestFutureDivMoney").val('錯誤參數，無法進行試算!');
+					$("#moneyFuture").val('錯誤參數，無法進行試算!');
 				}
 			}
+			
+			
+			var submitFlag=false;
+			<%if(jsonLend){%>	
+				var lendChangerFlag=false;
+				function lendChanger(){
+					if(!lendChangerFlag){
+						var temp=$('#lendChangerIpt').val().trim();
+						if(temp!==''){
+							ajaxer(temp);
+						}else{
+							$('#s0').html('&nbsp;&nbsp;&nbsp;&nbsp;不可為空值！');
+						}
+					}
+				}
+				
+				function ajaxer(value){
+					$('#s0').html('&nbsp;&nbsp;&nbsp;&nbsp;處理中...');
+					starter();
+					$.ajax({ 
+						url: '/Lends/changer',
+						type: 'POST',
+						data:{Value:value,TargetID:"<%=jsonLend._id%>"},
+						dataType: 'json',
+						success: function(Jdata) {
+							var origInner;
+							if(Jdata.success){
+								$('#lendChangerIpt0').val(Jdata.result0.toFixed(0));
+								$('#lendChangerIpt1').val(Jdata.result.maxSettingAutoLend.toFixed(0));
+								$('#lendChangerIpt2').val(Jdata.result.moneyLendedCumulated.toFixed(0));
+								$('#lendChangerIpt3').val(Jdata.result.hendLendCumulated.toFixed(0));
+								$('#lendChangerIpt4').val(Jdata.result.moneyLeftToHendLend.toFixed(0));
+								$('#lendChangerIpt5').val(Jdata.result.autoLendCumulated.toFixed(0));
+								$('#lendChangerIpt6').val(Jdata.result.moneyLeftToAutoLend.toFixed(0));
+								$('#lendChangerIpt').val(Jdata.result.maxMoneyToLend.toFixed(0));
+								$('#s0').html('&nbsp;&nbsp;&nbsp;&nbsp;成功修改！');
+							}else{
+								if(Jdata.result0){
+									$('#lendChangerIpt0').val(Jdata.result0.toFixed(0));
+								}
+								if(Jdata.origValue){
+									$('#lendChangerIpt').val(Jdata.origValue.toFixed(0));
+								}
+								$('#s0').html('&nbsp;&nbsp;&nbsp;&nbsp;'+Jdata.error);
+							}
+							ender();
+						},
+						error: function() {
+							$('#s0').html('&nbsp;&nbsp;&nbsp;&nbsp;something wrong!');
+							ender();
+						}
+					});	
+				}
+				
+				function starter(){
+					lendChangerFlag=true;
+					$('#lendChangerIpt').attr('onkeypress','');
+					$('#lendChangerIpt').attr('readonly','readonly');
+					var orig=$('#lendChangerBtn').attr('class');
+					if(orig.search(' disabled')<0){
+						orig=orig+' disabled';
+						$('#lendChangerBtn').attr('class',orig);
+					}
+					
+					submitFlag=true;
+					disableButtonInner();
+				}
+				
+				function ender(){
+					lendChangerFlag=false;
+					$('#lendChangerIpt').attr('onkeypress','if(event.keyCode==13){lendChanger();}');
+					$('#lendChangerIpt').removeAttr("readonly");
+					var orig=$('#lendChangerBtn').attr('class');
+					orig=orig.replace(/ disabled/g, '');
+					$('#lendChangerBtn').attr('class',orig);
+					
+					submitFlag=false;
+					enableButtonInner();
+				}
+			<%}%>
 			
 			<%if(!jsonBorrowMessage){%>
 				<% if(!jsonMessage){ %>
@@ -1344,19 +1596,28 @@
 							$('#chkModal1').modal('hide');
 						}
 						
-						var submitFlag=false;
 						function disableButton(){
 							if(!submitFlag){
-								var orig=$('#createBtnID').attr('class');
-								if(orig.search(' disabled')<0){
-									orig=orig+' disabled';
-									$('#createBtnID').attr('class',orig);
-								}
+								disableButtonInner();
 								submitFlag=true;
 								return true;
 							}else{
 								return false;
 							}
+						}
+						
+						function disableButtonInner(){
+							var orig=$('#createBtnID').attr('class');
+							if(orig.search(' disabled')<0){
+								orig=orig+' disabled';
+								$('#createBtnID').attr('class',orig);
+							}
+						}
+						
+						function enableButtonInner(){
+							var orig=$('#createBtnID').attr('class');
+							orig=orig.replace(/ disabled/g, '');
+							$('#createBtnID').attr('class',orig);
 						}
 					<%}%>
 				<%}else{%>
@@ -1374,136 +1635,71 @@
 							$('#chkModal2').modal('hide');
 						}
 						
-						var submitFlag=false;
 						function disableButton(){
 							if(!submitFlag){
-								var orig=$('#destroyBtnID').attr('class');
-								if(orig.search(' disabled')<0){
-									orig=orig+' disabled';
-									$('#destroyBtnID').attr('class',orig);
-								}
-								
-								orig=$('#updateBtnID').attr('class');
-								if(orig.search(' disabled')<0){
-									orig=orig+' disabled';
-									$('#updateBtnID').attr('class',orig);
-								}
+								disableButtonInner();
 								submitFlag=true;
 								return true;
 							}else{
 								return false;
 							}
+						}
+						
+						function disableButtonInner(){
+							var orig=$('#destroyBtnID').attr('class');
+							if(orig.search(' disabled')<0){
+								orig=orig+' disabled';
+								$('#destroyBtnID').attr('class',orig);
+							}
+							
+							orig=$('#updateBtnID').attr('class');
+							if(orig.search(' disabled')<0){
+								orig=orig+' disabled';
+								$('#updateBtnID').attr('class',orig);
+							}
+						}
+						
+						function enableButtonInner(){
+							var orig=$('#destroyBtnID').attr('class');
+							orig=orig.replace(/ disabled/g, '');
+							$('#destroyBtnID').attr('class',orig);
+							
+							orig=$('#updateBtnID').attr('class');
+							orig=orig.replace(/ disabled/g, '');
+							$('#updateBtnID').attr('class',orig);
 						}
 					<%}else if((!json.IfReadable)&&(jsonMessage.Status=='NotConfirmed')){%>
 						function destroy(){
 							$('#chkModal7').modal('hide');
 						}
 						
-						var submitFlag=false;
 						function disableButton(){
 							if(!submitFlag){
-								var orig=$('#destroyBtnID').attr('class');
-								if(orig.search(' disabled')<0){
-									orig=orig+' disabled';
-									$('#destroyBtnID').attr('class',orig);
-								}
+								disableButtonInner();
 								submitFlag=true;
 								return true;
 							}else{
 								return false;
 							}
 						}
+						
+						function disableButtonInner(){
+							var orig=$('#destroyBtnID').attr('class');
+							if(orig.search(' disabled')<0){
+								orig=orig+' disabled';
+								$('#destroyBtnID').attr('class',orig);
+							}
+						}
+						
+						function enableButtonInner(){
+							var orig=$('#destroyBtnID').attr('class');
+							orig=orig.replace(/ disabled/g, '');
+							$('#destroyBtnID').attr('class',orig);
+						}
 					<%}%>
 				<%}%>
 			<%}else{%>
 				<%if((json.IfReadable)&&(jsonBorrowMessage.Status=='NotConfirmed')){ %>
-					<%if(jsonLend){%>
-						
-						var lendChangerFlag=false;
-						function lendChanger(){
-							if(!lendChangerFlag){
-								var temp=$('#lendChangerIpt').val().trim();
-								if(temp!==''){
-									ajaxer(temp);
-								}else{
-									$('#s0').html('&nbsp;&nbsp;&nbsp;&nbsp;不可為空值！');
-								}
-							}
-						}
-						
-						function ajaxer(value){
-							$('#s0').html('&nbsp;&nbsp;&nbsp;&nbsp;處理中...');
-							starter();
-							$.ajax({ 
-								url: '/Lends/changer',
-								type: 'POST',
-								data:{Value:value,TargetID:"<%=jsonLend._id%>"},
-								dataType: 'json',
-								success: function(Jdata) {
-									var origInner;
-									if(Jdata.success){
-										$('#lendChangerIpt0').val(Jdata.result0.toFixed(0));
-										$('#lendChangerIpt').val(Jdata.result.toFixed(0));
-										$('#s0').html('&nbsp;&nbsp;&nbsp;&nbsp;成功修改！');
-									}else{
-										if(Jdata.result0){
-											$('#lendChangerIpt0').val(Jdata.result0.toFixed(0));
-										}
-										if(Jdata.origValue){
-											$('#lendChangerIpt').val(Jdata.origValue.toFixed(0));
-										}
-										$('#s0').html('&nbsp;&nbsp;&nbsp;&nbsp;'+Jdata.error);
-									}
-									ender();
-								},
-								error: function() {
-									$('#s0').html('&nbsp;&nbsp;&nbsp;&nbsp;something wrong!');
-									ender();
-								}
-							});	
-						}
-						
-						function starter(){
-							lendChangerFlag=true;
-							$('#lendChangerIpt').attr('onkeypress','');
-							$('#lendChangerIpt').attr('readonly','readonly');
-							var orig=$('#lendChangerBtn').attr('class');
-							if(orig.search(' disabled')<0){
-								orig=orig+' disabled';
-								$('#lendChangerBtn').attr('class',orig);
-							}
-							
-							submitFlag=true;
-							orig=$('#argBtnID').attr('class');
-							if(orig.search(' disabled')<0){
-								orig=orig+' disabled';
-								$('#argBtnID').attr('class',orig);
-							}
-							orig=$('#rfsBtnID').attr('class');
-							if(orig.search(' disabled')<0){
-								orig=orig+' disabled';
-								$('#rfsBtnID').attr('class',orig);
-							}
-						}
-						
-						function ender(){
-							lendChangerFlag=false;
-							$('#lendChangerIpt').attr('onkeypress','if(event.keyCode==13){lendChanger();}');
-							$('#lendChangerIpt').removeAttr("readonly");
-							var orig=$('#lendChangerBtn').attr('class');
-							orig=orig.replace(/ disabled/g, '');
-							$('#lendChangerBtn').attr('class',orig);
-							
-							submitFlag=false;
-							orig=$('#argBtnID').attr('class');
-							orig=orig.replace(/ disabled/g, '');
-							$('#argBtnID').attr('class',orig);
-							orig=$('#rfsBtnID').attr('class');
-							orig=orig.replace(/ disabled/g, '');
-							$('#rfsBtnID').attr('class',orig);
-						}
-					<%}%>
-					
 					<%if(jsonLend){%>
 						function agree(){
 							$('#chkModal4').modal('hide');
@@ -1525,22 +1721,10 @@
 						var jsonLendFlag=false;
 					<%}%>
 					
-					var submitFlag=false;
 					function disableButton(side){
 						if(!submitFlag){
 							if(jsonLendFlag){
-								var orig=$('#argBtnID').attr('class');
-								if(orig.search(' disabled')<0){
-									orig=orig+' disabled';
-									$('#argBtnID').attr('class',orig);
-								}
-							
-								orig=$('#rfsBtnID').attr('class');
-								if(orig.search(' disabled')<0){
-									orig=orig+' disabled';
-									$('#rfsBtnID').attr('class',orig);
-								}
-								
+								disableButtonInner();
 								submitFlag=true;
 								return true;
 							}else{
@@ -1548,12 +1732,7 @@
 									$('#chkModal4').modal('show');
 									return false;
 								}else if(side==2){
-									orig=$('#rfsBtnID').attr('class');
-									if(orig.search(' disabled')<0){
-										orig=orig+' disabled';
-										$('#rfsBtnID').attr('class',orig);
-									}
-									
+									disableButtonInner();
 									submitFlag=true;
 									return true;
 								}
@@ -1562,24 +1741,65 @@
 							return false;
 						}
 					}
+					
+					function disableButtonInner(){
+						var orig;
+						
+						orig=$('#rfsBtnID').attr('class');
+						if(orig.search(' disabled')<0){
+							orig=orig+' disabled';
+							$('#rfsBtnID').attr('class',orig);
+						}
+
+						if(jsonLendFlag){
+							orig=$('#argBtnID').attr('class');
+							if(orig.search(' disabled')<0){
+								orig=orig+' disabled';
+								$('#argBtnID').attr('class',orig);
+							}
+						}
+					}
+					
+					function enableButtonInner(){
+						var orig;
+						
+						orig=$('#rfsBtnID').attr('class');
+						orig=orig.replace(/ disabled/g, '');
+						$('#rfsBtnID').attr('class',orig);
+						
+						if(jsonLendFlag){
+							orig=$('#argBtnID').attr('class');
+							orig=orig.replace(/ disabled/g, '');
+							$('#argBtnID').attr('class',orig);
+						}
+					}
 				<%}else if((!json.IfReadable)&&(jsonBorrowMessage.Status=='NotConfirmed')){%>
 					function refuse(){
 						$('#chkModal6').modal('hide');
 					}
 					
-					var submitFlag=false;
 					function disableButton(){
 						if(!submitFlag){
-							var orig=$('#rfsBtnID').attr('class');
-							if(orig.search(' disabled')<0){
-								orig=orig+' disabled';
-								$('#rfsBtnID').attr('class',orig);
-							}
+							disableButtonInner();
 							submitFlag=true;
 							return true;
 						}else{
 							return false;
 						}
+					}
+					
+					function disableButtonInner(){
+						var orig=$('#rfsBtnID').attr('class');
+						if(orig.search(' disabled')<0){
+							orig=orig+' disabled';
+							$('#rfsBtnID').attr('class',orig);
+						}
+					}
+					
+					function enableButtonInner(){
+						var orig=$('#rfsBtnID').attr('class');
+						orig=orig.replace(/ disabled/g, '');
+						$('#rfsBtnID').attr('class',orig);
 					}
 				<%}%>
 			<%}%>	
@@ -1589,19 +1809,28 @@
 					$('#readableModal').modal('hide');
 				}
 				
-				var submitFlag=false;
 				function disableButton(){
 					if(!submitFlag){
-						var orig=$('#readableBtnID').attr('class');
-						if(orig.search(' disabled')<0){
-							orig=orig+' disabled';
-							$('#readableBtnID').attr('class',orig);
-						}
+						disableButtonInner();
 						submitFlag=true;
 						return true;
 					}else{
 						return false;
 					}
+				}
+				
+				function disableButtonInner(){
+					var orig=$('#readableBtnID').attr('class');
+					if(orig.search(' disabled')<0){
+						orig=orig+' disabled';
+						$('#readableBtnID').attr('class',orig);
+					}
+				}
+				
+				function enableButtonInner(){
+					var orig=$('#readableBtnID').attr('class');
+					orig=orig.replace(/ disabled/g, '');
+					$('#readableBtnID').attr('class',orig);
 				}
 			<%}%>
 		<%}%>

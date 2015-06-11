@@ -59,12 +59,16 @@ router.post('/destroyTest', function(req, res, next) {
 			if(!borrow){
 				res.json({error: 'no such borrow'}, 500);
 			}else{
-				borrow.remove(function (err,removedBorrow) {
+				borrow.remove(function (err,removedItem) {
 					if (err){
 						console.log(err);
 						res.json({error: err.name}, 500);
 					}else{
-						res.json(removedBorrow);
+						library.userLevelAdderReturn(removedItem.CreatedBy,function(){
+							res.json(removedItem);
+						},function(){
+							res.end('error!');
+						});
 					}
 				});
 			}

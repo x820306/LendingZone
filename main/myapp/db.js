@@ -1,5 +1,5 @@
-var mongoose = require( 'mongoose' );
-var async = require( 'async' );
+var mongoose = require('mongoose');
+var async = require('async');
 var Schema   = mongoose.Schema;
 var bcrypt = require('bcrypt');
 var SALT_WORK_FACTOR = 10;
@@ -32,6 +32,7 @@ var Lends = new Schema({
 	MonthPeriod: { type: Number, default: 1 },
 	MinLevelAccepted: { type: Number, default: 0 },
 	MinInterestInFuture: { type: Number, default: 0 },
+	MinMoneyFuture: { type: Number, default: 0 },
 	MinInterestInFutureMonth: { type: Number, default: 0 },
 	MinInterestInFutureMoneyMonth: { type: Number, default: 0 },
 	MinInterestInFutureDivMoney:{ type: Number, default: 0 },
@@ -49,6 +50,9 @@ var Messages = new Schema({
 	MoneyToLend: { type: Number, default: 0 },
 	InterestRate: { type: Number, default: 0.01 },
 	MonthPeriod: { type: Number, default: 1 },
+	OldMoneyToLend: { type: Number, default: 0 },
+	OldInterestRate: { type: Number, default: 0.01 },
+	OldMonthPeriod: { type: Number, default: 1 },
 	Status: { type: String, default:'NotConfirmed' },// 'NotConfirmed' or 'Confirmed' or 'Rejected'
 	Type: {type: String, default:'NoType'},// 'toLend' or 'toBorrow'
 	Level:{ type: Number, default: 0 },//Have to be copied from Borrows, for sorting convenience
@@ -73,6 +77,7 @@ var Users = new Schema({
 	SecondCardType: { type: String},
 	Phone: { type: String},
 	Address: { type: String},
+	OrignalLevel: { type: Number, default: 0 },
 	Level: { type: Number, default: 0 },
 	MaxTotalMoneyCanBorrow: { type: Number, default: 0 },
 	Updated: { type: Date, default: Date.now },
@@ -91,13 +96,9 @@ var BankAccounts = new Schema({
 });
 
 var Transactions = new Schema({
-	Principal: { type: Number, default: 0 },//未還本金
-	PrincipalReturnedCumulated: { type: Number, default: 0 },//已還本金，以上兩者相加可得原始本金
-	InterestCumulated: { type: Number, default: 0 },//已繳利息
-	ServiceChargeCumulated: { type: Number, default: 0 },
+	Principal: { type: Number, default: 0 },//本金
 	InterestRate: { type: Number, default: 0.01 },
-	MonthPeriod: { type: Number, default: 1 },//剩下期數
-	MonthPeriodHasPast: { type: Number, default: 0 },//已過期數
+	MonthPeriod: { type: Number, default: 1 },//期數
 	Level:{ type: Number, default: 0 },//Have to be copied from Messages, for sorting convenience
 	CreatedFrom: { type: Schema.Types.ObjectId, ref: 'Messages' },
 	Borrower: { type: Schema.Types.ObjectId, ref: 'Users' },
@@ -126,18 +127,125 @@ var Returns = new Schema({
 	InterestNotPaid: { type: Number, default: 0 },
 	PrincipalShouldPaid: { type: Number, default: 0 },
 	PrincipalNotPaid: { type: Number, default: 0 },
-	PrincipalBeforePaid: { type: Number, default: 0 },
-	PrincipalReturnedCumulatedBeforePaid: { type: Number, default: 0 },
-	InterestCumulatedBeforePaid: { type: Number, default: 0 },
-	ServiceChargeCumulatedBeforePaid: { type: Number, default: 0 },
-	PrincipalAfterPaid: { type: Number, default: 0 },
-	PrincipalReturnedCumulatedAfterPaid: { type: Number, default: 0 },
-	InterestCumulatedAfterPaid: { type: Number, default: 0 },
-	ServiceChargeCumulatedAfterPaid: { type: Number, default: 0 },
+	ExtendPrincipalBeforePaid: { type: Number, default: 0 },
+	TotalPrincipalNowBeforePaid: { type: Number, default: 0 },
+	PrincipalNotReturnBeforePaid: { type: Number, default: 0 },
+	PrincipalReturnBeforePaid: { type: Number, default: 0 },
+	InterestBeforePaid: { type: Number, default: 0 },
+	PrincipalInterestBeforePaid: { type: Number, default: 0 },
+	InterestMonthBeforePaid: { type: Number, default: 0 },
+	PrincipalInterestMonthBeforePaid: { type: Number, default: 0 },
+	InterestDivPrincipalBeforePaid: { type: Number, default: 0 },
+	ServiceChargeBeforePaid: { type: Number, default: 0 },
+	ExtendMonthPeriodBeforePaid: { type: Number, default: 0 },
+	TotalMonthPeriodNowBeforePaid: { type: Number, default: 0 },
+	MonthPeriodLeftBeforePaid: { type: Number, default: 0 },
+	MonthPeriodPastBeforePaid: { type: Number, default: 0 },
+	InterestInFutureBeforePaid: { type: Number, default: 0 },
+	MoneyFutureBeforePaid: { type: Number, default: 0 },
+	InterestInFutureMonthBeforePaid: { type: Number, default: 0 },
+	InterestInFutureMoneyMonthBeforePaid: { type: Number, default: 0 },
+	InterestInFutureDivMoneyBeforePaid: { type: Number, default: 0 },
+	ReturnCountBeforePaid: { type: Number, default: 0 },
+	previousPayDateBeforePaid: { type: Date, default: Date.now },
+	nextPayDateBeforePaid: { type: Date, default: Date.now },
+	LevelBeforePaid: { type: Number, default: 0 },
+	ExtendPrincipalAfterPaid: { type: Number, default: 0 },
+	TotalPrincipalNowAfterPaid: { type: Number, default: 0 },
+	PrincipalNotReturnAfterPaid: { type: Number, default: 0 },
+	PrincipalReturnAfterPaid: { type: Number, default: 0 },
+	InterestAfterPaid: { type: Number, default: 0 },
+	PrincipalInterestAfterPaid: { type: Number, default: 0 },
+	InterestMonthAfterPaid: { type: Number, default: 0 },
+	PrincipalInterestMonthAfterPaid: { type: Number, default: 0 },
+	InterestDivPrincipalAfterPaid: { type: Number, default: 0 },
+	ServiceChargeAfterPaid: { type: Number, default: 0 },
+	ExtendMonthPeriodAfterPaid: { type: Number, default: 0 },
+	TotalMonthPeriodNowAfterPaid: { type: Number, default: 0 },
+	MonthPeriodLeftAfterPaid: { type: Number, default: 0 },
+	MonthPeriodPastAfterPaid: { type: Number, default: 0 },
+	InterestInFutureAfterPaid: { type: Number, default: 0 },
+	MoneyFutureAfterPaid: { type: Number, default: 0 },
+	InterestInFutureMonthAfterPaid: { type: Number, default: 0 },
+	InterestInFutureMoneyMonthAfterPaid: { type: Number, default: 0 },
+	InterestInFutureDivMoneyAfterPaid: { type: Number, default: 0 },
+	ReturnCountAfterPaid: { type: Number, default: 0 },
+	previousPayDateAfterPaid: { type: Date, default: Date.now },
+	nextPayDateAfterPaid: { type: Date, default: Date.now },
+	LevelAfterPaid: { type: Number, default: 0 },
 	Level:{ type: Number, default: 0 },
 	BorrowerBankAccountNumber: {type: String, default:''},
 	Updated: { type: Date, default: Date.now },
 	Created: { type: Date, default: Date.now }
+});
+
+mongoose.model( 'Lends', Lends );
+var LendsModal  = mongoose.model('Lends');
+mongoose.model( 'BankAccounts', BankAccounts );
+var BankAccountsModal  = mongoose.model('BankAccounts');
+
+Returns.pre('remove', function (next) {
+	console.log('level-4');
+	var returnFound=this;
+	BankAccountsModal.findOne({"OwnedBy": returnFound.Lender}).exec(function (err, lenderBankaccount){
+		if (err) {
+			console.log(err);
+			next();
+		}else{
+			if(!lenderBankaccount){
+				next();
+			}else{
+				lenderBankaccount.MoneyInBankAccount-=((returnFound.InterestShouldPaid-returnFound.InterestNotPaid)+(returnFound.PrincipalShouldPaid-returnFound.PrincipalNotPaid));
+				lenderBankaccount.save(function (err,updatedLenderBankaccount){
+					if (err){
+						console.log(err);
+						next();
+					}else{	
+						BankAccountsModal.findOne({"OwnedBy": returnFound.Borrower}).exec(function (err, borrowerBankaccount){
+							if (err) {
+								console.log(err);
+								next();
+							}else{
+								if(!borrowerBankaccount){
+									next();
+								}else{
+									borrowerBankaccount.MoneyInBankAccount+=((returnFound.ServiceChargeShouldPaid-returnFound.ServiceChargeNotPaid)+(returnFound.InterestShouldPaid-returnFound.InterestNotPaid)+(returnFound.PrincipalShouldPaid-returnFound.PrincipalNotPaid));
+									borrowerBankaccount.save(function (err,updatedBorrowerBankaccount){
+										if (err){
+											console.log(err);
+											next();
+										}else{	
+											var objID=mongoose.Types.ObjectId('5555251bb08002f0068fd00f');//admin account
+											BankAccountsModal.findOne({"OwnedBy": objID}).exec(function (err, adminAccount){
+												if (err) {
+													console.log(err);
+													next();
+												}else{
+													if(!adminAccount){
+														next();
+													}else{
+														adminAccount.MoneyInBankAccount-=(returnFound.ServiceChargeShouldPaid-returnFound.ServiceChargeNotPaid);
+														adminAccount.save(function (err,updatedAdminAccount){
+															if (err){
+																console.log(err);
+																next();
+															}else{	
+																next();
+															}
+														});
+													}
+												}
+											});
+										}
+									});
+								}
+							}
+						});
+					}
+				});
+			}
+		}
+	});
 });
 
 mongoose.model( 'Returns', Returns );
@@ -145,7 +253,8 @@ var ReturnsModal  = mongoose.model('Returns');
 
 Transactions.pre('remove', function (next) {
 	console.log('level-3');
-	async.each(this.Return, function(id, callback) {
+	var transactionFound=this;
+	async.each(transactionFound.Return, function(id, callback) {
 		ReturnsModal.findById(id).exec(function (err, returnFound){
 			if(err){
 				callback();
@@ -161,7 +270,45 @@ Transactions.pre('remove', function (next) {
 		});
 	},function(err){
 		if(err) throw err;
-		next();
+		BankAccountsModal.findOne({"OwnedBy": transactionFound.Lender}).exec(function (err, lenderBankaccount){
+			if (err) {
+				console.log(err);
+				next();
+			}else{
+				if(!lenderBankaccount){
+					next();
+				}else{
+					lenderBankaccount.MoneyInBankAccount+=transactionFound.Principal;
+					lenderBankaccount.save(function (err,updatedLenderBankaccount){
+						if (err){
+							console.log(err);
+							next();
+						}else{	
+							BankAccountsModal.findOne({"OwnedBy": transactionFound.Borrower}).exec(function (err, borrowerBankaccount){
+								if (err) {
+									console.log(err);
+									next();
+								}else{
+									if(!borrowerBankaccount){
+										next();
+									}else{
+										borrowerBankaccount.MoneyInBankAccount-=transactionFound.Principal;
+										borrowerBankaccount.save(function (err,updatedBorrowerBankaccount){
+											if (err){
+												console.log(err);
+												next();
+											}else{	
+												next();
+											}
+										});
+									}
+								}
+							});
+						}
+					});
+				}
+			}
+		});
 	});	
 });
 mongoose.model( 'Transactions', Transactions );
@@ -221,11 +368,6 @@ Borrows.pre('remove', function (next){
 });
 mongoose.model( 'Borrows', Borrows );
 var BorrowsModal  = mongoose.model('Borrows');
-
-mongoose.model( 'Lends', Lends );
-var LendsModal  = mongoose.model('Lends');
-mongoose.model( 'BankAccounts', BankAccounts );
-var BankAccountsModal  = mongoose.model('BankAccounts');
 
 Users.pre('remove', function (next){
 	var user_id=this._id;

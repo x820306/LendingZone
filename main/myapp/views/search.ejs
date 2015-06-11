@@ -32,7 +32,7 @@
 								<li id="alis4"<%if(actionDefault=='原始需要金額'){%> class="active"<%}%>><a href="#" onclick="searchActionSelector(4);sorterSelector(4);return false;" id="sorter4">原始需要金額</a></li>
 								<li id="alis5"<%if(actionDefault=='已經借到金額'){%> class="active"<%}%>><a href="#" onclick="searchActionSelector(5);sorterSelector(5);return false;" id="sorter5">已經借到金額</a></li>
 								<li id="alis6"<%if(actionDefault=='還需要金額'){%> class="active"<%}%>><a href="#" onclick="searchActionSelector(6);sorterSelector(6);return false;" id="sorter6">還需要金額</a></li>
-								<li id="alis7"<%if(actionDefault=='利率'){%> class="active"<%}%>><a href="#" onclick="searchActionSelector(7);sorterSelector(7);return false;" id="sorter7">利率</a></li>
+								<li id="alis7"<%if(actionDefault=='年利率'){%> class="active"<%}%>><a href="#" onclick="searchActionSelector(7);sorterSelector(7);return false;" id="sorter7">年利率</a></li>
 								<li id="alis8"<%if(actionDefault=='期數'){%> class="active"<%}%>><a href="#" onclick="searchActionSelector(8);sorterSelector(8);return false;" id="sorter8">期數</a></li>
 								<li id="alis9"<%if(actionDefault=='信用等級'){%> class="active"<%}%>><a href="#" onclick="searchActionSelector(9);sorterSelector(9);return false;" id="sorter9">信用等級</a></li>
 								<li id="alis10"<%if(actionDefault=='按讚次數'){%> class="active"<%}%>><a href="#" onclick="searchActionSelector(10);sorterSelector(10);return false;" id="sorter10">按讚次數</a></li>
@@ -68,22 +68,22 @@
 							<tr>
 								<td style="border-bottom-style: none;border-top-style: none;">
 									<div style="font-size:15px;display:inline;">
-										原始需要：<%=jsonArray[i].MoneyToBorrow.toFixed(0)%>元
+										<div style="display:inline;"<%if(actionDefault=='原始需要金額'){%> class="stronger"<%}%>>原始需要：</div><%=jsonArray[i].MoneyToBorrow.toFixed(0)%>元
 									</div>&nbsp;&nbsp;
 									<div style="font-size:15px;display:inline;">
-										已經借到：<%=jsonArray[i].Got.toFixed(0)%>元
+										<div style="display:inline;"<%if(actionDefault=='已經借到金額'){%> class="stronger"<%}%>>已經借到：</div><%=jsonArray[i].Got.toFixed(0)%>元
 									</div>&nbsp;&nbsp;
 									<div style="font-size:15px;display:inline;">
-										還需要：<%=jsonArray[i].Need.toFixed(0)%>元
+										<div style="display:inline;"<%if(actionDefault=='還需要金額'){%> class="stronger"<%}%>>還需要：</div><%=jsonArray[i].Need.toFixed(0)%>元
 									</div>&nbsp;&nbsp;
 									<div style="font-size:15px;display:inline;">
-										年利率：<%=(jsonArray[i].MaxInterestRateAccepted*100).toFixed(2)%>%
+										<div style="display:inline;"<%if(actionDefault=='年利率'){%> class="stronger"<%}%>>年利率：</div><%=(jsonArray[i].MaxInterestRateAccepted*100).toFixed(2)%>%
 									</div>&nbsp;&nbsp;
 									<div style="font-size:15px;display:inline;">
-										期數：<%=jsonArray[i].MonthPeriodAccepted.toFixed(0)%>個月
+										<div style="display:inline;"<%if(actionDefault=='期數'){%> class="stronger"<%}%>>期數：</div><%=jsonArray[i].MonthPeriodAccepted.toFixed(0)%>個月
 									</div>&nbsp;&nbsp;
 									<div style="font-size:15px;display:inline;">
-										信用：<%=jsonArray[i].Level.toFixed(0)%>級
+										<div style="display:inline;"<%if(actionDefault=='信用等級'){%> class="stronger"<%}%>>信用：</div><%=jsonArray[i].Level.toFixed(0)%>級
 									</div>
 								</td>
 							</tr>
@@ -94,7 +94,7 @@
 							<table width="100%">
 								<tr>
 									<td style="width:90%;">
-										<a style="font-size:25px;" <%if(jsonArray[i].TitleColor=="color1"){%>class="color1"<%}else if(jsonArray[i].TitleColor=="color3"){%>class="color3"<%}else if(jsonArray[i].TitleColor=="color2"){%>class="color2"<%}else if(jsonArray[i].TitleColor=="color4"){%>class="color4"<%}%> href="/lender/story?id=<%=jsonArray[i]._id%>">[<%if(jsonArray[i].Category=='general'){%>一般<%}else if(jsonArray[i].Category=='education'){%>教育<%}else if(jsonArray[i].Category=='family'){%>家庭<%}else if(jsonArray[i].Category=='tour'){%>旅遊<%}%>]&nbsp;&nbsp;<%-jsonArray[i].StoryTitle.replace(new RegExp(' ','g'),'&nbsp;')%></a>
+										<a style="font-size:25px;" <%if(jsonArray[i].TitleColor=="color1"){%>class="color1"<%}else if(jsonArray[i].TitleColor=="color3"){%>class="color3"<%}else if(jsonArray[i].TitleColor=="color2"){%>class="color2"<%}else if(jsonArray[i].TitleColor=="color4"){%>class="color4"<%}else if(jsonArray[i].TitleColor=="color5"){%>class="color5"<%}%> href="/lender/story?id=<%=jsonArray[i]._id%>">[<%if(jsonArray[i].Category=='general'){%>一般<%}else if(jsonArray[i].Category=='education'){%>教育<%}else if(jsonArray[i].Category=='family'){%>家庭<%}else if(jsonArray[i].Category=='tour'){%>旅遊<%}%>]&nbsp;&nbsp;<%-jsonArray[i].StoryTitle.replace(new RegExp(' ','g'),'&nbsp;')%></a>
 										<div style="font-size:15px;" class="myTitle">by <%=jsonArray[i].CreatedBy.Username%></div>
 									</td>
 									<td align="right">
@@ -104,7 +104,7 @@
 													<span class="glyphicon glyphicon-thumbs-up myTitle2"></span>
 												</button>
 											<% }else{ %>
-												<%if(jsonArray[i].TitleColor!="gray"){ %>
+												<%if(jsonArray[i].TitleColor!="color4"){ %>
 													<%if(!jsonArray[i].ifLiked){ %>
 														<button class="btn btn-default" onclick="like(<%=i%>);" id="btnID<%=i%>">
 															<span class="glyphicon glyphicon-thumbs-up myTitle2"></span>
@@ -138,15 +138,15 @@
 							<tr>
 								<td align="right" style="border-bottom-style: none;border-top-style: none;">
 									<div style="font-size:15px;display:inline;">
-										Deadline：<%=jsonArray[i].TimeLimit.getFullYear()%>/<%=jsonArray[i].TimeLimit.getMonth()+1%>/<%=jsonArray[i].TimeLimit.getDate()%>
+										<div style="display:inline;"<%if(actionDefault=='最晚媒合日期'){%> class="stronger"<%}%>>Deadline：</div><%=jsonArray[i].TimeLimit.getFullYear()%>/<%=jsonArray[i].TimeLimit.getMonth()+1%>/<%=jsonArray[i].TimeLimit.getDate()%>
 									</div>
 									&nbsp;&nbsp;&nbsp;&nbsp;
 									<div style="font-size:15px;display:inline;">
-										Created：<%=jsonArray[i].Created.getFullYear()%>/<%=jsonArray[i].Created.getMonth()+1%>/<%=jsonArray[i].Created.getDate()%>
+										<div style="display:inline;"<%if(actionDefault=='建立日期'){%> class="stronger"<%}%>>Created：</div><%=jsonArray[i].Created.getFullYear()%>/<%=jsonArray[i].Created.getMonth()+1%>/<%=jsonArray[i].Created.getDate()%>
 									</div>
 									&nbsp;&nbsp;&nbsp;&nbsp;
 									<div style="font-size:15px;display:inline;">
-										Updated：<%=jsonArray[i].Updated.getFullYear()%>/<%=jsonArray[i].Updated.getMonth()+1%>/<%=jsonArray[i].Updated.getDate()%>
+										<div style="display:inline;"<%if(actionDefault=='更新日期'){%> class="stronger"<%}%>>Updated：</div><%=jsonArray[i].Updated.getFullYear()%>/<%=jsonArray[i].Updated.getMonth()+1%>/<%=jsonArray[i].Updated.getDate()%>
 									</div>
 									&nbsp;&nbsp;&nbsp;&nbsp;
 									<div style="font-size:15px;display:inline;">

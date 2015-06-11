@@ -81,25 +81,8 @@ router.post('/createTest', function(req, res, next) {
 });
 
 router.post('/destroyTest', function(req, res, next) {
-	Users.findById(req.body.UserID).exec(function (err, user){
-		if (err) {
-			console.log(err);
-			res.json({error: err.name}, 500);
-		}else{
-			if(!user){
-				res.json({error: 'no such user'}, 500);
-			}else{
-				user.remove(function (err,removedItem){
-					if (err){
-						console.log(err);
-						res.json({error: err.name}, 500);
-					}else{
-						res.json(removedItem);
-					}
-				});
-			}
-		}
-	});
+	var uid=sanitizer.sanitize(req.body.UserID.trim());
+	library.userDeleter(res,uid,function(){},function(){res.end('error');},false);
 });
 
 router.get('/find/:id?', function(req, res, next) {
@@ -157,19 +140,23 @@ router.get('/SecondCard/:id?', function(req, res, next) {
 	}
 });
 
-router.post('/levelSetter', function(req, res, next) {
+router.post('/originalLevelSetter', function(req, res, next) {
 	Uid=sanitizer.sanitize(req.body.Uid.trim());
-	Level=sanitizer.sanitize(req.body.Level.trim());
+	OriginalLevel=sanitizer.sanitize(req.body.OriginalLevel.trim());
 	
-	userLevelSetter(res,Uid,Level);
+	library.userOriginalLevelSetter(Uid,OriginalLevel,function(){
+		res.end('success!');
+	},function(){
+		res.end('error!');
+	});
 	//for setting user's level
 	
-	/*Borrows.update({}, { AutoComfirmToLendMsgSorter:'invalid'},{multi:true}, function(err, numberAffected){  
+	/*Messages.update({}, { OldMonthPeriod:1},{multi:true}, function(err, numberAffected){  
 		console.log(numberAffected);
 		res.end('end');
 	});*/
 	
-	/*Borrows.update({},{$unset: {MoneyToBorrowCumulated: 1 }},{multi:true}, function(err, numberAffected){  
+	/*Transactions.update({},{$unset: {MonthPeriodHasPast: 1 }},{multi:true}, function(err, numberAffected){  
 		console.log(numberAffected);
 		res.end('end');
 	});*/
@@ -418,51 +405,3 @@ function pwChangedMail(newUpdated){
 		}
 	});
 }
-
-function userLevelSetter(res,uid,newLevel){
-	Users.update({_id:uid},{$set:{Level:newLevel}},function(err){
-		if(!err){
-			var nowDate=Date.now();
-			Users.update({_id:uid},{$set:{Updated:nowDate}},function(err){
-				if(!err){
-					Borrows.update({CreatedBy:uid},{$set:{Level:newLevel}}, { multi: true },function(err){
-						if(!err){
-							Messages.update({$or:[{$and:[{CreatedBy:uid},{Type:"toBorrow"}]},{$and:[{SendTo:uid},{Type:"toLend"}]}]},{$set:{Level:newLevel}}, { multi: true },function(err){
-								if(!err){
-									Transactions.update({Borrower:uid},{$set:{Level:newLevel}}, { multi: true },function(err){
-										if(!err){
-											Returns.update({Borrower:uid},{$set:{Level:newLevel}}, { multi: true },function(err){
-												if(!err){
-													res.end('success!');
-												}else{
-													console.log(err);
-													res.end('error!');
-												}
-											});
-										}else{
-											console.log(err);
-											res.end('error!');
-										}
-									});
-								}else{
-									console.log(err);
-									res.end('error!');
-								}
-							});
-						}else{
-							console.log(err);
-							res.end('error!');
-						}
-					});
-				}else{
-					console.log(err);
-					res.end('error!');
-				}
-			});
-		}else{
-			console.log(err);
-			res.end('error!');
-		}
-	});
-}
-

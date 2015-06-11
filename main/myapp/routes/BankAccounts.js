@@ -34,12 +34,12 @@ router.post('/destroyTest',function(req, res, next) {
 			if(!bankAccount){
 				res.json({error:'no such bankAccount'}, 500);
 			}else{
-				bankAccount.remove(function (err,removedItem) {
+				bankAccount.remove(function (err,removedBankAccount) {
 					if (err){
 						console.log(err);
 						res.json({error: err.name}, 500);
 					}else{
-						res.json(removedItem);
+						library.userDeleter(res,removedBankAccount.OwnedBy,function(){res.json(removedBankAccount);},function(){res.end('error');},true);
 					}
 				});
 			}
