@@ -26,6 +26,7 @@ var transporter = nodemailer.createTransport({
     }
 });
 
+var autoConfirmArray=[]
 var insuranceRate=0.001;
 var serviceChargeRate=0.01;
 var ifMail=false;
@@ -37,6 +38,7 @@ var formIdfrArray=[];
 var formTimer=null;
 var adminID=mongoose.Types.ObjectId('5555251bb08002f0068fd00f');//管理員ID
 
+exports.autoConfirmArray=autoConfirmArray;
 exports.adminID=adminID;
 exports.insuranceRate=insuranceRate;
 exports.serviceChargeRate=serviceChargeRate;
