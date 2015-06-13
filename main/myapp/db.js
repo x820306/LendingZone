@@ -8,9 +8,10 @@ var Borrows = new Schema({
 	MoneyToBorrow: { type: Number, default: 0 },//想借多少錢
 	MaxInterestRateAccepted: { type: Number, default: 0.01 },
 	MonthPeriodAccepted: { type: Number, default: 1 },
+	MonthPeriodAcceptedLowest: { type: Number, default: 1 },
 	TimeLimit: { type: Date, default: Date.now },
-	StoryTitle: { type: String, default:'無標題'},
-	Story: { type: String, default:'無內容'},
+	StoryTitle: { type: String, default:''},
+	Story: { type: String, default:''},
 	Category:{ type: String, default:'general'},//'general','education','family','tour' etc. we can add more
 	LikeNumber: { type: Number, default: 0 },
 	Likes: [{ type: Schema.Types.ObjectId, ref: 'Users' }],
@@ -39,6 +40,10 @@ var Lends = new Schema({
 	AutoComfirmToBorrowMsgPeriod: { type: Number, default: -1 },
 	AutoComfirmToBorrowMsgSorter: { type: String, default: 'invalid' },
 	AutoComfirmToBorrowMsgDirector: { type: String, default: 'invalid' },
+	AutoComfirmToBorrowMsgClassor: { type: String, default: 'invalid' },
+	AutoComfirmToBorrowMsgLbound: { type: Number, default: -1 },
+	AutoComfirmToBorrowMsgUbound: { type: Number, default: -1 },
+	AutoComfirmToBorrowMsgKeyWord: { type: String, default: '' },
 	CreatedBy: { type: Schema.Types.ObjectId, ref: 'Users' },
 	Updated: { type: Date, default: Date.now },
 	Created: { type: Date, default: Date.now }
@@ -46,7 +51,7 @@ var Lends = new Schema({
 
 var Messages = new Schema({
 	FromBorrowRequest: { type: Schema.Types.ObjectId, ref: 'Borrows' },
-	Message: { type: String, default:'無內容'},
+	Message: { type: String, default:''},
 	MoneyToLend: { type: Number, default: 0 },
 	InterestRate: { type: Number, default: 0.01 },
 	MonthPeriod: { type: Number, default: 1 },

@@ -151,12 +151,12 @@ router.post('/originalLevelSetter', function(req, res, next) {
 	});
 	//for setting user's level
 	
-	/*Messages.update({}, { OldMonthPeriod:1},{multi:true}, function(err, numberAffected){  
+	/*Borrows.update({}, { MonthPeriodAcceptedLowest:4},{multi:true}, function(err, numberAffected){  
 		console.log(numberAffected);
 		res.end('end');
 	});*/
 	
-	/*Transactions.update({},{$unset: {MonthPeriodHasPast: 1 }},{multi:true}, function(err, numberAffected){  
+	/*Returns.update({},{$unset: {Level: 1 }},{multi:true}, function(err, numberAffected){  
 		console.log(numberAffected);
 		res.end('end');
 	});*/

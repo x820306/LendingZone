@@ -34,11 +34,12 @@ function redirector(req,res,target,message){
 	var formContent={
 		F1:req.body.MoneyToBorrow,
 		F2:req.body.MaxInterestRateAccepted,
-		F3:req.body.MonthPeriodAccepted,
-		F4:req.body.StoryTitle,
-		F5:req.body.Category,
-		F6:req.body.Story,
-		F7:req.body.TimeLimit
+		F3:req.body.MonthPeriodAcceptedLowest,
+		F4:req.body.MonthPeriodAccepted,
+		F5:req.body.StoryTitle,
+		F6:req.body.Category,
+		F7:req.body.Story,
+		F8:req.body.TimeLimit
 	};
 	
 	var json={FormContent:formContent,Target:target,Message:message};
@@ -85,7 +86,7 @@ router.post('/borrowCreate',library.loginFormChecker, library.ensureAuthenticate
 				
 				var errorTarget=[];
 				var errorMessage=[];
-				for(i=0;i<5;i++){
+				for(i=0;i<8;i++){
 					errorTarget.push(false);
 					errorMessage.push('');
 				}
@@ -112,7 +113,7 @@ router.post('/borrowCreate',library.loginFormChecker, library.ensureAuthenticate
 					errorMessage[1]='錯誤參數!';
 				}
 				
-				if(sanitizer.sanitize(req.body.MonthPeriodAccepted.trim())==''){
+				if(sanitizer.sanitize(req.body.MonthPeriodAcceptedLowest.trim())==''){
 					errorTarget[2]=true;
 					errorMessage[2]='必要參數未填!';
 				}else if(isNaN(month)){
@@ -123,14 +124,25 @@ router.post('/borrowCreate',library.loginFormChecker, library.ensureAuthenticate
 					errorMessage[2]='錯誤參數!';
 				}
 				
-				if((ifTitleRepeat)||(sanitizer.sanitize(req.body.StoryTitle.trim())=='無標題')){
+				if(sanitizer.sanitize(req.body.MonthPeriodAccepted.trim())==''){
 					errorTarget[3]=true;
-					errorMessage[3]='故事標題重覆或不合規定!';
+					errorMessage[3]='必要參數未填!';
+				}else if(isNaN(month)){
+					errorTarget[3]=true;
+					errorMessage[3]='非數字參數!';
+				}else if((month<1)||(month>36)){
+					errorTarget[3]=true;
+					errorMessage[3]='錯誤參數!';
+				}
+				
+				if((ifTitleRepeat)||(sanitizer.sanitize(req.body.StoryTitle.trim())=='無標題')){
+					errorTarget[4]=true;
+					errorMessage[4]='故事標題重覆或不合規定!';
 				}
 				
 				if(sanitizer.sanitize(req.body.Story.trim())=='無內容'){
-					errorTarget[4]=true;
-					errorMessage[4]='故事內容不合規定!';
+					errorTarget[6]=true;
+					errorMessage[6]='故事內容不合規定!';
 				}
 				
 				var valiFlag=true;
@@ -142,10 +154,20 @@ router.post('/borrowCreate',library.loginFormChecker, library.ensureAuthenticate
 				}
 				
 				if(valiFlag){
+					var periodLow=parseInt(sanitizer.sanitize(req.body.MonthPeriodAcceptedLowest.trim()));
+					var periodHigh=parseInt(sanitizer.sanitize(req.body.MonthPeriodAccepted.trim()));
+					var temp;
+					if(periodLow>periodHigh){
+						temp=periodLow;
+						periodLow=periodHigh;
+						periodHigh=temp;
+					}
+					
 					var toCreate = new Borrows();
 					toCreate.MoneyToBorrow = parseInt(sanitizer.sanitize(req.body.MoneyToBorrow.trim()));
 					toCreate.MaxInterestRateAccepted = parseFloat(sanitizer.sanitize(req.body.MaxInterestRateAccepted.trim()))/100;
-					toCreate.MonthPeriodAccepted = parseInt(sanitizer.sanitize(req.body.MonthPeriodAccepted.trim()));
+					toCreate.MonthPeriodAcceptedLowest = periodLow;
+					toCreate.MonthPeriodAccepted = periodHigh;
 					if(sanitizer.sanitize(req.body.TimeLimit.trim())!=''){
 						toCreate.TimeLimit = sanitizer.sanitize(req.body.TimeLimit.trim());
 					}else{
@@ -154,14 +176,9 @@ router.post('/borrowCreate',library.loginFormChecker, library.ensureAuthenticate
 						toCreate.TimeLimit = tempDate;
 					}
 					toCreate.Category = sanitizer.sanitize(req.body.Category.trim());
-					if (sanitizer.sanitize(req.body.StoryTitle.trim()) != '') {
-						toCreate.StoryTitle = sanitizer.sanitize(req.body.StoryTitle.trim());
-					}
-					if (sanitizer.sanitize(req.body.Story.trim()) != '') {
-						toCreate.Story = sanitizer.sanitize(req.body.Story.trim());
-					}
+					toCreate.StoryTitle = sanitizer.sanitize(req.body.StoryTitle.trim());
+					toCreate.Story = sanitizer.sanitize(req.body.Story.trim());
 					toCreate.CreatedBy =req.user._id;
-					toCreate.Level = req.user.Level;
 
 					toCreate.save(function(err, newCreate) {
 						if (err) {

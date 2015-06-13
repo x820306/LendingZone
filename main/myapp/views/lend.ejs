@@ -1,12 +1,12 @@
-<%- include('layout_header',{searchTitle:null,nav_cur:'lend',actionDefault:'建立日期',directorDefault:'大至小',keywordDefault:'',categoryDefault:'不分類'}); -%>
+<%- include('layout_header',{searchTitle:null,nav_cur:'lend',messengerDefault:'不分訊息狀態',actionDefault:'建立日期',directorDefault:'大至小',keywordDefault:'',categoryDefault:'不分類'}); -%>
 <div class="container">
 	<div class="row">
 		<div class="col-md-9">
-				<div style="font-size:30pt;">自動借出設定</div>
-				</br>
-				<a href="/lender/lendsList?oneid=&classOne=<%=encodeURIComponent("未選擇");%>&sorter=<%=encodeURIComponent("更新日期");%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1"><button type="button" class="btn btn-default">參考他人設定</button></a>
-				</br>
-				</br>
+				<div class="bigTitle">自動借出設定</div>
+				<br>
+				<a href="/lender/lendsList?oneid=&classOne=<%=encodeURIComponent('不篩選自動同意設定');%>&classTwo=<%=encodeURIComponent('不篩選故事種類設定')%>&sorter=<%=encodeURIComponent('更新日期');%>&director=<%=encodeURIComponent('大至小');%>&lbound=&ubound=&page=1"><button type="button" class="btn btn-default">參考他人設定</button></a>
+				<br>
+				<br>
 				<div class="panel panel-default">
 					<div class="panel-heading">
 						<h3 class="panel-title">銀行帳戶內餘額</h3>
@@ -15,7 +15,7 @@
 						<input type="text" style="width:95%;" class="textForm" value="<%=MoneyInBankAccountValue.toFixed(0)%>" readonly="readonly" >&nbsp;元
 					</div>					
 				</div>
-				</br>
+				<br>
 				<div class="panel panel-default">
 					<div class="panel-heading">
 						<h3 class="panel-title">已借出總金額</h3>
@@ -24,7 +24,7 @@
 						<input type="text" style="width:95%;" class="textForm" value="<%=MoneyLended.moneyLendedCumulated.toFixed(0)%>" readonly="readonly" >&nbsp;元
 					</div>					
 				</div>
-				</br>
+				<br>
 				<div class="panel panel-default">
 					<div class="panel-heading">
 						<h3 class="panel-title">已手動借出金額</h3>
@@ -33,7 +33,7 @@
 						<input type="text" style="width:95%;" class="textForm" value="<%=MoneyLended.hendLendCumulated.toFixed(0)%>" readonly="readonly" >&nbsp;元
 					</div>					
 				</div>
-				</br>
+				<br>
 				<div class="panel panel-default">
 					<div class="panel-heading">
 						<h3 class="panel-title">尚可手動借出金額</h3>
@@ -42,7 +42,7 @@
 						<input type="text" style="width:95%;" class="textForm" value="<%=MoneyLended.moneyLeftToHendLend.toFixed(0)%>" readonly="readonly" >&nbsp;元
 					</div>					
 				</div>
-				</br>
+				<br>
 				<div class="panel panel-default">
 					<div class="panel-heading">
 						<h3 class="panel-title">已自動借出金額</h3>
@@ -51,7 +51,7 @@
 						<input type="text" style="width:95%;" class="textForm" value="<%=MoneyLended.autoLendCumulated.toFixed(0)%>" readonly="readonly" >&nbsp;元
 					</div>					
 				</div>
-				</br>
+				<br>
 				<div class="panel panel-default">
 					<div class="panel-heading">
 						<h3 class="panel-title">尚可自動借出金額</h3>
@@ -60,7 +60,7 @@
 						<input type="text" style="width:95%;" class="textForm" value="<%=MoneyLended.moneyLeftToAutoLend.toFixed(0)%>" readonly="readonly" >&nbsp;元
 					</div>					
 				</div>
-				</br>
+				<br>
 				<div class="panel panel-default">
 					<div class="panel-heading">
 						<h3 class="panel-title">目前最高可設定自動借出金額</h3>
@@ -69,9 +69,9 @@
 						<input type="text" style="width:95%;" class="textForm" value="<%=MoneyLended.maxSettingAutoLend.toFixed(0)%>" readonly="readonly" >&nbsp;元
 					</div>					
 				</div>
-				</br>
+				<br>
 				<div class="my-divider"></div>
-				</br>
+				<br>
 		<% if(!jsonLend){ %>
 			<form action="/Lends/create" method="post" id="formID" onsubmit="return disableButton();">
 		<% }else{ %>
@@ -90,10 +90,10 @@
 						&nbsp;元
 					</div>					
 				</div>
-				</br>
+				<br>
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						<h3 class="panel-title">最低欲借出年利率<i style="color:red;">&nbsp;*</i><span id="s2" style="color:red;"><%if(lfJSON){%><%if(lfJSON.Target[1]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=lfJSON.Message[1]%><%}%><%}%></span></h3>
+						<h3 class="panel-title">可接受年利率<i style="color:red;">&nbsp;*</i><span id="s2" style="color:red;"><%if(lfJSON){%><%if(lfJSON.Target[1]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=lfJSON.Message[1]%><%}%><%}%></span></h3>
 					</div>
 					<div class="panel-body">
 						<% if(!jsonLend){ %>
@@ -104,10 +104,10 @@
 						%
 					</div>
 				</div>
-				</br>
+				<br>
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						<h3 class="panel-title">最低欲借出期數（單位/月，最大36個月）<i style="color:red;">*</i><span id="s3" style="color:red;"><%if(lfJSON){%><%if(lfJSON.Target[2]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=lfJSON.Message[2]%><%}%><%}%></span></h3>
+						<h3 class="panel-title">可接受期數（單位/月，最大36個月）<i style="color:red;">*</i><span id="s3" style="color:red;"><%if(lfJSON){%><%if(lfJSON.Target[2]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=lfJSON.Message[2]%><%}%><%}%></span></h3>
 					</div>
 					<div class="panel-body">
 						<% if(!jsonLend){ %>
@@ -118,10 +118,10 @@
 						&nbsp;個月
 					</div>
 				</div>
-				</br>
+				<br>
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						<h3 class="panel-title">最低可接受信用等級<span id="s4" style="color:red;"><%if(lfJSON){%><%if(lfJSON.Target[3]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=lfJSON.Message[3]%><%}%><%}%></span></h3>
+						<h3 class="panel-title">可接受信用等級<span id="s4" style="color:red;"><%if(lfJSON){%><%if(lfJSON.Target[3]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=lfJSON.Message[3]%><%}%><%}%></span></h3>
 					</div>
 					<div class="panel-body">
 						<% if(!jsonLend){ %>
@@ -132,10 +132,10 @@
 						&nbsp;級
 					</div>
 				</div>
-				</br>
+				<br>
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						<h3 class="panel-title">最低可接受總利息<span id="s5" style="color:red;"><%if(lfJSON){%><%if(lfJSON.Target[4]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=lfJSON.Message[4]%><%}%><%}%></span></h3>
+						<h3 class="panel-title">可接受總利息<span id="s5" style="color:red;"><%if(lfJSON){%><%if(lfJSON.Target[4]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=lfJSON.Message[4]%><%}%><%}%></span></h3>
 					</div>
 					<div class="panel-body">
 						<% if(!jsonLend){ %>
@@ -146,10 +146,10 @@
 						&nbsp;元
 					</div>
 				</div>
-				</br>
+				<br>
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						<h3 class="panel-title">最低可接受本利和<span id="s6" style="color:red;"><%if(lfJSON){%><%if(lfJSON.Target[5]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=lfJSON.Message[5]%><%}%><%}%></span></h3>
+						<h3 class="panel-title">可接受本利和<span id="s6" style="color:red;"><%if(lfJSON){%><%if(lfJSON.Target[5]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=lfJSON.Message[5]%><%}%><%}%></span></h3>
 					</div>
 					<div class="panel-body">
 						<% if(!jsonLend){ %>
@@ -160,10 +160,10 @@
 						&nbsp;元
 					</div>
 				</div>
-				</br>
+				<br>
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						<h3 class="panel-title">最低可接受每期平均利息<span id="s7" style="color:red;"><%if(lfJSON){%><%if(lfJSON.Target[6]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=lfJSON.Message[6]%><%}%><%}%></span></h3>
+						<h3 class="panel-title">可接受平均利息<span id="s7" style="color:red;"><%if(lfJSON){%><%if(lfJSON.Target[6]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=lfJSON.Message[6]%><%}%><%}%></span></h3>
 					</div>
 					<div class="panel-body">
 						<% if(!jsonLend){ %>
@@ -174,10 +174,10 @@
 						&nbsp;元
 					</div>
 				</div>
-				</br>
+				<br>
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						<h3 class="panel-title">最低可接受每期平均本利和<span id="s8" style="color:red;"><%if(lfJSON){%><%if(lfJSON.Target[7]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=lfJSON.Message[7]%><%}%><%}%></span></h3>
+						<h3 class="panel-title">可接受平均本利和<span id="s8" style="color:red;"><%if(lfJSON){%><%if(lfJSON.Target[7]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=lfJSON.Message[7]%><%}%><%}%></span></h3>
 					</div>
 					<div class="panel-body">
 						<% if(!jsonLend){ %>
@@ -188,10 +188,10 @@
 						&nbsp;元
 					</div>
 				</div>
-				</br>
+				<br>
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						<h3 class="panel-title">最低可接受總利息/最初本金比<span id="s9" style="color:red;"><%if(lfJSON){%><%if(lfJSON.Target[8]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=lfJSON.Message[8]%><%}%><%}%></span></h3>
+						<h3 class="panel-title">可接受利本比<span id="s9" style="color:red;"><%if(lfJSON){%><%if(lfJSON.Target[8]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=lfJSON.Message[8]%><%}%><%}%></span></h3>
 					</div>
 					<div class="panel-body">
 						<% if(!jsonLend){ %>
@@ -202,14 +202,16 @@
 						&nbsp;%
 					</div>
 				</div>
-				</br>
+				<br>
+				<div class="my-divider"></div>
+				<br>
 				<div class="panel panel-default">
 					<div class="panel-heading">
 						<h3 class="panel-title">自動同意借款請求</h3>
 					</div>
 					<div class="panel-body">
 						<% if(!jsonLend){ %>
-							 <select class="textForm" name="AutoComfirmToBorrowMsgPeriod" id="periodSel" onchange="if($('#periodSel').val()>0){$('#sorterSel').prop('disabled', false);$('#sorterPnl').attr('style','');$('#directorSel').prop('disabled', false);$('#directorPnl').attr('style','');}else{$('#sorterSel').prop('disabled', true);$('#sorterSel').val('InterestRate');$('#sorterPnl').attr('style','display:none;');$('#directorSel').prop('disabled', true);$('#directorSel').val('minus');$('#directorPnl').attr('style','display:none;');}">
+							 <select class="textForm" name="AutoComfirmToBorrowMsgPeriod" id="periodSel" onchange="autoChanger();">
 								<option value=-1<%if(lfJSON){%><%if(lfJSON.FormContent.F10==-1){%> selected<%}%><%}%>>永不自動同意</option>
 								<option value=0<%if(lfJSON){%><%if(lfJSON.FormContent.F10==0){%> selected<%}%><%}%>>立即自動同意</option>
 								<option value=1<%if(lfJSON){%><%if(lfJSON.FormContent.F10==1){%> selected<%}%><%}%>>每天自動同意一次</option>
@@ -217,7 +219,7 @@
 								<option value=3<%if(lfJSON){%><%if(lfJSON.FormContent.F10==3){%> selected<%}%><%}%>>每三天自動同意一次</option>
 							  </select>
 						<% }else{ %>
-							<select class="textForm" name="AutoComfirmToBorrowMsgPeriod"  id="periodSel" onchange="if($('#periodSel').val()>0){$('#sorterSel').prop('disabled', false);$('#sorterPnl').attr('style','');$('#directorSel').prop('disabled', false);$('#directorPnl').attr('style','');}else{$('#sorterSel').prop('disabled', true);$('#sorterSel').val('InterestRate');$('#sorterPnl').attr('style','display:none;');$('#directorSel').prop('disabled', true);$('#directorSel').val('minus');$('#directorPnl').attr('style','display:none;');}">
+							<select class="textForm" name="AutoComfirmToBorrowMsgPeriod"  id="periodSel" onchange="autoChanger();">
 								<option value=-1<%if(lfJSON){%><%if(lfJSON.FormContent.F10==-1){%> selected<%}%><%}else{%><%if(jsonLend.AutoComfirmToBorrowMsgPeriod==-1){%> selected<%}%><%}%>>永不自動同意</option>
 								<option value=0<%if(lfJSON){%><%if(lfJSON.FormContent.F10==0){%> selected<%}%><%}else{%><%if(jsonLend.AutoComfirmToBorrowMsgPeriod==0){%> selected<%}%><%}%>>立即自動同意</option>
 								<option value=1<%if(lfJSON){%><%if(lfJSON.FormContent.F10==1){%> selected<%}%><%}else{%><%if(jsonLend.AutoComfirmToBorrowMsgPeriod==1){%> selected<%}%><%}%>>每天自動同意一次</option>
@@ -227,7 +229,49 @@
 						<% } %>
 					</div>
 				</div>
-				</br>
+				<br>
+				<%if(!lfJSON){%>
+					<div class="panel panel-default" id="classorPnl"<% if(!jsonLend){%> style="display:none;"<%}else{%><% if(jsonLend.AutoComfirmToBorrowMsgPeriod<=0){ %> style="display:none;"<%}%><%}%>>
+						<div class="panel-heading">
+							<h3 class="panel-title">自動同意故事種類</h3>
+						</div>
+						<div class="panel-body">
+							<% if(!jsonLend){ %>
+								<select class="textForm" class="textForm" name="AutoComfirmToBorrowMsgClassor" id="classorSel" disabled="disabled">
+									<option value="none">不分類</option>
+									<option value="general">一般</option>
+									<option value="education">教育</option>
+									<option value="family">家庭</option>
+									<option value="tour">旅遊</option>
+								 </select>
+							<% }else{ %>
+								<select class="textForm" class="textForm" name="AutoComfirmToBorrowMsgClassor" id="classorSel"<% if(jsonLend.AutoComfirmToBorrowMsgPeriod<=0){ %> disabled="disabled"<%}%>>
+									<option value="none"<%if(jsonLend.AutoComfirmToBorrowMsgClassor=="none"){%> selected<%}%>>不分類</option>
+									<option value="general"<%if(jsonLend.AutoComfirmToBorrowMsgClassor=="general"){%> selected<%}%>>一般</option>
+									<option value="education"<%if(jsonLend.AutoComfirmToBorrowMsgClassor=="education"){%> selected<%}%>>教育</option>
+									<option value="family"<%if(jsonLend.AutoComfirmToBorrowMsgClassor=="family"){%> selected<%}%>>家庭</option>
+									<option value="tour"<%if(jsonLend.AutoComfirmToBorrowMsgClassor=="tour"){%> selected<%}%>>旅遊</option>
+								</select>
+							<% } %>
+						</div>
+					</div>
+				<%}else{%>
+					<div class="panel panel-default" id="classorPnl"<% if(lfJSON.FormContent.F10<=0){ %> style="display:none;"<%}%>>
+						<div class="panel-heading">
+							<h3 class="panel-title">自動同意故事種類</h3>
+						</div>
+						<div class="panel-body">
+							<select class="textForm" class="textForm" name="AutoComfirmToBorrowMsgClassor" id="classorSel"<% if(lfJSON.FormContent.F10<=0){ %> disabled="disabled"<%}%>>
+								<option value="none"<%if(lfJSON.FormContent.F11=="none"){%> selected<%}%>>不分類</option>
+								<option value="general"<%if(lfJSON.FormContent.F11=="general"){%> selected<%}%>>一般</option>
+								<option value="education"<%if(lfJSON.FormContent.F11=="education"){%> selected<%}%>>教育</option>
+								<option value="family"<%if(lfJSON.FormContent.F11=="family"){%> selected<%}%>>家庭</option>
+								<option value="tour"<%if(lfJSON.FormContent.F11=="tour"){%> selected<%}%>>旅遊</option>
+							</select>
+						</div>
+					</div>
+				<%}%>
+				<br>
 				<%if(!lfJSON){%>
 					<div class="panel panel-default" id="sorterPnl"<% if(!jsonLend){%> style="display:none;"<%}else{%><% if(jsonLend.AutoComfirmToBorrowMsgPeriod<=0){ %> style="display:none;"<%}%><%}%>>
 						<div class="panel-heading">
@@ -235,30 +279,30 @@
 						</div>
 						<div class="panel-body">
 							<% if(!jsonLend){ %>
-								<select class="textForm" class="textForm" name="AutoComfirmToBorrowMsgSorter" id="sorterSel" disabled="disabled">
+								<select class="textForm" class="textForm" name="AutoComfirmToBorrowMsgSorter" id="sorterSel" disabled="disabled" onchange="autoSorter();">
 									<option value="InterestRate">欲借入年利率</option>
 									<option value="MoneyToLend">欲借入金額</option>
 									<option value="MonthPeriod">欲借入期數</option>
 									<option value="Level">信用等級</option>
-									<option value="SpecialA">預計總利息</option>
-									<option value="SpecialB">預計本利和</option>
-									<option value="SpecialC">預計平均利息</option>
-									<option value="SpecialD">預計平均本利和</option>
-									<option value="SpecialE">預計利本比</option>
+									<option value="InterestInFuture">預計總利息</option>
+									<option value="MoneyFuture">預計本利和</option>
+									<option value="InterestInFutureMonth">預計平均利息</option>
+									<option value="InterestInFutureMoneyMonth">預計平均本利和</option>
+									<option value="InterestInFutureDivMoney">預計利本比</option>
 									<option value="Updated">更新日期</option>
 									<option value="Created">建立日期</option>
 								 </select>
 							<% }else{ %>
-								<select class="textForm" class="textForm" name="AutoComfirmToBorrowMsgSorter" id="sorterSel"<% if(jsonLend.AutoComfirmToBorrowMsgPeriod<=0){ %> disabled="disabled"<%}%>>
+								<select class="textForm" class="textForm" name="AutoComfirmToBorrowMsgSorter" id="sorterSel"<% if(jsonLend.AutoComfirmToBorrowMsgPeriod<=0){ %> disabled="disabled"<%}%> onchange="autoSorter();">
 									<option value="InterestRate"<%if(jsonLend.AutoComfirmToBorrowMsgSorter=="InterestRate"){%> selected<%}%>>欲借入年利率</option>
 									<option value="MoneyToLend"<%if(jsonLend.AutoComfirmToBorrowMsgSorter=="MoneyToLend"){%> selected<%}%>>欲借入金額</option>
 									<option value="MonthPeriod"<%if(jsonLend.AutoComfirmToBorrowMsgSorter=="MonthPeriod"){%> selected<%}%>>欲借入期數</option>
 									<option value="Level"<%if(jsonLend.AutoComfirmToBorrowMsgSorter=="Level"){%> selected<%}%>>信用等級</option>
-									<option value="SpecialA"<%if(jsonLend.AutoComfirmToBorrowMsgSorter=="SpecialA"){%> selected<%}%>>預計總利息</option>
-									<option value="SpecialB"<%if(jsonLend.AutoComfirmToBorrowMsgSorter=="SpecialB"){%> selected<%}%>>預計本利和</option>
-									<option value="SpecialC"<%if(jsonLend.AutoComfirmToBorrowMsgSorter=="SpecialC"){%> selected<%}%>>預計平均利息</option>
-									<option value="SpecialD"<%if(jsonLend.AutoComfirmToBorrowMsgSorter=="SpecialD"){%> selected<%}%>>預計平均本利和</option>
-									<option value="SpecialE"<%if(jsonLend.AutoComfirmToBorrowMsgSorter=="SpecialE"){%> selected<%}%>>預計利本比</option>
+									<option value="InterestInFuture"<%if(jsonLend.AutoComfirmToBorrowMsgSorter=="InterestInFuture"){%> selected<%}%>>預計總利息</option>
+									<option value="MoneyFuture"<%if(jsonLend.AutoComfirmToBorrowMsgSorter=="MoneyFuture"){%> selected<%}%>>預計本利和</option>
+									<option value="InterestInFutureMonth"<%if(jsonLend.AutoComfirmToBorrowMsgSorter=="InterestInFutureMonth"){%> selected<%}%>>預計平均利息</option>
+									<option value="InterestInFutureMoneyMonth"<%if(jsonLend.AutoComfirmToBorrowMsgSorter=="InterestInFutureMoneyMonth"){%> selected<%}%>>預計平均本利和</option>
+									<option value="InterestInFutureDivMoney"<%if(jsonLend.AutoComfirmToBorrowMsgSorter=="InterestInFutureDivMoney"){%> selected<%}%>>預計利本比</option>
 									<option value="Updated"<%if(jsonLend.AutoComfirmToBorrowMsgSorter=="Updated"){%> selected<%}%>>更新日期</option>
 									<option value="Created"<%if(jsonLend.AutoComfirmToBorrowMsgSorter=="Created"){%> selected<%}%>>建立日期</option>
 								  </select>
@@ -271,23 +315,23 @@
 							<h3 class="panel-title">自動同意排序依據</h3>
 						</div>
 						<div class="panel-body">
-							<select class="textForm" class="textForm" name="AutoComfirmToBorrowMsgSorter" id="sorterSel"<% if(lfJSON.FormContent.F10<=0){ %> disabled="disabled"<%}%>>
-								<option value="InterestRate"<%if(lfJSON.FormContent.F11=="InterestRate"){%> selected<%}%>>欲借入年利率</option>
-								<option value="MoneyToLend"<%if(lfJSON.FormContent.F11=="MoneyToLend"){%> selected<%}%>>欲借入金額</option>
-								<option value="MonthPeriod"<%if(lfJSON.FormContent.F11=="MonthPeriod"){%> selected<%}%>>欲借入期數</option>
-								<option value="Level"<%if(lfJSON.FormContent.F11=="Level"){%> selected<%}%>>信用等級</option>
-								<option value="SpecialA"<%if(lfJSON.FormContent.F11=="SpecialA"){%> selected<%}%>>預計總利息</option>
-								<option value="SpecialB"<%if(lfJSON.FormContent.F11=="SpecialB"){%> selected<%}%>>預計本利和</option>
-								<option value="SpecialC"<%if(lfJSON.FormContent.F11=="SpecialC"){%> selected<%}%>>預計平均利息</option>
-								<option value="SpecialD"<%if(lfJSON.FormContent.F11=="SpecialD"){%> selected<%}%>>預計平均本利和</option>
-								<option value="SpecialE"<%if(lfJSON.FormContent.F11=="SpecialE"){%> selected<%}%>>預計利本比</option>
-								<option value="Updated"<%if(lfJSON.FormContent.F11=="Updated"){%> selected<%}%>>更新日期</option>
-								<option value="Created"<%if(lfJSON.FormContent.F11=="Created"){%> selected<%}%>>建立日期</option>
+							<select class="textForm" class="textForm" name="AutoComfirmToBorrowMsgSorter" id="sorterSel"<% if(lfJSON.FormContent.F10<=0){ %> disabled="disabled"<%}%> onchange="autoSorter();">
+								<option value="InterestRate"<%if(lfJSON.FormContent.F12=="InterestRate"){%> selected<%}%>>欲借入年利率</option>
+								<option value="MoneyToLend"<%if(lfJSON.FormContent.F12=="MoneyToLend"){%> selected<%}%>>欲借入金額</option>
+								<option value="MonthPeriod"<%if(lfJSON.FormContent.F12=="MonthPeriod"){%> selected<%}%>>欲借入期數</option>
+								<option value="Level"<%if(lfJSON.FormContent.F12=="Level"){%> selected<%}%>>信用等級</option>
+								<option value="InterestInFuture"<%if(lfJSON.FormContent.F12=="InterestInFuture"){%> selected<%}%>>預計總利息</option>
+								<option value="MoneyFuture"<%if(lfJSON.FormContent.F12=="MoneyFuture"){%> selected<%}%>>預計本利和</option>
+								<option value="InterestInFutureMonth"<%if(lfJSON.FormContent.F12=="InterestInFutureMonth"){%> selected<%}%>>預計平均利息</option>
+								<option value="InterestInFutureMoneyMonth"<%if(lfJSON.FormContent.F12=="InterestInFutureMoneyMonth"){%> selected<%}%>>預計平均本利和</option>
+								<option value="InterestInFutureDivMoney"<%if(lfJSON.FormContent.F12=="InterestInFutureDivMoney"){%> selected<%}%>>預計利本比</option>
+								<option value="Updated"<%if(lfJSON.FormContent.F12=="Updated"){%> selected<%}%>>更新日期</option>
+								<option value="Created"<%if(lfJSON.FormContent.F12=="Created"){%> selected<%}%>>建立日期</option>
 							</select>
 						</div>
 					</div>
 				<%}%>
-				</br>
+				<br>
 				<%if(!lfJSON){%>
 					<div class="panel panel-default" id="directorPnl"<% if(!jsonLend){%> style="display:none;"<%}else{%><% if(jsonLend.AutoComfirmToBorrowMsgPeriod<=0){ %> style="display:none;"<%}%><%}%>>
 						<div class="panel-heading">
@@ -314,9 +358,101 @@
 						</div>
 						<div class="panel-body">
 							<select class="textForm" class="textForm" name="AutoComfirmToBorrowMsgDirector" id="directorSel"<% if(lfJSON.FormContent.F10<=0){ %> disabled="disabled"<%}%>>
-								<option value="minus"<%if(lfJSON.FormContent.F12=="minus"){%> selected<%}%>>大至小</option>
-								<option value="plus"<%if(lfJSON.FormContent.F12=="plus"){%> selected<%}%>>小至大</option>
+								<option value="minus"<%if(lfJSON.FormContent.F13=="minus"){%> selected<%}%>>大至小</option>
+								<option value="plus"<%if(lfJSON.FormContent.F13=="plus"){%> selected<%}%>>小至大</option>
 							</select>
+						</div>
+					</div>
+				<%}%>
+				<br>
+				<%if(!lfJSON){%>
+					<div class="panel panel-default" id="lboundPnl"<% if(!jsonLend){%> style="display:none;"<%}else{%><% if(jsonLend.AutoComfirmToBorrowMsgPeriod<=0){ %> style="display:none;"<%}%><%}%>>
+						<div class="panel-heading">
+							<h3 class="panel-title">自動同意下限</h3>
+						</div>
+						<div class="panel-body">
+							<%if(!jsonLend){%>
+								<input id="lboundSel" type="text" placeholder="(元/%/個月/級)" class="textForm" name="AutoComfirmToBorrowMsgLbound" disabled="disabled">
+							<%}else{%>
+								<%if((jsonLend.AutoComfirmToBorrowMsgSorter=="Updated")||(jsonLend.AutoComfirmToBorrowMsgSorter=="Created")){%>
+									<input id="lboundSel" type="date" placeholder="(yyyy/mm/dd)" class="textForm" name="AutoComfirmToBorrowMsgLbound"<%if(jsonLend.AutoComfirmToBorrowMsgLbound!==-1){%> value="<%=new Date(parseInt(jsonLend.AutoComfirmToBorrowMsgLbound)).getFullYear()%>-<%if(new Date(parseInt(jsonLend.AutoComfirmToBorrowMsgLbound)).getMonth()<9){%>0<%}%><%=new Date(parseInt(jsonLend.AutoComfirmToBorrowMsgLbound)).getMonth()+1%>-<%if(new Date(parseInt(jsonLend.AutoComfirmToBorrowMsgLbound)).getDate()<10){%>0<%}%><%=new Date(parseInt(jsonLend.AutoComfirmToBorrowMsgLbound)).getDate()%>"<%}%><% if(jsonLend.AutoComfirmToBorrowMsgPeriod<=0){ %> disabled="disabled"<%}%>>
+								<%}else if((jsonLend.AutoComfirmToBorrowMsgSorter=="InterestRate")||(jsonLend.AutoComfirmToBorrowMsgSorter=="InterestInFutureDivMoney")){%>
+									<input id="lboundSel" type="text" placeholder="(元/%/個月/級)" class="textForm" name="AutoComfirmToBorrowMsgLbound"<%if(jsonLend.AutoComfirmToBorrowMsgLbound!==-1){%> value="<%=jsonLend.AutoComfirmToBorrowMsgLbound.toFixed(2)%>"<%}%><% if(jsonLend.AutoComfirmToBorrowMsgPeriod<=0){ %> disabled="disabled"<%}%>>
+								<%}else{%>
+									<input id="lboundSel" type="text" placeholder="(元/%/個月/級)" class="textForm" name="AutoComfirmToBorrowMsgLbound"<%if(jsonLend.AutoComfirmToBorrowMsgLbound!==-1){%> value="<%=jsonLend.AutoComfirmToBorrowMsgLbound.toFixed(0)%>"<%}%><% if(jsonLend.AutoComfirmToBorrowMsgPeriod<=0){ %> disabled="disabled"<%}%>>
+								<%}%>
+							<%}%>
+						</div>
+					</div>
+				<%}else{%>
+					<div class="panel panel-default" id="lboundPnl"<% if(lfJSON.FormContent.F10<=0){ %> style="display:none;"<%}%>>
+						<div class="panel-heading">
+							<h3 class="panel-title">自動同意下限<span id="s14" style="color:red;"><%if(lfJSON){%><%if(lfJSON.Target[13]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=lfJSON.Message[13]%><%}%><%}%></span></h3>
+						</div>
+						<div class="panel-body">
+							<%if((lfJSON.FormContent.F12=="Updated")||(lfJSON.FormContent.F12=="Created")){%>
+								<input id="lboundSel" type="date" placeholder="(yyyy/mm/dd)" class="textForm" name="AutoComfirmToBorrowMsgLbound" value="<%=lfJSON.FormContent.F14%>"<% if(lfJSON.FormContent.F10<=0){ %> disabled="disabled"<%}%>>
+							<%}else{%>
+								<input id="lboundSel" type="text" placeholder="(元/%/個月/級)" class="textForm" name="AutoComfirmToBorrowMsgLbound" value="<%=lfJSON.FormContent.F14%>"<% if(lfJSON.FormContent.F10<=0){ %> disabled="disabled"<%}%>>
+							<%}%>
+						</div>
+					</div>
+				<%}%>
+				<br>
+				<%if(!lfJSON){%>
+					<div class="panel panel-default" id="uboundPnl"<% if(!jsonLend){%> style="display:none;"<%}else{%><% if(jsonLend.AutoComfirmToBorrowMsgPeriod<=0){ %> style="display:none;"<%}%><%}%>>
+						<div class="panel-heading">
+							<h3 class="panel-title">自動同意上限</h3>
+						</div>
+						<div class="panel-body">
+							<%if(!jsonLend){%>
+								<input id="uboundSel" type="text" placeholder="(元/%/個月/級)" class="textForm" name="AutoComfirmToBorrowMsgUbound" disabled="disabled">
+							<%}else{%>
+								<%if((jsonLend.AutoComfirmToBorrowMsgSorter=="Updated")||(jsonLend.AutoComfirmToBorrowMsgSorter=="Created")){%>
+									<input id="uboundSel" type="date" placeholder="(yyyy/mm/dd)" class="textForm" name="AutoComfirmToBorrowMsgUbound"<%if(jsonLend.AutoComfirmToBorrowMsgUbound!==-1){%> value="<%=new Date(parseInt(jsonLend.AutoComfirmToBorrowMsgUbound)).getFullYear()%>-<%if(new Date(parseInt(jsonLend.AutoComfirmToBorrowMsgUbound)).getMonth()<9){%>0<%}%><%=new Date(parseInt(jsonLend.AutoComfirmToBorrowMsgUbound)).getMonth()+1%>-<%if(new Date(parseInt(jsonLend.AutoComfirmToBorrowMsgUbound)).getDate()<10){%>0<%}%><%=new Date(parseInt(jsonLend.AutoComfirmToBorrowMsgUbound)).getDate()%>"<%}%><% if(jsonLend.AutoComfirmToBorrowMsgPeriod<=0){ %> disabled="disabled"<%}%>>
+								<%}else if((jsonLend.AutoComfirmToBorrowMsgSorter=="InterestRate")||(jsonLend.AutoComfirmToBorrowMsgSorter=="InterestInFutureDivMoney")){%>
+									<input id="uboundSel" type="text" placeholder="(元/%/個月/級)" class="textForm" name="AutoComfirmToBorrowMsgUbound"<%if(jsonLend.AutoComfirmToBorrowMsgUbound!==-1){%> value="<%=jsonLend.AutoComfirmToBorrowMsgUbound.toFixed(2)%>"<%}%><% if(jsonLend.AutoComfirmToBorrowMsgPeriod<=0){ %> disabled="disabled"<%}%>>
+								<%}else{%>
+									<input id="uboundSel" type="text" placeholder="(元/%/個月/級)" class="textForm" name="AutoComfirmToBorrowMsgUbound"<%if(jsonLend.AutoComfirmToBorrowMsgUbound!==-1){%> value="<%=jsonLend.AutoComfirmToBorrowMsgUbound.toFixed(0)%>"<%}%><% if(jsonLend.AutoComfirmToBorrowMsgPeriod<=0){ %> disabled="disabled"<%}%>>
+								<%}%>
+							<%}%>
+						</div>
+					</div>
+				<%}else{%>
+					<div class="panel panel-default" id="uboundPnl"<% if(lfJSON.FormContent.F10<=0){ %> style="display:none;"<%}%>>
+						<div class="panel-heading">
+							<h3 class="panel-title">自動同意上限<span id="s15" style="color:red;"><%if(lfJSON){%><%if(lfJSON.Target[14]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=lfJSON.Message[14]%><%}%><%}%></span></h3>
+						</div>
+						<div class="panel-body">
+							<%if((lfJSON.FormContent.F12=="Updated")||(lfJSON.FormContent.F12=="Created")){%>
+								<input id="uboundSel" type="date" placeholder="(yyyy/mm/dd)" class="textForm" name="AutoComfirmToBorrowMsgUbound" value="<%=lfJSON.FormContent.F15%>"<% if(lfJSON.FormContent.F10<=0){ %> disabled="disabled"<%}%>>
+							<%}else{%>
+								<input id="uboundSel" type="text" placeholder="(元/%/個月/級)" class="textForm" name="AutoComfirmToBorrowMsgUbound" value="<%=lfJSON.FormContent.F15%>"<% if(lfJSON.FormContent.F10<=0){ %> disabled="disabled"<%}%>>
+							<%}%>
+						</div>
+					</div>
+				<%}%>
+				<br>
+				<%if(!lfJSON){%>
+					<div class="panel panel-default" id="keywordPnl"<% if(!jsonLend){%> style="display:none;"<%}else{%><% if(jsonLend.AutoComfirmToBorrowMsgPeriod<=0){ %> style="display:none;"<%}%><%}%>>
+						<div class="panel-heading">
+							<h3 class="panel-title">自動同意關鍵字</h3>
+						</div>
+						<div class="panel-body">
+							<%if(!jsonLend){%>
+								<input id="keywordSel" type="text" class="textForm" name="AutoComfirmToBorrowMsgKeyWord" disabled="disabled">
+							<%}else{%>
+								<input id="keywordSel" type="text" class="textForm" name="AutoComfirmToBorrowMsgKeyWord" value="<%=jsonLend.AutoComfirmToBorrowMsgKeyWord%>"<% if(jsonLend.AutoComfirmToBorrowMsgPeriod<=0){ %> disabled="disabled"<%}%>>
+							<%}%>
+						</div>
+					</div>
+				<%}else{%>
+					<div class="panel panel-default" id="keywordPnl"<% if(lfJSON.FormContent.F10<=0){ %> style="display:none;"<%}%>>
+						<div class="panel-heading">
+							<h3 class="panel-title">自動同意關鍵字</h3>
+						</div>
+						<div class="panel-body">
+							<input id="keywordSel" type="text" class="textForm" name="AutoComfirmToBorrowMsgKeyWord" value="<%=lfJSON.FormContent.F16%>"<% if(lfJSON.FormContent.F10<=0){ %> disabled="disabled"<%}%>>
 						</div>
 					</div>
 				<%}%>
@@ -392,7 +528,7 @@
 							</div>
 						</div>
 					</div>
-				<% } %>
+				<%}%>
 			</form>
 			<div class="modal fade" id="msgModal">
 				<div class="modal-dialog modal-sm">
@@ -430,68 +566,226 @@
 	});
 <%}%>
 
+function autoSorter(){
+	$('#lboundSel').val('');
+	$('#uboundSel').val('');
+	if(($('#sorterSel').val()=='Updated')||($('#sorterSel').val()=='Created')){
+		enableDater();
+	}else{
+		disableDater();
+	}
+}
+
+function autoChanger(){
+	if($('#periodSel').val()>0){
+		$('#sorterSel').prop('disabled', false);
+		$('#sorterPnl').attr('style','');
+		
+		$('#directorSel').prop('disabled', false);
+		$('#directorPnl').attr('style','');
+		
+		$('#classorSel').prop('disabled', false);
+		$('#classorPnl').attr('style','');
+		
+		$('#lboundSel').prop('disabled', false);
+		$('#lboundPnl').attr('style','');
+		
+		$('#uboundSel').prop('disabled', false);
+		$('#uboundPnl').attr('style','');
+		
+		$('#keywordSel').prop('disabled', false);
+		$('#keywordPnl').attr('style','');
+	}else{
+		$('#sorterSel').prop('disabled', true);
+		$('#sorterSel').val('InterestRate');
+		$('#sorterPnl').attr('style','display:none;');
+		
+		$('#directorSel').prop('disabled', true);
+		$('#directorSel').val('minus');
+		$('#directorPnl').attr('style','display:none;');
+		
+		$('#classorSel').prop('disabled', true);
+		$('#classorSel').val('none');
+		$('#classorPnl').attr('style','display:none;');
+		
+		$('#lboundSel').prop('disabled', true);
+		$('#lboundPnl').attr('style','display:none;');
+		
+		$('#uboundSel').prop('disabled', true);
+		$('#uboundPnl').attr('style','display:none;');
+		
+		$('#keywordSel').prop('disabled', true);
+		$('#keywordPnl').attr('style','display:none;');
+		
+		$('#lboundSel').val('');
+		$('#uboundSel').val('');
+		$('#keywordSel').val('');
+		disableDater();
+	}
+}
+
+<%if(!lfJSON){%>
+	<%if(!jsonLend){%>
+		var ifDater=false;
+	<%}else{%>
+		<%if((jsonLend.AutoComfirmToBorrowMsgSorter=="Updated")||(jsonLend.AutoComfirmToBorrowMsgSorter=="Created")){%>
+			var ifDater=true;
+		<%}else{%>
+			var ifDater=false;
+		<%}%>
+	<%}%>
+<%}else{%>
+	<%if((lfJSON.FormContent.F12=="Updated")||(lfJSON.FormContent.F12=="Created")){%>
+		var ifDater=true;
+	<%}else{%>
+		var ifDater=false;
+	<%}%>
+<%}%>
+function enableDater(){
+	if(!ifDater){
+		$('#lboundSel').attr('type','date');
+		$('#uboundSel').attr('type','date');
+		$('#lboundSel').attr('placeholder','(yyyy/mm/dd)');
+		$('#uboundSel').attr('placeholder','(yyyy/mm/dd)');
+		ifDater=true;
+	}
+}
+
+function disableDater(){
+	if(ifDater){
+		$('#lboundSel').attr('type','text');
+		$('#uboundSel').attr('type','text');
+		$('#lboundSel').attr('placeholder','(元/%/個月/級)');
+		$('#uboundSel').attr('placeholder','(元/%/個月/級)');
+		ifDater=false;
+	}
+}
+
 function checkAndOpenModal(target,cntNumber,cntTail,flag){
 	var a=$("input[name='MaxMoneyToLend']").val().trim();
 	var b=$("input[name='InterestRate']").val().trim();
 	var c=$("input[name='MonthPeriod']").val().trim();
 	var d=$("input[name='MinLevelAccepted']").val().trim();
 	var e=$("input[name='MinInterestInFuture']").val().trim();
-	var f=$("input[name='MinInterestInFutureMonth']").val().trim();
-	var g=$("input[name='MinInterestInFutureMoneyMonth']").val().trim();
-	var h=$("input[name='MinInterestInFutureDivMoney']").val().trim();
+	var f=$("input[name='MinMoneyFuture']").val().trim();
+	var g=$("input[name='MinInterestInFutureMonth']").val().trim();
+	var h=$("input[name='MinInterestInFutureMoneyMonth']").val().trim();
+	var i=$("input[name='MinInterestInFutureDivMoney']").val().trim();
 	var aa=parseInt(a);
 	var bb=parseFloat(b);
 	var cc=parseInt(c);
 	var dd;
-	if(d==''){
+	if(d===''){
 		dd=1;
 	}else{
 		dd=parseInt(d);
 	}
 	var ee;
-	if(e==''){
+	if(e===''){
 		ee=1;
 	}else{
 		ee=parseInt(e);
 	}
 	var ff;
-	if(f==''){
+	if(f===''){
 		ff=1;
 	}else{
 		ff=parseInt(f);
 	}
 	var gg;
-	if(g==''){
+	if(g===''){
 		gg=1;
 	}else{
 		gg=parseInt(g);
 	}
 	var hh;
-	if(h==''){
+	if(h===''){
 		hh=1;
 	}else{
-		hh=parseFloat(h);
+		hh=parseInt(h);
+	}
+	var ii;
+	if(i===''){
+		ii=1;
+	}else{
+		ii=parseFloat(i);
+	}
+	
+	var keepFlag=true;
+	var period=$("select[name='AutoComfirmToBorrowMsgPeriod']").val();
+	if(period>0){
+		var sorter=$("select[name='AutoComfirmToBorrowMsgSorter']").val();
+		var lbound=$("input[name='AutoComfirmToBorrowMsgLbound']").val().trim();
+		var ubound=$("input[name='AutoComfirmToBorrowMsgUbound']").val().trim();
+		if(lbound!==''){
+			if((sorter=='Updated')||(sorter=='Created')){
+				var tester=Date.parse(lbound);
+				if(isNaN(tester)){
+					keepFlag=false;
+				}
+			}else if((sorter=='InterestRate')||(sorter=='InterestInFutureDivMoney')){
+				var tester=parseFloat(lbound);
+				if((tester<0)||(tester>99)){
+					keepFlag=false;
+				}else{
+					$("input[name='AutoComfirmToBorrowMsgLbound']").val(tester);
+				}
+			}else{
+				var tester=parseInt(lbound);
+				if(tester<0){
+					keepFlag=false;
+				}else{
+					$("input[name='AutoComfirmToBorrowMsgLbound']").val(tester);
+				}
+			}
+		}
+		
+		if(ubound!==''){
+			if((sorter=='Updated')||(sorter=='Created')){
+				var tester=Date.parse(ubound);
+				if(isNaN(tester)){
+					keepFlag=false;
+				}
+			}else if((sorter=='InterestRate')||(sorter=='InterestInFutureDivMoney')){
+				var tester=parseFloat(ubound);
+				if((tester<0)||(tester>99)){
+					keepFlag=false;
+				}else{
+					$("input[name='AutoComfirmToBorrowMsgUbound']").val(tester);
+				}
+			}else{
+				var tester=parseInt(ubound);
+				if(tester<0){
+					keepFlag=false;
+				}else{
+					$("input[name='AutoComfirmToBorrowMsgUbound']").val(tester);
+				}
+			}
+		}
 	}
 	
 	if(flag){
-		if((a!='')&&(b!='')&&(c!='')&&(aa>=1)&&(bb>=0.01)&&(bb<=99)&&(cc>=1)&&(cc<=36)&&(dd>=0)&&(ee>=0)&&(ff>=0)&&(gg>=0)&&(hh>=0)&&(hh<=99)){
+		if((a!='')&&(b!='')&&(c!='')&&(aa>=1)&&(bb>=0.01)&&(bb<=99)&&(cc>=1)&&(cc<=36)&&(dd>=0)&&(ee>=0)&&(ff>=0)&&(gg>=0)&&(hh>=0)&&(ii>=0)&&(ii<=99)&&(keepFlag)){
 			$("input[name='MaxMoneyToLend']").val(aa);
 			$("input[name='InterestRate']").val(bb);
 			$("input[name='MonthPeriod']").val(cc);
-			if(d!=''){
+			if(d!==''){
 				$("input[name='MinLevelAccepted']").val(dd);
 			}
-			if(e!=''){
+			if(e!==''){
 				$("input[name='MinInterestInFuture']").val(ee);
 			}
-			if(f!=''){
-				$("input[name='MinInterestInFutureMonth']").val(ff);
+			if(f!==''){
+				$("input[name='MinMoneyFuture']").val(ff);
 			}
-			if(g!=''){
-				$("input[name='MinInterestInFutureMoneyMonth']").val(gg);
+			if(g!==''){
+				$("input[name='MinInterestInFutureMonth']").val(gg);
 			}
-			if(h!=''){
-				$("input[name='MinInterestInFutureDivMoney']").val(hh);
+			if(h!==''){
+				$("input[name='MinInterestInFutureMoneyMonth']").val(hh);
+			}
+			if(i!==''){
+				$("input[name='MinInterestInFutureDivMoney']").val(ii);
 			}
 			
 			$(cntNumber).html('<br>'+cntTail+'<br><br>');

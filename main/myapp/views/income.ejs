@@ -1,8 +1,8 @@
-<%- include('layout_header',{searchTitle:null,nav_cur:'income',actionDefault:'建立日期',directorDefault:'大至小',keywordDefault:'',categoryDefault:'不分類'}); -%>
+<%- include('layout_header',{searchTitle:null,nav_cur:'income',messengerDefault:'不分訊息狀態',actionDefault:'建立日期',directorDefault:'大至小',keywordDefault:'',categoryDefault:'不分類'}); -%>
 <div class="container">
 	<div class="row">
 		<div class="col-md-9">
-			<div style="font-size:30pt;">收入分析</div>
+			<div class="bigTitle">收入分析</div>
 				<%if(totalResultNum<=0){%>
 					<div style="font-size:20pt;color:#FF0000;">&nbsp;找不到生效中的交易來進行分析</div>
 				<%}%>
@@ -79,10 +79,28 @@
 				</br>
 				<div class="panel panel-default">
 					<div class="panel-heading">
+						<h3 class="panel-title">年度預計平均利息收入</h3>
+					</div>
+					<div class="panel-body">
+						<%=dpk.d1%>元
+					</div>
+				</div>
+				</br>
+				<div class="panel panel-default">
+					<div class="panel-heading">
 						<h3 class="panel-title">年度預計回收本金</h3>
 					</div>
 					<div class="panel-body">
 						<%=yrPri%>元
+					</div>
+				</div>
+				</br>
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title">年度預計平均回收本金</h3>
+					</div>
+					<div class="panel-body">
+						<%=dpk.d2%>元
 					</div>
 				</div>
 				</br>
@@ -97,12 +115,22 @@
 				</br>
 				<div class="panel panel-default">
 					<div class="panel-heading">
+						<h3 class="panel-title">年度預計平均可收本利和</h3>
+					</div>
+					<div class="panel-body">
+						<%=dpk.d3%>元
+					</div>
+				</div>
+				</br>
+				<div class="panel panel-default">
+					<div class="panel-heading">
 						<h3 class="panel-title">年度預計平均每月投資回報率</h3>
 					</div>
 					<div class="panel-body">
 						<%=yrRoi%>‰
 					</div>
-				</div></br>
+				</div>
+				</br>
 				<div id="text6">
 					<div class="panel panel-default">
 						<div class="panel-heading">
@@ -125,6 +153,17 @@
 					</div>
 					</br>
 				</div>
+				<div id="text7_2">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3 class="panel-title">年度歷史收款記錄之平均利息收入</h3>
+						</div>
+						<div class="panel-body">
+							<%=dpk.d4%>元
+						</div>
+					</div>
+					</br>
+				</div>
 				<div id="text8">
 					<div class="panel panel-default">
 						<div class="panel-heading">
@@ -136,6 +175,17 @@
 					</div>
 					</br>
 				</div>
+				<div id="text8_2">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3 class="panel-title">年度歷史收款記錄之平均回收本金</h3>
+						</div>
+						<div class="panel-body">
+							<%=dpk.d5%>元
+						</div>
+					</div>
+					</br>
+				</div>
 				<div id="text9">
 					<div class="panel panel-default">
 						<div class="panel-heading">
@@ -143,6 +193,17 @@
 						</div>
 						<div class="panel-body">
 							<%=yrHistoryRevPri%>元
+						</div>
+					</div>
+					</br>
+				</div>
+				<div id="text9_2">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3 class="panel-title">年度歷史收款記錄之平均收到本利和</h3>
+						</div>
+						<div class="panel-body">
+							<%=dpk.d6%>元
 						</div>
 					</div>
 					</br>
@@ -332,10 +393,12 @@
 			}else{
 				$("#line7Pic").html('');
 				$("#text7").html('');
+				$("#text7_2").html('');
 			}
 		}else{
 			$("#line7Pic").html('');
 			$("#text7").html('');
+			$("#text7_2").html('');
 		}
 		
 		if(data8JSON.labels){
@@ -344,10 +407,12 @@
 			}else{
 				$("#line8Pic").html('');
 				$("#text8").html('');
+				$("#text8_2").html('');
 			}
 		}else{
 			$("#line8Pic").html('');
 			$("#text8").html('');
+			$("#text8_2").html('');
 		}
 		
 		if(data9JSON.labels){
@@ -356,10 +421,12 @@
 			}else{
 				$("#line9Pic").html('');
 				$("#text9").html('');
+				$("#text9_2").html('');
 			}
 		}else{
 			$("#line9Pic").html('');
 			$("#text9").html('');
+			$("#text9_2").html('');
 		}
 		
 		if(data10JSON.labels){

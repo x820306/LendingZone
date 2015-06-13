@@ -1,12 +1,12 @@
-<%- include('layout_header',{searchTitle:null,nav_cur:'story',actionDefault:'建立日期',directorDefault:'大至小',keywordDefault:'',categoryDefault:'不分類'}); -%>
+<%- include('layout_header',{searchTitle:null,nav_cur:'story',messengerDefault:'不分訊息狀態',actionDefault:'建立日期',directorDefault:'大至小',keywordDefault:'',categoryDefault:'不分類'}); -%>
 <div class="container">
 	<div class="row">
 		<div class="col-md-9">
 			<table width="100%">
 				<tr>
 					<td style="width:90%;">
-						<div style="font-size:30px;" <%if(json.TitleColor=="default"){%>class="default"<%}else if(json.TitleColor=="color1"){%>class="color1"<%}else if(json.TitleColor=="color3"){%>class="color3"<%}else if(json.TitleColor=="color2"){%>class="color2"<%}else if(json.TitleColor=="color4"){%>class="color4"<%}else if(json.TitleColor=="color5"){%>class="color5"<%}%>>[<%if(json.Category=='general'){%>一般<%}else if(json.Category=='education'){%>教育<%}else if(json.Category=='family'){%>家庭<%}else if(json.Category=='tour'){%>旅遊<%}%>]&nbsp;&nbsp;<%-json.StoryTitle.replace(new RegExp(' ','g'),'&nbsp;')%></div>
-						<div style="font-size:20px;"> by <div id="aiteName" style="display:inline;"><%=json.CreatedBy.Username%></div></div>
+						<div style="font-size:30pt;"<%if(json.TitleColor=="default"){%> class="default"<%}else if(json.TitleColor=="color1"){%> class="color1"<%}else if(json.TitleColor=="color2"){%> class="color2"<%}else if(json.TitleColor=="color3"){%> class="color3"<%}else if(json.TitleColor=="color4"){%> class="color4"<%}else if(json.TitleColor=="color5"){%> class="color5"<%}else if(json.TitleColor=="color6"){%> class="color6"<%}else if(json.TitleColor=="color7"){%> class="color7"<%}%>>[<%if(json.Category=='general'){%>一般<%}else if(json.Category=='education'){%>教育<%}else if(json.Category=='family'){%>家庭<%}else if(json.Category=='tour'){%>旅遊<%}%>]&nbsp;&nbsp;<%if(json.StoryTitle!==''){%><%-json.StoryTitle.replace(new RegExp(' ','g'),'&nbsp;')%><%}else{%>無標題<%}%></div>
+						<div class="subTitle"> by <div id="aiteName" style="display:inline;"><%=json.CreatedBy.Username%></div></div>
 					</td>
 					<td align="right">
 						<div style="font-size:20px;display:inline;" class="myTitle2" id="likeBtn">
@@ -42,9 +42,9 @@
 				<li><a href="#tab2" data-toggle="tab">資訊</a></li>
 				<li><a href="#tab3" data-toggle="tab">留言</a></li>
             </ul>
-            <div class="tab-content my-tab-content">
+            <div style="height:340px;" class="tab-content my-tab-content">
 				<div class="tab-pane active" id="tab1">
-					<%-json.Story.replace(new RegExp('\n','g'),'<br>').replace(new RegExp(' ','g'),'&nbsp;')%>
+					<%if(json.Story!==''){%><%-json.Story.replace(new RegExp('\n','g'),'<br>').replace(new RegExp(' ','g'),'&nbsp;')%><%}else{%>無內容<%}%>
 				</div>
 				<div class="tab-pane" id="tab2">
 					<table width="100%" height="275px">
@@ -107,7 +107,21 @@
 						<tr>
 							<td>
 								<div class="myTitle">
-									可接受期數（單位/月）:
+									可接受最低期數（單位/月）:
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div>
+									&nbsp;&nbsp;&nbsp;&nbsp;<%=json.MonthPeriodAcceptedLowest.toFixed(0)%>個月
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div class="myTitle">
+									可接受最高期數（單位/月）:
 								</div>
 							</td>
 						</tr>
@@ -516,7 +530,7 @@
 									<br>
 									<div class="my-divider"></div>
 									<h4>訊息：</h4>
-									<textarea class="form-control" name="Message" rows="3" readonly="readonly"><%=jsonMessage.Message%></textarea>
+									<textarea class="form-control" name="Message" rows="3" readonly="readonly"><%if(jsonMessage.Message!==''){%><%=jsonMessage.Message%><%}else{%>無內容<%}%></textarea>
 									<br>
 								</div>
 								<%if(jsonMessage.Status=='NotConfirmed'){%>
@@ -531,7 +545,7 @@
 										</button>
 										&nbsp;
 									<%}%>
-									<a href="/lender/lenderSendMessages?msgKeyword=<%=jsonMessage._id%>&filter=<%if(jsonMessage.Status=="NotConfirmed"){%><%=encodeURIComponent('未被確認')%><%}else if(jsonMessage.Status=="Confirmed"){%><%=encodeURIComponent('已被同意')%><%}else if(jsonMessage.Status=="Rejected"){%><%=encodeURIComponent('已被婉拒')%><%}%>&sorter=<%=encodeURIComponent("更新日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">
+									<a href="/lender/lenderSendMessages?msgKeyword=<%=jsonMessage._id%>&filter=<%if(jsonMessage.Status=="NotConfirmed"){%><%=encodeURIComponent('未被確認')%><%}else if(jsonMessage.Status=="Confirmed"){%><%=encodeURIComponent('已被同意')%><%}else if(jsonMessage.Status=="Rejected"){%><%=encodeURIComponent('已被婉拒')%><%}%>&classor=<%=encodeURIComponent("不分故事種類");%>&sorter=<%=encodeURIComponent("更新日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">
 										<button type="button" class="btn btn-default">於列表查看</button>
 									</a>
 									&nbsp;
@@ -680,7 +694,7 @@
 									<br>
 									<div class="my-divider"></div>
 									<h4>訊息（選填）：<span id="s4" style="color:red;"><%if(hlfJSON){%><%if(hlfJSON.Target[3]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=hlfJSON.Message[3]%><%}%><%}%></span></h4>
-									<textarea class="form-control" name="Message" rows="3"><%if(hlfJSON){%><%=hlfJSON.FormContent.F4%><%}else{%><%if(jsonMessage.Message.trim()!='無內容'){%><%=jsonMessage.Message%><%}%><%}%></textarea>
+									<textarea class="form-control" name="Message" rows="3"><%if(hlfJSON){%><%=hlfJSON.FormContent.F4%><%}else{%><%=jsonMessage.Message%><%}%></textarea>
 								</div>
 								<input type="hidden" name="FromBorrowRequest" value="<%=json._id%>">
 								<input type="hidden" name="_id" value="<%=jsonMessage._id%>">
@@ -698,7 +712,7 @@
 										</div>
 									</div>
 									<div style="float:right;">
-										<a href="/lender/lenderSendMessages?msgKeyword=<%=jsonMessage._id%>&filter=<%if(jsonMessage.Status=="NotConfirmed"){%><%=encodeURIComponent('未被確認')%><%}else if(jsonMessage.Status=="Confirmed"){%><%=encodeURIComponent('已被同意')%><%}else if(jsonMessage.Status=="Rejected"){%><%=encodeURIComponent('已被婉拒')%><%}%>&sorter=<%=encodeURIComponent("更新日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">
+										<a href="/lender/lenderSendMessages?msgKeyword=<%=jsonMessage._id%>&filter=<%if(jsonMessage.Status=="NotConfirmed"){%><%=encodeURIComponent('未被確認')%><%}else if(jsonMessage.Status=="Confirmed"){%><%=encodeURIComponent('已被同意')%><%}else if(jsonMessage.Status=="Rejected"){%><%=encodeURIComponent('已被婉拒')%><%}%>&classor=<%=encodeURIComponent("不分故事種類");%>&sorter=<%=encodeURIComponent("更新日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">
 											<button type="button" class="btn btn-default">於列表查看</button>
 										</a>
 										<button type="button" class="btn btn-default" data-dismiss="modal">關閉</button>
@@ -803,7 +817,7 @@
 								<br>
 								<div class="my-divider"></div>
 								<h4>訊息：</h4>
-								<textarea class="form-control" name="Message" rows="3" readonly="readonly"><%=jsonBorrowMessage.Message%></textarea>
+								<textarea class="form-control" name="Message" rows="3" readonly="readonly"><%if(jsonBorrowMessage.Message!==''){%><%=jsonBorrowMessage.Message%><%}else{%>無內容<%}%></textarea>
 								<br>
 							</div>
 							<%if(jsonBorrowMessage.Status=='NotConfirmed'){%>
@@ -818,7 +832,7 @@
 									</button>
 									&nbsp;
 								<%}%>
-								<a href="/lender/lenderReceiveMessages?msgKeyword=<%=jsonBorrowMessage._id%>&filter=<%if(jsonBorrowMessage.Status=="NotConfirmed"){%><%=encodeURIComponent('未確認')%><%}else if(jsonBorrowMessage.Status=="Confirmed"){%><%=encodeURIComponent('已同意')%><%}else if(jsonBorrowMessage.Status=="Rejected"){%><%=encodeURIComponent('已婉拒')%><%}%>&sorter=<%=encodeURIComponent("更新日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">
+								<a href="/lender/lenderReceiveMessages?msgKeyword=<%=jsonBorrowMessage._id%>&filter=<%if(jsonBorrowMessage.Status=="NotConfirmed"){%><%=encodeURIComponent('未確認')%><%}else if(jsonBorrowMessage.Status=="Confirmed"){%><%=encodeURIComponent('已同意')%><%}else if(jsonBorrowMessage.Status=="Rejected"){%><%=encodeURIComponent('已婉拒')%><%}%>&classor=<%=encodeURIComponent("不分故事種類");%>&sorter=<%=encodeURIComponent("更新日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">
 									<button type="button" class="btn btn-default">於列表查看</button>
 								</a>
 								&nbsp;
@@ -967,7 +981,7 @@
 								<br>
 								<div class="my-divider"></div>
 								<h4>訊息：</h4>
-								<textarea class="form-control" name="Message" rows="3" readonly="readonly"><%if(cfJSON){%><%=cfJSON.FormContent.F4%><%}else{%><%=jsonBorrowMessage.Message%><%}%></textarea>
+								<textarea class="form-control" name="Message" rows="3" readonly="readonly"><%if(cfJSON){%><%=cfJSON.FormContent.F4%><%}else{%><%if(jsonBorrowMessage.Message!==''){%><%=jsonBorrowMessage.Message%><%}else{%>無內容<%}%><%}%></textarea>
 							</div>
 							<input type="hidden" name="FromBorrowRequest" value="<%=json._id%>">
 							<input type="hidden" name="MessageID" value="<%=jsonBorrowMessage._id%>">
@@ -987,7 +1001,7 @@
 									</div>
 								</div>
 								<div style="float:right;">
-									<a href="/lender/lenderReceiveMessages?msgKeyword=<%=jsonBorrowMessage._id%>&filter=<%if(jsonBorrowMessage.Status=="NotConfirmed"){%><%=encodeURIComponent('未確認')%><%}else if(jsonBorrowMessage.Status=="Confirmed"){%><%=encodeURIComponent('已同意')%><%}else if(jsonBorrowMessage.Status=="Rejected"){%><%=encodeURIComponent('已婉拒')%><%}%>&sorter=<%=encodeURIComponent("更新日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">
+									<a href="/lender/lenderReceiveMessages?msgKeyword=<%=jsonBorrowMessage._id%>&filter=<%if(jsonBorrowMessage.Status=="NotConfirmed"){%><%=encodeURIComponent('未確認')%><%}else if(jsonBorrowMessage.Status=="Confirmed"){%><%=encodeURIComponent('已同意')%><%}else if(jsonBorrowMessage.Status=="Rejected"){%><%=encodeURIComponent('已婉拒')%><%}%>&classor=<%=encodeURIComponent("不分故事種類");%>&sorter=<%=encodeURIComponent("更新日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">
 										<button type="button" class="btn btn-default">於列表查看</button>
 									</a>
 									<button type="button" class="btn btn-default" data-dismiss="modal">關閉</button>

@@ -1,20 +1,20 @@
-<%- include('layout_header',{searchTitle:oneidDefault,nav_cur:'lendsList',actionDefault:'建立日期',directorDefault:'大至小',keywordDefault:'',categoryDefault:'不分類'}); -%>
+<%- include('layout_header',{searchTitle:oneidDefault,nav_cur:'lendsList',messengerDefault:'不分訊息狀態',actionDefault:'建立日期',directorDefault:'大至小',keywordDefault:'',categoryDefault:'不分類'}); -%>
 <div class="container">
 	<div class="row">
 		<div class="col-md-9">
-			<div style="font-size:30pt;">自動借出設定列表</div>
-				<div style="font-size:20pt;">&nbsp;<%=totalResultNum%> result</div>
+			<div class="bigTitle">自動借出設定列表</div>
+				<div class="subTitle">&nbsp;<%=totalResultNum%> result</div>
 				<br>
 				<div class="input-group">
-					<input type="text" style="height:40px;" class="form-control" id="oneidIpt" placeholder="搜尋用戶名稱" value="<%=oneidDefault%>" onkeypress="if(event.keyCode==13){linker();}">	
+					<input type="text" class="form-control pageBar" id="oneidIpt" placeholder="搜尋用戶名稱或關鍵字設定" value="<%=oneidDefault%>" onkeypress="if(event.keyCode==13){linker();}">	
 					<span class="input-group-btn">
 						<div class="btn-group">
-							<button type="button" style="height:40px;" class="btn btn-default dropdown-toggle" data-toggle="dropdown" id="classOneSelected">
+							<button type="button" class="btn btn-default dropdown-toggle pageBar" data-toggle="dropdown" id="classOneSelected">
 								<%=classOneDefault%> <span class="caret"></span>
 							</button>
 							<ul class="dropdown-menu">
 								<li style="display:none"><a href="#" id="classOne0"><%=classOneDefault%></a></li>
-								<li id="colis1"<%if(classOneDefault=='不分類'){%> class="active"<%}%>><a href="#" onclick="classOneSelector(1);return false;" id="classOne1">不分類</a></li>
+								<li id="colis1"<%if(classOneDefault=='不篩選自動同意設定'){%> class="active"<%}%>><a href="#" onclick="classOneSelector(1);return false;" id="classOne1">不篩選自動同意設定</a></li>
 								<li id="colis2"<%if(classOneDefault=='永不自動同意'){%> class="active"<%}%>><a href="#" onclick="classOneSelector(2);return false;" id="classOne2">永不自動同意</a></li>
 								<li id="colis3"<%if(classOneDefault=='立即自動同意'){%> class="active"<%}%>><a href="#" onclick="classOneSelector(3);return false;" id="classOne3">立即自動同意</a></li>
 								<li id="colis4"<%if(classOneDefault=='每天自動同意一次'){%> class="active"<%}%>><a href="#" onclick="classOneSelector(4);return false;" id="classOne4">每天自動同意一次</a></li>
@@ -23,7 +23,21 @@
 							</ul>
 						</div>
 						<div class="btn-group">
-							<button type="button" style="height:40px;" class="btn btn-default dropdown-toggle" data-toggle="dropdown" id="sorterSelected">
+							<button type="button" class="btn btn-default dropdown-toggle pageBar" data-toggle="dropdown" id="classTwoSelected">
+								<%=classTwoDefault%> <span class="caret"></span>
+							</button>
+							<ul class="dropdown-menu">
+								<li style="display:none"><a href="#" id="classTwo0"><%=classTwoDefault%></a></li>
+								<li id="ctlis1"<%if(classTwoDefault=='不篩選故事種類設定'){%> class="active"<%}%>><a href="#" onclick="classTwoSelector(1);return false;" id="classTwo1">不篩選故事種類設定</a></li>
+								<li id="ctlis2"<%if(classTwoDefault=='不分類'){%> class="active"<%}%>><a href="#" onclick="classTwoSelector(2);return false;" id="classTwo2">不分類</a></li>
+								<li id="ctlis3"<%if(classTwoDefault=='一般'){%> class="active"<%}%>><a href="#" onclick="classTwoSelector(3);return false;" id="classTwo3">一般</a></li>
+								<li id="ctlis4"<%if(classTwoDefault=='教育'){%> class="active"<%}%>><a href="#" onclick="classTwoSelector(4);return false;" id="classTwo4">教育</a></li>
+								<li id="ctlis5"<%if(classTwoDefault=='家庭'){%> class="active"<%}%>><a href="#" onclick="classTwoSelector(5);return false;" id="classTwo5">家庭</a></li>
+								<li id="ctlis6"<%if(classTwoDefault=='旅遊'){%> class="active"<%}%>><a href="#" onclick="classTwoSelector(6);return false;" id="classTwo6">旅遊</a></li>
+							</ul>
+						</div>
+						<div class="btn-group">
+							<button type="button" class="btn btn-default dropdown-toggle pageBar" data-toggle="dropdown" id="sorterSelected">
 								<%=sorterDefault%> <span class="caret"></span>
 							</button>
 							<ul class="dropdown-menu">
@@ -42,33 +56,49 @@
 							</ul>
 						</div>
 						<div class="btn-group">
-							<button type="button" style="height:40px;" class="btn btn-default" id="directorSelected" data-toggle="dropdown" aria-expanded="false"><%=directorDefault%> <span class='caret'></span></button>
+							<button type="button" class="btn btn-default pageBar" id="directorSelected" data-toggle="dropdown" aria-expanded="false"><%=directorDefault%> <span class='caret'></span></button>
 							<ul class="dropdown-menu" role="menu">
 								<li style="display:none"><a href="#" id="director0"><%=directorDefault%></a></li>
 								<li id="dlis1"<%if(directorDefault=='大至小'){%> class="active"<%}%>><a href="#" onclick="directorSelector(1);return false;" id="director1">大至小</a></li>
 								<li id="dlis2"<%if(directorDefault=='小至大'){%> class="active"<%}%>><a href="#" onclick="directorSelector(2);return false;" id="director2">小至大</a></li>
 							</ul>
 						</div>
-						<button type="button" style="height:40px;" class="btn btn-default" onclick="linker();">Go!</button>
+						<button type="button" class="btn btn-default pageBar" onclick="linker();">Go!</button>
 					</span>
 				</div> 
 				<br>
-				<%if((sorterDefault=='建立日期')||(sorterDefault=='更新日期')){%>
-					<input style="height:32px;width:180px;display:inline;" type="date" placeholder="下限(yyyy/mm/dd)" class="form-control" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode==13){linker();}">
-					&nbsp;~&nbsp;
-					<input style="height:32px;width:180px;display:inline;" type="date" placeholder="上限(yyyy/mm/dd)" class="form-control" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode==13){linker();}">
-				<%}else{%>
-					<input style="height:32px;width:180px;display:inline;" type="text" placeholder="下限(元/%/個月/級)" class="form-control" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode==13){linker();}">
-					&nbsp;~&nbsp;
-					<input style="height:32px;width:180px;display:inline;" type="text" placeholder="上限(元/%/個月/級)" class="form-control" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode==13){linker();}">
-				<%}%>
+				<table width='100%'>
+					<tr>
+						<td>
+							<%if((sorterDefault=='建立日期')||(sorterDefault=='更新日期')){%>
+								<input type="date" placeholder="下限(yyyy/mm/dd)" class="form-control boundIpt" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode==13){linker();}">
+								&nbsp;~&nbsp;
+								<input type="date" placeholder="上限(yyyy/mm/dd)" class="form-control boundIpt" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode==13){linker();}">
+							<%}else{%>
+								<input type="text" placeholder="下限(元/%/個月/級)" class="form-control boundIpt" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode==13){linker();}">
+								&nbsp;~&nbsp;
+								<input type="text" placeholder="上限(元/%/個月/級)" class="form-control boundIpt" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode==13){linker();}">
+							<%}%>
+						</td>
+						<%if((oneidDefault!=='')&&(totalResultNum>0)){%>
+							<td align="right">
+								<button class="btn btn-default disabled" style="display:inline;" id="highlightBtn" onclick="enableHighlight();">
+									關鍵字上色
+								</button>
+								<button class="btn btn-default" style="" id="unhighlightBtn" onclick="disableHighlight();">
+									關鍵字去色
+								</button>
+							</td>
+						<%}%>
+					</tr>
+				</table>
 				<br>
 				<br>
 				<% if(totalResultNum!=0){ %>
 					<% for(var i=0; i<jsonLends.length; i++) { %>
-						<div style="height: 350px;margin-bottom:0px;" class="panel panel-default pd">
+						<div style="height: 410px;margin-bottom:0px;" class="panel panel-default pd">
 							<div class="panel-body">
-								<div style="font-size:25px;display:inline;" class="myTitle"><%=jsonLends[i].CreatedBy.Username%></div>
+								<div style="font-size:25px;display:inline;" class="myTitle"><div class="colorCnt"><%=jsonLends[i].CreatedBy.Username%></div></div>
 								<br>
 								<br>
 								<div class="col-md-6">
@@ -97,7 +127,7 @@
 										<tr>
 											<td>
 												<div>
-													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=(jsonLends[i].InterestRate*100).toFixed(2)%>%
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=((jsonLends[i].InterestRate-scr)*100).toFixed(2)%>%
 												</div>	
 											</td>
 										</tr>
@@ -157,10 +187,6 @@
 												</div>	
 											</td>
 										</tr>
-									</table>	
-								</div>	
-								<div class="col-md-6">
-									<table width="100%" height="250px">		
 										<tr>
 											<td>
 												<div class="myTitle">
@@ -189,6 +215,10 @@
 												</div>	
 											</td>
 										</tr>
+									</table>	
+								</div>	
+								<div class="col-md-6">
+									<table width="100%" height="250px">
 										<tr>
 											<td>
 												<div class="myTitle">
@@ -206,7 +236,7 @@
 										<tr>
 											<td>
 												<div class="myTitle">
-													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(classOneDefault!='不分類'){%> class="stronger"<%}%>>自動同意借款請求：</div>
+													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(classOneDefault!='不篩選自動同意設定'){%> class="stronger"<%}%>>自動同意借款請求：</div>
 												</div>
 											</td>
 										</tr>
@@ -231,7 +261,34 @@
 										<tr>
 											<td>
 												<div class="myTitle">
-													&nbsp;&nbsp;&nbsp;&nbsp;自動同意排序依據:
+													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(classTwoDefault!='不篩選故事種類設定'){%> class="stronger"<%}%>>自動同意故事種類：</div>
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<div>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+													<%if(jsonLends[i].AutoComfirmToBorrowMsgClassor=="invalid"){%>
+														無效
+													<%}else if(jsonLends[i].AutoComfirmToBorrowMsgClassor=="none"){%>
+														不分類
+													<%}else if(jsonLends[i].AutoComfirmToBorrowMsgClassor=="general"){%>
+														一般
+													<%}else if(jsonLends[i].AutoComfirmToBorrowMsgClassor=="education"){%>
+														教育
+													<%}else if(jsonLends[i].AutoComfirmToBorrowMsgClassor=="family"){%>
+														家庭
+													<%}else if(jsonLends[i].AutoComfirmToBorrowMsgClassor=="tour"){%>
+														旅遊
+													<%}%>
+												</div>	
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<div class="myTitle">
+													&nbsp;&nbsp;&nbsp;&nbsp;自動同意排序依據：
 												</div>
 											</td>
 										</tr>
@@ -249,15 +306,15 @@
 														欲借入期數
 													<%}else if(jsonLends[i].AutoComfirmToBorrowMsgSorter=="Level"){%>
 														信用等級
-													<%}else if(jsonLends[i].AutoComfirmToBorrowMsgSorter=="SpecialA"){%>
+													<%}else if(jsonLends[i].AutoComfirmToBorrowMsgSorter=="InterestInFuture"){%>
 														預計總利息
-													<%}else if(jsonLends[i].AutoComfirmToBorrowMsgSorter=="SpecialB"){%>
+													<%}else if(jsonLends[i].AutoComfirmToBorrowMsgSorter=="MoneyFuture"){%>
 														預計本利和
-													<%}else if(jsonLends[i].AutoComfirmToBorrowMsgSorter=="SpecialC"){%>
+													<%}else if(jsonLends[i].AutoComfirmToBorrowMsgSorter=="InterestInFutureMonth"){%>
 														預計平均利息
-													<%}else if(jsonLends[i].AutoComfirmToBorrowMsgSorter=="SpecialD"){%>
+													<%}else if(jsonLends[i].AutoComfirmToBorrowMsgSorter=="InterestInFutureMoneyMonth"){%>
 														預計平均本利和
-													<%}else if(jsonLends[i].AutoComfirmToBorrowMsgSorter=="SpecialE"){%>
+													<%}else if(jsonLends[i].AutoComfirmToBorrowMsgSorter=="InterestInFutureDivMoney"){%>
 														預計利本比
 													<%}else if(jsonLends[i].AutoComfirmToBorrowMsgSorter=="Updated"){%>
 														更新日期
@@ -270,7 +327,7 @@
 										<tr>
 											<td>
 												<div class="myTitle">
-													&nbsp;&nbsp;&nbsp;&nbsp;自動同意排序方向:
+													&nbsp;&nbsp;&nbsp;&nbsp;自動同意排序方向：
 												</div>
 											</td>
 										</tr>
@@ -284,6 +341,80 @@
 														大至小
 													<%}else if(jsonLends[i].AutoComfirmToBorrowMsgDirector=="plus"){%>
 														小至大
+													<%}%>
+												</div>	
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<div class="myTitle">
+													&nbsp;&nbsp;&nbsp;&nbsp;自動同意下限：
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<div>
+													<%if(jsonLends[i].AutoComfirmToBorrowMsgLbound==-1){%>
+														&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;未設定
+													<%}else{%>
+														<%if(jsonLends[i].AutoComfirmToBorrowMsgSorter=='InterestRate'){%>
+															&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=((jsonLends[i].AutoComfirmToBorrowMsgLbound-scr)*100).toFixed(2)%>%
+														<%}else if(jsonLends[i].AutoComfirmToBorrowMsgSorter=='InterestInFutureDivMoney'){%>
+															&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=(jsonLends[i].AutoComfirmToBorrowMsgLbound*100).toFixed(2)%>%
+														<%}else if(jsonLends[i].AutoComfirmToBorrowMsgSorter=='Level'){%>
+															&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonLends[i].AutoComfirmToBorrowMsgLbound.toFixed(0)%>級
+														<%}else if((jsonLends[i].AutoComfirmToBorrowMsgSorter=='Updated')||(jsonLends[i].AutoComfirmToBorrowMsgSorter=='Created')){%>
+															&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=new Date(parseInt(jsonLends[i].AutoComfirmToBorrowMsgLbound)).getFullYear()%>/<%=new Date(parseInt(jsonLends[i].AutoComfirmToBorrowMsgLbound)).getMonth()+1%>/<%=new Date(parseInt(jsonLends[i].AutoComfirmToBorrowMsgLbound)).getDate()%>
+														<%}else{%>
+															&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonLends[i].AutoComfirmToBorrowMsgLbound.toFixed(0)%>元
+														<%}%>
+													<%}%>
+												</div>	
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<div class="myTitle">
+													&nbsp;&nbsp;&nbsp;&nbsp;自動同意上限：
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<div>
+													<%if(jsonLends[i].AutoComfirmToBorrowMsgUbound==-1){%>
+														&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;未設定
+													<%}else{%>
+														<%if(jsonLends[i].AutoComfirmToBorrowMsgSorter=='InterestRate'){%>
+															&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=((jsonLends[i].AutoComfirmToBorrowMsgUbound-scr)*100).toFixed(2)%>%
+														<%}else if(jsonLends[i].AutoComfirmToBorrowMsgSorter=='InterestInFutureDivMoney'){%>
+															&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=(jsonLends[i].AutoComfirmToBorrowMsgUbound*100).toFixed(2)%>%
+														<%}else if(jsonLends[i].AutoComfirmToBorrowMsgSorter=='Level'){%>
+															&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonLends[i].AutoComfirmToBorrowMsgUbound.toFixed(0)%>級
+														<%}else if((jsonLends[i].AutoComfirmToBorrowMsgSorter=='Updated')||(jsonLends[i].AutoComfirmToBorrowMsgSorter=='Created')){%>
+															&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=new Date(parseInt(jsonLends[i].AutoComfirmToBorrowMsgUbound)).getFullYear()%>/<%=new Date(parseInt(jsonLends[i].AutoComfirmToBorrowMsgUbound)).getMonth()+1%>/<%=new Date(parseInt(jsonLends[i].AutoComfirmToBorrowMsgUbound)).getDate()%>
+														<%}else{%>
+															&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonLends[i].AutoComfirmToBorrowMsgUbound.toFixed(0)%>元
+														<%}%>
+													<%}%>
+												</div>	
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<div class="myTitle">
+													&nbsp;&nbsp;&nbsp;&nbsp;自動同意關鍵字：
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<div>
+													<%if(jsonLends[i].AutoComfirmToBorrowMsgKeyWord==''){%>
+														&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;未設定
+													<%}else{%>
+														&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div class="colorCnt"><%=jsonLends[i].AutoComfirmToBorrowMsgKeyWord%></div>
 													<%}%>
 												</div>	
 											</td>
@@ -326,7 +457,7 @@
 									<%}%>
 								>
 								<% if(targetPageNumber!=1){%>
-									<a href="/lender/lendsList?oneid=<%=encodeURIComponent(oneidDefault)%>&classOne=<%=encodeURIComponent(classOneDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=targetPageNumber-1%>">
+									<a href="/lender/lendsList?oneid=<%=encodeURIComponent(oneidDefault)%>&classOne=<%=encodeURIComponent(classOneDefault)%>&classTwo=<%=encodeURIComponent(classTwoDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=targetPageNumber-1%>">
 								<%}else{%>
 									<a href="#" onclick="return false;">
 								<%}%>
@@ -337,7 +468,7 @@
 											<% if(targetPageNumber==j){%>
 												class="active"
 											<%}%>
-										><a href="/lender/lendsList?oneid=<%=encodeURIComponent(oneidDefault)%>&classOne=<%=encodeURIComponent(classOneDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=j%>"><%=j%></a></li>
+										><a href="/lender/lendsList?oneid=<%=encodeURIComponent(oneidDefault)%>&classOne=<%=encodeURIComponent(classOneDefault)%>&classTwo=<%=encodeURIComponent(classTwoDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=j%>"><%=j%></a></li>
 									<%}%>
 								<% }else{%>
 									<% if(targetPageNumber>=pageNumber-3){%>
@@ -346,7 +477,7 @@
 											<% if(targetPageNumber==j){%>
 												class="active"
 											<%}%>
-										><a href="/lender/lendsList?oneid=<%=encodeURIComponent(oneidDefault)%>&classOne=<%=encodeURIComponent(classOneDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=j%>"><%=j%></a></li>
+										><a href="/lender/lendsList?oneid=<%=encodeURIComponent(oneidDefault)%>&classOne=<%=encodeURIComponent(classOneDefault)%>&classTwo=<%=encodeURIComponent(classTwoDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=j%>"><%=j%></a></li>
 										<%}%>
 									<%}else if(targetPageNumber<=5){%>
 										<% for(var j=1; j<=10; j++) { %>
@@ -354,15 +485,15 @@
 											<% if(targetPageNumber==j){%>
 												class="active"
 											<%}%>
-										><a href="/lender/lendsList?oneid=<%=encodeURIComponent(oneidDefault)%>&classOne=<%=encodeURIComponent(classOneDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=j%>"><%=j%></a></li>
+										><a href="/lender/lendsList?oneid=<%=encodeURIComponent(oneidDefault)%>&classOne=<%=encodeURIComponent(classOneDefault)%>&classTwo=<%=encodeURIComponent(classTwoDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=j%>"><%=j%></a></li>
 										<%}%>
 									<%}else{%>
 										<% for(var j=targetPageNumber-5; j<targetPageNumber; j++) { %>
-										<li><a href="/lender/lendsList?oneid=<%=encodeURIComponent(oneidDefault)%>&classOne=<%=encodeURIComponent(classOneDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=j%>"><%=j%></a></li>
+										<li><a href="/lender/lendsList?oneid=<%=encodeURIComponent(oneidDefault)%>&classOne=<%=encodeURIComponent(classOneDefault)%>&classTwo=<%=encodeURIComponent(classTwoDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=j%>"><%=j%></a></li>
 										<%}%>
-										<li class="active"><a href="/lender/lendsList?oneid=<%=encodeURIComponent(oneidDefault)%>&classOne=<%=encodeURIComponent(classOneDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=targetPageNumber%>"><%=targetPageNumber%></a></li>
+										<li class="active"><a href="/lender/lendsList?oneid=<%=encodeURIComponent(oneidDefault)%>&classOne=<%=encodeURIComponent(classOneDefault)%>&classTwo=<%=encodeURIComponent(classTwoDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=targetPageNumber%>"><%=targetPageNumber%></a></li>
 										<% for(var j=targetPageNumber+1; j<=targetPageNumber+4; j++) { %>
-										<li><a href="/lender/lendsList?oneid=<%=encodeURIComponent(oneidDefault)%>&classOne=<%=encodeURIComponent(classOneDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=j%>"><%=j%></a></li>
+										<li><a href="/lender/lendsList?oneid=<%=encodeURIComponent(oneidDefault)%>&classOne=<%=encodeURIComponent(classOneDefault)%>&classTwo=<%=encodeURIComponent(classTwoDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=j%>"><%=j%></a></li>
 										<%}%>
 									<%}%>
 								<%}%>
@@ -372,7 +503,7 @@
 									<%}%>
 								>	
 								<% if(targetPageNumber!=pageNumber){%>
-									<a href="/lender/lendsList?oneid=<%=encodeURIComponent(oneidDefault)%>&classOne=<%=encodeURIComponent(classOneDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=targetPageNumber+1%>">
+									<a href="/lender/lendsList?oneid=<%=encodeURIComponent(oneidDefault)%>&classOne=<%=encodeURIComponent(classOneDefault)%>&classTwo=<%=encodeURIComponent(classTwoDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=targetPageNumber+1%>">
 								<%}else{%>
 									<a href="#" onclick="return false;">
 								<%}%>
@@ -429,6 +560,17 @@
 		$('#colis'+index).attr('class','active');
 	}
 	
+	function classTwoSelector(index){
+		$('#classTwoSelected').html('');
+		$('#classTwoSelected').html($('#classTwo'+index).text());
+		$('#classTwo0').html($('#classTwoSelected').text());
+		$('#classTwoSelected').append(' <span class=\'caret\'><\/span>');
+		for(i=1;i<=6;i++){
+			$('#ctlis'+i).attr('class','');
+		}
+		$('#ctlis'+index).attr('class','active');
+	}
+	
 	<%if((sorterDefault=='建立日期')||(sorterDefault=='更新日期')){%>
 		var ifDater=true;
 	<%}else{%>
@@ -455,7 +597,73 @@
 	}
 	
 	function linker(){
-		window.open('/lender/lendsList?oneid='+encodeURIComponent($('#oneidIpt').val())+'&classOne='+encodeURIComponent($('#classOne0').text())+'&sorter='+encodeURIComponent($('#sorter0').text())+'&director='+encodeURIComponent($('#director0').text())+'&lbound='+encodeURIComponent($('#lbound').val().trim())+'&ubound='+encodeURIComponent($('#ubound').val().trim())+'&page=1','_self');
+		window.open('/lender/lendsList?oneid='+encodeURIComponent($('#oneidIpt').val())+'&classOne='+encodeURIComponent($('#classOne0').text())+'&classTwo='+encodeURIComponent($('#classTwo0').text())+'&sorter='+encodeURIComponent($('#sorter0').text())+'&director='+encodeURIComponent($('#director0').text())+'&lbound='+encodeURIComponent($('#lbound').val().trim())+'&ubound='+encodeURIComponent($('#ubound').val().trim())+'&page=1','_self');
 	}
+	
+	<% if(totalResultNum>0){%>
+		var stringPro='<%=oneidDefault%>';
+		var highLightFlag=false;
+		var stringArray;
+		function enableHighlight(){
+			if(stringPro!==''){
+				if(!highLightFlag){
+					highLightFlag=true;
+					for(i=0;i<stringArray.length;i++){
+						$('.colorCnt').highlight(stringArray[i]);
+					}
+					var orig=$('#unhighlightBtn').attr('class');
+					orig=orig.replace(/ disabled/g, '');
+					$('#unhighlightBtn').attr('class',orig);
+					orig=$('#unhighlightBtn').attr('style');
+					orig=orig.replace(/display:none;/g, '');
+					$('#unhighlightBtn').attr('style',orig);
+					
+					orig=$('#highlightBtn').attr('class');
+					if(orig.search(' disabled')<0){
+						orig=orig+' disabled';
+						$(highlightBtn).attr('class',orig);
+					}
+					orig=$('#highlightBtn').attr('style');
+					if(orig.search('display:none;')<0){
+						orig=orig+'display:none;';
+						$(highlightBtn).attr('style',orig);
+					}
+				}
+			}
+		}
+		
+		function disableHighlight(){
+			if(stringPro!==''){
+				if(highLightFlag){
+					highLightFlag=false;
+					$('.colorCnt').unhighlight();
+					var orig=$('#highlightBtn').attr('class');
+					orig=orig.replace(/ disabled/g, '');
+					$('#highlightBtn').attr('class',orig);
+					orig=$('#highlightBtn').attr('style');
+					orig=orig.replace(/display:none;/g, '');
+					$('#highlightBtn').attr('style',orig);
+					
+					orig=$('#unhighlightBtn').attr('class');
+					if(orig.search(' disabled')<0){
+						orig=orig+' disabled';
+						$(unhighlightBtn).attr('class',orig);
+					}
+					orig=$('#unhighlightBtn').attr('style');
+					if(orig.search('display:none;')<0){
+						orig=orig+'display:none;';
+						$(unhighlightBtn).attr('style',orig);
+					}
+				}
+			}
+		}
+		$(document).ready(function(){
+			if(stringPro!==''){
+				stringPro=stringPro.replace(/\s\s+/g,' ');
+				stringArray=stringPro.split(' ');
+				enableHighlight();
+			}
+		});
+	<%}%>
 </script>
 <%- include('layout_footer',{imgSettingCode:"var ifLoadedCount=0;",imgDrawingCode:""}); -%>

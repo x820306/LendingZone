@@ -10,9 +10,11 @@
 	<!-- bootstrap js-->
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 	<!-- plugin js-->
-	<script src="/javascripts/jquery.cookie.js"></script>
-	<script src="/javascripts/Chart.js"></script>
+	<script type="text/javascript" src="/javascripts/jquery.cookie.js"></script>
+	<script type="text/javascript" src="/javascripts/jquery-ui.js"></script>
+	<script type="text/javascript" src="/javascripts/Chart.js"></script>
 	<script type="text/javascript" src="/javascripts/tooltipsy.min.js"></script>
+	<script type="text/javascript" src="/javascripts/jquery.highlight.js"></script>
 	<script>
 		$.ajaxSetup({ cache: false });
 	</script>
@@ -58,11 +60,11 @@
 								<ul class="dropdown-menu" role="menu">
 									<li <% if(nav_cur=='lend'){ %> class="active"<% } %>><a href="/lender/lend">自動借出設定</a></li>
 									<li <% if(nav_cur=='income'){ %> class="active"<% } %>><a href="/lender/income">收入分析</a></li>
-									<li <% if(nav_cur=='lenderTransactionRecord'){ %> class="active"<% } %>><a href="/lender/lenderTransactionRecord?oneid=&filter=<%=encodeURIComponent("不分類")%>&sorter=<%=encodeURIComponent("建立日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">借出紀錄</a></li>
-									<li <% if(nav_cur=='lenderReturnRecord'){ %> class="active"<% } %>><a href="/lender/lenderReturnRecord?oneid=&id=&sorter=<%=encodeURIComponent("建立日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">收款記錄</a></li>
+									<li <% if(nav_cur=='lenderTransactionRecord'){ %> class="active"<% } %>><a href="/lender/lenderTransactionRecord?oneid=&filter=<%=encodeURIComponent("不分類")%>&messenger=<%=encodeURIComponent('不分訊息種類')%>&classor=<%=encodeURIComponent("不分故事種類");%>&sorter=<%=encodeURIComponent("建立日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">借出紀錄</a></li>
+									<li <% if(nav_cur=='lenderReturnRecord'){ %> class="active"<% } %>><a href="/lender/lenderReturnRecord?oneid=&id=&messenger=<%=encodeURIComponent('不分訊息種類')%>&classor=<%=encodeURIComponent("不分故事種類");%>&sorter=<%=encodeURIComponent("建立日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">收款記錄</a></li>
 									<li class="divider"></li>
-									<li <% if(nav_cur=='lenderReceiveMessages'){ %> class="active"<% } %>><a href="/lender/lenderReceiveMessages?msgKeyword=&filter=<%=encodeURIComponent("未確認")%>&sorter=<%=encodeURIComponent("更新日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">收到之訊息<% if(userName!==null){ %> <span class="badge"><%=newlrmNum%></span><% }%></a></li>
-									<li <% if(nav_cur=='lenderSendMessages'){ %> class="active"<% } %>><a href="/lender/lenderSendMessages?msgKeyword=&filter=<%=encodeURIComponent("未被確認")%>&sorter=<%=encodeURIComponent("更新日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">送出之訊息<% if(userName!==null){ %> <span class="badge"><%=newlsmNum%></span><% } %></a></li>
+									<li <% if(nav_cur=='lenderReceiveMessages'){ %> class="active"<% } %>><a href="/lender/lenderReceiveMessages?msgKeyword=&filter=<%=encodeURIComponent("未確認")%>&classor=<%=encodeURIComponent("不分故事種類");%>&sorter=<%=encodeURIComponent("更新日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">收到之訊息<% if(userName!==null){ %> <span class="badge"><%=newlrmNum%></span><% }%></a></li>
+									<li <% if(nav_cur=='lenderSendMessages'){ %> class="active"<% } %>><a href="/lender/lenderSendMessages?msgKeyword=&filter=<%=encodeURIComponent("未被確認")%>&classor=<%=encodeURIComponent("不分故事種類");%>&sorter=<%=encodeURIComponent("更新日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">送出之訊息<% if(userName!==null){ %> <span class="badge"><%=newlsmNum%></span><% } %></a></li>
 								</ul>
 							<%}else if((nav_cur=='borrowPage')||(nav_cur=='borrowerPanel')||(nav_cur=='borrowerConfirmedMatch')||(nav_cur=='checkMatch')||(nav_cur=='borrowSuccess')){%>
 								<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><% if(nav_cur=='borrowPage'){%>我想借錢<% }else if(nav_cur=='borrowerPanel'){%>還款紀錄<% }else if(nav_cur=='checkMatch'){%>確認媒合<%}else{%>請選擇頁面<%}%> <span class="caret"></span></a>
@@ -80,23 +82,44 @@
 					</ul>
 					<div class="navbar-form navbar-left" role="search">
 						<div class="input-group">
-							<input type="text" style="height:32px;" class="form-control" id="keywordIpt" placeholder="搜尋借入者的名稱或故事標題、內容" value="<%=keywordDefault%>" onkeypress="if(event.keyCode==13){<%if(nav_cur=='search'){%>linker();<%}else{%>linkerMain();<%}%>}"<%if(nav_cur=='search'){%> onkeyup="$('#subKeywordIpt').val($('#keywordIpt').val());"<%}%>>
+							<input type="text" class="form-control headerBar" id="keywordIptMain" placeholder="搜尋借入者的名稱或故事標題、內容" value="<%=keywordDefault%>" onkeypress="if(event.keyCode==13){<%if(nav_cur=='search'){%>linker();<%}else{%>linkerMain();<%}%>}"<%if(nav_cur=='search'){%> onkeyup="$('#keywordIpt').val($('#keywordIptMain').val());"<%}%>>
 							<span class="input-group-btn">
 								<div class="btn-group">
-									<button type="button" style="height:32px;" class="btn btn-default dropdown-toggle" data-toggle="dropdown" id="categorySelected">
+									<button type="button" class="btn btn-default dropdown-toggle headerBar" data-toggle="dropdown" id="categoryMainSelected">
 										<%=categoryDefault%> <span class="caret"></span>
 									</button>
 									<ul class="dropdown-menu">
-										<li style="display:none"><a href="#" id="category0"><%=categoryDefault%></a></li>
-										<li id="cli1"<%if(categoryDefault=='不分類'){%> class="active"<%}%>><a href="#" onclick="<%if(nav_cur=='search'){%>subCategorySelector(1);<%}%>categorySelector(1);return false;" id="category1">不分類</a></li>
-										<li id="cli2"<%if(categoryDefault=='一般'){%> class="active"<%}%>><a href="#" onclick="<%if(nav_cur=='search'){%>subCategorySelector(2);<%}%>categorySelector(2);return false;" id="category2">一般</a></li>
-										<li id="cli3"<%if(categoryDefault=='教育'){%> class="active"<%}%>><a href="#" onclick="<%if(nav_cur=='search'){%>subCategorySelector(3);<%}%>categorySelector(3);return false;" id="category3">教育</a></li>
-										<li id="cli4"<%if(categoryDefault=='家庭'){%> class="active"<%}%>><a href="#" onclick="<%if(nav_cur=='search'){%>subCategorySelector(4);<%}%>categorySelector(4);return false;" id="category4">家庭</a></li>
-										<li id="cli5"<%if(categoryDefault=='旅遊'){%> class="active"<%}%>><a href="#" onclick="<%if(nav_cur=='search'){%>subCategorySelector(5);<%}%>categorySelector(5);return false;" id="category5">旅遊</a></li>
+										<li style="display:none"><a href="#" id="categoryMain0"><%=categoryDefault%></a></li>
+										<li id="cli1"<%if(categoryDefault=='不分類'){%> class="active"<%}%>><a href="#" onclick="<%if(nav_cur=='search'){%>categorySelector(1);<%}%>categoryMainSelector(1);return false;" id="categoryMain1">不分類</a></li>
+										<li id="cli2"<%if(categoryDefault=='一般'){%> class="active"<%}%>><a href="#" onclick="<%if(nav_cur=='search'){%>categorySelector(2);<%}%>categoryMainSelector(2);return false;" id="categoryMain2">一般</a></li>
+										<li id="cli3"<%if(categoryDefault=='教育'){%> class="active"<%}%>><a href="#" onclick="<%if(nav_cur=='search'){%>categorySelector(3);<%}%>categoryMainSelector(3);return false;" id="categoryMain3">教育</a></li>
+										<li id="cli4"<%if(categoryDefault=='家庭'){%> class="active"<%}%>><a href="#" onclick="<%if(nav_cur=='search'){%>categorySelector(4);<%}%>categoryMainSelector(4);return false;" id="categoryMain4">家庭</a></li>
+										<li id="cli5"<%if(categoryDefault=='旅遊'){%> class="active"<%}%>><a href="#" onclick="<%if(nav_cur=='search'){%>categorySelector(5);<%}%>categoryMainSelector(5);return false;" id="categoryMain5">旅遊</a></li>
 									</ul>
 								</div>
 								<div class="btn-group">
-									<button type="button" style="height:32px;" class="btn btn-default" id="searchActionSelected" data-toggle="dropdown" aria-expanded="false"><%=actionDefault%> <span class='caret'></span></button>
+									<button type="button" class="btn btn-default dropdown-toggle headerBar" data-toggle="dropdown" id="messengerMainSelected">
+										<%=messengerDefault%> <span class="caret"></span>
+									</button>
+									<ul class="dropdown-menu">
+										<li style="display:none"><a href="#" id="messengerMain0"><%=messengerDefault%></a></li>
+										<li id="mli1"<%if(messengerDefault=='不分訊息狀態'){%> class="active"<%}%>><a href="#" onclick="<%if(nav_cur=='search'){%>messengerSelector(1);<%}%>messengerMainSelector(1);return false;" id="messengerMain1">不分訊息狀態</a></li>
+										<%if(userName!==null){%><li id="mli2"<%if(messengerDefault=='無訊息'){%> class="active"<%}%>><a href="#" onclick="<%if(nav_cur=='search'){%>messengerSelector(2);<%}%>messengerMainSelector(2);return false;" id="messengerMain2">無訊息</a></li><%}%>
+										<%if(userName!==null){%><li id="mli3"<%if(messengerDefault=='有訊息'){%> class="active"<%}%>><a href="#" onclick="<%if(nav_cur=='search'){%>messengerSelector(3);<%}%>messengerMainSelector(3);return false;" id="messengerMain3">有訊息</a></li><%}%>
+										<%if(userName!==null){%><li id="mli4"<%if(messengerDefault=='訊息未確認或未被確認'){%> class="active"<%}%>><a href="#" onclick="<%if(nav_cur=='search'){%>messengerSelector(4);<%}%>messengerMainSelector(4);return false;" id="messengerMain4">訊息未確認或未被確認</a></li><%}%>
+										<%if(userName!==null){%><li id="mli5"<%if(messengerDefault=='訊息已同意或已被同意'){%> class="active"<%}%>><a href="#" onclick="<%if(nav_cur=='search'){%>messengerSelector(5);<%}%>messengerMainSelector(5);return false;" id="messengerMain5">訊息已同意或已被同意</a></li><%}%>
+										<%if(userName!==null){%><li id="mli6"<%if(messengerDefault=='訊息已婉拒或已被婉拒'){%> class="active"<%}%>><a href="#" onclick="<%if(nav_cur=='search'){%>messengerSelector(6);<%}%>messengerMainSelector(6);return false;" id="messengerMain6">訊息已婉拒或已被婉拒</a></li><%}%>
+										<%if(userName!==null){%><li id="mli7"<%if(messengerDefault=='收到訊息未確認'){%> class="active"<%}%>><a href="#" onclick="<%if(nav_cur=='search'){%>messengerSelector(7);<%}%>messengerMainSelector(7);return false;" id="messengerMain7">收到訊息未確認</a></li><%}%>
+										<%if(userName!==null){%><li id="mli8"<%if(messengerDefault=='收到訊息已同意'){%> class="active"<%}%>><a href="#" onclick="<%if(nav_cur=='search'){%>messengerSelector(8);<%}%>messengerMainSelector(8);return false;" id="messengerMain8">收到訊息已同意</a></li><%}%>
+										<%if(userName!==null){%><li id="mli9"<%if(messengerDefault=='收到訊息已婉拒'){%> class="active"<%}%>><a href="#" onclick="<%if(nav_cur=='search'){%>messengerSelector(9);<%}%>messengerMainSelector(9);return false;" id="messengerMain9">收到訊息已婉拒</a></li><%}%>
+										<%if(userName!==null){%><li id="mli10"<%if(messengerDefault=='送出訊息未被確認'){%> class="active"<%}%>><a href="#" onclick="<%if(nav_cur=='search'){%>messengerSelector(10);<%}%>messengerMainSelector(10);return false;" id="messengerMain10">送出訊息未被確認</a></li><%}%>
+										<%if(userName!==null){%><li id="mli11"<%if(messengerDefault=='送出訊息已被同意'){%> class="active"<%}%>><a href="#" onclick="<%if(nav_cur=='search'){%>messengerSelector(11);<%}%>messengerMainSelector(11);return false;" id="messengerMain11">送出訊息已被同意</a></li><%}%>
+										<%if(userName!==null){%><li id="mli12"<%if(messengerDefault=='送出訊息已被婉拒'){%> class="active"<%}%>><a href="#" onclick="<%if(nav_cur=='search'){%>messengerSelector(12);<%}%>messengerMainSelector(12);return false;" id="messengerMain12">送出訊息已被婉拒</a></li><%}%>
+										<%if(userName!==null){%><li id="mli13"<%if(messengerDefault=='屬於我'){%> class="active"<%}%>><a href="#" onclick="<%if(nav_cur=='search'){%>messengerSelector(13);<%}%>messengerMainSelector(13);return false;" id="messengerMain13">屬於我</a></li><%}%>
+									</ul>
+								</div>
+								<div class="btn-group">
+									<button type="button" class="btn btn-default headerBar" id="searchActionSelected" data-toggle="dropdown" aria-expanded="false"><%=actionDefault%> <span class='caret'></span></button>
 									<ul class="dropdown-menu" role="menu">
 										<li style="display:none"><a href="#" id="searchAction0"><%=actionDefault%></a></li>
 										<li id="ali1"<%if(actionDefault=='建立日期'){%> class="active"<%}%>><a href="#" onclick="<%if(nav_cur=='search'){%>sorterSelector(1);<%}%>searchActionSelector(1);return false;" id="searchAction1">建立日期</a></li>
@@ -106,20 +129,21 @@
 										<li id="ali5"<%if(actionDefault=='已經借到金額'){%> class="active"<%}%>><a href="#" onclick="<%if(nav_cur=='search'){%>sorterSelector(5);<%}%>searchActionSelector(5);return false;" id="searchAction5">已經借到金額</a></li>
 										<li id="ali6"<%if(actionDefault=='還需要金額'){%> class="active"<%}%>><a href="#" onclick="<%if(nav_cur=='search'){%>sorterSelector(6);<%}%>searchActionSelector(6);return false;" id="searchAction6">還需要金額</a></li>
 										<li id="ali7"<%if(actionDefault=='年利率'){%> class="active"<%}%>><a href="#" onclick="<%if(nav_cur=='search'){%>sorterSelector(7);<%}%>searchActionSelector(7);return false;" id="searchAction7">年利率</a></li>
-										<li id="ali8"<%if(actionDefault=='期數'){%> class="active"<%}%>><a href="#" onclick="<%if(nav_cur=='search'){%>sorterSelector(8);<%}%>searchActionSelector(8);return false;" id="searchAction8">期數</a></li>
-										<li id="ali9"<%if(actionDefault=='信用等級'){%> class="active"<%}%>><a href="#" onclick="<%if(nav_cur=='search'){%>sorterSelector(9);<%}%>searchActionSelector(9);return false;" id="searchAction9">信用等級</a></li>
-										<li id="ali10"<%if(actionDefault=='按讚次數'){%> class="active"<%}%>><a href="#" onclick="<%if(nav_cur=='search'){%>sorterSelector(10);<%}%>searchActionSelector(10);return false;" id="searchAction10">按讚次數</a></li>
+										<li id="ali8"<%if(actionDefault=='最低期數'){%> class="active"<%}%>><a href="#" onclick="<%if(nav_cur=='search'){%>sorterSelector(8);<%}%>searchActionSelector(8);return false;" id="searchAction8">最低期數</a></li>
+										<li id="ali9"<%if(actionDefault=='最高期數'){%> class="active"<%}%>><a href="#" onclick="<%if(nav_cur=='search'){%>sorterSelector(9);<%}%>searchActionSelector(9);return false;" id="searchAction9">最高期數</a></li>
+										<li id="ali10"<%if(actionDefault=='信用等級'){%> class="active"<%}%>><a href="#" onclick="<%if(nav_cur=='search'){%>sorterSelector(10);<%}%>searchActionSelector(10);return false;" id="searchAction10">信用等級</a></li>
+										<li id="ali11"<%if(actionDefault=='按讚次數'){%> class="active"<%}%>><a href="#" onclick="<%if(nav_cur=='search'){%>sorterSelector(11);<%}%>searchActionSelector(11);return false;" id="searchAction11">按讚次數</a></li>
 									</ul>
 								</div>
 								<div class="btn-group">
-									<button type="button" style="height:32px;" class="btn btn-default" id="directorMainSelected" data-toggle="dropdown" aria-expanded="false"><%=directorDefault%> <span class='caret'></span></button>
+									<button type="button" class="btn btn-default headerBar" id="directorMainSelected" data-toggle="dropdown" aria-expanded="false"><%=directorDefault%> <span class='caret'></span></button>
 									<ul class="dropdown-menu" role="menu">
 										<li style="display:none"><a href="#" id="directorMain0"><%=directorDefault%></a></li>
 										<li id="dli1"<%if(directorDefault=='大至小'){%> class="active"<%}%>><a href="#" onclick="<%if(nav_cur=='search'){%>directorSelector(1);<%}%>directorMainSelector(1);return false;" id="directorMain1">大至小</a></li>
 										<li id="dli2"<%if(directorDefault=='小至大'){%> class="active"<%}%>><a href="#" onclick="<%if(nav_cur=='search'){%>directorSelector(2);<%}%>directorMainSelector(2);return false;" id="directorMain2">小至大</a></li>
 									</ul>
 								</div>
-								<button type="button" style="height:32px;" class="btn btn-default" onclick="<%if(nav_cur=='search'){%>linker();<%}else{%>linkerMain();<%}%>"><span class="glyphicon glyphicon-search"></span></button>
+								<button type="button" class="btn btn-default headerBar" onclick="<%if(nav_cur=='search'){%>linker();<%}else{%>linkerMain();<%}%>"><span class="glyphicon glyphicon-search"></span></button>
 							</span>
 						</div> 
 					</div>
@@ -154,11 +178,11 @@
 			<ul class="dropdown-menu" role="menu">
 				<li <% if(nav_cur=='lend'){ %> class="active"<% } %>><a href="/lender/lend">自動借出設定</a></li>
 				<li <% if(nav_cur=='income'){ %> class="active"<% } %>><a href="/lender/income">收入分析</a></li>
-				<li <% if(nav_cur=='lenderTransactionRecord'){ %> class="active"<% } %>><a href="/lender/lenderTransactionRecord?oneid=&filter=<%=encodeURIComponent("不分類")%>&sorter=<%=encodeURIComponent("建立日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">借出紀錄</a></li>
-				<li <% if(nav_cur=='lenderReturnRecord'){ %> class="active"<% } %>><a href="/lender/lenderReturnRecord?oneid=&id=&sorter=<%=encodeURIComponent("建立日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">收款記錄</a></li>
+				<li <% if(nav_cur=='lenderTransactionRecord'){ %> class="active"<% } %>><a href="/lender/lenderTransactionRecord?oneid=&filter=<%=encodeURIComponent("不分類")%>&messenger=<%=encodeURIComponent('不分訊息種類')%>&classor=<%=encodeURIComponent("不分故事種類");%>&sorter=<%=encodeURIComponent("建立日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">借出紀錄</a></li>
+				<li <% if(nav_cur=='lenderReturnRecord'){ %> class="active"<% } %>><a href="/lender/lenderReturnRecord?oneid=&id=&messenger=<%=encodeURIComponent('不分訊息種類')%>&classor=<%=encodeURIComponent("不分故事種類");%>&sorter=<%=encodeURIComponent("建立日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">收款記錄</a></li>
 				<li class="divider"></li>
-				<li <% if(nav_cur=='lenderReceiveMessages'){ %> class="active"<% } %>><a href="/lender/lenderReceiveMessages?msgKeyword=&filter=<%=encodeURIComponent("未確認")%>&sorter=<%=encodeURIComponent("更新日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">收到之訊息<% if(userName!==null){ %> <span class="badge"><%=newlrmNum%></span><% }%></a></li>
-				<li <% if(nav_cur=='lenderSendMessages'){ %> class="active"<% } %>><a href="/lender/lenderSendMessages?msgKeyword=&filter=<%=encodeURIComponent("未被確認")%>&sorter=<%=encodeURIComponent("更新日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">送出之訊息<% if(userName!==null){ %> <span class="badge"><%=newlsmNum%></span><% } %></a></li>
+				<li <% if(nav_cur=='lenderReceiveMessages'){ %> class="active"<% } %>><a href="/lender/lenderReceiveMessages?msgKeyword=&filter=<%=encodeURIComponent("未確認")%>&classor=<%=encodeURIComponent("不分故事種類");%>&sorter=<%=encodeURIComponent("更新日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">收到之訊息<% if(userName!==null){ %> <span class="badge"><%=newlrmNum%></span><% }%></a></li>
+				<li <% if(nav_cur=='lenderSendMessages'){ %> class="active"<% } %>><a href="/lender/lenderSendMessages?msgKeyword=&filter=<%=encodeURIComponent("未被確認")%>&classor=<%=encodeURIComponent("不分故事種類");%>&sorter=<%=encodeURIComponent("更新日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">送出之訊息<% if(userName!==null){ %> <span class="badge"><%=newlsmNum%></span><% } %></a></li>
 			</ul>
 		</div>
 		<div id="hide2" style="display:none;"><!-- you should put the same borrower menu located between line54 to line72 in this div -->
@@ -177,11 +201,22 @@
 	</header>
 	<main role="main">
 	<script>
-		function categorySelector(index){
-			$('#categorySelected').html('');
-			$('#categorySelected').html($('#category'+index).text());
-			$('#category0').html($('#categorySelected').text());
-			$('#categorySelected').append(' <span class=\'caret\'><\/span>');
+		function messengerMainSelector(index){
+			$('#messengerMainSelected').html('');
+			$('#messengerMainSelected').html($('#messengerMain'+index).text());
+			$('#messengerMain0').html($('#messengerMainSelected').text());
+			$('#messengerMainSelected').append(' <span class=\'caret\'><\/span>');
+			for(i=1;i<=<%if(userName!==null){%>13<%}else{%>1<%}%>;i++){
+				$('#mli'+i).attr('class','');
+			}
+			$('#mli'+index).attr('class','active');
+		}
+		
+		function categoryMainSelector(index){
+			$('#categoryMainSelected').html('');
+			$('#categoryMainSelected').html($('#categoryMain'+index).text());
+			$('#categoryMain0').html($('#categoryMainSelected').text());
+			$('#categoryMainSelected').append(' <span class=\'caret\'><\/span>');
 			for(i=1;i<=5;i++){
 				$('#cli'+i).attr('class','');
 			}
@@ -193,7 +228,7 @@
 			$('#searchActionSelected').html($('#searchAction'+index).text());
 			$('#searchAction0').html($('#searchActionSelected').text());
 			$('#searchActionSelected').append(' <span class=\'caret\'><\/span>');
-			for(i=1;i<=10;i++){
+			for(i=1;i<=11;i++){
 				$('#ali'+i).attr('class','');
 			}
 			$('#ali'+index).attr('class','active');
@@ -211,6 +246,6 @@
 		}
 		
 		function linkerMain(){
-			window.open('/lender/search?keyword='+encodeURIComponent($('#keywordIpt').val().trim())+'&category='+encodeURIComponent($('#category0').text())+'&action='+encodeURIComponent($('#searchAction0').text())+'&director='+encodeURIComponent($('#directorMain0').text())+'&lbound=&ubound=&page=1','_self');
+			window.open('/lender/search?keyword='+encodeURIComponent($('#keywordIptMain').val().trim())+'&category='+encodeURIComponent($('#categoryMain0').text())+'&messenger='+encodeURIComponent($('#messengerMain0').text())+'&action='+encodeURIComponent($('#searchAction0').text())+'&director='+encodeURIComponent($('#directorMain0').text())+'&lbound=&ubound=&page=1','_self');
 		}
 	</script>
