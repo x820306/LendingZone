@@ -1,15 +1,15 @@
-<%- include('layout_header',{searchTitle:msgKeywordDefault,nav_cur:'lenderReceiveMessages',actionDefault:'建立日期',directorDefault:'大至小',keywordDefault:'',categoryDefault:'不分類'}); -%>
+<%- include('layout_header',{searchTitle:msgKeywordDefault,nav_cur:'lenderReceiveMessages',messengerDefault:'不分訊息狀態',actionDefault:'建立日期',directorDefault:'大至小',keywordDefault:'',categoryDefault:'不分類'}); -%>
 <div class="container">
 	<div class="row">
 		<div class="col-md-9">
-			<div style="font-size:30pt;">借出者收到之訊息 - <%=filterDefault%></div>
-				<div style="font-size:20pt;">&nbsp;<%=totalResultNum%> result</div>
+			<div class="bigTitle">借出者收到之訊息 - <%=filterDefault%></div>
+				<div class="subTitle">&nbsp;<%=totalResultNum%> result</div>
 				<br>
 				<div class="input-group">
-					<input type="text" style="height:40px;" class="form-control" id="msgKeywordIpt" placeholder="搜尋訊息內容、故事標題或用戶名稱" value="<%=msgKeywordDefault%>" onkeypress="if(event.keyCode==13){linker();}">
+					<input type="text" class="form-control pageBar" id="msgKeywordIpt" placeholder="搜尋訊息內容、故事標題或用戶名稱" value="<%=msgKeywordDefault%>" onkeypress="if(event.keyCode==13){linker();}">
 					<span class="input-group-btn">
 						<div class="btn-group">
-							<button type="button" style="height:40px;" class="btn btn-default dropdown-toggle" data-toggle="dropdown" id="filterSelected">
+							<button type="button" class="btn btn-default dropdown-toggle pageBar" data-toggle="dropdown" id="filterSelected">
 								<%=filterDefault%> <span class="caret"></span>
 							</button>
 							<ul class="dropdown-menu">
@@ -21,7 +21,20 @@
 							</ul>
 						</div>
 						<div class="btn-group">
-							<button type="button" style="height:40px;" class="btn btn-default" id="sorterSelected" data-toggle="dropdown" aria-expanded="false"><%=sorterDefault%> <span class='caret'></span></button>
+							<button type="button" class="btn btn-default dropdown-toggle pageBar" data-toggle="dropdown" id="classorSelected">
+								<%=classorDefault%> <span class="caret"></span>
+							</button>
+							<ul class="dropdown-menu">
+								<li style="display:none"><a href="#" id="classor0"><%=classorDefault%></a></li>
+								<li id="clis1"<%if(classorDefault=='不分故事種類'){%> class="active"<%}%>><a href="#" onclick="classorSelector(1);return false;" id="classor1">不分故事種類</a></li>
+								<li id="clis2"<%if(classorDefault=='一般'){%> class="active"<%}%>><a href="#" onclick="classorSelector(2);return false;" id="classor2">一般</a></li>
+								<li id="clis3"<%if(classorDefault=='教育'){%> class="active"<%}%>><a href="#" onclick="classorSelector(3);return false;" id="classor3">教育</a></li>
+								<li id="clis4"<%if(classorDefault=='家庭'){%> class="active"<%}%>><a href="#" onclick="classorSelector(4);return false;" id="classor4">家庭</a></li>
+								<li id="clis5"<%if(classorDefault=='旅遊'){%> class="active"<%}%>><a href="#" onclick="classorSelector(5);return false;" id="classor5">旅遊</a></li>
+							</ul>
+						</div>
+						<div class="btn-group">
+							<button type="button" class="btn btn-default pageBar" id="sorterSelected" data-toggle="dropdown" aria-expanded="false"><%=sorterDefault%> <span class='caret'></span></button>
 							<ul class="dropdown-menu" role="menu">
 								<li style="display:none"><a href="#" id="sorter0"><%=sorterDefault%></a></li>
 								<li id="slis1"<%if(sorterDefault=='更新日期'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(1);return false;" id="sorter1">更新日期</a></li>
@@ -38,26 +51,42 @@
 							</ul>
 						</div>
 						<div class="btn-group">
-							<button type="button" style="height:40px;" class="btn btn-default" id="directorSelected" data-toggle="dropdown" aria-expanded="false"><%=directorDefault%> <span class='caret'></span></button>
+							<button type="button" class="btn btn-default pageBar" id="directorSelected" data-toggle="dropdown" aria-expanded="false"><%=directorDefault%> <span class='caret'></span></button>
 							<ul class="dropdown-menu" role="menu">
 								<li style="display:none"><a href="#" id="director0"><%=directorDefault%></a></li>
 								<li id="dlis1"<%if(directorDefault=='大至小'){%> class="active"<%}%>><a href="#" onclick="directorSelector(1);return false;" id="director1">大至小</a></li>
 								<li id="dlis2"<%if(directorDefault=='小至大'){%> class="active"<%}%>><a href="#" onclick="directorSelector(2);return false;" id="director2">小至大</a></li>
 							</ul>
 						</div>
-						<button type="button" style="height:40px;" class="btn btn-default" onclick="linker();">Go!</button>
+						<button type="button" class="btn btn-default pageBar" onclick="linker();">Go!</button>
 					</span>
 				</div> 
 				<br>
-				<%if((sorterDefault=='建立日期')||(sorterDefault=='更新日期')){%>
-					<input style="height:32px;width:180px;display:inline;" type="date" placeholder="下限(yyyy/mm/dd)" class="form-control" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode==13){linker();}">
-					&nbsp;~&nbsp;
-					<input style="height:32px;width:180px;display:inline;" type="date" placeholder="上限(yyyy/mm/dd)" class="form-control" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode==13){linker();}">
-				<%}else{%>
-					<input style="height:32px;width:180px;display:inline;" type="text" placeholder="下限(元/%/個月/級)" class="form-control" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode==13){linker();}">
-					&nbsp;~&nbsp;
-					<input style="height:32px;width:180px;display:inline;" type="text" placeholder="上限(元/%/個月/級)" class="form-control" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode==13){linker();}">
-				<%}%>
+				<table width='100%'>
+					<tr>
+						<td>
+							<%if((sorterDefault=='建立日期')||(sorterDefault=='更新日期')){%>
+								<input type="date" placeholder="下限(yyyy/mm/dd)" class="form-control boundIpt" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode==13){linker();}">
+								&nbsp;~&nbsp;
+								<input type="date" placeholder="上限(yyyy/mm/dd)" class="form-control boundIpt" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode==13){linker();}">
+							<%}else{%>
+								<input type="text" placeholder="下限(元/%/個月/級)" class="form-control boundIpt" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode==13){linker();}">
+								&nbsp;~&nbsp;
+								<input type="text" placeholder="上限(元/%/個月/級)" class="form-control boundIpt" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode==13){linker();}">
+							<%}%>
+						</td>
+						<%if((msgKeywordDefault!=='')&&(totalResultNum>0)){%>
+							<td align="right">
+								<button class="btn btn-default disabled" style="display:inline;" id="highlightBtn" onclick="enableHighlight();">
+									關鍵字上色
+								</button>
+								<button class="btn btn-default" style="" id="unhighlightBtn" onclick="disableHighlight();">
+									關鍵字去色
+								</button>
+							</td>
+						<%}%>
+					</tr>
+				</table>
 				<br>
 				<%if((cfJSON)&&(filterDefault=='已同意')){%>
 					<br>
@@ -69,22 +98,22 @@
 						<thead class="myThead">
 							<tr>
 								<th>
-								本次實際借出金額
+								實際借出金額
 								</th>
 								<th>
-								本次實際合計總利息
+								實際合計總利息
 								</th>
 								<th>
-								本次實際合計本利和
+								實際合計本利和
 								</th>
 								<th>
-								本次實際合計平均利息
+								實際合計平均利息
 								</th>
 								<th>
-								本次實際合計平均本利和
+								實際合計平均本利和
 								</th>
 								<th>
-								本次實際合計利本比
+								實際合計利本比
 								</th>
 							</tr>
 						</thead>
@@ -506,13 +535,13 @@
 					<div style="height:510px;" class="tab-content my-tab-content">
 						<div class="tab-pane active" id="tab1<%=i%>">
 							<div style="font-size:25px;display:inline;">來自 </div>
-							<div style="font-size:25px;display:inline;" class="myTitle"><%=jsonMessage[i].CreatedBy.Username%></div>
+							<div style="font-size:25px;display:inline;" class="myTitle"><div class="colorCnt"><%=jsonMessage[i].CreatedBy.Username%></div></div>
 							<br>
-							&nbsp;&nbsp;在 <a style="font-size:15px;" href="/lender/story?id=<%=jsonMessage[i].FromBorrowRequest._id%>"><%-jsonMessage[i].FromBorrowRequest.StoryTitle.replace(new RegExp(' ','g'),'&nbsp;')%></a>
+							&nbsp;&nbsp;在&nbsp;&nbsp;<a style="font-size:15px;"<%if(jsonMessage[i].color=="color1"){%> class="color1"<%}else if(jsonMessage[i].color=="color2"){%> class="color2"<%}else if(jsonMessage[i].color=="color3"){%> class="color3"<%}else if(jsonMessage[i].color=="color4"){%> class="color4"<%}else if(jsonMessage[i].color=="color5"){%> class="color5"<%}else if(jsonMessage[i].color=="color6"){%> class="color6"<%}else if(jsonMessage[i].color=="color7"){%> class="color7"<%}%> href="/lender/story?id=<%=jsonMessage[i].FromBorrowRequest._id%>">[<%if(jsonMessage[i].FromBorrowRequest.Category=='general'){%>一般<%}else if(jsonMessage[i].FromBorrowRequest.Category=='education'){%>教育<%}else if(jsonMessage[i].FromBorrowRequest.Category=='family'){%>家庭<%}else if(jsonMessage[i].FromBorrowRequest.Category=='tour'){%>旅遊<%}%>]&nbsp;<%if(jsonMessage[i].FromBorrowRequest.StoryTitle!==''){%><div class="colorCnt"><%-jsonMessage[i].FromBorrowRequest.StoryTitle.replace(new RegExp(' ','g'),'&nbsp;')%></div><%}else{%>無標題<%}%></a>
 							<br>
 							<br>
 							<div>	
-								<%-jsonMessage[i].Message.replace(new RegExp('\n','g'),'<br>').replace(new RegExp(' ','g'),'&nbsp;')%>
+								<%if(jsonMessage[i].Message!==''){%><div class="colorCnt"><%-jsonMessage[i].Message.replace(new RegExp('\n','g'),'<br>').replace(new RegExp(' ','g'),'&nbsp;')%></div><%}else{%>無內容<%}%>
 							</div>
 						</div>
 						<div class="tab-pane" id="tab2<%=i%>">
@@ -1066,7 +1095,7 @@
 								<%}else if(filterDefault=='不分類'){%>
 									<td style="border-bottom-style: none;border-top-style: none;">
 										<%if(jsonMessage[i].Status=='NotConfirmed'){%>
-											<a href="/lender/lenderReceiveMessages?msgKeyword=<%=encodeURIComponent(jsonMessage[i]._id)%>&filter=<%=encodeURIComponent('未確認')%>&sorter=<%=encodeURIComponent('更新日期')%>&director=<%=encodeURIComponent('大至小')%>&lbound=&ubound=&page=1">未確認</a>
+											<a href="/lender/lenderReceiveMessages?msgKeyword=<%=encodeURIComponent(jsonMessage[i]._id)%>&filter=<%=encodeURIComponent('未確認')%>&classor=<%=encodeURIComponent('不分故事種類')%>&sorter=<%=encodeURIComponent('更新日期')%>&director=<%=encodeURIComponent('大至小')%>&lbound=&ubound=&page=1">未確認</a>
 										<%}else if(jsonMessage[i].Status=='Confirmed'){%>
 											已同意
 										<%}else if(jsonMessage[i].Status=='Rejected'){%>
@@ -1077,7 +1106,7 @@
 								<td align="right" style="border-bottom-style: none;border-top-style: none;">
 									<%if(jsonMessage[i].Status=='Confirmed'){%>
 										<div style="font-size:15px;display:inline;">
-											<a href="/lender/lenderTransactionRecord?oneid=<%=jsonMessage[i].Transaction[0]._id%>&filter=<%if(jsonMessage[i].Transaction[0].Principal>0){%><%if(jsonMessage[i].Transaction[0].InsuranceFeePaid>0){%><%=encodeURIComponent('已保險')%><%}else{%><%=encodeURIComponent('未保險')%><%}%><%}else{%><%=encodeURIComponent('已結清')%><%}%>&sorter=<%=encodeURIComponent("建立日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">查詢該筆交易</a>
+											<a href="/lender/lenderTransactionRecord?oneid=<%=jsonMessage[i].Transaction[0]._id%>&filter=<%if(jsonMessage[i].Transaction[0].PrincipalNotReturn>0){%><%if(jsonMessage[i].Transaction[0].InsuranceFeePaid>0){%><%=encodeURIComponent('已保險')%><%}else{%><%=encodeURIComponent('未保險')%><%}%><%}else{%><%=encodeURIComponent('已結清')%><%}%>&messenger=<%=encodeURIComponent('不分訊息種類')%>&classor=<%=encodeURIComponent("不分故事種類");%>&sorter=<%=encodeURIComponent("建立日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">查詢該筆交易</a>
 										</div>
 										&nbsp;&nbsp;&nbsp;&nbsp;
 									<%}%>
@@ -1106,6 +1135,7 @@
 							<input type="hidden" name="director" id="directorIpt" value="<%=directorDefault%>">
 							<input type="hidden" name="lbound" id="lboundIpt" value="<%=lboundDefault%>">
 							<input type="hidden" name="ubound" id="uboundIpt" value="<%=uboundDefault%>">
+							<input type="hidden" name="classor" id="classorIpt" value="<%=classorDefault%>">
 						</form>
 					<%}%>
 					<form action="/Messages/confirmToBorrowMessageInLRM" method="post" id="formID">
@@ -1124,7 +1154,7 @@
 									<%}%>
 								>
 								<% if(targetPageNumber!=1){%>
-									<a href="/lender/lenderReceiveMessages?msgKeyword=<%=encodeURIComponent(msgKeywordDefault)%>&filter=<%=encodeURIComponent(filterDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=targetPageNumber-1%>">
+									<a href="/lender/lenderReceiveMessages?msgKeyword=<%=encodeURIComponent(msgKeywordDefault)%>&filter=<%=encodeURIComponent(filterDefault)%>&classor=<%=encodeURIComponent(classorDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=targetPageNumber-1%>">
 								<%}else{%>
 									<a href="#" onclick="return false;">
 								<%}%>
@@ -1135,7 +1165,7 @@
 											<% if(targetPageNumber==j){%>
 												class="active"
 											<%}%>
-										><a href="/lender/lenderReceiveMessages?msgKeyword=<%=encodeURIComponent(msgKeywordDefault)%>&filter=<%=encodeURIComponent(filterDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=j%>"><%=j%></a></li>
+										><a href="/lender/lenderReceiveMessages?msgKeyword=<%=encodeURIComponent(msgKeywordDefault)%>&filter=<%=encodeURIComponent(filterDefault)%>&classor=<%=encodeURIComponent(classorDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=j%>"><%=j%></a></li>
 									<%}%>
 								<% }else{%>
 									<% if(targetPageNumber>=pageNumber-3){%>
@@ -1144,7 +1174,7 @@
 											<% if(targetPageNumber==j){%>
 												class="active"
 											<%}%>
-										><a href="/lender/lenderReceiveMessages?msgKeyword=<%=encodeURIComponent(msgKeywordDefault)%>&filter=<%=encodeURIComponent(filterDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=j%>"><%=j%></a></li>
+										><a href="/lender/lenderReceiveMessages?msgKeyword=<%=encodeURIComponent(msgKeywordDefault)%>&filter=<%=encodeURIComponent(filterDefault)%>&classor=<%=encodeURIComponent(classorDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=j%>"><%=j%></a></li>
 										<%}%>
 									<%}else if(targetPageNumber<=5){%>
 										<% for(var j=1; j<=10; j++) { %>
@@ -1152,15 +1182,15 @@
 											<% if(targetPageNumber==j){%>
 												class="active"
 											<%}%>
-										><a href="/lender/lenderReceiveMessages?msgKeyword=<%=encodeURIComponent(msgKeywordDefault)%>&filter=<%=encodeURIComponent(filterDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=j%>"><%=j%></a></li>
+										><a href="/lender/lenderReceiveMessages?msgKeyword=<%=encodeURIComponent(msgKeywordDefault)%>&filter=<%=encodeURIComponent(filterDefault)%>&classor=<%=encodeURIComponent(classorDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=j%>"><%=j%></a></li>
 										<%}%>
 									<%}else{%>
 										<% for(var j=targetPageNumber-5; j<targetPageNumber; j++) { %>
-										<li><a href="/lender/lenderReceiveMessages?msgKeyword=<%=encodeURIComponent(msgKeywordDefault)%>&filter=<%=encodeURIComponent(filterDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=j%>"><%=j%></a></li>
+										<li><a href="/lender/lenderReceiveMessages?msgKeyword=<%=encodeURIComponent(msgKeywordDefault)%>&filter=<%=encodeURIComponent(filterDefault)%>&classor=<%=encodeURIComponent(classorDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=j%>"><%=j%></a></li>
 										<%}%>
-										<li class="active"><a href="/lender/lenderReceiveMessages?msgKeyword=<%=encodeURIComponent(msgKeywordDefault)%>&filter=<%=encodeURIComponent(filterDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=targetPageNumber%>"><%=targetPageNumber%></a></li>
+										<li class="active"><a href="/lender/lenderReceiveMessages?msgKeyword=<%=encodeURIComponent(msgKeywordDefault)%>&filter=<%=encodeURIComponent(filterDefault)%>&classor=<%=encodeURIComponent(classorDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=targetPageNumber%>"><%=targetPageNumber%></a></li>
 										<% for(var j=targetPageNumber+1; j<=targetPageNumber+4; j++) { %>
-										<li><a href="/lender/lenderReceiveMessages?msgKeyword=<%=encodeURIComponent(msgKeywordDefault)%>&filter=<%=encodeURIComponent(filterDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=j%>"><%=j%></a></li>
+										<li><a href="/lender/lenderReceiveMessages?msgKeyword=<%=encodeURIComponent(msgKeywordDefault)%>&filter=<%=encodeURIComponent(filterDefault)%>&classor=<%=encodeURIComponent(classorDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=j%>"><%=j%></a></li>
 										<%}%>
 									<%}%>
 								<%}%>
@@ -1170,7 +1200,7 @@
 									<%}%>
 								>	
 								<% if(targetPageNumber!=pageNumber){%>
-									<a href="/lender/lenderReceiveMessages?msgKeyword=<%=encodeURIComponent(msgKeywordDefault)%>&filter=<%=encodeURIComponent(filterDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=targetPageNumber+1%>">
+									<a href="/lender/lenderReceiveMessages?msgKeyword=<%=encodeURIComponent(msgKeywordDefault)%>&filter=<%=encodeURIComponent(filterDefault)%>&classor=<%=encodeURIComponent(classorDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=targetPageNumber+1%>">
 								<%}else{%>
 									<a href="#" onclick="return false;">
 								<%}%>
@@ -1187,6 +1217,17 @@
 	</div>
 </div>
 <script>
+function classorSelector(index){
+	$('#classorSelected').html('');
+	$('#classorSelected').html($('#classor'+index).text());
+	$('#classor0').html($('#classorSelected').text());
+	$('#classorSelected').append(' <span class=\'caret\'><\/span>'); 
+	for(i=1;i<=5;i++){
+		$('#clis'+i).attr('class','');
+	}
+	$('#clis'+index).attr('class','active');
+}
+
 function filterSelector(index){
 	$('#filterSelected').html('');
 	$('#filterSelected').html($('#filter'+index).text());
@@ -1261,7 +1302,7 @@ function disableDater(){
 }
 
 function linker(){
-	window.open('/lender/lenderReceiveMessages?msgKeyword='+encodeURIComponent($('#msgKeywordIpt').val().trim())+'&filter='+encodeURIComponent($('#filter0').text())+'&sorter='+encodeURIComponent($('#sorter0').text())+'&director='+encodeURIComponent($('#director0').text())+'&lbound='+encodeURIComponent($('#lbound').val().trim())+'&ubound='+encodeURIComponent($('#ubound').val().trim())+'&page=1','_self');
+	window.open('/lender/lenderReceiveMessages?msgKeyword='+encodeURIComponent($('#msgKeywordIpt').val().trim())+'&filter='+encodeURIComponent($('#filter0').text())+'&classor='+encodeURIComponent($('#classor0').text())+'&sorter='+encodeURIComponent($('#sorter0').text())+'&director='+encodeURIComponent($('#director0').text())+'&lbound='+encodeURIComponent($('#lbound').val().trim())+'&ubound='+encodeURIComponent($('#ubound').val().trim())+'&page=1','_self');
 }
 
 <% if(totalResultNum>0){%>
@@ -1269,6 +1310,62 @@ function linker(){
 	var myCtr2MaxPoint;
 	var myCtr3MaxPoint;
 	
+	var stringPro='<%=msgKeywordDefault%>';
+	var highLightFlag=false;
+	var stringArray;
+	function enableHighlight(){
+		if(stringPro!==''){
+			if(!highLightFlag){
+				highLightFlag=true;
+				for(i=0;i<stringArray.length;i++){
+					$('.colorCnt').highlight(stringArray[i]);
+				}
+				var orig=$('#unhighlightBtn').attr('class');
+				orig=orig.replace(/ disabled/g, '');
+				$('#unhighlightBtn').attr('class',orig);
+				orig=$('#unhighlightBtn').attr('style');
+				orig=orig.replace(/display:none;/g, '');
+				$('#unhighlightBtn').attr('style',orig);
+				
+				orig=$('#highlightBtn').attr('class');
+				if(orig.search(' disabled')<0){
+					orig=orig+' disabled';
+					$(highlightBtn).attr('class',orig);
+				}
+				orig=$('#highlightBtn').attr('style');
+				if(orig.search('display:none;')<0){
+					orig=orig+'display:none;';
+					$(highlightBtn).attr('style',orig);
+				}
+			}
+		}
+	}
+	
+	function disableHighlight(){
+		if(stringPro!==''){
+			if(highLightFlag){
+				highLightFlag=false;
+				$('.colorCnt').unhighlight();
+				var orig=$('#highlightBtn').attr('class');
+				orig=orig.replace(/ disabled/g, '');
+				$('#highlightBtn').attr('class',orig);
+				orig=$('#highlightBtn').attr('style');
+				orig=orig.replace(/display:none;/g, '');
+				$('#highlightBtn').attr('style',orig);
+				
+				orig=$('#unhighlightBtn').attr('class');
+				if(orig.search(' disabled')<0){
+					orig=orig+' disabled';
+					$(unhighlightBtn).attr('class',orig);
+				}
+				orig=$('#unhighlightBtn').attr('style');
+				if(orig.search('display:none;')<0){
+					orig=orig+'display:none;';
+					$(unhighlightBtn).attr('style',orig);
+				}
+			}
+		}
+	}
 	$(document).ready(function(){
 		<% if(filterDefault=='未確認'){%>
 			$("#selectAll").prop("checked", false);
@@ -1288,6 +1385,12 @@ function linker(){
 		$('.myCtr1').click(function(){setTimeout(checkPoint,250);});
 		$('.myCtr2').click(function(){setTimeout(checkPoint,250);});
 		$('.myCtr3').click(function(){setTimeout(checkPoint,250);});
+		
+		if(stringPro!==''){
+			stringPro=stringPro.replace(/\s\s+/g,' ');
+			stringArray=stringPro.split(' ');
+			enableHighlight();
+		}
 	});
 	
 	function checkPoint(){

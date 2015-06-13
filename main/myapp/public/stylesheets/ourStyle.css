@@ -51,7 +51,7 @@
 }
 
 .my_discussion {
-  height: 225px;
+  height: 260px;
   overflow: auto;
 }
 
@@ -149,6 +149,12 @@ select{
 .color5{
 	color:#008000;
 }
+.color6{
+	color:#BDB76B;
+}
+.color7{
+	color:#00FF00;
+}
 
 .stronger{
 	color:red;
@@ -157,6 +163,36 @@ select{
 
 .disableText{
 	color:#B0B0B0;
+}
+
+.bigTitle{
+	font-size:30pt;
+}
+
+.subTitle{
+	font-size:20pt;
+}
+
+.headerBar{
+	height:32px;
+}
+
+.pageBar{
+	height:40px;
+}
+
+.boundIpt{
+	height:32px;
+	width:180px;
+	display:inline;
+}
+
+.colorCnt{
+	display:inline;
+}
+
+.highlight {
+    background-color: #FFFF88;
 }
 
 .btn-default:focus, .btn-default:hover {

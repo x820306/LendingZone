@@ -194,10 +194,6 @@ app.get('/logout', function (req, res) {
     res.redirect('/');
 });
 
-app.get('/autoRestarterPage',library.loginFormChecker,library.ensureAuthenticated,library.newMsgChecker,library.ensureAdmin, function (req, res) {
-    res.render('autoRestarterPage',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username});
-});
-
 app.get('/signupTest',library.loginFormChecker,library.newMsgChecker, function (req, res) {
 	var auRst=null;
 	if(req.isAuthenticated()){
@@ -205,6 +201,24 @@ app.get('/signupTest',library.loginFormChecker,library.newMsgChecker, function (
 	}
 	
 	res.render('signupTest',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst});
+});
+
+
+app.get('/autoConfirmPage',library.loginFormChecker,library.ensureAuthenticated,library.newMsgChecker,library.ensureAdmin, function (req, res) {
+    res.render('autoConfirmPage',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username});
+});
+
+app.post('/autoConfirmPost', function (req, res) {
+	setInterval(function(){
+		library.autoWorker(1,req,res);
+	},86400000);
+	setInterval(function(){
+		library.autoWorker(2,req,res);
+	},86400000*2);
+	setInterval(function(){
+		library.autoWorker(3,req,res);
+	},86400000*3);
+	res.redirect('/message?content='+encodeURIComponent('已啟動!'));
 });
 
 app.get('/test', function (req, res) {
@@ -217,10 +231,6 @@ app.get('/test2', function (req, res) {
 	res.json(library.formIdfrArray);
 });
 
-app.get('/test3', function (req, res) {
-	console.log(library.autoComfirmToBorrowMsgArray);
-	res.json(library.autoComfirmToBorrowMsgArray);
-});
 
 //database models routers
 app.use('/Users', Users);
@@ -318,7 +328,7 @@ function routeChecker(req){
 	var subString=stringArray[stringArray.length-1];
 	var subStringArray=subString.split('?');
 	var target=subStringArray[0];
-	if((target=='message')||(target=='borrowCreate')||(target=='readable')||(target=='buyInsurance')||(target=='buyInsuranceAll')||(target=='rejectToBorrowMessageInStory')||(target=='confirmToBorrowMessageInStory')||(target=='rejectToBorrowMessageInLRM')||(target=='confirmToBorrowMessageInLRM')||(target=='rejectToBorrowMessageInLRMall')||(target=='confirmToBorrowMessageInLRMall')||(target=='toLendCreate')||(target=='toLendUpdate')||(target=='destroy')||(target=='create')||(target=='update')||(target=='changeData')||(target=='changePW')||(target=='deleteToLendMessageInLRMall')||(target=='buyInsuranceAll')||(target=='rejectToBorrowMessageInLRMall')||(target=='confirmToBorrowMessageInLRMall')||(target=='autoRestarter')){
+	if((target=='message')||(target=='borrowCreate')||(target=='readable')||(target=='buyInsurance')||(target=='buyInsuranceAll')||(target=='rejectToBorrowMessageInStory')||(target=='confirmToBorrowMessageInStory')||(target=='rejectToBorrowMessageInLRM')||(target=='confirmToBorrowMessageInLRM')||(target=='rejectToBorrowMessageInLRMall')||(target=='confirmToBorrowMessageInLRMall')||(target=='toLendCreate')||(target=='toLendUpdate')||(target=='destroy')||(target=='create')||(target=='update')||(target=='changeData')||(target=='changePW')||(target=='deleteToLendMessageInLRMall')||(target=='buyInsuranceAll')||(target=='rejectToBorrowMessageInLRMall')||(target=='confirmToBorrowMessageInLRMall')||(target=='autoConfirmPost')){
 		return false;
 	}else{
 		return true;

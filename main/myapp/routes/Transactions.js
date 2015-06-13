@@ -28,7 +28,6 @@ router.post('/createTest', function(req, res, next) {
 				toCreate.CreatedFrom=id;
 				toCreate.Borrower=sanitizer.sanitize(req.body.Borrower.trim());
 				toCreate.Lender=sanitizer.sanitize(req.body.Lender.trim());
-				toCreate.Level=message.Level;
 				
 				toCreate.save(function (err,newCreate) {
 					if (err){
@@ -151,7 +150,7 @@ router.post('/buyInsurance',library.loginFormChecker,library.ensureAuthenticated
 	req.body.array=JSONobj.array;
 	if(req.body.array.length>0){
 		var infoJson={counter1:req.body.array.length,counter2:0,info1:0};
-		var address='/lender/lenderTransactionRecord?oneid=&filter='+encodeURIComponent('已保險')+'&sorter='+encodeURIComponent('更新日期')+'&director='+encodeURIComponent('大至小')+'&lbound=&ubound=&page=1';
+		var address='/lender/lenderTransactionRecord?oneid=&filter='+encodeURIComponent('已保險')+'&messenger='+encodeURIComponent('不分訊息種類')+'&classor='+encodeURIComponent('不分故事種類')+'&sorter='+encodeURIComponent('更新日期')+'&director='+encodeURIComponent('大至小')+'&lbound=&ubound=&page=1';
 		buyInsurance(0,req.body.array.length,null,req,res,infoJson,address);
 	}
 });
@@ -162,9 +161,41 @@ router.post('/buyInsuranceAll',library.loginFormChecker,library.ensureAuthentica
 	var director=sanitizer.sanitize(req.body.director.trim());
 	var lbound=sanitizer.sanitize(req.body.lbound.trim());
 	var ubound=sanitizer.sanitize(req.body.ubound.trim());
+	var classor=sanitizer.sanitize(req.body.classor.trim());
+	var messenger=sanitizer.sanitize(req.body.messenger.trim());
 	
 	if((director!='大至小')&&(director!='小至大')){
 		director='大至小';
+	}
+	
+	var messengerRec=false;
+			
+	if(messenger=='收到訊息'){
+		messengerRec=true;
+	}else if(messenger=='送出訊息'){
+		messengerRec=true;
+	}else if(messenger=='不分訊息種類'){
+		messengerRec=false;
+	}else{
+		messengerRec=false;
+		messenger='不分訊息種類';
+	}
+	
+	var classorRec=null;
+			
+	if(classor=='一般'){
+		classorRec="general";
+	}else if(classor=='教育'){
+		classorRec="education";
+	}else if(classor=='家庭'){
+		classorRec="family";
+	}else if(classor=='旅遊'){
+		classorRec="tour";
+	}else if(classor=='不分故事種類'){
+		classorRec=null;
+	}else{
+		classorRec=null;
+		classor='不分故事種類';
 	}
 	
 	var sorterRec=null;
@@ -207,7 +238,7 @@ router.post('/buyInsuranceAll',library.loginFormChecker,library.ensureAuthentica
 	}else if(sorter=='已過期數'){
 		sorterRecReserve='Updated';
 	}else if(sorter=='信用等級'){
-		sorterRecReserve='Level';
+		sorterRecReserve='Updated';
 	}else if(sorter=='預計剩餘利息'){
 		sorterRecReserve='Updated';
 	}else if(sorter=='預計剩餘本利和'){
@@ -243,7 +274,7 @@ router.post('/buyInsuranceAll',library.loginFormChecker,library.ensureAuthentica
 		if(lbound.trim()!=''){
 			tester=parseFloat(lbound);
 			if(!isNaN(tester)){
-				if(tester>=0){
+				if((tester>=0)&&(tester<=99)){
 					if(sorter=='年利率'){
 						lboundRec=(tester/100)+library.serviceChargeRate;//scr
 					}else{
@@ -353,7 +384,7 @@ router.post('/buyInsuranceAll',library.loginFormChecker,library.ensureAuthentica
 	var andFindCmdAry=[];
 	andFindCmdAry.push({"Lender": req.user._id});
 	
-	if((sorter=='建立日期')||(sorter=='更新日期')||(sorter=='年利率')||(sorter=='原始本金')||(sorter=='原始期數')||(sorter=='信用等級')||(sorter=='已付保險費用')){
+	if((sorter=='建立日期')||(sorter=='更新日期')||(sorter=='年利率')||(sorter=='原始本金')||(sorter=='原始期數')||(sorter=='已付保險費用')){
 		var jsonTemp={};
 		if((lboundRec!==null)&&(uboundRec!==null)){
 			jsonTemp[sorterRecReserve]={"$gte": lboundRec, "$lte": uboundRec};
@@ -367,7 +398,7 @@ router.post('/buyInsuranceAll',library.loginFormChecker,library.ensureAuthentica
 		}
 	}
 	
-	var oneid=oneid.replace(/\s\s+/g,' ');
+	oneid=oneid.replace(/\s\s+/g,' ');
 	var stringArray=oneid.split(' ');
 	var keywordArray=[];
 	for(i=0;i<stringArray.length;i++){
@@ -378,7 +409,7 @@ router.post('/buyInsuranceAll',library.loginFormChecker,library.ensureAuthentica
 		ObjID=mongoose.Types.ObjectId(stringArray[0]);
 	}
 	
-	Transactions.find({$and:andFindCmdAry}).populate('Borrower', 'Username').populate('CreatedFrom', 'FromBorrowRequest').populate('Return').sort(sorterRec).exec(function (err, transactions){
+	Transactions.find({$and:andFindCmdAry}).populate('Borrower', 'Username Level').populate('CreatedFrom', 'FromBorrowRequest Type').populate('Return').sort(sorterRec).exec(function (err, transactions){
 		if (err) {
 			console.log(err);
 			res.redirect('/message?content='+encodeURIComponent('錯誤!'));
@@ -389,7 +420,7 @@ router.post('/buyInsuranceAll',library.loginFormChecker,library.ensureAuthentica
 				var options = {
 					path: 'CreatedFrom.FromBorrowRequest',
 					model: Borrows,
-					select: 'StoryTitle'
+					select: 'StoryTitle Category'
 				};
 
 				Messages.populate(transactions, options, function(err, transactions) {
@@ -425,14 +456,37 @@ router.post('/buyInsuranceAll',library.loginFormChecker,library.ensureAuthentica
 							}
 						}
 						
-						for(i=0;i<transactions.length;i++){
-							library.transactionProcessor(transactions[i],true);
-						}
-						
 						for(j=transactions.length-1;j>-1;j--){
 							if((transactions[j].InsuranceFeePaid!==0)||(transactions[j].PrincipalNotReturn<=0)){
 								transactions.splice(j, 1);
 							}
+						}
+						
+						if(messengerRec){
+							for(j=transactions.length-1;j>-1;j--){
+								if(messenger=='收到訊息'){
+									if(transactions[j].CreatedFrom.Type!='toBorrow'){
+										transactions.splice(j, 1);
+									}
+								}else if(messenger=='送出訊息'){
+									if(transactions[j].CreatedFrom.Type!='toLend'){
+										transactions.splice(j, 1);
+									}
+								}
+							}
+						}
+						
+						if(classorRec!==null){
+							for(j=transactions.length-1;j>-1;j--){
+								if(transactions[j].CreatedFrom.FromBorrowRequest.Category!=classorRec){
+									transactions.splice(j, 1);
+								}
+							}
+						}
+						
+						for(i=0;i<transactions.length;i++){
+							transactions[i].Level=transactions[i].Borrower.Level;
+							library.transactionProcessor(transactions[i],true);
 						}
 						
 						if(sorter=='預計剩餘利息'){
@@ -589,6 +643,13 @@ router.post('/buyInsuranceAll',library.loginFormChecker,library.ensureAuthentica
 								transactions.sort(function(a,b) { return parseInt(a.MonthPeriodPast) - parseInt(b.MonthPeriodPast)} );
 							}
 							library.arrayFilter(transactions,'MonthPeriodPast',lboundRec,uboundRec);
+						}else if(sorter=='信用等級'){
+							if(director=='大至小'){
+								transactions.sort(function(a,b) { return parseInt(b.Level) - parseInt(a.Level)} );
+							}else if(director=='小至大'){
+								transactions.sort(function(a,b) { return parseInt(a.Level) - parseInt(b.Level)} );
+							}
+							library.arrayFilter(transactions,'Level',lboundRec,uboundRec);
 						}
 						
 						if(transactions.length==0){
@@ -601,7 +662,7 @@ router.post('/buyInsuranceAll',library.loginFormChecker,library.ensureAuthentica
 							}
 							req.body.array=arrayOp;
 							var infoJson={counter1:req.body.array.length,counter2:0,info1:0};
-							var address='/lender/lenderTransactionRecord?oneid=&filter='+encodeURIComponent('已保險')+'&sorter='+encodeURIComponent('更新日期')+'&director='+encodeURIComponent('大至小')+'&lbound=&ubound=&page=1';
+							var address='/lender/lenderTransactionRecord?oneid=&filter='+encodeURIComponent('已保險')+'&messenger='+encodeURIComponent('不分訊息種類')+'&classor='+encodeURIComponent('不分故事種類')+'&sorter='+encodeURIComponent('更新日期')+'&director='+encodeURIComponent('大至小')+'&lbound=&ubound=&page=1';
 							buyInsurance(0,req.body.array.length,null,req,res,infoJson,address);
 						}
 					}

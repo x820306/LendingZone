@@ -7,6 +7,7 @@ var Lends  = mongoose.model('Lends');
 var Messages  = mongoose.model('Messages');
 var BankAccounts  = mongoose.model('BankAccounts');
 var Transactions  = mongoose.model('Transactions');
+var Discussions  = mongoose.model('Discussions');
 var sanitizer = require('sanitizer');
 var nodemailer = require('nodemailer');
 var generator = require('xoauth2').createXOAuth2Generator({
@@ -25,7 +26,6 @@ var transporter = nodemailer.createTransport({
     }
 });
 
-var autoComfirmToBorrowMsgArray=[];
 var insuranceRate=0.001;
 var serviceChargeRate=0.01;
 var ifMail=false;
@@ -38,7 +38,6 @@ var formTimer=null;
 var adminID=mongoose.Types.ObjectId('5555251bb08002f0068fd00f');//管理員ID
 
 exports.adminID=adminID;
-exports.autoComfirmToBorrowMsgArray=autoComfirmToBorrowMsgArray;
 exports.insuranceRate=insuranceRate;
 exports.serviceChargeRate=serviceChargeRate;
 exports.ifMail=ifMail;
@@ -175,7 +174,7 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 				var optionsX = {
 					path: 'Message.Transaction',
 					model: Transactions,
-					select: 'Principal PrincipalReturnedCumulated'
+					select: 'Principal'
 				};
 				Messages.populate(borrow, optionsX, function(err, borrow){
 					if(err){
@@ -354,7 +353,6 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																					}
 																				}
 																			}
-																			console.log('aaaa');
 																			
 																			var maxMoney3;
 																			maxMoney3=lend.MaxMoneyToLend-moneyLendedJson.autoLendCumulated;
@@ -390,6 +388,7 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																			if(!ifRecursive){
 																				var minMoney=parseInt(message.MoneyToLend);
 																				var maxMonth=parseInt(message.MonthPeriod);
+																				var minMonth=parseInt(borrow.MonthPeriodAcceptedLowest);
 																				var maxRate=parseFloat(message.InterestRate);
 																				
 																				var nowMoney=parseInt(sanitizer.sanitize(req.body.MoneyToLend.trim()));
@@ -445,6 +444,9 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																				}else if(month>maxMonth){
 																					errorTarget[2]=true;
 																					errorMessage[2]='超過該訊息希望期數：'+maxMonth.toFixed(0)+'個月!';
+																				}else if(month<minMonth){
+																					errorTarget[2]=true;
+																					errorMessage[2]='少於對方可接受之最低期數：'+minMonth.toFixed(0)+'個月!';
 																				}
 																				
 																				var valiFlag=true;
@@ -619,7 +621,6 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																				toCreateTransaction.CreatedFrom=message._id;
 																				toCreateTransaction.Borrower=message.CreatedBy;
 																				toCreateTransaction.Lender=message.SendTo;
-																				toCreateTransaction.Level=message.Level;
 																				
 																				toCreateTransaction.save(function (err,newCreateTransaction) {
 																					if (err){
@@ -1390,7 +1391,15 @@ exports.userLevelAdderReturn=function (uid,successCallback,failCallback){
 
 					newLevel=Math.floor(nowGrade/10);
 					if(newLevel!==user.Level){
-						exports.userLevelSetter(uid,newLevel,successCallback,failCallback);
+						user.Level=newLevel;
+						user.save(function (err,newUpdateUser) {
+							if (err){
+								console.log(err);
+								failCallback();
+							}else{
+								successCallback();
+							}
+						});
 					}else{
 						successCallback();
 					}
@@ -1407,87 +1416,40 @@ exports.userOriginalLevelSetter=function (uid,newOriginalLevel,successCallback,f
 			failCallback();
 		}else{
 			user.OrignalLevel=newOriginalLevel;
-			user.save(function (err,newUpdate) {
-				if (err){
+			Returns.find({Borrower:uid}).exec(function (err, returns){
+				if (err) {
 					console.log(err);
 					failCallback();
 				}else{
-					Returns.find({Borrower:newUpdate._id}).exec(function (err, returns){
-						if (err) {
+					var grade=0;
+					for(i=0;i<returns.length;i++){
+						var tester=returns[i].ServiceChargeNotPaid+returns[i].InterestNotPaid+returns[i].PrincipalNotPaid;
+						if(tester>0){
+							grade-=1;
+						}else{
+							grade+=1;
+						}
+					}
+					var nowGrade=user.OrignalLevel*10;
+					nowGrade+=grade;
+					if(nowGrade<0){
+						nowGrade=0;
+					}
+					if(nowGrade>200){
+						nowGrade=200;
+					}
+					newLevel=Math.floor(nowGrade/10);
+					user.Level=newLevel;
+					user.save(function (err,newUpdateUser) {
+						if (err){
 							console.log(err);
 							failCallback();
 						}else{
-							var grade=0;
-							for(i=0;i<returns.length;i++){
-								var tester=returns[i].ServiceChargeNotPaid+returns[i].InterestNotPaid+returns[i].PrincipalNotPaid;
-								if(tester>0){
-									grade-=1;
-								}else{
-									grade+=1;
-								}
-							}
-							var nowGrade=newUpdate.OrignalLevel*10;
-							nowGrade+=grade;
-							if(nowGrade<0){
-								nowGrade=0;
-							}
-							if(nowGrade>200){
-								nowGrade=200;
-							}
-							newLevel=Math.floor(nowGrade/10);
-							exports.userLevelSetter(newUpdate._id,newLevel,successCallback,failCallback);
+							successCallback();
 						}
 					});
 				}
 			});
-		}
-	});
-
-}
-
-exports.userLevelSetter=function (uid,newLevel,successCallback,failCallback){
-	Users.update({_id:uid},{$set:{Level:newLevel}},function(err){
-		if(!err){
-			var nowDate=Date.now();
-			Users.update({_id:uid},{$set:{Updated:nowDate}},function(err){
-				if(!err){
-					Borrows.update({CreatedBy:uid},{$set:{Level:newLevel}}, { multi: true },function(err){
-						if(!err){
-							Messages.update({$or:[{$and:[{CreatedBy:uid},{Type:"toBorrow"}]},{$and:[{SendTo:uid},{Type:"toLend"}]}]},{$set:{Level:newLevel}}, { multi: true },function(err){
-								if(!err){
-									Transactions.update({Borrower:uid},{$set:{Level:newLevel}}, { multi: true },function(err){
-										if(!err){
-											Returns.update({Borrower:uid},{$set:{Level:newLevel}}, { multi: true },function(err){
-												if(!err){
-													successCallback();
-												}else{
-													console.log(err);
-													failCallback();
-												}
-											});
-										}else{
-											console.log(err);
-											failCallback();
-										}
-									});
-								}else{
-									console.log(err);
-									failCallback();
-								}
-							});
-						}else{
-							console.log(err);
-							failCallback();
-						}
-					});
-				}else{
-					console.log(err);
-					failCallback();
-				}
-			});
-		}else{
-			console.log(err);
-			failCallback();
 		}
 	});
 }
@@ -1508,14 +1470,257 @@ function rejectRedirector(req,res,content,info,address){
 	res.redirect(address);
 }
 
+exports.autoWorker=function (day,req,res){
+	Lends.find({AutoComfirmToBorrowMsgPeriod:day}).exec(function (err,lends){
+		if (err) {
+			console.log(err);
+		}else{
+			if(lends.length>0){
+				autoWorkerRecursive(0,lends.length,lends,req,res,0);
+			}
+		}
+	});
+}
+
+function autoWorkerRecursive(counter,counterTarget,lends,req,res,timer){
+	var localCtr=counter;
+
+	setTimeout(function(){
+		autoConfirm(req,res,lends[localCtr]);
+	}, timer);
+	
+	timer+=600000;
+	counter++;
+	if(counter<counterTarget){
+		autoWorkerRecursive(counter,counterTarget,lends,req,res,timer);
+	}else{
+		console.log('end');
+	}
+}
+
+function autoConfirm(req,res,lend){
+	var director=lend.AutoComfirmToBorrowMsgDirector;
+	var sorter=lend.AutoComfirmToBorrowMsgSorter;
+	var classor=lend.AutoComfirmToBorrowMsgClassor;
+	var lboundSave=lend.AutoComfirmToBorrowMsgLbound;
+	var uboundSave=lend.AutoComfirmToBorrowMsgUbound;
+	var msgKeyword=lend.AutoComfirmToBorrowMsgKeyWord;
+	
+	if((director!='minus')&&(director!='plus')){
+		director='minus';
+	}
+	
+	var sorterRec=null;
+	
+	if((sorter=='InterestInFuture')||(sorter=='MoneyFuture')||(sorter=='InterestInFutureMonth')||(sorter=='InterestInFutureMoneyMonth')||(sorter=='InterestInFutureDivMoney')||(sorter=='Level')){
+		sorterRec=exports.directorDivider(director,'Updated',false);
+	}else{
+		if((sorter!='InterestRate')&&(sorter!='MoneyToLend')&&(sorter!='MonthPeriod')&&(sorter!='Updated')&&(sorter!='Created')){
+			sorter='InterestRate';
+		}
+		sorterRec=exports.directorDivider(director,sorter,false);
+	}
+	
+	var lboundRec=null;
+	var uboundRec=null;
+	
+	if(lboundSave!==-1){
+		if((sorter=='Updated')||(sorter=='Created')){
+			lboundRec=new Date(lboundSave);
+		}else if((sorter=='InterestRate')||(sorter=='InterestInFutureDivMoney')){
+			lboundRec=parseFloat(lboundSave);
+		}else{
+			lboundRec=parseInt(lboundSave);
+		}
+	}
+	if(uboundSave!==-1){
+		if((sorter=='Updated')||(sorter=='Created')){
+			uboundRec=new Date(uboundSave);
+		}else if((sorter=='InterestRate')||(sorter=='InterestInFutureDivMoney')){
+			uboundRec=parseFloat(uboundSave);
+		}else{
+			uboundRec=parseInt(uboundSave);
+		}
+	}
+	
+	
+	var andFindCmdAry=[];
+	andFindCmdAry.push({"SendTo": lend.CreatedBy});
+	andFindCmdAry.push({"Type": "toBorrow"});
+	andFindCmdAry.push({"Status": "NotConfirmed"});
+	
+	if((sorter!='InterestInFuture')&&(sorter!='MoneyFuture')&&(sorter!='InterestInFutureMonth')&&(sorter!='InterestInFutureMoneyMonth')&&(sorter!='InterestInFutureDivMoney')&&(sorter!='Level')){
+		var jsonTemp={};
+		if((lboundRec!==null)&&(uboundRec!==null)){
+			jsonTemp[sorter]={"$gte": lboundRec, "$lte": uboundRec};
+			andFindCmdAry.push(jsonTemp);
+		}else if(lboundRec!==null){
+			jsonTemp[sorter]={"$gte": lboundRec};
+			andFindCmdAry.push(jsonTemp);
+		}else if(uboundRec!==null){
+			jsonTemp[sorter]={"$lte": uboundRec};
+			andFindCmdAry.push(jsonTemp);
+		}
+	}
+	
+	msgKeyword=msgKeyword.replace(/\s\s+/g,' ');
+	var stringArray=msgKeyword.split(' ');
+	var keywordArray=[];
+	for(i=0;i<stringArray.length;i++){
+		keywordArray.push(new RegExp(stringArray[i],'i'));
+	}
+	var msgObjID=null;
+	if(mongoose.Types.ObjectId.isValid(stringArray[0])){
+		msgObjID=mongoose.Types.ObjectId(stringArray[0]);
+	}
+	
+	var moneyLendedJson={
+		autoLendCumulated:0,
+		moneyLeftToAutoLend:0
+	};
+	
+	Transactions.find({"Lender": lend.CreatedBy}).populate('Return').populate('CreatedFrom','Type').exec(function (err, transactions){
+		if (err) {
+			console.log(err);
+		}else{
+			if(transactions.length>0){
+				for(i=0;i<transactions.length;i++){
+					if(transactions[i].CreatedFrom.Type=='toBorrow'){
+						exports.transactionProcessor(transactions[i],false);
+						moneyLendedJson.autoLendCumulated+=transactions[i].PrincipalNotReturn;
+					}
+				}
+			}
+			moneyLendedJson.moneyLeftToAutoLend=lend.MaxMoneyToLend-moneyLendedJson.autoLendCumulated;
+			if(moneyLendedJson.moneyLeftToAutoLend<=0){
+				moneyLendedJson.moneyLeftToAutoLend=0;
+			}
+			if(moneyLendedJson.moneyLeftToAutoLend>0){
+				Messages.find({$and:andFindCmdAry}).populate('CreatedBy', 'Username Level').populate('FromBorrowRequest', 'StoryTitle Category').sort(sorterRec).exec(function (err, messages){
+					if (err) {
+						console.log(err);
+					}else{
+						if(messages.length>0){
+							for(j=messages.length-1;j>-1;j--){
+								var testString=messages[j].Message+' '+messages[j].FromBorrowRequest.StoryTitle+' '+messages[j].CreatedBy.Username;
+								var localFlag=[];
+								var ctr;
+								localFlag[0]=false;
+								localFlag[1]=false;
+								
+								if(msgObjID){
+									if(msgObjID.equals(messages[j]._id)){
+										localFlag[0]=true;
+									}
+								}
+								
+								ctr=0;
+								for(k=0;k<keywordArray.length;k++){
+									if(testString.search(keywordArray[k])>-1){
+										ctr++;
+									}
+								}
+								if(ctr==keywordArray.length){
+									localFlag[1]=true;
+								}
+								
+								if((!localFlag[0])&&(!localFlag[1])){
+									messages.splice(j, 1);
+								}
+							}
+							
+							if((classor=='general')||(classor=='education')||(classor=='family')||(classor=='tour')){
+								for(j=messages.length-1;j>-1;j--){
+									if(messages[j].FromBorrowRequest.Category!=classor){
+										messages.splice(j, 1);
+									}
+								}
+							}
+							
+							if((sorter=='InterestInFuture')||(sorter=='MoneyFuture')||(sorter=='InterestInFutureMonth')||(sorter=='InterestInFutureMoneyMonth')||(sorter=='InterestInFutureDivMoney')||(sorter=='Level')){
+								for(i=0;i<messages.length;i++){
+									messages[i].Level=messages[i].CreatedBy.Level;
+									exports.messageProcessor(messages[i]);
+								}
+								
+								if(sorter=='InterestInFuture'){
+									if(director=='minus'){
+										messages.sort(function(a,b) { return parseInt(b.InterestInFuture) - parseInt(a.InterestInFuture)} );
+									}else if(director=='plus'){
+										messages.sort(function(a,b) { return parseInt(a.InterestInFuture) - parseInt(b.InterestInFuture)} );
+									}
+									exports.arrayFilter(messages,'InterestInFuture',lboundRec,uboundRec);
+								}else if(sorter=='MoneyFuture'){
+									if(director=='minus'){
+										messages.sort(function(a,b) { return parseInt(b.MoneyFuture) - parseInt(a.MoneyFuture)} );
+									}else if(director=='plus'){
+										messages.sort(function(a,b) { return parseInt(a.MoneyFuture) - parseInt(b.MoneyFuture)} );
+									}
+									exports.arrayFilter(messages,'MoneyFuture',lboundRec,uboundRec);
+								}else if(sorter=='InterestInFutureMonth'){
+									if(director=='minus'){
+										messages.sort(function(a,b) { return parseInt(b.InterestInFutureMonth) - parseInt(a.InterestInFutureMonth)} );
+									}else if(director=='plus'){
+										messages.sort(function(a,b) { return parseInt(a.InterestInFutureMonth) - parseInt(b.InterestInFutureMonth)} );
+									}
+									exports.arrayFilter(messages,'InterestInFutureMonth',lboundRec,uboundRec);
+								}else if(sorter=='InterestInFutureMoneyMonth'){
+									if(director=='minus'){
+										messages.sort(function(a,b) { return parseInt(b.InterestInFutureMoneyMonth) - parseInt(a.InterestInFutureMoneyMonth)} );
+									}else if(director=='plus'){
+										messages.sort(function(a,b) { return parseInt(a.InterestInFutureMoneyMonth) - parseInt(b.InterestInFutureMoneyMonth)} );
+									}
+									exports.arrayFilter(messages,'InterestInFutureMoneyMonth',lboundRec,uboundRec);
+								}else if(sorter=='InterestInFutureDivMoney'){
+									if(director=='minus'){
+										messages.sort(function(a,b) { return parseFloat(b.InterestInFutureDivMoney) - parseFloat(a.InterestInFutureDivMoney)} );
+									}else if(director=='plus'){
+										messages.sort(function(a,b) { return parseFloat(a.InterestInFutureDivMoney) - parseFloat(b.InterestInFutureDivMoney)} );
+									}
+									exports.arrayFilter(messages,'InterestInFutureDivMoney',lboundRec,uboundRec);
+								}else if(sorter=='Level'){
+									if(director=='minus'){
+										messages.sort(function(a,b) { return parseFloat(b.Level) - parseFloat(a.Level)} );
+									}else if(director=='plus'){
+										messages.sort(function(a,b) { return parseFloat(a.Level) - parseFloat(b.Level)} );
+									}
+									exports.arrayFilter(messages,'Level',lboundRec,uboundRec);
+								}
+							}
+							
+							if(messages.length>0){
+								var arrayOp=[];
+								for(i=0;i<messages.length;i++){
+									var temp={FromBorrowRequest:messages[i].FromBorrowRequest,MessageID:messages[i]._id};
+									arrayOp.push(temp);
+								}
+								var newReq={};
+								newReq['body']={};
+								newReq['user']={};
+								newReq['headers']={};
+								newReq.body.array=arrayOp;
+								newReq.user._id=req.user._id;
+								newReq.headers.host=req.headers.host;
+								
+								var infoJson={counter1:newReq.body.array.length,counter2:0,info1:0,info2:0,info3:0,info4:0,info5:0};
+								exports.confirmToBorrowMessage(true,0,newReq.body.array.length,null,newReq,res,true,'/',true,infoJson);
+							}
+						}
+					}
+				});
+			}
+		}
+	});
+}
+
 function mailAgree(message,newCreateUpdated,req){
 	if(exports.ifMail){
 		var mailOptions = {
 			from: 'LendingZone <lendingzonesystem@gmail.com>', // sender address
 			to: message.CreatedBy.Username+' <'+message.CreatedBy.Email+'>', // list of receivers
 			subject: message.SendTo.Username+'同意了您先前送出的借款請求!', // Subject line
-			text: '親愛的 '+message.CreatedBy.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+message.SendTo.Username+' 同意了您先前在「'+message.FromBorrowRequest.StoryTitle+'("http://'+req.headers.host+'/lender/story?id='+message.FromBorrowRequest._id+'")」送出的借款請求！'+String.fromCharCode(10)+'您的交易紅利代碼為： '+exports.randomString(8)+String.fromCharCode(10)+'您可至 玉山銀行網站("http://www.esunbank.com.tw/") 兌換紅利喔!'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看訊息與交易結果:'+String.fromCharCode(10)+'"http://'+req.headers.host+'/lender/lenderReceiveMessages?msgKeyword='+newCreateUpdated._id+'&filter='+encodeURIComponent('已同意')+'&sorter='+encodeURIComponent('更新日期')+'&director='+encodeURIComponent('大至小')+'&lbound=&ubound=&page=1"', // plaintext body
-			html: '<img src="cid:bpng" /><br><br>親愛的 '+message.CreatedBy.Username+' 您好：<br><br>'+message.SendTo.Username+' 同意了您先前在「<a href="http://'+req.headers.host+'/lender/story?id='+message.FromBorrowRequest._id+'">'+message.FromBorrowRequest.StoryTitle+'</a>」送出的借款請求！<br>您的交易紅利代碼為： <div style="color:#FF0000;display:inline;">'+exports.randomString(8)+'</div><br>您可至 <a href="http://www.esunbank.com.tw/">玉山銀行網站</a> 兌換紅利喔!<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://'+req.headers.host+'/lender/lenderReceiveMessages?msgKeyword='+newCreateUpdated._id+'&filter='+encodeURIComponent('已同意')+'&sorter='+encodeURIComponent('更新日期')+'&director='+encodeURIComponent('大至小')+'&lbound=&ubound=&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看訊息與交易結果</span></a></td></tr></table>', 
+			text: '親愛的 '+message.CreatedBy.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+message.SendTo.Username+' 同意了您先前在「'+message.FromBorrowRequest.StoryTitle+'("http://'+req.headers.host+'/lender/story?id='+message.FromBorrowRequest._id+'")」送出的借款請求！'+String.fromCharCode(10)+'您的交易紅利代碼為： '+exports.randomString(8)+String.fromCharCode(10)+'您可至 玉山銀行網站("http://www.esunbank.com.tw/") 兌換紅利喔!'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看訊息與交易結果:'+String.fromCharCode(10)+'"http://'+req.headers.host+'/lender/lenderReceiveMessages?msgKeyword='+newCreateUpdated._id+'&filter='+encodeURIComponent('已同意')+'&classor='+encodeURIComponent('不分故事種類')+'&sorter='+encodeURIComponent('更新日期')+'&director='+encodeURIComponent('大至小')+'&lbound=&ubound=&page=1"', // plaintext body
+			html: '<img src="cid:bpng" /><br><br>親愛的 '+message.CreatedBy.Username+' 您好：<br><br>'+message.SendTo.Username+' 同意了您先前在「<a href="http://'+req.headers.host+'/lender/story?id='+message.FromBorrowRequest._id+'">'+message.FromBorrowRequest.StoryTitle+'</a>」送出的借款請求！<br>您的交易紅利代碼為： <div style="color:#FF0000;display:inline;">'+exports.randomString(8)+'</div><br>您可至 <a href="http://www.esunbank.com.tw/">玉山銀行網站</a> 兌換紅利喔!<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://'+req.headers.host+'/lender/lenderReceiveMessages?msgKeyword='+newCreateUpdated._id+'&filter='+encodeURIComponent('已同意')+'&classor='+encodeURIComponent('不分故事種類')+'&sorter='+encodeURIComponent('更新日期')+'&director='+encodeURIComponent('大至小')+'&lbound=&ubound=&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看訊息與交易結果</span></a></td></tr></table>', 
 			attachments: [{
 				filename: 'b.png',
 				path: __dirname+'/../public/images/b.png',
@@ -1532,8 +1737,8 @@ function mailAgree(message,newCreateUpdated,req){
 			from: 'LendingZone <lendingzonesystem@gmail.com>', // sender address
 			to: message.SendTo.Username+' <'+message.SendTo.Email+'>', // list of receivers
 			subject: '您同意了'+message.CreatedBy.Username+'先前送來的借款請求!', // Subject line
-			text: '親愛的 '+message.SendTo.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+'您同意了 '+message.CreatedBy.Username+' 先前在「'+message.FromBorrowRequest.StoryTitle+'("http://'+req.headers.host+'/lender/story?id='+message.FromBorrowRequest._id+'")」送來的借款請求！'+String.fromCharCode(10)+'您的交易紅利代碼為： '+exports.randomString(8)+String.fromCharCode(10)+'您可至 玉山銀行網站("http://www.esunbank.com.tw/") 兌換紅利喔!'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看訊息與交易結果:'+String.fromCharCode(10)+'"http://'+req.headers.host+'/lender/lenderReceiveMessages?msgKeyword='+newCreateUpdated._id+'&filter='+encodeURIComponent('已同意')+'&sorter='+encodeURIComponent('更新日期')+'&director='+encodeURIComponent('大至小')+'&lbound=&ubound=&page=1"', // plaintext body
-			html: '<img src="cid:bpng" /><br><br>親愛的 '+message.SendTo.Username+' 您好：<br><br>您同意了 '+message.CreatedBy.Username+' 先前在「<a href="http://'+req.headers.host+'/lender/story?id='+message.FromBorrowRequest._id+'">'+message.FromBorrowRequest.StoryTitle+'</a>」送來的借款請求！<br>您的交易紅利代碼為： <div style="color:#FF0000;display:inline;">'+exports.randomString(8)+'</div><br>您可至 <a href="http://www.esunbank.com.tw/">玉山銀行網站</a> 兌換紅利喔!<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://'+req.headers.host+'/lender/lenderReceiveMessages?msgKeyword='+newCreateUpdated._id+'&filter='+encodeURIComponent('已同意')+'&sorter='+encodeURIComponent('更新日期')+'&director='+encodeURIComponent('大至小')+'&lbound=&ubound=&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看訊息與交易結果</span></a></td></tr></table>', 
+			text: '親愛的 '+message.SendTo.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+'您同意了 '+message.CreatedBy.Username+' 先前在「'+message.FromBorrowRequest.StoryTitle+'("http://'+req.headers.host+'/lender/story?id='+message.FromBorrowRequest._id+'")」送來的借款請求！'+String.fromCharCode(10)+'您的交易紅利代碼為： '+exports.randomString(8)+String.fromCharCode(10)+'您可至 玉山銀行網站("http://www.esunbank.com.tw/") 兌換紅利喔!'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看訊息與交易結果:'+String.fromCharCode(10)+'"http://'+req.headers.host+'/lender/lenderReceiveMessages?msgKeyword='+newCreateUpdated._id+'&filter='+encodeURIComponent('已同意')+'&classor='+encodeURIComponent('不分故事種類')+'&sorter='+encodeURIComponent('更新日期')+'&director='+encodeURIComponent('大至小')+'&lbound=&ubound=&page=1"', // plaintext body
+			html: '<img src="cid:bpng" /><br><br>親愛的 '+message.SendTo.Username+' 您好：<br><br>您同意了 '+message.CreatedBy.Username+' 先前在「<a href="http://'+req.headers.host+'/lender/story?id='+message.FromBorrowRequest._id+'">'+message.FromBorrowRequest.StoryTitle+'</a>」送來的借款請求！<br>您的交易紅利代碼為： <div style="color:#FF0000;display:inline;">'+exports.randomString(8)+'</div><br>您可至 <a href="http://www.esunbank.com.tw/">玉山銀行網站</a> 兌換紅利喔!<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://'+req.headers.host+'/lender/lenderReceiveMessages?msgKeyword='+newCreateUpdated._id+'&filter='+encodeURIComponent('已同意')+'&classor='+encodeURIComponent('不分故事種類')+'&sorter='+encodeURIComponent('更新日期')+'&director='+encodeURIComponent('大至小')+'&lbound=&ubound=&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看訊息與交易結果</span></a></td></tr></table>', 
 			attachments: [{
 				filename: 'b.png',
 				path: __dirname+'/../public/images/b.png',
@@ -1555,8 +1760,8 @@ function mailReject(message,newUpdate,req){
 			from: 'LendingZone <lendingzonesystem@gmail.com>', // sender address
 			to: message.CreatedBy.Username+' <'+message.CreatedBy.Email+'>', // list of receivers
 			subject: message.SendTo.Username+'婉拒了您先前送出的借款請求!', // Subject line
-			text: '親愛的 '+message.CreatedBy.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+message.SendTo.Username+' 婉拒了您先前在「'+message.FromBorrowRequest.StoryTitle+'("http://'+req.headers.host+'/lender/story?id='+message.FromBorrowRequest._id+'")」送出的借款請求！'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看:'+String.fromCharCode(10)+'"http://'+req.headers.host+'/lender/lenderReceiveMessages?msgKeyword='+newUpdate._id+'&filter='+encodeURIComponent('已婉拒')+'&sorter='+encodeURIComponent('更新日期')+'&director='+encodeURIComponent('大至小')+'&lbound=&ubound=&page=1"', // plaintext body
-			html: '親愛的 '+message.CreatedBy.Username+' 您好：<br><br>'+message.SendTo.Username+' 婉拒了您先前在「<a href="http://'+req.headers.host+'/lender/story?id='+message.FromBorrowRequest._id+'">'+message.FromBorrowRequest.StoryTitle+'</a>」送出的借款請求！<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://'+req.headers.host+'/lender/lenderReceiveMessages?msgKeyword='+newUpdate._id+'&filter='+encodeURIComponent('已婉拒')+'&sorter='+encodeURIComponent('更新日期')+'&director='+encodeURIComponent('大至小')+'&lbound=&ubound=&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看</span></a></td></tr></table>' 
+			text: '親愛的 '+message.CreatedBy.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+message.SendTo.Username+' 婉拒了您先前在「'+message.FromBorrowRequest.StoryTitle+'("http://'+req.headers.host+'/lender/story?id='+message.FromBorrowRequest._id+'")」送出的借款請求！'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看:'+String.fromCharCode(10)+'"http://'+req.headers.host+'/lender/lenderReceiveMessages?msgKeyword='+newUpdate._id+'&filter='+encodeURIComponent('已婉拒')+'&classor='+encodeURIComponent('不分故事種類')+'&sorter='+encodeURIComponent('更新日期')+'&director='+encodeURIComponent('大至小')+'&lbound=&ubound=&page=1"', // plaintext body
+			html: '親愛的 '+message.CreatedBy.Username+' 您好：<br><br>'+message.SendTo.Username+' 婉拒了您先前在「<a href="http://'+req.headers.host+'/lender/story?id='+message.FromBorrowRequest._id+'">'+message.FromBorrowRequest.StoryTitle+'</a>」送出的借款請求！<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://'+req.headers.host+'/lender/lenderReceiveMessages?msgKeyword='+newUpdate._id+'&filter='+encodeURIComponent('已婉拒')+'&classor='+encodeURIComponent('不分故事種類')+'&sorter='+encodeURIComponent('更新日期')+'&director='+encodeURIComponent('大至小')+'&lbound=&ubound=&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看</span></a></td></tr></table>' 
 			// html body
 		};
 		
@@ -1570,8 +1775,8 @@ function mailReject(message,newUpdate,req){
 			from: 'LendingZone <lendingzonesystem@gmail.com>', // sender address
 			to: message.SendTo.Username+' <'+message.SendTo.Email+'>', // list of receivers
 			subject:'您婉拒了'+ message.CreatedBy.Username+'先前送來的借款請求!', // Subject line
-			text: '親愛的 '+message.SendTo.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+'您婉拒了 '+message.CreatedBy.Username+' 先前在「'+message.FromBorrowRequest.StoryTitle+'("http://'+req.headers.host+'/lender/story?id='+message.FromBorrowRequest._id+'")」送來的借款請求！'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看:'+String.fromCharCode(10)+'"http://'+req.headers.host+'/lender/lenderReceiveMessages?msgKeyword='+newUpdate._id+'&filter='+encodeURIComponent('已婉拒')+'&sorter='+encodeURIComponent('更新日期')+'&director='+encodeURIComponent('大至小')+'&lbound=&ubound=&page=1"', // plaintext body
-			html: '親愛的 '+message.SendTo.Username+' 您好：<br><br>您婉拒了 '+message.CreatedBy.Username+' 先前在「<a href="http://'+req.headers.host+'/lender/story?id='+message.FromBorrowRequest._id+'">'+message.FromBorrowRequest.StoryTitle+'</a>」送來的借款請求！<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://'+req.headers.host+'/lender/lenderReceiveMessages?msgKeyword='+newUpdate._id+'&filter='+encodeURIComponent('已婉拒')+'&sorter='+encodeURIComponent('更新日期')+'&director='+encodeURIComponent('大至小')+'&lbound=&ubound=&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看</span></a></td></tr></table>' 
+			text: '親愛的 '+message.SendTo.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+'您婉拒了 '+message.CreatedBy.Username+' 先前在「'+message.FromBorrowRequest.StoryTitle+'("http://'+req.headers.host+'/lender/story?id='+message.FromBorrowRequest._id+'")」送來的借款請求！'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看:'+String.fromCharCode(10)+'"http://'+req.headers.host+'/lender/lenderReceiveMessages?msgKeyword='+newUpdate._id+'&filter='+encodeURIComponent('已婉拒')+'&classor='+encodeURIComponent('不分故事種類')+'&sorter='+encodeURIComponent('更新日期')+'&director='+encodeURIComponent('大至小')+'&lbound=&ubound=&page=1"', // plaintext body
+			html: '親愛的 '+message.SendTo.Username+' 您好：<br><br>您婉拒了 '+message.CreatedBy.Username+' 先前在「<a href="http://'+req.headers.host+'/lender/story?id='+message.FromBorrowRequest._id+'">'+message.FromBorrowRequest.StoryTitle+'</a>」送來的借款請求！<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://'+req.headers.host+'/lender/lenderReceiveMessages?msgKeyword='+newUpdate._id+'&filter='+encodeURIComponent('已婉拒')+'&classor='+encodeURIComponent('不分故事種類')+'&sorter='+encodeURIComponent('更新日期')+'&director='+encodeURIComponent('大至小')+'&lbound=&ubound=&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看</span></a></td></tr></table>' 
 			// html body
 		};
 		
@@ -1589,8 +1794,8 @@ function mailRejectLend(message,newUpdate,req){
 			from: 'LendingZone <lendingzonesystem@gmail.com>', // sender address
 			to: message.CreatedBy.Username+' <'+message.CreatedBy.Email+'>', // list of receivers
 			subject: message.SendTo.Username+'婉拒了您先前送出的欲借出訊息!', // Subject line
-			text: '親愛的 '+message.CreatedBy.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+message.SendTo.Username+' 婉拒了您先前在「'+message.FromBorrowRequest.StoryTitle+'("http://'+req.headers.host+'/lender/story?id='+message.FromBorrowRequest._id+'")」送出的欲借出訊息！'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看:'+String.fromCharCode(10)+'"http://'+req.headers.host+'/lender/lenderSendMessages?msgKeyword='+newUpdate._id+'&filter='+encodeURIComponent('已被婉拒')+'&sorter='+encodeURIComponent('更新日期')+'&director='+encodeURIComponent('大至小')+'&lbound=&ubound=&page=1"', // plaintext body
-			html: '親愛的 '+message.CreatedBy.Username+' 您好：<br><br>'+message.SendTo.Username+' 婉拒了您先前在「<a href="http://'+req.headers.host+'/lender/story?id='+message.FromBorrowRequest._id+'">'+message.FromBorrowRequest.StoryTitle+'</a>」送出的欲借出訊息！<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://'+req.headers.host+'/lender/lenderSendMessages?msgKeyword='+newUpdate._id+'&filter='+encodeURIComponent('已被婉拒')+'&sorter='+encodeURIComponent('更新日期')+'&director='+encodeURIComponent('大至小')+'&lbound=&ubound=&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看</span></a></td></tr></table>' 
+			text: '親愛的 '+message.CreatedBy.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+message.SendTo.Username+' 婉拒了您先前在「'+message.FromBorrowRequest.StoryTitle+'("http://'+req.headers.host+'/lender/story?id='+message.FromBorrowRequest._id+'")」送出的欲借出訊息！'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看:'+String.fromCharCode(10)+'"http://'+req.headers.host+'/lender/lenderSendMessages?msgKeyword='+newUpdate._id+'&filter='+encodeURIComponent('已被婉拒')+'&classor='+encodeURIComponent('不分故事種類')+'&sorter='+encodeURIComponent('更新日期')+'&director='+encodeURIComponent('大至小')+'&lbound=&ubound=&page=1"', // plaintext body
+			html: '親愛的 '+message.CreatedBy.Username+' 您好：<br><br>'+message.SendTo.Username+' 婉拒了您先前在「<a href="http://'+req.headers.host+'/lender/story?id='+message.FromBorrowRequest._id+'">'+message.FromBorrowRequest.StoryTitle+'</a>」送出的欲借出訊息！<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://'+req.headers.host+'/lender/lenderSendMessages?msgKeyword='+newUpdate._id+'&filter='+encodeURIComponent('已被婉拒')+'&classor='+encodeURIComponent('不分故事種類')+'&sorter='+encodeURIComponent('更新日期')+'&director='+encodeURIComponent('大至小')+'&lbound=&ubound=&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看</span></a></td></tr></table>' 
 			// html body
 		};
 		
@@ -1604,8 +1809,8 @@ function mailRejectLend(message,newUpdate,req){
 			from: 'LendingZone <lendingzonesystem@gmail.com>', // sender address
 			to: message.SendTo.Username+' <'+message.SendTo.Email+'>', // list of receivers
 			subject:'您婉拒了'+ message.CreatedBy.Username+'先前送來的欲借出訊息!', // Subject line
-			text: '親愛的 '+message.SendTo.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+'您婉拒了 '+message.CreatedBy.Username+' 先前在「'+message.FromBorrowRequest.StoryTitle+'("http://'+req.headers.host+'/lender/story?id='+message.FromBorrowRequest._id+'")」送來的欲借出訊息！'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看:'+String.fromCharCode(10)+'"http://'+req.headers.host+'/lender/lenderSendMessages?msgKeyword='+newUpdate._id+'&filter='+encodeURIComponent('已被婉拒')+'&sorter='+encodeURIComponent('更新日期')+'&director='+encodeURIComponent('大至小')+'&lbound=&ubound=&page=1"', // plaintext body
-			html: '親愛的 '+message.SendTo.Username+' 您好：<br><br>您婉拒了 '+message.CreatedBy.Username+' 先前在「<a href="http://'+req.headers.host+'/lender/story?id='+message.FromBorrowRequest._id+'">'+message.FromBorrowRequest.StoryTitle+'</a>」送來的欲借出訊息！<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://'+req.headers.host+'/lender/lenderSendMessages?msgKeyword='+newUpdate._id+'&filter='+encodeURIComponent('已被婉拒')+'&sorter='+encodeURIComponent('更新日期')+'&director='+encodeURIComponent('大至小')+'&lbound=&ubound=&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看</span></a></td></tr></table>' 
+			text: '親愛的 '+message.SendTo.Username+' 您好：'+String.fromCharCode(10)+String.fromCharCode(10)+'您婉拒了 '+message.CreatedBy.Username+' 先前在「'+message.FromBorrowRequest.StoryTitle+'("http://'+req.headers.host+'/lender/story?id='+message.FromBorrowRequest._id+'")」送來的欲借出訊息！'+String.fromCharCode(10)+String.fromCharCode(10)+'立刻前往查看:'+String.fromCharCode(10)+'"http://'+req.headers.host+'/lender/lenderSendMessages?msgKeyword='+newUpdate._id+'&filter='+encodeURIComponent('已被婉拒')+'&classor='+encodeURIComponent('不分故事種類')+'&sorter='+encodeURIComponent('更新日期')+'&director='+encodeURIComponent('大至小')+'&lbound=&ubound=&page=1"', // plaintext body
+			html: '親愛的 '+message.SendTo.Username+' 您好：<br><br>您婉拒了 '+message.CreatedBy.Username+' 先前在「<a href="http://'+req.headers.host+'/lender/story?id='+message.FromBorrowRequest._id+'">'+message.FromBorrowRequest.StoryTitle+'</a>」送來的欲借出訊息！<br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="http://'+req.headers.host+'/lender/lenderSendMessages?msgKeyword='+newUpdate._id+'&filter='+encodeURIComponent('已被婉拒')+'&classor='+encodeURIComponent('不分故事種類')+'&sorter='+encodeURIComponent('更新日期')+'&director='+encodeURIComponent('大至小')+'&lbound=&ubound=&page=1" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">立刻前往查看</span></a></td></tr></table>' 
 			// html body
 		};
 		

@@ -32,7 +32,6 @@ router.post('/createTest', function(req, res, next) {
 					toCreate.Story=sanitizer.sanitize(req.body.Story.trim());
 				}
 				toCreate.CreatedBy=sanitizer.sanitize(req.body.CreatedBy.trim());
-				toCreate.Level=user.Level;
 				
 				toCreate.save(function (err,newCreate) {
 					if (err){

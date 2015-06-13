@@ -3,27 +3,48 @@
 <div class="container">
 	<div class="row">
 		<div class="col-md-9">
-			<div style="font-size:30pt;"><img src="/images/search.png " height="40px" width="40px"/>&nbsp;故事列表</div>
-				<div style="font-size:20pt;">&nbsp;<%=totalResultNum%> result</div>
+			<div class="bigTitle"><img src="/images/search.png " height="40px" width="40px"/>&nbsp;故事列表</div>
+				<div class="subTitle">&nbsp;<%=totalResultNum%> result</div>
 				<br>
 				<div class="input-group">
-					<input type="text" style="height:40px;" class="form-control" id="subKeywordIpt" placeholder="搜尋借入者的名稱或故事標題、內容" value="<%=keywordDefault%>" onkeypress="if(event.keyCode==13){linker();}" onkeyup="$('#keywordIpt').val($('#subKeywordIpt').val());">
+					<input type="text" class="form-control pageBar" id="keywordIpt" placeholder="搜尋借入者的名稱或故事標題、內容" value="<%=keywordDefault%>" onkeypress="if(event.keyCode==13){linker();}" onkeyup="$('#keywordIptMain').val($('#keywordIpt').val());">
 					<span class="input-group-btn">
 						<div class="btn-group">
-							<button type="button" style="height:40px;" class="btn btn-default dropdown-toggle" data-toggle="dropdown" id="subCategorySelected">
+							<button type="button" class="btn btn-default dropdown-toggle pageBar" data-toggle="dropdown" id="categorySelected">
 								<%=categoryDefault%> <span class="caret"></span>
 							</button>
 							<ul class="dropdown-menu">
-								<li style="display:none"><a href="#" id="subCategory0"><%=categoryDefault%></a></li>
-								<li id="clis1"<%if(categoryDefault=='不分類'){%> class="active"<%}%>><a href="#" onclick="categorySelector(1);subCategorySelector(1);return false;" id="subCategory1">不分類</a></li>
-								<li id="clis2"<%if(categoryDefault=='一般'){%> class="active"<%}%>><a href="#" onclick="categorySelector(2);subCategorySelector(2);return false;" id="subCategory2">一般</a></li>
-								<li id="clis3"<%if(categoryDefault=='教育'){%> class="active"<%}%>><a href="#" onclick="categorySelector(3);subCategorySelector(3);return false;" id="subCategory3">教育</a></li>
-								<li id="clis4"<%if(categoryDefault=='家庭'){%> class="active"<%}%>><a href="#" onclick="categorySelector(4);subCategorySelector(4);return false;" id="subCategory4">家庭</a></li>
-								<li id="clis5"<%if(categoryDefault=='旅遊'){%> class="active"<%}%>><a href="#" onclick="categorySelector(5);subCategorySelector(5);return false;" id="subCategory5">旅遊</a></li>
+								<li style="display:none"><a href="#" id="category0"><%=categoryDefault%></a></li>
+								<li id="clis1"<%if(categoryDefault=='不分類'){%> class="active"<%}%>><a href="#" onclick="categoryMainSelector(1);categorySelector(1);return false;" id="category1">不分類</a></li>
+								<li id="clis2"<%if(categoryDefault=='一般'){%> class="active"<%}%>><a href="#" onclick="categoryMainSelector(2);categorySelector(2);return false;" id="category2">一般</a></li>
+								<li id="clis3"<%if(categoryDefault=='教育'){%> class="active"<%}%>><a href="#" onclick="categoryMainSelector(3);categorySelector(3);return false;" id="category3">教育</a></li>
+								<li id="clis4"<%if(categoryDefault=='家庭'){%> class="active"<%}%>><a href="#" onclick="categoryMainSelector(4);categorySelector(4);return false;" id="category4">家庭</a></li>
+								<li id="clis5"<%if(categoryDefault=='旅遊'){%> class="active"<%}%>><a href="#" onclick="categoryMainSelector(5);categorySelector(5);return false;" id="category5">旅遊</a></li>
 							</ul>
 						</div>
 						<div class="btn-group">
-							<button type="button" style="height:40px;" class="btn btn-default" id="sorterSelected" data-toggle="dropdown" aria-expanded="false"><%=actionDefault%> <span class='caret'></span></button>
+							<button type="button" class="btn btn-default dropdown-toggle pageBar" data-toggle="dropdown" id="messengerSelected">
+								<%=messengerDefault%> <span class="caret"></span>
+							</button>
+							<ul class="dropdown-menu">
+								<li style="display:none"><a href="#" id="messenger0"><%=messengerDefault%></a></li>
+								<li id="mlis1"<%if(messengerDefault=='不分訊息狀態'){%> class="active"<%}%>><a href="#" onclick="messengerMainSelector(1);messengerSelector(1);return false;" id="messenger1">不分訊息狀態</a></li>
+								<%if(userName!==null){%><li id="mlis2"<%if(messengerDefault=='無訊息'){%> class="active"<%}%>><a href="#" onclick="messengerMainSelector(2);messengerSelector(2);return false;" id="messenger2">無訊息</a></li><%}%>
+								<%if(userName!==null){%><li id="mlis3"<%if(messengerDefault=='有訊息'){%> class="active"<%}%>><a href="#" onclick="messengerMainSelector(3);messengerSelector(3);return false;" id="messenger3">有訊息</a></li><%}%>
+								<%if(userName!==null){%><li id="mlis4"<%if(messengerDefault=='訊息未確認或未被確認'){%> class="active"<%}%>><a href="#" onclick="messengerMainSelector(4);messengerSelector(4);return false;" id="messenger4">訊息未確認或未被確認</a></li><%}%>
+								<%if(userName!==null){%><li id="mlis5"<%if(messengerDefault=='訊息已同意或已被同意'){%> class="active"<%}%>><a href="#" onclick="messengerMainSelector(5);messengerSelector(5);return false;" id="messenger5">訊息已同意或已被同意</a></li><%}%>
+								<%if(userName!==null){%><li id="mlis6"<%if(messengerDefault=='訊息已婉拒或已被婉拒'){%> class="active"<%}%>><a href="#" onclick="messengerMainSelector(6);messengerSelector(6);return false;" id="messenger6">訊息已婉拒或已被婉拒</a></li><%}%>
+								<%if(userName!==null){%><li id="mlis7"<%if(messengerDefault=='收到訊息未確認'){%> class="active"<%}%>><a href="#" onclick="messengerMainSelector(7);messengerSelector(7);return false;" id="messenger7">收到訊息未確認</a></li><%}%>
+								<%if(userName!==null){%><li id="mlis8"<%if(messengerDefault=='收到訊息已同意'){%> class="active"<%}%>><a href="#" onclick="messengerMainSelector(8);messengerSelector(8);return false;" id="messenger8">收到訊息已同意</a></li><%}%>
+								<%if(userName!==null){%><li id="mlis9"<%if(messengerDefault=='收到訊息已婉拒'){%> class="active"<%}%>><a href="#" onclick="messengerMainSelector(9);messengerSelector(9);return false;" id="messenger9">收到訊息已婉拒</a></li><%}%>
+								<%if(userName!==null){%><li id="mlis10"<%if(messengerDefault=='送出訊息未被確認'){%> class="active"<%}%>><a href="#" onclick="messengerMainSelector(10);messengerSelector(10);return false;" id="messenger10">送出訊息未被確認</a></li><%}%>
+								<%if(userName!==null){%><li id="mlis11"<%if(messengerDefault=='送出訊息已被同意'){%> class="active"<%}%>><a href="#" onclick="messengerMainSelector(11);messengerSelector(11);return false;" id="messenger11">送出訊息已被同意</a></li><%}%>
+								<%if(userName!==null){%><li id="mlis12"<%if(messengerDefault=='送出訊息已被婉拒'){%> class="active"<%}%>><a href="#" onclick="messengerMainSelector(12);messengerSelector(12);return false;" id="messenger12">送出訊息已被婉拒</a></li><%}%>
+								<%if(userName!==null){%><li id="mlis13"<%if(messengerDefault=='屬於我'){%> class="active"<%}%>><a href="#" onclick="messengerMainSelector(13);messengerSelector(13);return false;" id="messenger13">屬於我</a></li><%}%>
+							</ul>
+						</div>
+						<div class="btn-group">
+							<button type="button" class="btn btn-default pageBar" id="sorterSelected" data-toggle="dropdown" aria-expanded="false"><%=actionDefault%> <span class='caret'></span></button>
 							<ul class="dropdown-menu" role="menu">
 								<li style="display:none"><a href="#" id="sorter0"><%=actionDefault%></a></li>
 								<li id="alis1"<%if(actionDefault=='建立日期'){%> class="active"<%}%>><a href="#" onclick="searchActionSelector(1);sorterSelector(1);return false;" id="sorter1">建立日期</a></li>
@@ -33,32 +54,49 @@
 								<li id="alis5"<%if(actionDefault=='已經借到金額'){%> class="active"<%}%>><a href="#" onclick="searchActionSelector(5);sorterSelector(5);return false;" id="sorter5">已經借到金額</a></li>
 								<li id="alis6"<%if(actionDefault=='還需要金額'){%> class="active"<%}%>><a href="#" onclick="searchActionSelector(6);sorterSelector(6);return false;" id="sorter6">還需要金額</a></li>
 								<li id="alis7"<%if(actionDefault=='年利率'){%> class="active"<%}%>><a href="#" onclick="searchActionSelector(7);sorterSelector(7);return false;" id="sorter7">年利率</a></li>
-								<li id="alis8"<%if(actionDefault=='期數'){%> class="active"<%}%>><a href="#" onclick="searchActionSelector(8);sorterSelector(8);return false;" id="sorter8">期數</a></li>
-								<li id="alis9"<%if(actionDefault=='信用等級'){%> class="active"<%}%>><a href="#" onclick="searchActionSelector(9);sorterSelector(9);return false;" id="sorter9">信用等級</a></li>
-								<li id="alis10"<%if(actionDefault=='按讚次數'){%> class="active"<%}%>><a href="#" onclick="searchActionSelector(10);sorterSelector(10);return false;" id="sorter10">按讚次數</a></li>
+								<li id="alis8"<%if(actionDefault=='最低期數'){%> class="active"<%}%>><a href="#" onclick="searchActionSelector(8);sorterSelector(8);return false;" id="sorter8">最低期數</a></li>
+								<li id="alis9"<%if(actionDefault=='最高期數'){%> class="active"<%}%>><a href="#" onclick="searchActionSelector(9);sorterSelector(9);return false;" id="sorter9">最高期數</a></li>
+								<li id="alis10"<%if(actionDefault=='信用等級'){%> class="active"<%}%>><a href="#" onclick="searchActionSelector(10);sorterSelector(10);return false;" id="sorter10">信用等級</a></li>
+								<li id="alis11"<%if(actionDefault=='按讚次數'){%> class="active"<%}%>><a href="#" onclick="searchActionSelector(11);sorterSelector(11);return false;" id="sorter11">按讚次數</a></li>
 							</ul>
 						</div>
 						<div class="btn-group">
-							<button type="button" style="height:40px;" class="btn btn-default" id="directorSelected" data-toggle="dropdown" aria-expanded="false"><%=directorDefault%> <span class='caret'></span></button>
+							<button type="button" class="btn btn-default pageBar" id="directorSelected" data-toggle="dropdown" aria-expanded="false"><%=directorDefault%> <span class='caret'></span></button>
 							<ul class="dropdown-menu" role="menu">
 								<li style="display:none"><a href="#" id="director0"><%=directorDefault%></a></li>
 								<li id="dlis1"<%if(directorDefault=='大至小'){%> class="active"<%}%>><a href="#" onclick="directorMainSelector(1);directorSelector(1);return false;" id="director1">大至小</a></li>
 								<li id="dlis2"<%if(directorDefault=='小至大'){%> class="active"<%}%>><a href="#" onclick="directorMainSelector(2);directorSelector(2);return false;" id="director2">小至大</a></li>
 							</ul>
 						</div>
-						<button type="button" style="height:40px;" class="btn btn-default" onclick="linker();"><span class="glyphicon glyphicon-search"></span></button>
+						<button type="button" class="btn btn-default pageBar" onclick="linker();"><span class="glyphicon glyphicon-search"></span></button>
 					</span>
 				</div> 
 				<br>
-				<%if((actionDefault=='建立日期')||(actionDefault=='更新日期')||(actionDefault=='最晚媒合日期')){%>
-					<input style="height:32px;width:180px;display:inline;" type="date" placeholder="下限(yyyy/mm/dd)" class="form-control" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode==13){ linker();}">
-					&nbsp;~&nbsp;
-					<input style="height:32px;width:180px;display:inline;" type="date" placeholder="上限(yyyy/mm/dd)" class="form-control" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode==13){ linker();}">
-				<%}else{%>
-					<input style="height:32px;width:180px;display:inline;" type="text" placeholder="下限(元/%/個月/級/次)" class="form-control" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode==13){ linker();}">
-					&nbsp;~&nbsp;
-					<input style="height:32px;width:180px;display:inline;" type="text" placeholder="上限(元/%/個月/級/次)" class="form-control" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode==13){ linker();}">
-				<%}%>
+				<table width='100%'>
+					<tr>
+						<td>
+							<%if((actionDefault=='建立日期')||(actionDefault=='更新日期')||(actionDefault=='最晚媒合日期')){%>
+								<input type="date" placeholder="下限(yyyy/mm/dd)" class="form-control boundIpt" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode==13){ linker();}">
+								&nbsp;~&nbsp;
+								<input type="date" placeholder="上限(yyyy/mm/dd)" class="form-control boundIpt" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode==13){ linker();}">
+							<%}else{%>
+								<input type="text" placeholder="下限(元/%/個月/級/次)" class="form-control boundIpt" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode==13){ linker();}">
+								&nbsp;~&nbsp;
+								<input type="text" placeholder="上限(元/%/個月/級/次)" class="form-control boundIpt" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode==13){ linker();}">
+							<%}%>
+						</td>
+						<%if((keywordDefault!=='')&&(totalResultNum>0)){%>
+							<td align="right">
+								<button class="btn btn-default disabled" style="display:inline;" id="highlightBtn" onclick="enableHighlight();">
+									關鍵字上色
+								</button>
+								<button class="btn btn-default" style="" id="unhighlightBtn" onclick="disableHighlight();">
+									關鍵字去色
+								</button>
+							</td>
+						<%}%>
+					</tr>
+				</table>
 				<br>
 				<br>
 			<% if(totalResultNum>0){%>
@@ -77,13 +115,10 @@
 										<div style="display:inline;"<%if(actionDefault=='還需要金額'){%> class="stronger"<%}%>>還需要：</div><%=jsonArray[i].Need.toFixed(0)%>元
 									</div>&nbsp;&nbsp;
 									<div style="font-size:15px;display:inline;">
-										<div style="display:inline;"<%if(actionDefault=='年利率'){%> class="stronger"<%}%>>年利率：</div><%=(jsonArray[i].MaxInterestRateAccepted*100).toFixed(2)%>%
+										<div style="display:inline;"<%if(actionDefault=='最低期數'){%> class="stronger"<%}%>>最低期數：</div><%=jsonArray[i].MonthPeriodAcceptedLowest.toFixed(0)%>個月
 									</div>&nbsp;&nbsp;
 									<div style="font-size:15px;display:inline;">
-										<div style="display:inline;"<%if(actionDefault=='期數'){%> class="stronger"<%}%>>期數：</div><%=jsonArray[i].MonthPeriodAccepted.toFixed(0)%>個月
-									</div>&nbsp;&nbsp;
-									<div style="font-size:15px;display:inline;">
-										<div style="display:inline;"<%if(actionDefault=='信用等級'){%> class="stronger"<%}%>>信用：</div><%=jsonArray[i].Level.toFixed(0)%>級
+										<div style="display:inline;"<%if(actionDefault=='最高期數'){%> class="stronger"<%}%>>最高期數：</div><%=jsonArray[i].MonthPeriodAccepted.toFixed(0)%>個月
 									</div>
 								</td>
 							</tr>
@@ -94,8 +129,8 @@
 							<table width="100%">
 								<tr>
 									<td style="width:90%;">
-										<a style="font-size:25px;" <%if(jsonArray[i].TitleColor=="color1"){%>class="color1"<%}else if(jsonArray[i].TitleColor=="color3"){%>class="color3"<%}else if(jsonArray[i].TitleColor=="color2"){%>class="color2"<%}else if(jsonArray[i].TitleColor=="color4"){%>class="color4"<%}else if(jsonArray[i].TitleColor=="color5"){%>class="color5"<%}%> href="/lender/story?id=<%=jsonArray[i]._id%>">[<%if(jsonArray[i].Category=='general'){%>一般<%}else if(jsonArray[i].Category=='education'){%>教育<%}else if(jsonArray[i].Category=='family'){%>家庭<%}else if(jsonArray[i].Category=='tour'){%>旅遊<%}%>]&nbsp;&nbsp;<%-jsonArray[i].StoryTitle.replace(new RegExp(' ','g'),'&nbsp;')%></a>
-										<div style="font-size:15px;" class="myTitle">by <%=jsonArray[i].CreatedBy.Username%></div>
+										<a style="font-size:25px;"<%if(jsonArray[i].TitleColor=="color1"){%> class="color1"<%}else if(jsonArray[i].TitleColor=="color2"){%> class="color2"<%}else if(jsonArray[i].TitleColor=="color3"){%> class="color3"<%}else if(jsonArray[i].TitleColor=="color4"){%> class="color4"<%}else if(jsonArray[i].TitleColor=="color5"){%> class="color5"<%}else if(jsonArray[i].TitleColor=="color6"){%> class="color6"<%}else if(jsonArray[i].TitleColor=="color7"){%> class="color7"<%}%> href="/lender/story?id=<%=jsonArray[i]._id%>">[<%if(jsonArray[i].Category=='general'){%>一般<%}else if(jsonArray[i].Category=='education'){%>教育<%}else if(jsonArray[i].Category=='family'){%>家庭<%}else if(jsonArray[i].Category=='tour'){%>旅遊<%}%>]&nbsp;&nbsp;<%if(jsonArray[i].StoryTitle.StoryTitle!==''){%><div class="colorCnt"><%-jsonArray[i].StoryTitle.replace(new RegExp(' ','g'),'&nbsp;')%></div><%}else{%>無標題<%}%></a>
+										<div style="font-size:15px;" class="myTitle">by <div class="colorCnt"><%=jsonArray[i].CreatedBy.Username%></div></div>
 									</td>
 									<td align="right">
 										<div style="font-size:20px;display:inline;" class="myTitle2" id="likeBtn<%=i%>">
@@ -129,7 +164,7 @@
 							</table>
 							<br>
 							<div>
-								 <%-jsonArray[i].Story.replace(new RegExp('\n','g'),'<br>').replace(new RegExp(' ','g'),'&nbsp;')%>
+								 <%if(jsonArray[i].Story!==''){%><div class="colorCnt"><%-jsonArray[i].Story.replace(new RegExp('\n','g'),'<br>').replace(new RegExp(' ','g'),'&nbsp;')%></div><%}else{%>無內容<%}%>
 							</div>
 						</div>
 					</div>
@@ -138,17 +173,25 @@
 							<tr>
 								<td align="right" style="border-bottom-style: none;border-top-style: none;">
 									<div style="font-size:15px;display:inline;">
+										<div style="display:inline;"<%if(actionDefault=='年利率'){%> class="stronger"<%}%>>年利率：</div><%=(jsonArray[i].MaxInterestRateAccepted*100).toFixed(2)%>%
+									</div>
+									&nbsp;&nbsp;
+									<div style="font-size:15px;display:inline;">
+										<div style="display:inline;"<%if(actionDefault=='信用等級'){%> class="stronger"<%}%>>信用：</div><%=jsonArray[i].Level.toFixed(0)%>級
+									</div>
+									&nbsp;&nbsp;
+									<div style="font-size:15px;display:inline;">
 										<div style="display:inline;"<%if(actionDefault=='最晚媒合日期'){%> class="stronger"<%}%>>Deadline：</div><%=jsonArray[i].TimeLimit.getFullYear()%>/<%=jsonArray[i].TimeLimit.getMonth()+1%>/<%=jsonArray[i].TimeLimit.getDate()%>
 									</div>
-									&nbsp;&nbsp;&nbsp;&nbsp;
+									&nbsp;&nbsp;
 									<div style="font-size:15px;display:inline;">
 										<div style="display:inline;"<%if(actionDefault=='建立日期'){%> class="stronger"<%}%>>Created：</div><%=jsonArray[i].Created.getFullYear()%>/<%=jsonArray[i].Created.getMonth()+1%>/<%=jsonArray[i].Created.getDate()%>
 									</div>
-									&nbsp;&nbsp;&nbsp;&nbsp;
+									&nbsp;&nbsp;
 									<div style="font-size:15px;display:inline;">
 										<div style="display:inline;"<%if(actionDefault=='更新日期'){%> class="stronger"<%}%>>Updated：</div><%=jsonArray[i].Updated.getFullYear()%>/<%=jsonArray[i].Updated.getMonth()+1%>/<%=jsonArray[i].Updated.getDate()%>
 									</div>
-									&nbsp;&nbsp;&nbsp;&nbsp;
+									&nbsp;&nbsp;
 									<div style="font-size:15px;display:inline;">
 										No.<%=i+1%>
 									</div>
@@ -172,7 +215,7 @@
 									<%}%>
 								>
 								<% if(targetPageNumber!=1){%>
-									<a href="/lender/search?keyword=<%=encodeURIComponent(keywordDefault)%>&category=<%=encodeURIComponent(categoryDefault)%>&action=<%=encodeURIComponent(actionDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=targetPageNumber-1%>">
+									<a href="/lender/search?keyword=<%=encodeURIComponent(keywordDefault)%>&category=<%=encodeURIComponent(categoryDefault)%>&messenger=<%=encodeURIComponent(messengerDefault)%>&action=<%=encodeURIComponent(actionDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=targetPageNumber-1%>">
 								<%}else{%>
 									<a href="#" onclick="return false;">
 								<%}%>
@@ -183,7 +226,7 @@
 											<% if(targetPageNumber==j){%>
 												class="active"
 											<%}%>
-										><a href="/lender/search?keyword=<%=encodeURIComponent(keywordDefault)%>&category=<%=encodeURIComponent(categoryDefault)%>&action=<%=encodeURIComponent(actionDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=j%>"><%=j%></a></li>
+										><a href="/lender/search?keyword=<%=encodeURIComponent(keywordDefault)%>&category=<%=encodeURIComponent(categoryDefault)%>&messenger=<%=encodeURIComponent(messengerDefault)%>&action=<%=encodeURIComponent(actionDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=j%>"><%=j%></a></li>
 									<%}%>
 								<% }else{%>
 									<% if(targetPageNumber>=pageNumber-3){%>
@@ -192,7 +235,7 @@
 											<% if(targetPageNumber==j){%>
 												class="active"
 											<%}%>
-										><a href="/lender/search?keyword=<%=encodeURIComponent(keywordDefault)%>&category=<%=encodeURIComponent(categoryDefault)%>&action=<%=encodeURIComponent(actionDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=j%>"><%=j%></a></li>
+										><a href="/lender/search?keyword=<%=encodeURIComponent(keywordDefault)%>&category=<%=encodeURIComponent(categoryDefault)%>&messenger=<%=encodeURIComponent(messengerDefault)%>&action=<%=encodeURIComponent(actionDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=j%>"><%=j%></a></li>
 										<%}%>
 									<%}else if(targetPageNumber<=5){%>
 										<% for(var j=1; j<=10; j++) { %>
@@ -200,15 +243,15 @@
 											<% if(targetPageNumber==j){%>
 												class="active"
 											<%}%>
-										><a href="/lender/search?keyword=<%=encodeURIComponent(keywordDefault)%>&category=<%=encodeURIComponent(categoryDefault)%>&action=<%=encodeURIComponent(actionDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=j%>"><%=j%></a></li>
+										><a href="/lender/search?keyword=<%=encodeURIComponent(keywordDefault)%>&category=<%=encodeURIComponent(categoryDefault)%>&messenger=<%=encodeURIComponent(messengerDefault)%>&action=<%=encodeURIComponent(actionDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=j%>"><%=j%></a></li>
 										<%}%>
 									<%}else{%>
 										<% for(var j=targetPageNumber-5; j<targetPageNumber; j++) { %>
-										<li><a href="/lender/search?keyword=<%=encodeURIComponent(keywordDefault)%>&category=<%=encodeURIComponent(categoryDefault)%>&action=<%=encodeURIComponent(actionDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=j%>"><%=j%></a></li>
+										<li><a href="/lender/search?keyword=<%=encodeURIComponent(keywordDefault)%>&category=<%=encodeURIComponent(categoryDefault)%>&messenger=<%=encodeURIComponent(messengerDefault)%>&action=<%=encodeURIComponent(actionDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=j%>"><%=j%></a></li>
 										<%}%>
-										<li class="active"><a href="/lender/search?keyword=<%=encodeURIComponent(keywordDefault)%>&category=<%=encodeURIComponent(categoryDefault)%>&action=<%=encodeURIComponent(actionDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=targetPageNumber%>"><%=targetPageNumber%></a></li>
+										<li class="active"><a href="/lender/search?keyword=<%=encodeURIComponent(keywordDefault)%>&category=<%=encodeURIComponent(categoryDefault)%>&messenger=<%=encodeURIComponent(messengerDefault)%>&action=<%=encodeURIComponent(actionDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=targetPageNumber%>"><%=targetPageNumber%></a></li>
 										<% for(var j=targetPageNumber+1; j<=targetPageNumber+4; j++) { %>
-										<li><a href="/lender/search?keyword=<%=encodeURIComponent(keywordDefault)%>&category=<%=encodeURIComponent(categoryDefault)%>&action=<%=encodeURIComponent(actionDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=j%>"><%=j%></a></li>
+										<li><a href="/lender/search?keyword=<%=encodeURIComponent(keywordDefault)%>&category=<%=encodeURIComponent(categoryDefault)%>&messenger=<%=encodeURIComponent(messengerDefault)%>&action=<%=encodeURIComponent(actionDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=j%>"><%=j%></a></li>
 										<%}%>
 									<%}%>
 								<%}%>
@@ -218,7 +261,7 @@
 									<%}%>
 								>
 								<% if(targetPageNumber!=pageNumber){%>
-									<a href="/lender/search?keyword=<%=encodeURIComponent(keywordDefault)%>&category=<%=encodeURIComponent(categoryDefault)%>&action=<%=encodeURIComponent(actionDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=targetPageNumber+1%>">
+									<a href="/lender/search?keyword=<%=encodeURIComponent(keywordDefault)%>&category=<%=encodeURIComponent(categoryDefault)%>&messenger=<%=encodeURIComponent(messengerDefault)%>&action=<%=encodeURIComponent(actionDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=targetPageNumber+1%>">
 								<%}else{%>
 									<a href="#" onclick="return false;">
 								<%}%>
@@ -236,14 +279,25 @@
 </div>
 <script>
 	function linker(){
-		window.open('/lender/search?keyword='+encodeURIComponent($('#subKeywordIpt').val().trim())+'&category='+encodeURIComponent($('#subCategory0').text())+'&action='+encodeURIComponent($('#sorter0').text())+'&director='+encodeURIComponent($('#director0').text())+'&lbound='+encodeURIComponent($('#lbound').val().trim())+'&ubound='+encodeURIComponent($('#ubound').val().trim())+'&page=1','_self');
+		window.open('/lender/search?keyword='+encodeURIComponent($('#keywordIpt').val().trim())+'&category='+encodeURIComponent($('#category0').text())+'&messenger='+encodeURIComponent($('#messenger0').text())+'&action='+encodeURIComponent($('#sorter0').text())+'&director='+encodeURIComponent($('#director0').text())+'&lbound='+encodeURIComponent($('#lbound').val().trim())+'&ubound='+encodeURIComponent($('#ubound').val().trim())+'&page=1','_self');
 	}
 	
-	function subCategorySelector(index){
-		$('#subCategorySelected').html('');
-		$('#subCategorySelected').html($('#subCategory'+index).text());
-		$('#subCategory0').html($('#subCategorySelected').text());
-		$('#subCategorySelected').append(' <span class=\'caret\'><\/span>');
+	function messengerSelector(index){
+		$('#messengerSelected').html('');
+		$('#messengerSelected').html($('#messenger'+index).text());
+		$('#messenger0').html($('#messengerSelected').text());
+		$('#messengerSelected').append(' <span class=\'caret\'><\/span>');
+		for(i=1;i<=<%if(userName!==null){%>13<%}else{%>1<%}%>;i++){
+			$('#mlis'+i).attr('class','');
+		}
+		$('#mlis'+index).attr('class','active');
+	}
+	
+	function categorySelector(index){
+		$('#categorySelected').html('');
+		$('#categorySelected').html($('#category'+index).text());
+		$('#category0').html($('#categorySelected').text());
+		$('#categorySelected').append(' <span class=\'caret\'><\/span>');
 		for(i=1;i<=5;i++){
 			$('#clis'+i).attr('class','');
 		}
@@ -262,7 +316,7 @@
 		$('#sorterSelected').html($('#sorter'+index).text());
 		$('#sorter0').html($('#sorterSelected').text());
 		$('#sorterSelected').append(' <span class=\'caret\'><\/span>');
-		for(i=1;i<=10;i++){
+		for(i=1;i<=11;i++){
 			$('#alis'+i).attr('class','');
 		}
 		$('#alis'+index).attr('class','active');
@@ -303,117 +357,185 @@
 			ifDater=false;
 		}
 	}
-	<%if(userName!==null){%>
-		$(document).ready(function (){
-			for(i=0;i<<%=jsonArray.length%>;i++){
-				var orig=$('#btnID'+i).attr('class');
-				if(orig.search(' disabled')<0){
-					orig=orig+' disabled';
-					$('#btnID'+i).attr('class',orig);
+		
+	<% if(totalResultNum>0){ %>
+		var stringPro='<%=keywordDefault%>';
+		var highLightFlag=false;
+		var stringArray;
+		function enableHighlight(){
+			if(stringPro!==''){
+				if(!highLightFlag){
+					highLightFlag=true;
+					for(i=0;i<stringArray.length;i++){
+						$('.colorCnt').highlight(stringArray[i]);
+					}
+					var orig=$('#unhighlightBtn').attr('class');
+					orig=orig.replace(/ disabled/g, '');
+					$('#unhighlightBtn').attr('class',orig);
+					orig=$('#unhighlightBtn').attr('style');
+					orig=orig.replace(/display:none;/g, '');
+					$('#unhighlightBtn').attr('style',orig);
+					
+					orig=$('#highlightBtn').attr('class');
+					if(orig.search(' disabled')<0){
+						orig=orig+' disabled';
+						$(highlightBtn).attr('class',orig);
+					}
+					orig=$('#highlightBtn').attr('style');
+					if(orig.search('display:none;')<0){
+						orig=orig+'display:none;';
+						$(highlightBtn).attr('style',orig);
+					}
 				}
 			}
-			recursiveAjax(0,<%=jsonArray.length%>);	
+		}
+		
+		function disableHighlight(){
+			if(stringPro!==''){
+				if(highLightFlag){
+					highLightFlag=false;
+					$('.colorCnt').unhighlight();
+					var orig=$('#highlightBtn').attr('class');
+					orig=orig.replace(/ disabled/g, '');
+					$('#highlightBtn').attr('class',orig);
+					orig=$('#highlightBtn').attr('style');
+					orig=orig.replace(/display:none;/g, '');
+					$('#highlightBtn').attr('style',orig);
+					
+					orig=$('#unhighlightBtn').attr('class');
+					if(orig.search(' disabled')<0){
+						orig=orig+' disabled';
+						$(unhighlightBtn).attr('class',orig);
+					}
+					orig=$('#unhighlightBtn').attr('style');
+					if(orig.search('display:none;')<0){
+						orig=orig+'display:none;';
+						$(unhighlightBtn).attr('style',orig);
+					}
+				}
+			}
+		}
+		
+		$(document).ready(function (){
+			<%if(userName!==null){%>
+				for(i=0;i<<%=jsonArray.length%>;i++){
+					var orig=$('#btnID'+i).attr('class');
+					if(orig.search(' disabled')<0){
+						orig=orig+' disabled';
+						$('#btnID'+i).attr('class',orig);
+					}
+				}
+				recursiveAjax(0,<%=jsonArray.length%>);	
+			<%}%>
+			
+			if(stringPro!==''){
+				stringPro=stringPro.replace(/\s\s+/g,' ');
+				stringArray=stringPro.split(' ');
+				enableHighlight();
+			}
 		});
 		
-		function recursiveAjax(ctr,ctrTarget){
-			$.ajax({ 
-				url: '/Borrows/iflike',
-				type: 'POST',
-				data:{_id:$('#borrowID'+ctr).val()},
-				dataType: 'json',
-				success: function(Jdata) {
-					if(Jdata.success){
-						if(Jdata.status==-1){
-							$('#likeBtn'+ctr).html('<button class="btn btn-default" data-toggle="modal" data-target="#myModal" id="btnID'+ctr+'"><span class="glyphicon glyphicon-thumbs-up myTitle2"></span></button>');	
-						}else if(Jdata.status==0){
-							$('#likeBtn'+ctr).html('<button class="btn btn-default" onclick="like('+ctr+');" id="btnID'+ctr+'"><span class="glyphicon glyphicon-thumbs-up myTitle2"></span></button>');	
-						}else if(Jdata.status==1){
-							$('#likeBtn'+ctr).html('<button class="btn btn-default" onclick="unlike('+ctr+');" id="btnID'+ctr+'"><span class="glyphicon glyphicon-remove myTitle2"></span></button>');	
-						}else if(Jdata.status==2){
-							$('#likeBtn'+ctr).html('<button class="btn btn-default disabled" id="btnID'+ctr+'"><span class="glyphicon glyphicon-thumbs-up myTitle2"></span></button>');	
-						}
-						$('#likeNum'+ctr).html('&nbsp;'+Jdata.result);
-						ctr++
-						if(ctr<ctrTarget){
-							recursiveAjax(ctr,ctrTarget);
-						}
-					}else{
-						ctr++
-						if(ctr<ctrTarget){
-							recursiveAjax(ctr,ctrTarget);
-						}
-					}
-				},
-				error: function() {
-					ctr++
-					if(ctr<ctrTarget){
-						recursiveAjax(ctr,ctrTarget);
-					}
-				}
-			});
-		}
-	
-		function like(index){
-			var orig=$('#btnID'+index).attr('class');
-			if(orig.search(' disabled')<0){
-				orig=orig+' disabled';
-				$('#btnID'+index).attr('class',orig);
-			}
-			$.ajax({ 
-					url: '/Borrows/like',
+		<%if(userName!==null){%>
+			function recursiveAjax(ctr,ctrTarget){
+				$.ajax({ 
+					url: '/Borrows/iflike',
 					type: 'POST',
-					data:{_id:$('#borrowID'+index).val()},
+					data:{_id:$('#borrowID'+ctr).val()},
 					dataType: 'json',
 					success: function(Jdata) {
 						if(Jdata.success){
-							$('#likeBtn'+index).html('<button class="btn btn-default" onclick="unlike('+index+');" id="btnID'+index+'"><span class="glyphicon glyphicon-remove myTitle2"></span></button>');
-							$('#likeNum'+index).html('&nbsp;'+Jdata.result);
+							if(Jdata.status==-1){
+								$('#likeBtn'+ctr).html('<button class="btn btn-default" data-toggle="modal" data-target="#myModal" id="btnID'+ctr+'"><span class="glyphicon glyphicon-thumbs-up myTitle2"></span></button>');	
+							}else if(Jdata.status==0){
+								$('#likeBtn'+ctr).html('<button class="btn btn-default" onclick="like('+ctr+');" id="btnID'+ctr+'"><span class="glyphicon glyphicon-thumbs-up myTitle2"></span></button>');	
+							}else if(Jdata.status==1){
+								$('#likeBtn'+ctr).html('<button class="btn btn-default" onclick="unlike('+ctr+');" id="btnID'+ctr+'"><span class="glyphicon glyphicon-remove myTitle2"></span></button>');	
+							}else if(Jdata.status==2){
+								$('#likeBtn'+ctr).html('<button class="btn btn-default disabled" id="btnID'+ctr+'"><span class="glyphicon glyphicon-thumbs-up myTitle2"></span></button>');	
+							}
+							$('#likeNum'+ctr).html('&nbsp;'+Jdata.result);
+							ctr++
+							if(ctr<ctrTarget){
+								recursiveAjax(ctr,ctrTarget);
+							}
 						}else{
-							alert('something wrong.');
-							var origInner=$('#btnID'+index).attr('class');
-							origInner=origInner.replace(/ disabled/g, '');
-							$('#btnID'+index).attr('class',origInner);
+							ctr++
+							if(ctr<ctrTarget){
+								recursiveAjax(ctr,ctrTarget);
+							}
 						}
 					},
 					error: function() {
-						alert('something wrong.');
-						var origInner=$('#btnID'+index).attr('class');
-						origInner=origInner.replace(/ disabled/g, '');
-						$('#btnID'+index).attr('class',origInner);
+						ctr++
+						if(ctr<ctrTarget){
+							recursiveAjax(ctr,ctrTarget);
+						}
 					}
-			});	
-		}
+				});
+			}
 		
-		function unlike(index){
-			var orig=$('#btnID'+index).attr('class');
-			if(orig.search(' disabled')<0){
-				orig=orig+' disabled';
-				$('#btnID'+index).attr('class',orig);
-			}
-			$.ajax({ 
-					url: '/Borrows/unlike',
-					type: 'POST',
-					data:{_id:$('#borrowID'+index).val()},
-					dataType: 'json',
-					success: function(Jdata) {
-						if(Jdata.success){
-							$('#likeBtn'+index).html('<button class="btn btn-default" onclick="like('+index+');" id="btnID'+index+'"><span class="glyphicon glyphicon-thumbs-up myTitle2"></span></button>');
-							$('#likeNum'+index).html('&nbsp;'+Jdata.result);
-						}else{
+			function like(index){
+				var orig=$('#btnID'+index).attr('class');
+				if(orig.search(' disabled')<0){
+					orig=orig+' disabled';
+					$('#btnID'+index).attr('class',orig);
+				}
+				$.ajax({ 
+						url: '/Borrows/like',
+						type: 'POST',
+						data:{_id:$('#borrowID'+index).val()},
+						dataType: 'json',
+						success: function(Jdata) {
+							if(Jdata.success){
+								$('#likeBtn'+index).html('<button class="btn btn-default" onclick="unlike('+index+');" id="btnID'+index+'"><span class="glyphicon glyphicon-remove myTitle2"></span></button>');
+								$('#likeNum'+index).html('&nbsp;'+Jdata.result);
+							}else{
+								alert('something wrong.');
+								var origInner=$('#btnID'+index).attr('class');
+								origInner=origInner.replace(/ disabled/g, '');
+								$('#btnID'+index).attr('class',origInner);
+							}
+						},
+						error: function() {
 							alert('something wrong.');
 							var origInner=$('#btnID'+index).attr('class');
 							origInner=origInner.replace(/ disabled/g, '');
 							$('#btnID'+index).attr('class',origInner);
 						}
-					},
-					error: function() {
-						alert('something wrong.');
-						var origInner=$('#btnID'+index).attr('class');
-						origInner=origInner.replace(/ disabled/g, '');
-						$('#btnID'+index).attr('class',origInner);
-					}
-			});	
-		}
+				});	
+			}
+			
+			function unlike(index){
+				var orig=$('#btnID'+index).attr('class');
+				if(orig.search(' disabled')<0){
+					orig=orig+' disabled';
+					$('#btnID'+index).attr('class',orig);
+				}
+				$.ajax({ 
+						url: '/Borrows/unlike',
+						type: 'POST',
+						data:{_id:$('#borrowID'+index).val()},
+						dataType: 'json',
+						success: function(Jdata) {
+							if(Jdata.success){
+								$('#likeBtn'+index).html('<button class="btn btn-default" onclick="like('+index+');" id="btnID'+index+'"><span class="glyphicon glyphicon-thumbs-up myTitle2"></span></button>');
+								$('#likeNum'+index).html('&nbsp;'+Jdata.result);
+							}else{
+								alert('something wrong.');
+								var origInner=$('#btnID'+index).attr('class');
+								origInner=origInner.replace(/ disabled/g, '');
+								$('#btnID'+index).attr('class',origInner);
+							}
+						},
+						error: function() {
+							alert('something wrong.');
+							var origInner=$('#btnID'+index).attr('class');
+							origInner=origInner.replace(/ disabled/g, '');
+							$('#btnID'+index).attr('class',origInner);
+						}
+				});	
+			}
+		<%}%>
 	<%}%>
 </script>
 <%- include('layout_footer',{imgSettingCode:"var ifLoadedCount=0;",imgDrawingCode:""}); -%>

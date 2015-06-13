@@ -117,7 +117,7 @@ function samePart(res,req,differentPart,outterPara){
 						
 						var errorTarget=[];
 						var errorMessage=[];
-						for(i=0;i<9;i++){
+						for(i=0;i<16;i++){
 							errorTarget.push(false);
 							errorMessage.push('');
 						}
@@ -206,6 +206,57 @@ function samePart(res,req,differentPart,outterPara){
 							errorMessage[8]='錯誤參數!';
 						}
 						
+						var period=parseInt(sanitizer.sanitize(req.body.AutoComfirmToBorrowMsgPeriod.trim()));
+						if(period>0){
+							var sorter=sanitizer.sanitize(req.body.AutoComfirmToBorrowMsgSorter.trim());
+							var lbound=sanitizer.sanitize(req.body.AutoComfirmToBorrowMsgLbound.trim());
+							var ubound=sanitizer.sanitize(req.body.AutoComfirmToBorrowMsgUbound.trim());
+							
+							if(lbound!==''){
+								if((sorter=='Updated')||(sorter=='Created')){
+									var tester=Date.parse(lbound);
+									if(isNaN(tester)){
+										errorTarget[13]=true;
+										errorMessage[13]='日期格式錯誤!';
+									}
+								}else if((sorter=='InterestRate')||(sorter=='InterestInFutureDivMoney')){
+									var tester=parseFloat(lbound);
+									if((tester<0)||(tester>99)){
+										errorTarget[13]=true;
+										errorMessage[13]='錯誤參數!';
+									}
+								}else{
+									var tester=parseInt(lbound);
+									if(tester<0){
+										errorTarget[13]=true;
+										errorMessage[13]='錯誤參數!';
+									}
+								}
+							}
+							
+							if(ubound!==''){
+								if((sorter=='Updated')||(sorter=='Created')){
+									var tester=Date.parse(ubound);
+									if(isNaN(tester)){
+										errorTarget[14]=true;
+										errorMessage[14]='日期格式錯誤!';
+									}
+								}else if((sorter=='InterestRate')||(sorter=='InterestInFutureDivMoney')){
+									var tester=parseFloat(ubound);
+									if((tester<0)||(tester>99)){
+										errorTarget[14]=true;
+										errorMessage[14]='錯誤參數!';
+									}
+								}else{
+									var tester=parseInt(ubound);
+									if(tester<0){
+										errorTarget[14]=true;
+										errorMessage[14]='錯誤參數!';
+									}
+								}
+							}
+						}
+						
 						var valiFlag=true;
 						for(i=0;i<errorTarget.length;i++){
 							if(errorTarget[i]){
@@ -238,8 +289,12 @@ function redirector(req,res,target,message){
 		F8:req.body.MinInterestInFutureMoneyMonth,
 		F9:req.body.MinInterestInFutureDivMoney,
 		F10:req.body.AutoComfirmToBorrowMsgPeriod,
-		F11:req.body.AutoComfirmToBorrowMsgSorter,
-		F12:req.body.AutoComfirmToBorrowMsgDirector
+		F11:req.body.AutoComfirmToBorrowMsgClassor,
+		F12:req.body.AutoComfirmToBorrowMsgSorter,
+		F13:req.body.AutoComfirmToBorrowMsgDirector,
+		F14:req.body.AutoComfirmToBorrowMsgLbound,
+		F15:req.body.AutoComfirmToBorrowMsgUbound,
+		F16:req.body.AutoComfirmToBorrowMsgKeyWord
 	};
 	
 	var json={FormContent:formContent,Target:target,Message:message};
@@ -273,43 +328,76 @@ function createPart(res,req,outterPara){
 		toCreate.MinInterestInFutureDivMoney=parseFloat(sanitizer.sanitize(req.body.MinInterestInFutureDivMoney.trim()))/100;
 	}
 	
-	toCreate.AutoComfirmToBorrowMsgPeriod=sanitizer.sanitize(req.body.AutoComfirmToBorrowMsgPeriod.trim());
-	if(!req.body.AutoComfirmToBorrowMsgSorter){
-		toCreate.AutoComfirmToBorrowMsgSorter="invalid";
-	}else{
-		toCreate.AutoComfirmToBorrowMsgSorter=sanitizer.sanitize(req.body.AutoComfirmToBorrowMsgSorter.trim());
-	}
-	if(!req.body.AutoComfirmToBorrowMsgDirector){
-		toCreate.AutoComfirmToBorrowMsgDirector="invalid";
-	}else{
+	var period=parseInt(sanitizer.sanitize(req.body.AutoComfirmToBorrowMsgPeriod.trim()));
+	toCreate.AutoComfirmToBorrowMsgPeriod=period;
+	if(period>0){
+		var sorter=sanitizer.sanitize(req.body.AutoComfirmToBorrowMsgSorter.trim());
+		var lbound=sanitizer.sanitize(req.body.AutoComfirmToBorrowMsgLbound.trim());
+		var ubound=sanitizer.sanitize(req.body.AutoComfirmToBorrowMsgUbound.trim());
+		var rtnJSON=luMaker(sorter,lbound,ubound);
+		toCreate.AutoComfirmToBorrowMsgSorter=sorter;
 		toCreate.AutoComfirmToBorrowMsgDirector=sanitizer.sanitize(req.body.AutoComfirmToBorrowMsgDirector.trim());
+		toCreate.AutoComfirmToBorrowMsgClassor=sanitizer.sanitize(req.body.AutoComfirmToBorrowMsgClassor.trim());
+		toCreate.AutoComfirmToBorrowMsgKeyWord=sanitizer.sanitize(req.body.AutoComfirmToBorrowMsgKeyWord.trim());
+		toCreate.AutoComfirmToBorrowMsgLbound=rtnJSON.lboundSave;
+		toCreate.AutoComfirmToBorrowMsgUbound=rtnJSON.uboundSave;
+		
+	}else{
+		toCreate.AutoComfirmToBorrowMsgSorter='invalid';
+		toCreate.AutoComfirmToBorrowMsgDirector='invalid';
+		toCreate.AutoComfirmToBorrowMsgClassor='invalid';
+		toCreate.AutoComfirmToBorrowMsgKeyWord='';
+		toCreate.AutoComfirmToBorrowMsgLbound=-1;
+		toCreate.AutoComfirmToBorrowMsgUbound=-1;
 	}
+		
 	toCreate.CreatedBy=req.user._id;
 	
 	toCreate.save(function (err,newCreate) {
 		if (err){
 			res.redirect('/message?content='+encodeURIComponent('新建失敗!'));
 		}else{
-			var ctr=-1;
-			for(i=0;i<library.autoComfirmToBorrowMsgArray.length;i++){
-				if(req.user._id==library.autoComfirmToBorrowMsgArray[i].CreatedBy){
-					ctr=i;
-					break;
-				}
-			}
-			if(ctr>-1){
-				clearInterval(library.autoComfirmToBorrowMsgArray[ctr].CommandID);
-				library.autoComfirmToBorrowMsgArray.splice(ctr,1);
-			}
-			
-			if(newCreate.AutoComfirmToBorrowMsgPeriod>0){
-				var toSaveID=setInterval( function() { autoConfirm(req,res,newCreate.AutoComfirmToBorrowMsgSorter,newCreate.AutoComfirmToBorrowMsgDirector,newCreate._id); }, 86400000*newCreate.AutoComfirmToBorrowMsgPeriod);
-				var toSaveJSON={CreatedBy:req.user._id,CommandID:toSaveID,LendID:newCreate._id};
-				library.autoComfirmToBorrowMsgArray.push(toSaveJSON);
-			}
 			res.redirect('/lender/lend');
 		}
 	});
+}
+
+function luMaker(sorter,lbound,ubound){
+	var rtnJSON={
+		lboundSave:-1,
+		uboundSave:-1
+	}
+	if(lbound!==''){
+		if((sorter=='Updated')||(sorter=='Created')){
+			rtnJSON.lboundSave=Date.parse(lbound);
+		}else if(sorter=='InterestRate'){
+			rtnJSON.lboundSave=(parseFloat(lbound)/100)+library.serviceChargeRate;//scr
+		}else if(sorter=='InterestInFutureDivMoney'){
+			rtnJSON.lboundSave=(parseFloat(lbound)/100);
+		}else{
+			rtnJSON.lboundSave=parseInt(lbound);
+		}
+	}
+	if(ubound!==''){
+		if((sorter=='Updated')||(sorter=='Created')){
+			rtnJSON.uboundSave=Date.parse(ubound);
+		}else if(sorter=='InterestRate'){
+			rtnJSON.uboundSave=(parseFloat(ubound)/100)+library.serviceChargeRate;//scr
+		}else if(sorter=='InterestInFutureDivMoney'){
+			rtnJSON.uboundSave=(parseFloat(ubound)/100);
+		}else{
+			rtnJSON.uboundSave=parseInt(ubound);
+		}
+	}
+	if((rtnJSON.lboundSave!==-1)&&(rtnJSON.uboundSave!==-1)){
+		if(rtnJSON.lboundSave>rtnJSON.uboundSave){
+			var temp;
+			temp=rtnJSON.lboundSave;
+			rtnJSON.lboundSave=rtnJSON.uboundSave;
+			rtnJSON.uboundSave=temp;
+		}
+	}
+	return rtnJSON;
 }
 
 function updatePart(res,req,lend){
@@ -347,17 +435,29 @@ function updatePart(res,req,lend){
 		lend.MinInterestInFutureDivMoney=0;
 	}
 	
-	lend.AutoComfirmToBorrowMsgPeriod=sanitizer.sanitize(req.body.AutoComfirmToBorrowMsgPeriod.trim());
-	if(!req.body.AutoComfirmToBorrowMsgSorter){
-		lend.AutoComfirmToBorrowMsgSorter="invalid";
-	}else{
-		lend.AutoComfirmToBorrowMsgSorter=sanitizer.sanitize(req.body.AutoComfirmToBorrowMsgSorter.trim());
-	}
-	if(!req.body.AutoComfirmToBorrowMsgDirector){
-		lend.AutoComfirmToBorrowMsgDirector="invalid";
-	}else{
+	var period=parseInt(sanitizer.sanitize(req.body.AutoComfirmToBorrowMsgPeriod.trim()));
+	lend.AutoComfirmToBorrowMsgPeriod=period;
+	if(period>0){
+		var sorter=sanitizer.sanitize(req.body.AutoComfirmToBorrowMsgSorter.trim());
+		var lbound=sanitizer.sanitize(req.body.AutoComfirmToBorrowMsgLbound.trim());
+		var ubound=sanitizer.sanitize(req.body.AutoComfirmToBorrowMsgUbound.trim());
+		var rtnJSON=luMaker(sorter,lbound,ubound);
+		lend.AutoComfirmToBorrowMsgSorter=sorter;
 		lend.AutoComfirmToBorrowMsgDirector=sanitizer.sanitize(req.body.AutoComfirmToBorrowMsgDirector.trim());
+		lend.AutoComfirmToBorrowMsgClassor=sanitizer.sanitize(req.body.AutoComfirmToBorrowMsgClassor.trim());
+		lend.AutoComfirmToBorrowMsgKeyWord=sanitizer.sanitize(req.body.AutoComfirmToBorrowMsgKeyWord.trim());
+		lend.AutoComfirmToBorrowMsgLbound=rtnJSON.lboundSave;
+		lend.AutoComfirmToBorrowMsgUbound=rtnJSON.uboundSave;
+		
+	}else{
+		lend.AutoComfirmToBorrowMsgSorter='invalid';
+		lend.AutoComfirmToBorrowMsgDirector='invalid';
+		lend.AutoComfirmToBorrowMsgClassor='invalid';
+		lend.AutoComfirmToBorrowMsgKeyWord='';
+		lend.AutoComfirmToBorrowMsgLbound=-1;
+		lend.AutoComfirmToBorrowMsgUbound=-1;
 	}
+	
 	lend.Updated = Date.now();
 	
 	lend.save(function (err,newUpdate) {
@@ -365,126 +465,7 @@ function updatePart(res,req,lend){
 			console.log(err);
 			res.redirect('/message?content='+encodeURIComponent('更新失敗!'));
 		}else{
-			var ctr=-1;
-			for(i=0;i<library.autoComfirmToBorrowMsgArray.length;i++){
-				if(((req.user._id==library.autoComfirmToBorrowMsgArray[i].CreatedBy)||(library.adminID.equals(library.autoComfirmToBorrowMsgArray[i].CreatedBy)))&&(library.autoComfirmToBorrowMsgArray[i].LendID.equals(newUpdate._id))){
-					ctr=i;
-					break;
-				}
-			}
-			if(ctr>-1){
-				clearInterval(library.autoComfirmToBorrowMsgArray[ctr].CommandID);
-				library.autoComfirmToBorrowMsgArray.splice(ctr,1);
-			}
-			
-			if(newUpdate.AutoComfirmToBorrowMsgPeriod>0){
-				var toSaveID=setInterval( function() { autoConfirm(req,res,newUpdate.AutoComfirmToBorrowMsgSorter,newUpdate.AutoComfirmToBorrowMsgDirector,newUpdate._id); }, 86400000*newUpdate.AutoComfirmToBorrowMsgPeriod);
-				var toSaveJSON={CreatedBy:req.user._id,CommandID:toSaveID,LendID:newUpdate._id};
-				library.autoComfirmToBorrowMsgArray.push(toSaveJSON);
-			}
 			res.redirect('/lender/lend');
-		}
-	});
-}
-
-function autoConfirm(req,res,sorter,director,lendID){
-	var sorterRec=null;
-	
-	if((director!='minus')&&(director!='plus')){
-		director='minus';
-	}
-	
-	if((sorter=='SpecialA')||(sorter=='SpecialB')||(sorter=='SpecialC')||(sorter=='SpecialD')||(sorter=='SpecialE')){
-		sorterRec=library.directorDivider(director,'Updated',false);
-	}else{
-		if((sorter!='InterestRate')&&(sorter!='MoneyToLend')&&(sorter!='MonthPeriod')&&(sorter!='Level')&&(sorter!='Updated')&&(sorter!='Created')){
-			sorter='InterestRate';
-		}
-		sorterRec=library.directorDivider(director,sorter,false);
-	}
-	
-	Lends.findById(lendID).exec(function (err, lend){
-		if (err) {
-			console.log(err);
-		}else{
-			if(lend){
-				if(lend.MaxMoneyToLend>0){
-					Messages.find({$and:[{"SendTo": lend.CreatedBy},{"Type": "toBorrow"},{"Status": "NotConfirmed"}]}).sort(sorterRec).exec(function (err, messages){
-						if (err) {
-							console.log(err);
-						}else{
-							if(messages.length>0){
-								if((sorter=='SpecialA')||(sorter=='SpecialB')||(sorter=='SpecialC')||(sorter=='SpecialD')||(sorter=='SpecialE')){
-									for(i=0;i<messages.length;i++){
-										library.messageProcessor(messages[i]);
-									}
-									
-									if(sorter=='SpecialA'){
-										if(director=='minus'){
-											messages.sort(function(a,b) { return parseInt(b.InterestInFuture) - parseInt(a.InterestInFuture)} );
-										}else if(director=='plus'){
-											messages.sort(function(a,b) { return parseInt(a.InterestInFuture) - parseInt(b.InterestInFuture)} );
-										}
-									}else if(sorter=='SpecialB'){
-										if(director=='minus'){
-											messages.sort(function(a,b) { return parseInt(b.MoneyFuture) - parseInt(a.MoneyFuture)} );
-										}else if(director=='plus'){
-											messages.sort(function(a,b) { return parseInt(a.MoneyFuture) - parseInt(b.MoneyFuture)} );
-										}
-									}else if(sorter=='SpecialC'){
-										if(director=='minus'){
-											messages.sort(function(a,b) { return parseInt(b.InterestInFutureMonth) - parseInt(a.InterestInFutureMonth)} );
-										}else if(director=='plus'){
-											messages.sort(function(a,b) { return parseInt(a.InterestInFutureMonth) - parseInt(b.InterestInFutureMonth)} );
-										}
-									}else if(sorter=='SpecialD'){
-										if(director=='minus'){
-											messages.sort(function(a,b) { return parseInt(b.InterestInFutureMoneyMonth) - parseInt(a.InterestInFutureMoneyMonth)} );
-										}else if(director=='plus'){
-											messages.sort(function(a,b) { return parseInt(a.InterestInFutureMoneyMonth) - parseInt(b.InterestInFutureMoneyMonth)} );
-										}
-									}else if(sorter=='SpecialE'){
-										if(director=='minus'){
-											messages.sort(function(a,b) { return parseFloat(b.InterestInFutureDivMoney) - parseFloat(a.InterestInFutureDivMoney)} );
-										}else if(director=='plus'){
-											messages.sort(function(a,b) { return parseFloat(a.InterestInFutureDivMoney) - parseFloat(b.InterestInFutureDivMoney)} );
-										}
-									}
-								}
-								
-								var arrayOp=[];
-								for(i=0;i<messages.length;i++){
-									var temp={FromBorrowRequest:messages[i].FromBorrowRequest,MessageID:messages[i]._id};
-									arrayOp.push(temp);
-								}
-								console.log(arrayOp);
-								var newReq={};
-								newReq['body']={};
-								newReq['user']={};
-								newReq['headers']={};
-								newReq.body.array=arrayOp;
-								newReq.user._id=req.user._id;
-								newReq.headers.host=req.headers.host;
-								
-								var infoJson={counter1:newReq.body.array.length,counter2:0,info1:0,info2:0,info3:0,info4:0,info5:0};
-								library.confirmToBorrowMessage(true,0,newReq.body.array.length,null,newReq,res,true,'/',true,infoJson);
-							}
-						}
-					});
-				}
-			}else{
-				var ctr=-1;
-				for(j=0;j<library.autoComfirmToBorrowMsgArray.length;j++){
-					if(library.autoComfirmToBorrowMsgArray[j].LendID.equals(lendID)){
-						ctr=j;
-						break;
-					}
-				}
-				if(ctr>-1){
-					clearInterval(library.autoComfirmToBorrowMsgArray[ctr].CommandID);
-					library.autoComfirmToBorrowMsgArray.splice(ctr,1);
-				}
-			}
 		}
 	});
 }
@@ -540,17 +521,6 @@ router.post('/destroy',library.loginFormChecker, library.ensureAuthenticated, fu
 							console.log(err);
 							res.redirect('/message?content='+encodeURIComponent('刪除失敗!'));
 						}else{
-							var ctr=-1;
-							for(i=0;i<library.autoComfirmToBorrowMsgArray.length;i++){
-								if(((req.user._id==library.autoComfirmToBorrowMsgArray[i].CreatedBy)||(library.adminID.equals(library.autoComfirmToBorrowMsgArray[i].CreatedBy)))&&(library.autoComfirmToBorrowMsgArray[i].LendID.equals(removedItem._id))){
-									ctr=i;
-									break;
-								}
-							}
-							if(ctr>-1){
-								clearInterval(library.autoComfirmToBorrowMsgArray[ctr].CommandID);
-								library.autoComfirmToBorrowMsgArray.splice(ctr,1);
-							}
 							res.redirect('/lender/lend');
 						}
 					});
@@ -559,44 +529,6 @@ router.post('/destroy',library.loginFormChecker, library.ensureAuthenticated, fu
 		}
 	});
 });
-
-router.post('/autoRestarter',library.loginFormChecker, library.ensureAuthenticated,library.ensureAdmin, function(req, res, next) {
-	for(j=0;j<library.autoComfirmToBorrowMsgArray.length;j++){
-		clearInterval(library.autoComfirmToBorrowMsgArray[j].CommandID);
-	}
-	library.autoComfirmToBorrowMsgArray=[];
-	
-	Lends.find({}).exec(function (err,lend){
-		if (err) {
-			console.log(err);
-			res.redirect('/message?content='+encodeURIComponent('失敗!'));
-		}else{
-			autoRestarterRecursive(0,lend.length,lend,req,res);
-		}
-	});
-});
-
-function autoRestarterRecursive(ctr,ctrTarget,array,req,res){
-	var localCtr=ctr;
-	var timer;
-	if(localCtr==0){
-		timer=0;
-	}else{
-		timer=600000;
-	}
-	setTimeout(function(){
-		var toSaveID=setInterval( function() { autoConfirm(req,res,array[localCtr].AutoComfirmToBorrowMsgSorter,array[localCtr].AutoComfirmToBorrowMsgDirector,array[localCtr]._id); }, 86400000*array[localCtr].AutoComfirmToBorrowMsgPeriod);
-		var toSaveJSON={CreatedBy:array[localCtr].CreatedBy,CommandID:toSaveID,LendID:array[localCtr]._id};
-		library.autoComfirmToBorrowMsgArray.push(toSaveJSON);
-	}, timer);
-	
-	ctr++;
-	if(ctr<ctrTarget){
-		autoRestarterRecursive(ctr,ctrTarget,array,req,res);
-	}else{
-		res.redirect('/message?content='+encodeURIComponent('已逐步重啟!'));
-	}
-}
 
 router.post('/changer',library.loginFormChecker, library.ensureAuthenticated, function(req, res, next) {
 	Lends.findById(sanitizer.sanitize(req.body.TargetID.trim())).exec(function (err,lend){
