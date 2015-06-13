@@ -205,20 +205,50 @@ app.get('/signupTest',library.loginFormChecker,library.newMsgChecker, function (
 
 
 app.get('/autoConfirmPage',library.loginFormChecker,library.ensureAuthenticated,library.newMsgChecker,library.ensureAdmin, function (req, res) {
-    res.render('autoConfirmPage',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username});
+    var ifEnable=false;
+	if(library.autoConfirmArray.length>0){
+		ifEnable=true;
+	}
+	var msgArray=req.flash('autoFlash');
+	var message=null;
+	if(msgArray.length>0){
+		message=msgArray[0];
+	}
+	res.render('autoConfirmPage',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,ifE:ifEnable,msg:message});
 });
 
-app.post('/autoConfirmPost', function (req, res) {
-	setInterval(function(){
-		library.autoWorker(1,req,res);
-	},86400000);
-	setInterval(function(){
-		library.autoWorker(2,req,res);
-	},86400000*2);
-	setInterval(function(){
-		library.autoWorker(3,req,res);
-	},86400000*3);
-	res.redirect('/message?content='+encodeURIComponent('已啟動!'));
+app.post('/autoConfirmPost',library.loginFormChecker,library.ensureAuthenticated,library.newMsgChecker,library.ensureAdmin, function (req, res) {
+	if(library.autoConfirmArray.length==0){
+		var eid1=setInterval(function(){
+			library.autoWorker(1,req,res);
+		},86400000);
+		library.autoConfirmArray.push(eid1);
+		var eid2=setInterval(function(){
+			library.autoWorker(2,req,res);
+		},86400000*2);
+		library.autoConfirmArray.push(eid2);
+		var eid3=setInterval(function(){
+			library.autoWorker(3,req,res);
+		},86400000*3);
+		library.autoConfirmArray.push(eid3);
+		req.flash('autoFlash','已啟動!');
+		res.redirect('/autoConfirmPage');
+	}else{
+		res.redirect('/autoConfirmPage');
+	}
+});
+
+app.post('/disableAutoConfirmPost',library.loginFormChecker,library.ensureAuthenticated,library.newMsgChecker,library.ensureAdmin, function (req, res) {
+	if(library.autoConfirmArray.length>0){
+		for(i=0;i<library.autoConfirmArray.length;i++){
+			clearInterval(library.autoConfirmArray[i]);
+		}
+		library.autoConfirmArray=[];
+		req.flash('autoFlash','已關閉!');
+		res.redirect('/autoConfirmPage');
+	}else{
+		res.redirect('/autoConfirmPage');
+	}
 });
 
 app.get('/test', function (req, res) {
@@ -229,6 +259,11 @@ app.get('/test', function (req, res) {
 app.get('/test2', function (req, res) {
 	console.log(library.formIdfrArray);
 	res.json(library.formIdfrArray);
+});
+
+app.get('/test3', function (req, res) {
+	console.log(library.autoConfirmArray);
+	res.json(library.autoConfirmArray);
 });
 
 
@@ -328,7 +363,7 @@ function routeChecker(req){
 	var subString=stringArray[stringArray.length-1];
 	var subStringArray=subString.split('?');
 	var target=subStringArray[0];
-	if((target=='message')||(target=='borrowCreate')||(target=='readable')||(target=='buyInsurance')||(target=='buyInsuranceAll')||(target=='rejectToBorrowMessageInStory')||(target=='confirmToBorrowMessageInStory')||(target=='rejectToBorrowMessageInLRM')||(target=='confirmToBorrowMessageInLRM')||(target=='rejectToBorrowMessageInLRMall')||(target=='confirmToBorrowMessageInLRMall')||(target=='toLendCreate')||(target=='toLendUpdate')||(target=='destroy')||(target=='create')||(target=='update')||(target=='changeData')||(target=='changePW')||(target=='deleteToLendMessageInLRMall')||(target=='buyInsuranceAll')||(target=='rejectToBorrowMessageInLRMall')||(target=='confirmToBorrowMessageInLRMall')||(target=='autoConfirmPost')){
+	if((target=='message')||(target=='borrowCreate')||(target=='readable')||(target=='buyInsurance')||(target=='buyInsuranceAll')||(target=='rejectToBorrowMessageInStory')||(target=='confirmToBorrowMessageInStory')||(target=='rejectToBorrowMessageInLRM')||(target=='confirmToBorrowMessageInLRM')||(target=='rejectToBorrowMessageInLRMall')||(target=='confirmToBorrowMessageInLRMall')||(target=='toLendCreate')||(target=='toLendUpdate')||(target=='destroy')||(target=='create')||(target=='update')||(target=='changeData')||(target=='changePW')||(target=='deleteToLendMessageInLRMall')||(target=='buyInsuranceAll')||(target=='rejectToBorrowMessageInLRMall')||(target=='confirmToBorrowMessageInLRMall')||(target=='autoConfirmPost')||(target=='disableAutoConfirmPost')){
 		return false;
 	}else{
 		return true;
