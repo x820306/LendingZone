@@ -85,58 +85,53 @@ router.post('/destroyTest', function(req, res, next) {
 	library.userDeleter(res,uid,function(){},function(){res.end('error');},false);
 });
 
-router.get('/find/:id?', function(req, res, next) {
-	Users.findById(req.query.id).exec(function (err, user){
-		if (err) {
-			console.log(err);
-			res.json({error: err.name}, 500);
-		}else{
-			if(!user){
-				res.redirect('/');
-			}else{
-				res.json(user);
-			}
-		}
-	});
-});
-
-router.get('/IdCard/:id?', function(req, res, next) {
+router.get('/IdCard/:id?',library.ensureAuthenticated, function(req, res, next) {
 	if(typeof(req.query.id) !== "undefined"){
-		Users.findById(req.query.id).exec(function (err, user){
+		var uid=req.query.id;
+		Users.findById(uid).exec(function (err, user){
 			if (err) {
 				console.log(err);
-				res.json({error: err.name}, 500);
+				res.redirect('/images/icon.png');
 			}else{
 				if(user){
-					res.setHeader('content-type', user.IdCardType);
-					res.end(user.IdCard, "binary");
+					if((req.user._id==library.adminID)||(req.user._id==uid)){
+						res.setHeader('content-type', user.IdCardType);
+						res.end(user.IdCard, "binary");
+					}else{
+						res.redirect('/images/icon.png');
+					}
 				}else{
-					res.redirect('/');
+					res.redirect('/images/icon.png');
 				}
 			}
 		});
 	}else{
-		res.redirect('/');
+		res.redirect('/images/icon.png');
 	}
 });
 
-router.get('/SecondCard/:id?', function(req, res, next) {
+router.get('/SecondCard/:id?',library.ensureAuthenticated, function(req, res, next) {
 	if(typeof(req.query.id) !== "undefined"){
-		Users.findById(req.query.id).exec(function (err, user){
+		var uid=req.query.id;
+		Users.findById(uid).exec(function (err, user){
 			if (err) {
 				console.log(err);
-				res.json({error: err.name}, 500);
+				res.redirect('/images/icon.png');
 			}else{
 				if(user){
-					res.setHeader('content-type', user.SecondCardType);
-					res.end(user.SecondCard, "binary");
+					if((req.user._id==library.adminID)||(req.user._id==uid)){
+						res.setHeader('content-type', user.SecondCardType);
+						res.end(user.SecondCard, "binary");
+					}else{
+						res.redirect('/images/icon.png');
+					}
 				}else{
-					res.redirect('/');
+					res.redirect('/images/icon.png');
 				}
 			}
 		});
 	}else{
-		res.redirect('/');
+		res.redirect('/images/icon.png');
 	}
 });
 

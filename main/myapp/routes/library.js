@@ -255,14 +255,14 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 										var authResult=true;
 										
 										if(ifLenderSide){
-											if((req.user._id!=message.SendTo._id)&&(req.user._id!=exports.adminID)){
+											if(req.user._id!=message.SendTo._id){
 												if(!ifAuto){
 													authResult=false;
 													res.redirect('/message?content='+encodeURIComponent('認證錯誤!'));
 												}
 											}
 										}else{
-											if((req.user._id!=message.CreatedBy._id)&&(req.user._id!=exports.adminID)){
+											if(req.user._id!=message.CreatedBy._id){
 												if(!ifAuto){
 													authResult=false;
 													res.redirect('/message?content='+encodeURIComponent('認證錯誤!'));
@@ -927,7 +927,7 @@ exports.rejectMessage=function (ifRecursive,ctr,ctrTarget,returnSring,req,res,if
 						}
 					}
 				}else{
-					if((req.user._id!=message.SendTo._id)&&(req.user._id!=exports.adminID)){
+					if(req.user._id!=message.SendTo._id){
 						if(!ifAuto){
 							res.redirect('/message?content='+encodeURIComponent('認證錯誤!'));
 						}
@@ -1701,7 +1701,7 @@ function autoConfirm(req,res,lend){
 								newReq['user']={};
 								newReq['headers']={};
 								newReq.body.array=arrayOp;
-								newReq.user._id=req.user._id;
+								newReq.user._id=lend.CreatedBy.toString();
 								newReq.headers.host=req.headers.host;
 								
 								var infoJson={counter1:newReq.body.array.length,counter2:0,info1:0,info2:0,info3:0,info4:0,info5:0};
