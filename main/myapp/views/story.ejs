@@ -176,14 +176,14 @@
 					</div>
 					<div class="input-group my_discussion_ipt">
 						<%if(userName===null){ %>
-							<textarea style="height:35px;" placeholder="留言...Enter送出，Shift+Enter換行" class="form-control" onkeypress="if(event.keyCode==13){if(!event.shiftKey){$('#myModal').modal('show');}}"></textarea>
+							<textarea style="height:35px;" placeholder="留言...Enter送出，Shift+Enter換行" class="form-control" onkeypress="if(event.keyCode==13){if(!event.shiftKey){$('#myModal').modal('show');return false;}}"></textarea>
 							<span class="input-group-btn">
 								<button style="height:35px;" class="btn btn-default" type="button" id="sendButton" data-toggle="modal" data-target="#myModal">
 									<span class="glyphicon glyphicon-comment myTitle2"></span>
 								</button>
 							</span>
 						<% }else{ %>
-							<textarea id="iptCtr" style="height:35px;" placeholder="留言...Enter送出，Shift+Enter換行" class="form-control" onkeypress="if(event.keyCode==13){if(!event.shiftKey){sendComment();}}"></textarea>
+							<textarea id="iptCtr" style="height:35px;" placeholder="留言...Enter送出，Shift+Enter換行" class="form-control" onkeypress="if(event.keyCode==13){if(!event.shiftKey){sendComment();return false;}}"></textarea>
 							<span class="input-group-btn">
 								<button style="height:35px;" onclick="sendComment();" class="btn btn-default" type="button" id="sendButton">
 									<span class="glyphicon glyphicon-comment myTitle2"></span>
@@ -1239,7 +1239,7 @@
 		}
 		
 		function endRenderComments(){
-			$('#iptCtr').attr('onkeypress','if(event.keyCode==13){if(!event.shiftKey){sendComment();}}');
+			$('#iptCtr').attr('onkeypress','if(event.keyCode==13){if(!event.shiftKey){sendComment();return false;}}');
 			$('#iptCtr').removeAttr("readonly");
 			$('#sendButton').removeClass('disabled');
 			$(".actionTa").each(function() {
@@ -1306,7 +1306,7 @@
 		}
 		
 		function startEdit(index){
-			$('#cntIptDiv'+index).html('<textarea id="actionTa'+index+'" class="actionTa form-control" style="display:inline;width:70%;height:35px;" placeholder="ESC鍵可取消編輯" onkeypress="if(event.keyCode==13){if(!event.shiftKey){editComment('+index+');}}" onkeyup="if(event.keyCode==27){endEdit('+index+');}">'+$('#hdIpt2'+index).val().replace(/&quot;/g,'"').replace(/&gt;/g,'>').replace(/&lt;/g,'<').replace(/&amp;/g,'&')+'</textarea>');
+			$('#cntIptDiv'+index).html('<textarea id="actionTa'+index+'" class="actionTa form-control" style="display:inline;width:70%;height:35px;" placeholder="ESC鍵可取消編輯" onkeypress="if(event.keyCode==13){if(!event.shiftKey){editComment('+index+');return false;}}" onkeyup="if(event.keyCode==27){endEdit('+index+');}">'+$('#hdIpt2'+index).val().replace(/&quot;/g,'"').replace(/&gt;/g,'>').replace(/&lt;/g,'<').replace(/&amp;/g,'&')+'</textarea>');
 		}
 		
 		function endEdit(index){
