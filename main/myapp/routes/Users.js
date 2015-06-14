@@ -151,7 +151,7 @@ router.post('/originalLevelSetter', function(req, res, next) {
 		res.end('end');
 	});*/
 	
-	/*Returns.update({},{$unset: {Level: 1 }},{multi:true}, function(err, numberAffected){  
+	/*Borrows.update({},{$unset: {LikeNumber: 1 }},{multi:true}, function(err, numberAffected){  
 		console.log(numberAffected);
 		res.end('end');
 	});*/

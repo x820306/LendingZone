@@ -126,16 +126,16 @@
 				<tr>
 					<td>
 						<%if((sorterDefault=='建立日期')||(sorterDefault=='更新日期')||(sorterDefault=='收款前上次成功收款日期')||(sorterDefault=='收款前下次應收款日期')||(sorterDefault=='收款後上次成功收款日期')||(sorterDefault=='收款後下次應收款日期')){%>
-							<input type="date" placeholder="下限(yyyy/mm/dd)" class="form-control boundIpt" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode==13){linker();}">
-							&nbsp;~&nbsp;
-							<input type="date" placeholder="上限(yyyy/mm/dd)" class="form-control boundIpt" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode==13){linker();}">
+							<input type="date" placeholder="下限(年/月/日)" class="form-control boundIpt" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode==13){linker();}">&nbsp;&nbsp;<span style="display:inline;" id='lbd'></span>
+							&nbsp;&nbsp;~&nbsp;&nbsp;
+							<input type="date" placeholder="上限(年/月/日)" class="form-control boundIpt" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode==13){linker();}">&nbsp;&nbsp;<span style="display:inline;" id='ubd'></span>
 						<%}else{%>
-							<input type="text" placeholder="下限(元/%/個月/級/筆)" class="form-control boundIpt" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode==13){linker();}">
-							&nbsp;~&nbsp;
-							<input type="text" placeholder="上限(元/%/個月/級/筆)" class="form-control boundIpt" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode==13){linker();}">
+							<input type="text" placeholder="下限" class="form-control boundIpt" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode==13){linker();}">&nbsp;&nbsp;<span style="display:inline;" id='lbd'></span>
+							&nbsp;&nbsp;~&nbsp;&nbsp;
+							<input type="text" placeholder="上限" class="form-control boundIpt" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode==13){linker();}">&nbsp;&nbsp;<span style="display:inline;" id='ubd'></span>
 						<%}%>
 					</td>
-					<%if((oneidDefault!=='')&&(totalResultNum>0)){%>
+					<%if((oneidDefault!=='')&&(totalResultNum>0)&&(!oflg)){%>
 						<td align="right">
 							<button class="btn btn-default disabled" style="display:inline;" id="highlightBtn" onclick="enableHighlight();">
 								關鍵字上色
@@ -449,7 +449,7 @@
 									<tr>
 										<td>
 											<div>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].InterestMonthBeforePaid.toFixed(0)%>元
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].InterestMonthBeforePaid.toFixed(0)%>元/月
 											</div>	
 										</td>
 									</tr>
@@ -463,7 +463,7 @@
 									<tr>
 										<td>
 											<div>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].PrincipalInterestMonthBeforePaid.toFixed(0)%>元
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].PrincipalInterestMonthBeforePaid.toFixed(0)%>元/月
 											</div>	
 										</td>
 									</tr>
@@ -481,7 +481,7 @@
 									<tr>
 										<td>
 											<div>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].InterestDivPrincipalBeforePaid.toFixed(2)%>%
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=(jsonReturns[i].InterestDivPrincipalBeforePaid*100).toFixed(2)%>%
 											</div>	
 										</td>
 									</tr>
@@ -583,7 +583,7 @@
 									<tr>
 										<td>
 											<div>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].InterestInFutureMonthBeforePaid.toFixed(0)%>元
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].InterestInFutureMonthBeforePaid.toFixed(0)%>元/月
 											</div>	
 										</td>
 									</tr>
@@ -597,7 +597,7 @@
 									<tr>
 										<td>
 											<div>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].InterestInFutureMoneyMonthBeforePaid.toFixed(0)%>元
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].InterestInFutureMoneyMonthBeforePaid.toFixed(0)%>元/月
 											</div>	
 										</td>
 									</tr>
@@ -611,7 +611,7 @@
 									<tr>
 										<td>
 											<div>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].InterestInFutureDivMoneyBeforePaid.toFixed(2)%>%
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=(jsonReturns[i].InterestInFutureDivMoneyBeforePaid*100).toFixed(2)%>%
 											</div>	
 										</td>
 									</tr>
@@ -771,7 +771,7 @@
 									<tr>
 										<td>
 											<div>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].InterestMonthAfterPaid.toFixed(0)%>元
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].InterestMonthAfterPaid.toFixed(0)%>元/月
 											</div>	
 										</td>
 									</tr>
@@ -785,7 +785,7 @@
 									<tr>
 										<td>
 											<div>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].PrincipalInterestMonthAfterPaid.toFixed(0)%>元
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].PrincipalInterestMonthAfterPaid.toFixed(0)%>元/月
 											</div>	
 										</td>
 									</tr>
@@ -803,7 +803,7 @@
 									<tr>
 										<td>
 											<div>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].InterestDivPrincipalAfterPaid.toFixed(2)%>%
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=(jsonReturns[i].InterestDivPrincipalAfterPaid*100).toFixed(2)%>%
 											</div>	
 										</td>
 									</tr>
@@ -905,7 +905,7 @@
 									<tr>
 										<td>
 											<div>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].InterestInFutureMonthAfterPaid.toFixed(0)%>元
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].InterestInFutureMonthAfterPaid.toFixed(0)%>元/月
 											</div>	
 										</td>
 									</tr>
@@ -919,7 +919,7 @@
 									<tr>
 										<td>
 											<div>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].InterestInFutureMoneyMonthAfterPaid.toFixed(0)%>元
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].InterestInFutureMoneyMonthAfterPaid.toFixed(0)%>元/月
 											</div>	
 										</td>
 									</tr>
@@ -933,7 +933,7 @@
 									<tr>
 										<td>
 											<div>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].InterestInFutureDivMoneyAfterPaid.toFixed(2)%>%
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=(jsonReturns[i].InterestInFutureDivMoneyAfterPaid*100).toFixed(2)%>%
 											</div>	
 										</td>
 									</tr>
@@ -1137,6 +1137,7 @@
 			$('#slis'+i).attr('class','');
 		}
 		$('#slis'+index).attr('class','active');
+		spanner($('#sorter0').text());
 	}
 	
 	function directorSelector(index){
@@ -1159,8 +1160,8 @@
 		if(!ifDater){
 			$('#lbound').attr('type','date');
 			$('#ubound').attr('type','date');
-			$('#lbound').attr('placeholder','下限(yyyy/mm/dd)');
-			$('#ubound').attr('placeholder','上限(yyyy/mm/dd)');
+			$('#lbound').attr('placeholder','下限(年/月/日)');
+			$('#ubound').attr('placeholder','上限(年/月/日)');
 			ifDater=true;
 		}
 	}
@@ -1169,8 +1170,8 @@
 		if(ifDater){
 			$('#lbound').attr('type','text');
 			$('#ubound').attr('type','text');
-			$('#lbound').attr('placeholder','下限(元/%/個月/級/筆)');
-			$('#ubound').attr('placeholder','上限(元/%/個月/級/筆)');
+			$('#lbound').attr('placeholder','下限');
+			$('#ubound').attr('placeholder','上限');
 			ifDater=false;
 		}
 	}
@@ -1188,7 +1189,7 @@
 		var myCtr2MaxPoint;
 		var myCtr3MaxPoint;
 		
-		var stringPro='<%=oneidDefault%>';
+		var stringPro='<%if(!oflg){%><%=oneidDefault%><%}%>';
 		var highLightFlag=false;
 		var stringArray;
 		function enableHighlight(){
@@ -1244,6 +1245,30 @@
 				}
 			}
 		}
+		function spanner(tgtString){
+			if((tgtString=='建立日期')||(tgtString=='更新日期')||(tgtString=='收款前上次成功收款日期')||(tgtString=='收款前下次應收款日期')||(tgtString=='收款後上次成功收款日期')||(tgtString=='收款後下次應收款日期')){
+				$('#lbd').html('');
+				$('#ubd').html('');
+			}else if((tgtString=='收款前額外期數')||(tgtString=='收款前總期數')||(tgtString=='收款前剩下期數')||(tgtString=='收款前已過期數')||(tgtString=='收款後額外期數')||(tgtString=='收款後總期數')||(tgtString=='收款後剩下期數')||(tgtString=='收款後已過期數')){
+				$('#lbd').html('個月');
+				$('#ubd').html('個月');
+			}else if((tgtString=='收款前已得利本比')||(tgtString=='收款前預計剩餘利本比')||(tgtString=='收款後已得利本比')||(tgtString=='收款後預計剩餘利本比')){
+				$('#lbd').html('%');
+				$('#ubd').html('%');
+			}else if((tgtString=='信用等級')||(tgtString=='收款前信用等級')||(tgtString=='收款後信用等級')){
+				$('#lbd').html('級');
+				$('#ubd').html('級');
+			}else if((tgtString=='收款前收款次數')||(tgtString=='收款後收款次數')){
+				$('#lbd').html('次');
+				$('#ubd').html('次');
+			}else if((tgtString=='收款前已得平均利息')||(tgtString=='收款前已得平均本利和')||(tgtString=='收款前預計剩餘平均利息')||(tgtString=='收款前預計剩餘平均本利和')||(tgtString=='收款後已得平均利息')||(tgtString=='收款後已得平均本利和')||(tgtString=='收款後預計剩餘平均利息')||(tgtString=='收款後預計剩餘平均本利和')){
+				$('#lbd').html('元/月');
+				$('#ubd').html('元/月');
+			}else{
+				$('#lbd').html('元');
+				$('#ubd').html('元');
+			}
+		}
 		$(document).ready(function(){
 			<%if(sorterDefault.search(/收款前/)>-1){%>
 				piller(2);
@@ -1262,6 +1287,7 @@
 			$('.myCtr2').click(function(){setTimeout(checkPoint,250);});
 			$('.myCtr3').click(function(){setTimeout(checkPoint,250);});
 			
+			spanner('<%=sorterDefault%>');
 			if(stringPro!==''){
 				stringPro=stringPro.replace(/\s\s+/g,' ');
 				stringArray=stringPro.split(' ');

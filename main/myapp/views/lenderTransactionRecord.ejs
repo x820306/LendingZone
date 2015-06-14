@@ -97,16 +97,16 @@
 					<tr>
 						<td>
 							<%if((sorterDefault=='建立日期')||(sorterDefault=='更新日期')||(sorterDefault=='上次成功收款日期')||(sorterDefault=='下次應收款日期')){%>
-								<input type="date" placeholder="下限(yyyy/mm/dd)" class="form-control boundIpt" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode==13){linker();}">
-								&nbsp;~&nbsp;
-								<input type="date" placeholder="上限(yyyy/mm/dd)" class="form-control boundIpt" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode==13){linker();}">
+								<input type="date" placeholder="下限(年/月/日)" class="form-control boundIpt" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode==13){linker();}">&nbsp;&nbsp;<span style="display:inline;" id='lbd'></span>
+								&nbsp;&nbsp;~&nbsp;&nbsp;
+								<input type="date" placeholder="上限(年/月/日)" class="form-control boundIpt" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode==13){linker();}">&nbsp;&nbsp;<span style="display:inline;" id='ubd'></span>
 							<%}else{%>
-								<input type="text" placeholder="下限(元/%/個月/級/筆)" class="form-control boundIpt" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode==13){linker();}">
-								&nbsp;~&nbsp;
-								<input type="text" placeholder="上限(元/%/個月/級/筆)" class="form-control boundIpt" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode==13){linker();}">
+								<input type="text" placeholder="下限" class="form-control boundIpt" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode==13){linker();}">&nbsp;&nbsp;<span style="display:inline;" id='lbd'></span>
+								&nbsp;&nbsp;~&nbsp;&nbsp;
+								<input type="text" placeholder="上限" class="form-control boundIpt" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode==13){linker();}">&nbsp;&nbsp;<span style="display:inline;" id='ubd'></span>
 							<%}%>
 						</td>
-						<%if((oneidDefault!=='')&&(totalResultNum>0)){%>
+						<%if((oneidDefault!=='')&&(totalResultNum>0)&&(!oflg)){%>
 							<td align="right">
 								<button class="btn btn-default disabled" style="display:inline;" id="highlightBtn" onclick="enableHighlight();">
 									關鍵字上色
@@ -411,7 +411,7 @@
 										<tr>
 											<td>
 												<div>
-													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonTransaction[i].InterestMonth.toFixed(0)%>元
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonTransaction[i].InterestMonth.toFixed(0)%>元/月
 												</div>	
 											</td>
 										</tr>
@@ -429,7 +429,7 @@
 										<tr>
 											<td>
 												<div>
-													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonTransaction[i].PrincipalInterestMonth.toFixed(0)%>元
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonTransaction[i].PrincipalInterestMonth.toFixed(0)%>元/月
 												</div>	
 											</td>
 										</tr>
@@ -443,7 +443,7 @@
 										<tr>
 											<td>
 												<div>
-													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonTransaction[i].InterestDivPrincipal.toFixed(2)%>%
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=(jsonTransaction[i].InterestDivPrincipal*100).toFixed(2)%>%
 												</div>	
 											</td>
 										</tr>
@@ -585,7 +585,7 @@
 										<tr>
 											<td>
 												<div>
-													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonTransaction[i].InterestInFutureMonth.toFixed(0)%>元
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonTransaction[i].InterestInFutureMonth.toFixed(0)%>元/月
 												</div>	
 											</td>
 										</tr>
@@ -599,7 +599,7 @@
 										<tr>
 											<td>
 												<div>
-													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonTransaction[i].InterestInFutureMoneyMonth.toFixed(0)%>元
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonTransaction[i].InterestInFutureMoneyMonth.toFixed(0)%>元/月
 												</div>	
 											</td>
 										</tr>
@@ -613,7 +613,7 @@
 										<tr>
 											<td>
 												<div>
-													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonTransaction[i].InterestInFutureDivMoney.toFixed(2)%>%
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=(jsonTransaction[i].InterestInFutureDivMoney*100).toFixed(2)%>%
 												</div>	
 											</td>
 										</tr>
@@ -867,6 +867,7 @@ function sorterSelector(index){
 		$('#slis'+i).attr('class','');
 	}
 	$('#slis'+index).attr('class','active');
+	spanner($('#sorter0').text());
 }
 
 function directorSelector(index){
@@ -892,8 +893,8 @@ function enableDater(){
 	if(!ifDater){
 		$('#lbound').attr('type','date');
 		$('#ubound').attr('type','date');
-		$('#lbound').attr('placeholder','下限(yyyy/mm/dd)');
-		$('#ubound').attr('placeholder','上限(yyyy/mm/dd)');
+		$('#lbound').attr('placeholder','下限(年/月/日)');
+		$('#ubound').attr('placeholder','上限(年/月/日)');
 		ifDater=true;
 	}
 }
@@ -902,8 +903,8 @@ function disableDater(){
 	if(ifDater){
 		$('#lbound').attr('type','text');
 		$('#ubound').attr('type','text');
-		$('#lbound').attr('placeholder','下限(元/%/個月/級/筆)');
-		$('#ubound').attr('placeholder','上限(元/%/個月/級/筆)');
+		$('#lbound').attr('placeholder','下限');
+		$('#ubound').attr('placeholder','上限');
 		ifDater=false;
 	}
 }
@@ -914,7 +915,7 @@ function linker(){
 
 <% if(totalResultNum>0){%>
 	
-	var stringPro='<%=oneidDefault%>';
+	var stringPro='<%if(!oflg){%><%=oneidDefault%><%}%>';
 	var highLightFlag=false;
 	var stringArray;
 	function enableHighlight(){
@@ -970,6 +971,30 @@ function linker(){
 			}
 		}
 	}
+	function spanner(tgtString){
+		if((tgtString=='建立日期')||(tgtString=='更新日期')||(tgtString=='上次成功收款日期')||(tgtString=='下次應收款日期')){
+			$('#lbd').html('');
+			$('#ubd').html('');
+		}else if((tgtString=='原始期數')||(tgtString=='額外期數')||(tgtString=='目前總期數')||(tgtString=='剩下期數')||(tgtString=='已過期數')){
+			$('#lbd').html('個月');
+			$('#ubd').html('個月');
+		}else if((tgtString=='年利率')||(tgtString=='已得利本比')||(tgtString=='預計剩餘利本比')){
+			$('#lbd').html('%');
+			$('#ubd').html('%');
+		}else if(tgtString=='信用等級'){
+			$('#lbd').html('級');
+			$('#ubd').html('級');
+		}else if(tgtString=='收款次數'){
+			$('#lbd').html('次');
+			$('#ubd').html('次');
+		}else if((tgtString=='已得平均利息')||(tgtString=='已得平均本利和')||(tgtString=='預計剩餘平均利息')||(tgtString=='預計剩餘平均本利和')){
+			$('#lbd').html('元/月');
+			$('#ubd').html('元/月');
+		}else{
+			$('#lbd').html('元');
+			$('#ubd').html('元');
+		}
+	}
 	$(document).ready(function(){
 		<% if((totalResultNum>0)&&(filterDefault=='未保險')){%>
 			$("#selectAll").prop("checked", false);
@@ -978,6 +1003,7 @@ function linker(){
 			});
 		<%}%>
 		
+		spanner('<%=sorterDefault%>');
 		if(stringPro!==''){
 			stringPro=stringPro.replace(/\s\s+/g,' ');
 			stringArray=stringPro.split(' ');

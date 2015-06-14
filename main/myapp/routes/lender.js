@@ -13,6 +13,7 @@ router.get('/search/:keyword?/:category?/:messenger?/:action?/:director?/:lbound
 				auRst=req.user.Username;
 			}
 			
+			var objFlag=false;
 			var resArrays=[];
 			var action=decodeURIComponent(req.query.action);
 			var category=decodeURIComponent(req.query.category);
@@ -52,7 +53,7 @@ router.get('/search/:keyword?/:category?/:messenger?/:action?/:director?/:lbound
 			}else if(action=='信用等級'){
 				actionRecReserve='Created';
 			}else if(action=='按讚次數'){
-				actionRecReserve='LikeNumber';
+				actionRecReserve='Created';
 			}else{
 				actionRecReserve='Created';
 				action='建立日期';
@@ -218,7 +219,7 @@ router.get('/search/:keyword?/:category?/:messenger?/:action?/:director?/:lbound
 				andFindCmdAry.push({"Category": categoryRec});
 			}
 			
-			if((action!='還需要金額')&&(action!='已經借到金額')&&(action!='信用等級')){
+			if((action!='還需要金額')&&(action!='已經借到金額')&&(action!='信用等級')&&(action!='按讚次數')){
 				var jsonTemp={};
 				if((lboundRec!==null)&&(uboundRec!==null)){
 					jsonTemp[actionRecReserve]={"$gte": lboundRec, "$lte": uboundRec};
@@ -253,7 +254,7 @@ router.get('/search/:keyword?/:category?/:messenger?/:action?/:director?/:lbound
 						if(targetPage>1){
 							res.redirect('/message?content='+encodeURIComponent('錯誤頁碼!'));
 						}else{
-							res.render('search',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,keywordDefault:keyword,messengerDefault:messenger,actionDefault:action,categoryDefault:category,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,jsonArray:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage});
+							res.render('search',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,keywordDefault:keyword,messengerDefault:messenger,actionDefault:action,categoryDefault:category,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,jsonArray:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,oflg:objFlag});
 						}
 					}else{
 						var Transactions  = mongoose.model('Transactions');
@@ -278,6 +279,7 @@ router.get('/search/:keyword?/:category?/:messenger?/:action?/:director?/:lbound
 									if(keyObjID){
 										if(keyObjID.equals(borrows[j]._id)){
 											localFlag[0]=true;
+											objFlag=true;
 										}
 									}
 									
@@ -380,6 +382,7 @@ router.get('/search/:keyword?/:category?/:messenger?/:action?/:director?/:lbound
 								}
 								
 								for(i=0;i<borrows.length;i++){
+									borrows[i].LikeNumber=borrows[i].Likes.length;
 									borrows[i].Got=0;
 									for(r=0;r<borrows[i].Message.length;r++){
 										if(borrows[i].Message[r].Status=='Confirmed'){
@@ -416,6 +419,13 @@ router.get('/search/:keyword?/:category?/:messenger?/:action?/:director?/:lbound
 										borrows.sort(function(a,b) { return parseInt(a.Level) - parseInt(b.Level)} );
 									}
 									library.arrayFilter(borrows,'Level',lboundRec,uboundRec);	
+								}else if(action=='按讚次數'){
+									if(director=='大至小'){
+										borrows.sort(function(a,b) { return parseInt(b.LikeNumber) - parseInt(a.LikeNumber)} );
+									}else if(director=='小至大'){
+										borrows.sort(function(a,b) { return parseInt(a.LikeNumber) - parseInt(b.LikeNumber)} );
+									}
+									library.arrayFilter(borrows,'LikeNumber',lboundRec,uboundRec);	
 								}
 								
 								totalResultNumber=borrows.length;
@@ -424,7 +434,7 @@ router.get('/search/:keyword?/:category?/:messenger?/:action?/:director?/:lbound
 									if(targetPage>1){
 										res.redirect('/message?content='+encodeURIComponent('錯誤頁碼!'));
 									}else{
-										res.render('search',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,keywordDefault:keyword,messengerDefault:messenger,actionDefault:action,categoryDefault:category,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,jsonArray:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage});
+										res.render('search',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,keywordDefault:keyword,messengerDefault:messenger,actionDefault:action,categoryDefault:category,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,jsonArray:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,oflg:objFlag});
 									}
 								}else{
 									var divider=10;
@@ -455,7 +465,7 @@ router.get('/search/:keyword?/:category?/:messenger?/:action?/:director?/:lbound
 												}
 											}
 										}
-										res.render('search',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,keywordDefault:keyword,messengerDefault:messenger,actionDefault:action,categoryDefault:category,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,jsonArray:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage});
+										res.render('search',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,keywordDefault:keyword,messengerDefault:messenger,actionDefault:action,categoryDefault:category,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,jsonArray:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,oflg:objFlag});
 									}
 								}
 							}
@@ -514,6 +524,7 @@ router.get('/story/:id?',library.loginFormChecker,library.newMsgChecker, functio
 				if(!borrow){
 					res.redirect('/message?content='+encodeURIComponent('錯誤ID!'));
 				}else{
+					borrow.LikeNumber=borrow.Likes.length;
 					var optionsX = {
 						path: 'Message.Transaction',
 						model: Transactions,
@@ -725,7 +736,7 @@ router.get('/lend',library.loginFormChecker,library.ensureAuthenticated,library.
 									moneyLendedJson.moneyLeftToHendLend=0;
 								}
 								moneyLendedJson.maxSettingAutoLend=bankaccount.MoneyInBankAccount+moneyLendedJson.autoLendCumulated;
-								res.render('lend',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,MoneyInBankAccountValue:bankaccount.MoneyInBankAccount,MoneyLended:moneyLendedJson,jsonLend:lend,lfJSON:lendFormJson});
+								res.render('lend',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,MoneyInBankAccountValue:bankaccount.MoneyInBankAccount,MoneyLended:moneyLendedJson,jsonLend:lend,lfJSON:lendFormJson,scr:library.serviceChargeRate});
 							}
 						});
 					}
@@ -746,6 +757,7 @@ router.get('/lenderTransactionRecord/:oneid?/:filter?/:messenger?/:classor?/:sor
 				buyInsuranceJson=JSON.parse(stringArrayFlash[0]);
 			}
 			
+			var objFlag=false;
 			var resArrays=[];
 			var oneid=decodeURIComponent(req.query.oneid);
 			var sorter=decodeURIComponent(req.query.sorter);
@@ -1022,7 +1034,7 @@ router.get('/lenderTransactionRecord/:oneid?/:filter?/:messenger?/:classor?/:sor
 			var Borrows  = mongoose.model('Borrows');
 			var Messages  = mongoose.model('Messages');
 			var Transactions  = mongoose.model('Transactions');
-			Transactions.find({$and:andFindCmdAry}).populate('Borrower', 'Username Level').populate('CreatedFrom','FromBorrowRequest Type').populate('Return').sort(sorterRec).exec( function (err, transactions, count){
+			Transactions.find({$and:andFindCmdAry}).populate('Borrower', 'Username Level').populate('CreatedFrom','FromBorrowRequest Type Status').populate('Return').sort(sorterRec).exec( function (err, transactions, count){
 				if (err) {
 					console.log(err);
 					res.redirect('/message?content='+encodeURIComponent('錯誤!'));
@@ -1031,7 +1043,7 @@ router.get('/lenderTransactionRecord/:oneid?/:filter?/:messenger?/:classor?/:sor
 						if(targetPage>1){
 							res.redirect('/message?content='+encodeURIComponent('錯誤頁碼!'));
 						}else{
-							res.render('lenderTransactionRecord',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,oneidDefault:oneid,filterDefault:filter,messengerDefault:messenger,sorterDefault:sorter,classorDefault:classor,jsonTransaction:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,insuranceRate:library.insuranceRate,selectedFeeAll:selectedFeeAllIpt,biJSON:buyInsuranceJson,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound});
+							res.render('lenderTransactionRecord',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,oneidDefault:oneid,filterDefault:filter,messengerDefault:messenger,sorterDefault:sorter,classorDefault:classor,jsonTransaction:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,insuranceRate:library.insuranceRate,selectedFeeAll:selectedFeeAllIpt,biJSON:buyInsuranceJson,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,oflg:objFlag});
 						}
 					}else{
 						var options = {
@@ -1055,6 +1067,7 @@ router.get('/lenderTransactionRecord/:oneid?/:filter?/:messenger?/:classor?/:sor
 									if(ObjID){
 										if(ObjID.equals(transactions[j]._id)){
 											localFlag[0]=true;
+											objFlag=true;
 										}
 									}
 									
@@ -1287,7 +1300,7 @@ router.get('/lenderTransactionRecord/:oneid?/:filter?/:messenger?/:classor?/:sor
 									if(targetPage>1){
 										res.redirect('/message?content='+encodeURIComponent('錯誤頁碼!'));
 									}else{
-										res.render('lenderTransactionRecord',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,oneidDefault:oneid,filterDefault:filter,messengerDefault:messenger,sorterDefault:sorter,classorDefault:classor,jsonTransaction:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,insuranceRate:library.insuranceRate,selectedFeeAll:selectedFeeAllIpt,biJSON:buyInsuranceJson,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound});
+										res.render('lenderTransactionRecord',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,oneidDefault:oneid,filterDefault:filter,messengerDefault:messenger,sorterDefault:sorter,classorDefault:classor,jsonTransaction:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,insuranceRate:library.insuranceRate,selectedFeeAll:selectedFeeAllIpt,biJSON:buyInsuranceJson,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,oflg:objFlag});
 									}
 								}else{
 									for(p=0;p<totalResultNumber;p++){
@@ -1323,7 +1336,7 @@ router.get('/lenderTransactionRecord/:oneid?/:filter?/:messenger?/:classor?/:sor
 											}
 										}
 										
-										res.render('lenderTransactionRecord',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,oneidDefault:oneid,filterDefault:filter,messengerDefault:messenger,sorterDefault:sorter,classorDefault:classor,jsonTransaction:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,insuranceRate:library.insuranceRate,selectedFeeAll:selectedFeeAllIpt,biJSON:buyInsuranceJson,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound});
+										res.render('lenderTransactionRecord',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,oneidDefault:oneid,filterDefault:filter,messengerDefault:messenger,sorterDefault:sorter,classorDefault:classor,jsonTransaction:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,insuranceRate:library.insuranceRate,selectedFeeAll:selectedFeeAllIpt,biJSON:buyInsuranceJson,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,oflg:objFlag});
 									}
 								}
 							}
@@ -1343,6 +1356,7 @@ router.get('/lenderReturnRecord/:oneid?/:id?/:messenger?/:classor?/:sorter?/:dir
 	if((typeof(req.query.oneid) !== "undefined")&&(typeof(req.query.id) !== "undefined")&&(typeof(req.query.messenger) !== "undefined")&&(typeof(req.query.classor) !== "undefined")&&(typeof(req.query.sorter) !== "undefined")&&(typeof(req.query.director) !== "undefined")&&(typeof(req.query.lbound) !== "undefined")&&(typeof(req.query.ubound) !== "undefined")&&(typeof(req.query.page) !== "undefined")){
 		var targetPage=parseInt(req.query.page);
 		if(!isNaN(targetPage)){
+			var objFlag=false;
 			var resArrays=[];
 			var oneid=decodeURIComponent(req.query.oneid);
 			var id=decodeURIComponent(req.query.id);
@@ -1677,7 +1691,7 @@ router.get('/lenderReturnRecord/:oneid?/:id?/:messenger?/:classor?/:sorter?/:dir
 						if(targetPage>1){
 							res.redirect('/message?content='+encodeURIComponent('錯誤頁碼!'));
 						}else{
-							res.render('lenderReturnRecord',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,oneidDefault:oneid,idDefault:id,messengerDefault:messenger,sorterDefault:sorter,classorDefault:classor,jsonReturns:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound});
+							res.render('lenderReturnRecord',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,oneidDefault:oneid,idDefault:id,messengerDefault:messenger,sorterDefault:sorter,classorDefault:classor,jsonReturns:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,oflg:objFlag});
 						}
 					}else{
 						var options = {
@@ -1712,6 +1726,7 @@ router.get('/lenderReturnRecord/:oneid?/:id?/:messenger?/:classor?/:sorter?/:dir
 											if(ObjID){
 												if(ObjID.equals(returns[j]._id)){
 													localFlag[0]=true;
+													objFlag=true;
 												}
 											}
 											
@@ -1818,7 +1833,7 @@ router.get('/lenderReturnRecord/:oneid?/:id?/:messenger?/:classor?/:sorter?/:dir
 											if(targetPage>1){
 												res.redirect('/message?content='+encodeURIComponent('錯誤頁碼!'));
 											}else{
-												res.render('lenderReturnRecord',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,oneidDefault:oneid,idDefault:id,messengerDefault:messenger,sorterDefault:sorter,classorDefault:classor,jsonReturns:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound});
+												res.render('lenderReturnRecord',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,oneidDefault:oneid,idDefault:id,messengerDefault:messenger,sorterDefault:sorter,classorDefault:classor,jsonReturns:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,oflg:objFlag});
 											}
 										}else{
 											var divider=10;
@@ -1858,7 +1873,7 @@ router.get('/lenderReturnRecord/:oneid?/:id?/:messenger?/:classor?/:sorter?/:dir
 														for(i=0;i<resArrays.length;i++){
 															library.transactionProcessor(resArrays[i].ToTransaction,false);
 														}
-														res.render('lenderReturnRecord',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,oneidDefault:oneid,idDefault:id,messengerDefault:messenger,sorterDefault:sorter,classorDefault:classor,jsonReturns:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound});
+														res.render('lenderReturnRecord',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,oneidDefault:oneid,idDefault:id,messengerDefault:messenger,sorterDefault:sorter,classorDefault:classor,jsonReturns:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,oflg:objFlag});
 													}
 												});
 											}
@@ -1882,6 +1897,7 @@ router.get('/lendsList/:oneid?/:classOne?/:classTwo?/:sorter?/:director?/:lbound
 	if((typeof(req.query.oneid) !== "undefined")&&(typeof(req.query.classOne) !== "undefined")&&(typeof(req.query.classTwo) !== "undefined")&&(typeof(req.query.sorter) !== "undefined")&&(typeof(req.query.director) !== "undefined")&&(typeof(req.query.lbound) !== "undefined")&&(typeof(req.query.ubound) !== "undefined")&&(typeof(req.query.page) !== "undefined")){
 		var targetPage=parseInt(req.query.page);
 		if(!isNaN(targetPage)){
+			var objFlag=false;
 			var resArrays=[];
 			var oneid=decodeURIComponent(req.query.oneid);
 			var classOne=decodeURIComponent(req.query.classOne);
@@ -2115,7 +2131,7 @@ router.get('/lendsList/:oneid?/:classOne?/:classTwo?/:sorter?/:director?/:lbound
 						if(targetPage>1){
 							res.redirect('/message?content='+encodeURIComponent('錯誤頁碼!'));
 						}else{
-							res.render('lendsList',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,oneidDefault:oneid,classOneDefault:classOne,classTwoDefault:classTwo,sorterDefault:sorter,jsonLends:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,scr:library.serviceChargeRate});
+							res.render('lendsList',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,oneidDefault:oneid,classOneDefault:classOne,classTwoDefault:classTwo,sorterDefault:sorter,jsonLends:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,scr:library.serviceChargeRate,oflg:objFlag});
 						}
 					}else{			
 						for(j=lends.length-1;j>-1;j--){
@@ -2128,6 +2144,7 @@ router.get('/lendsList/:oneid?/:classOne?/:classTwo?/:sorter?/:director?/:lbound
 							if(ObjID){
 								if(ObjID.equals(lends[j]._id)){
 									localFlag[0]=true;
+									objFlag=true;
 								}
 							}
 							
@@ -2151,7 +2168,7 @@ router.get('/lendsList/:oneid?/:classOne?/:classTwo?/:sorter?/:director?/:lbound
 							if(targetPage>1){
 								res.redirect('/message?content='+encodeURIComponent('錯誤頁碼!'));
 							}else{
-								res.render('lendsList',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,oneidDefault:oneid,classOneDefault:classOne,classTwoDefault:classTwo,sorterDefault:sorter,jsonLends:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,scr:library.serviceChargeRate});
+								res.render('lendsList',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,oneidDefault:oneid,classOneDefault:classOne,classTwoDefault:classTwo,sorterDefault:sorter,jsonLends:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,scr:library.serviceChargeRate,oflg:objFlag});
 							}
 						}else{
 							var divider=10;
@@ -2170,7 +2187,7 @@ router.get('/lendsList/:oneid?/:classOne?/:classTwo?/:sorter?/:director?/:lbound
 								for(i=starter;i<ender;i++){
 									resArrays.push(lends[i]);
 								}
-								res.render('lendsList',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,oneidDefault:oneid,classOneDefault:classOne,classTwoDefault:classTwo,sorterDefault:sorter,jsonLends:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,scr:library.serviceChargeRate});
+								res.render('lendsList',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,oneidDefault:oneid,classOneDefault:classOne,classTwoDefault:classTwo,sorterDefault:sorter,jsonLends:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,scr:library.serviceChargeRate,oflg:objFlag});
 							}
 						}
 					}
@@ -2195,6 +2212,7 @@ router.get('/lenderSendMessages/:msgKeyword?/:filter?/:classor?/:sorter?/:direct
 				deleteJson=JSON.parse(stringArrayFlash[0]);
 			}
 			
+			var objFlag=false;
 			var resArrays=[];
 			var msgKeyword=decodeURIComponent(req.query.msgKeyword);
 			var filter=decodeURIComponent(req.query.filter);
@@ -2415,7 +2433,7 @@ router.get('/lenderSendMessages/:msgKeyword?/:filter?/:classor?/:sorter?/:direct
 						if(targetPage>1){
 							res.redirect('/message?content='+encodeURIComponent('錯誤頁碼!'));
 						}else{
-							res.render('lenderSendMessages',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,msgKeywordDefault:msgKeyword,filterDefault:filter,sorterDefault:sorter,classorDefault:classor,jsonMessage:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,insuranceRate:library.insuranceRate,delJSON:deleteJson,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound});
+							res.render('lenderSendMessages',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,msgKeywordDefault:msgKeyword,filterDefault:filter,sorterDefault:sorter,classorDefault:classor,jsonMessage:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,insuranceRate:library.insuranceRate,delJSON:deleteJson,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,oflg:objFlag});
 						}
 					}else{
 						var options = {
@@ -2438,6 +2456,7 @@ router.get('/lenderSendMessages/:msgKeyword?/:filter?/:classor?/:sorter?/:direct
 									if(msgObjID){
 										if(msgObjID.equals(messages[j]._id)){
 											localFlag[0]=true;
+											objFlag=true;
 										}
 									}
 									
@@ -2522,7 +2541,7 @@ router.get('/lenderSendMessages/:msgKeyword?/:filter?/:classor?/:sorter?/:direct
 									if(targetPage>1){
 										res.redirect('/message?content='+encodeURIComponent('錯誤頁碼!'));
 									}else{
-										res.render('lenderSendMessages',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,msgKeywordDefault:msgKeyword,filterDefault:filter,sorterDefault:sorter,classorDefault:classor,jsonMessage:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,insuranceRate:library.insuranceRate,delJSON:deleteJson,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound});
+										res.render('lenderSendMessages',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,msgKeywordDefault:msgKeyword,filterDefault:filter,sorterDefault:sorter,classorDefault:classor,jsonMessage:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,insuranceRate:library.insuranceRate,delJSON:deleteJson,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,oflg:objFlag});
 									}
 								}else{
 									var divider=10;
@@ -2552,7 +2571,7 @@ router.get('/lenderSendMessages/:msgKeyword?/:filter?/:classor?/:sorter?/:direct
 											}
 										}
 										
-										res.render('lenderSendMessages',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,msgKeywordDefault:msgKeyword,filterDefault:filter,sorterDefault:sorter,classorDefault:classor,jsonMessage:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,insuranceRate:library.insuranceRate,delJSON:deleteJson,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound});
+										res.render('lenderSendMessages',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,msgKeywordDefault:msgKeyword,filterDefault:filter,sorterDefault:sorter,classorDefault:classor,jsonMessage:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,insuranceRate:library.insuranceRate,delJSON:deleteJson,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,oflg:objFlag});
 									}
 								}
 							}
@@ -2594,6 +2613,7 @@ router.get('/lenderReceiveMessages/:msgKeyword?/:filter?/:classor?/:sorter?/:dir
 				maxSettingAutoLend:0
 			};
 			
+			var objFlag=false;
 			var resArrays=[];
 			var msgKeyword=decodeURIComponent(req.query.msgKeyword);
 			var filter=decodeURIComponent(req.query.filter);
@@ -2821,7 +2841,7 @@ router.get('/lenderReceiveMessages/:msgKeyword?/:filter?/:classor?/:sorter?/:dir
 						if(targetPage>1){
 							res.redirect('/message?content='+encodeURIComponent('錯誤頁碼!'));
 						}else{
-							res.render('lenderReceiveMessages',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,msgKeywordDefault:msgKeyword,filterDefault:filter,sorterDefault:sorter,classorDefault:classor,jsonMessage:resArrays,jsonLend:null,MoneyInBankAccountValue:0,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,value1AllDefault:value1ALL,value2AllDefault:value2ALL,value3AllDefault:value3ALL,value4AllDefault:value4ALL,insuranceRate:library.insuranceRate,cfJSON:confirmJson,rjJSON:rejectJson,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,MoneyLended:moneyLendedJson});
+							res.render('lenderReceiveMessages',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,msgKeywordDefault:msgKeyword,filterDefault:filter,sorterDefault:sorter,classorDefault:classor,jsonMessage:resArrays,jsonLend:null,MoneyInBankAccountValue:0,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,value1AllDefault:value1ALL,value2AllDefault:value2ALL,value3AllDefault:value3ALL,value4AllDefault:value4ALL,insuranceRate:library.insuranceRate,cfJSON:confirmJson,rjJSON:rejectJson,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,MoneyLended:moneyLendedJson,oflg:objFlag});
 						}
 					}else{
 						var options = {
@@ -2844,6 +2864,7 @@ router.get('/lenderReceiveMessages/:msgKeyword?/:filter?/:classor?/:sorter?/:dir
 									if(msgObjID){
 										if(msgObjID.equals(messages[j]._id)){
 											localFlag[0]=true;
+											objFlag=true;
 										}
 									}
 									
@@ -2928,7 +2949,7 @@ router.get('/lenderReceiveMessages/:msgKeyword?/:filter?/:classor?/:sorter?/:dir
 									if(targetPage>1){
 										res.redirect('/message?content='+encodeURIComponent('錯誤頁碼!'));
 									}else{
-										res.render('lenderReceiveMessages',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,msgKeywordDefault:msgKeyword,filterDefault:filter,sorterDefault:sorter,classorDefault:classor,jsonMessage:resArrays,jsonLend:null,MoneyInBankAccountValue:0,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,value1AllDefault:value1ALL,value2AllDefault:value2ALL,value3AllDefault:value3ALL,value4AllDefault:value4ALL,insuranceRate:library.insuranceRate,cfJSON:confirmJson,rjJSON:rejectJson,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,MoneyLended:moneyLendedJson});
+										res.render('lenderReceiveMessages',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,msgKeywordDefault:msgKeyword,filterDefault:filter,sorterDefault:sorter,classorDefault:classor,jsonMessage:resArrays,jsonLend:null,MoneyInBankAccountValue:0,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,value1AllDefault:value1ALL,value2AllDefault:value2ALL,value3AllDefault:value3ALL,value4AllDefault:value4ALL,insuranceRate:library.insuranceRate,cfJSON:confirmJson,rjJSON:rejectJson,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,MoneyLended:moneyLendedJson,oflg:objFlag});
 									}
 								}else{
 									for(p=0;p<totalResultNumber;p++){
@@ -3007,7 +3028,7 @@ router.get('/lenderReceiveMessages/:msgKeyword?/:filter?/:classor?/:sorter?/:dir
 																		moneyLendedJson.moneyLeftToHendLend=0;
 																	}
 																	moneyLendedJson.maxSettingAutoLend=bankaccount.MoneyInBankAccount+moneyLendedJson.autoLendCumulated;
-																	res.render('lenderReceiveMessages',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,msgKeywordDefault:msgKeyword,filterDefault:filter,sorterDefault:sorter,classorDefault:classor,jsonMessage:resArrays,jsonLend:lend,MoneyInBankAccountValue:bankaccount.MoneyInBankAccount,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,value1AllDefault:value1ALL,value2AllDefault:value2ALL,value3AllDefault:value3ALL,value4AllDefault:value4ALL,insuranceRate:library.insuranceRate,cfJSON:confirmJson,rjJSON:rejectJson,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,MoneyLended:moneyLendedJson});
+																	res.render('lenderReceiveMessages',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,msgKeywordDefault:msgKeyword,filterDefault:filter,sorterDefault:sorter,classorDefault:classor,jsonMessage:resArrays,jsonLend:lend,MoneyInBankAccountValue:bankaccount.MoneyInBankAccount,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,value1AllDefault:value1ALL,value2AllDefault:value2ALL,value3AllDefault:value3ALL,value4AllDefault:value4ALL,insuranceRate:library.insuranceRate,cfJSON:confirmJson,rjJSON:rejectJson,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,MoneyLended:moneyLendedJson,oflg:objFlag});
 																}
 															});
 														}

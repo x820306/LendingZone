@@ -76,16 +76,16 @@
 					<tr>
 						<td>
 							<%if((actionDefault=='建立日期')||(actionDefault=='更新日期')||(actionDefault=='最晚媒合日期')){%>
-								<input type="date" placeholder="下限(yyyy/mm/dd)" class="form-control boundIpt" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode==13){ linker();}">
-								&nbsp;~&nbsp;
-								<input type="date" placeholder="上限(yyyy/mm/dd)" class="form-control boundIpt" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode==13){ linker();}">
+								<input type="date" placeholder="下限(年/月/日)" class="form-control boundIpt" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode==13){ linker();}">&nbsp;&nbsp;<span style="display:inline;" id='lbd'></span>
+								&nbsp;&nbsp;~&nbsp;&nbsp;
+								<input type="date" placeholder="上限(年/月/日)" class="form-control boundIpt" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode==13){ linker();}">&nbsp;&nbsp;<span style="display:inline;" id='ubd'></span>
 							<%}else{%>
-								<input type="text" placeholder="下限(元/%/個月/級/次)" class="form-control boundIpt" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode==13){ linker();}">
-								&nbsp;~&nbsp;
-								<input type="text" placeholder="上限(元/%/個月/級/次)" class="form-control boundIpt" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode==13){ linker();}">
+								<input type="text" placeholder="下限" class="form-control boundIpt" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode==13){ linker();}">&nbsp;&nbsp;<span style="display:inline;" id='lbd'></span>
+								&nbsp;&nbsp;~&nbsp;&nbsp;
+								<input type="text" placeholder="上限" class="form-control boundIpt" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode==13){ linker();}">&nbsp;&nbsp;<span style="display:inline;" id='ubd'></span>
 							<%}%>
 						</td>
-						<%if((keywordDefault!=='')&&(totalResultNum>0)){%>
+						<%if((keywordDefault!=='')&&(totalResultNum>0)&&(!oflg)){%>
 							<td align="right">
 								<button class="btn btn-default disabled" style="display:inline;" id="highlightBtn" onclick="enableHighlight();">
 									關鍵字上色
@@ -320,6 +320,7 @@
 			$('#alis'+i).attr('class','');
 		}
 		$('#alis'+index).attr('class','active');
+		spanner($('#sorter0').text());
 	}
 	
 	function directorSelector(index){
@@ -342,8 +343,8 @@
 		if(!ifDater){
 			$('#lbound').attr('type','date');
 			$('#ubound').attr('type','date');
-			$('#lbound').attr('placeholder','下限(yyyy/mm/dd)');
-			$('#ubound').attr('placeholder','上限(yyyy/mm/dd)');
+			$('#lbound').attr('placeholder','下限(年/月/日)');
+			$('#ubound').attr('placeholder','上限(年/月/日)');
 			ifDater=true;
 		}
 	}
@@ -352,14 +353,14 @@
 		if(ifDater){
 			$('#lbound').attr('type','text');
 			$('#ubound').attr('type','text');
-			$('#lbound').attr('placeholder','下限(元/%/個月/級/次)');
-			$('#ubound').attr('placeholder','上限(元/%/個月/級/次)');
+			$('#lbound').attr('placeholder','下限');
+			$('#ubound').attr('placeholder','上限');
 			ifDater=false;
 		}
 	}
 		
 	<% if(totalResultNum>0){ %>
-		var stringPro='<%=keywordDefault%>';
+		var stringPro='<%if(!oflg){%><%=keywordDefault%><%}%>';
 		var highLightFlag=false;
 		var stringArray;
 		function enableHighlight(){
@@ -416,6 +417,28 @@
 			}
 		}
 		
+		function spanner(tgtString){
+			if((tgtString=='建立日期')||(tgtString=='更新日期')||(tgtString=='最晚媒合日期')){
+				$('#lbd').html('');
+				$('#ubd').html('');
+			}else if((tgtString=='最低期數')||(tgtString=='最高期數')){
+				$('#lbd').html('個月');
+				$('#ubd').html('個月');
+			}else if(tgtString=='年利率'){
+				$('#lbd').html('%');
+				$('#ubd').html('%');
+			}else if(tgtString=='信用等級'){
+				$('#lbd').html('級');
+				$('#ubd').html('級');
+			}else if(tgtString=='按讚次數'){
+				$('#lbd').html('次');
+				$('#ubd').html('次');
+			}else{
+				$('#lbd').html('元');
+				$('#ubd').html('元');
+			}
+		}
+		
 		$(document).ready(function (){
 			<%if(userName!==null){%>
 				for(i=0;i<<%=jsonArray.length%>;i++){
@@ -428,6 +451,7 @@
 				recursiveAjax(0,<%=jsonArray.length%>);	
 			<%}%>
 			
+			spanner('<%=actionDefault%>');
 			if(stringPro!==''){
 				stringPro=stringPro.replace(/\s\s+/g,' ');
 				stringArray=stringPro.split(' ');
