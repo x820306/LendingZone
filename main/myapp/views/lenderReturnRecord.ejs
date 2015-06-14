@@ -1002,6 +1002,12 @@
 						<tr>
 							<td style="border-bottom-style: none;border-top-style: none;">
 								<a style="font-size:15px;" href="/lender/lenderTransactionRecord?oneid=<%=jsonReturns[i].ToTransaction._id%>&filter=<%if(jsonReturns[i].ToTransaction.PrincipalNotReturn>0){%><%if(jsonReturns[i].ToTransaction.InsuranceFeePaid>0){%><%=encodeURIComponent('已保險')%><%}else{%><%=encodeURIComponent('未保險')%><%}%><%}else{%><%=encodeURIComponent('已結清')%><%}%>&messenger=<%=encodeURIComponent('不分訊息種類')%>&classor=<%=encodeURIComponent("不分故事種類");%>&sorter=<%=encodeURIComponent("建立日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">查看來源交易</a>
+								&nbsp;&nbsp;&nbsp;&nbsp;
+								<%if(jsonReturns[i].ToTransaction.CreatedFrom.Type=="toBorrow"){%>
+									<a style="font-size:15px;" href="/lender/lenderReceiveMessages?msgKeyword=<%=jsonReturns[i].ToTransaction.CreatedFrom._id%>&filter=<%if(jsonReturns[i].ToTransaction.CreatedFrom.Status=="NotConfirmed"){%><%=encodeURIComponent('未確認')%><%}else if(jsonReturns[i].ToTransaction.CreatedFrom.Status=="Confirmed"){%><%=encodeURIComponent('已同意')%><%}else if(jsonReturns[i].ToTransaction.CreatedFrom.Status=="Rejected"){%><%=encodeURIComponent('已婉拒')%><%}%>&classor=<%=encodeURIComponent("不分故事種類");%>&sorter=<%=encodeURIComponent("更新日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">查看來源訊息</a>
+								<%}else if(jsonReturns[i].ToTransaction.CreatedFrom.Type=="toLend"){%>
+									<a style="font-size:15px;" href="/lender/lenderSendMessages?msgKeyword=<%=jsonReturns[i].ToTransaction.CreatedFrom._id%>&filter=<%if(jsonReturns[i].ToTransaction.CreatedFrom.Status=="NotConfirmed"){%><%=encodeURIComponent('未被確認')%><%}else if(jsonReturns[i].ToTransaction.CreatedFrom.Status=="Confirmed"){%><%=encodeURIComponent('已被同意')%><%}else if(jsonReturns[i].ToTransaction.CreatedFrom.Status=="Rejected"){%><%=encodeURIComponent('已被婉拒')%><%}%>&classor=<%=encodeURIComponent("不分故事種類");%>&sorter=<%=encodeURIComponent("更新日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">查看來源訊息</a>
+								<%}%>
 							</td>
 							<td align="right" style="border-bottom-style: none;border-top-style: none;">
 								<div style="font-size:15px;display:inline;">

@@ -702,7 +702,11 @@
 								<%}%>
 								<td align="right" style="border-bottom-style: none;border-top-style: none;">
 									<div style="font-size:15px;display:inline;">
-										<a<%if(sorterDefault=='收款次數'){%> class="stronger"<%}%> href="/lender/lenderReturnRecord?oneid=&id=<%=jsonTransaction[i]._id%>&messenger=<%=encodeURIComponent('不分訊息種類')%>&classor=<%=encodeURIComponent("不分故事種類");%>&sorter=<%=encodeURIComponent("建立日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">該交易有<%=jsonTransaction[i].ReturnCount%>筆收款記錄</a>
+										<%if(jsonTransaction[i].ReturnCount>0){%>
+											<a<%if(sorterDefault=='收款次數'){%> class="stronger"<%}%> href="/lender/lenderReturnRecord?oneid=&id=<%=jsonTransaction[i]._id%>&messenger=<%=encodeURIComponent('不分訊息種類')%>&classor=<%=encodeURIComponent("不分故事種類");%>&sorter=<%=encodeURIComponent("建立日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">該交易有<%=jsonTransaction[i].ReturnCount.toFixed(0)%>筆收款記錄</a>
+										<%}else{%>
+											<div style="display:inline;"<%if(sorterDefault=='收款次數'){%> class="stronger"<%}%>>該交易有<%=jsonTransaction[i].ReturnCount%>筆收款記錄</div> 
+										<%}%>
 									</div>
 									&nbsp;&nbsp;&nbsp;&nbsp;
 									<div style="font-size:15px;display:inline;">
