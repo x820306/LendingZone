@@ -124,14 +124,13 @@ router.post('/like',library.loginFormChecker, library.ensureAuthenticated, funct
 					res.json({error: "already liked",success:false}, 500);
 				}else{
 					borrow.Likes.push(req.user._id);
-					borrow.LikeNumber ++ ;
 					borrow.Updated=Date.now();
 					borrow.save(function (err, newborrow){
 						if (err) {
 							console.log(err);
 							res.json({error: err.name,success:false},500);
 						}
-						res.json({success:true,result:newborrow.LikeNumber,date:newborrow.Updated});
+						res.json({success:true,result:newborrow.Likes.length,date:newborrow.Updated});
 					})
 				}
 			}
@@ -159,15 +158,14 @@ router.post('/unlike',library.loginFormChecker, library.ensureAuthenticated, fun
 				if (flag === 0) {
 					res.json({error: "haven't liked",success:false}, 500);
 				}else{
-					borrow.Likes.splice(i, 1);;
-					borrow.LikeNumber -- ;
+					borrow.Likes.splice(i, 1);
 					borrow.Updated=Date.now();
 					borrow.save(function (err, newborrow){
 						if (err) {
 							console.log(err);
 							res.json({error: err.name,success:false},500);
 						}
-						res.json({success:true,result:newborrow.LikeNumber,date:newborrow.Updated});
+						res.json({success:true,result:newborrow.Likes.length,date:newborrow.Updated});
 					})
 				}
 			}
@@ -185,7 +183,7 @@ router.post('/iflike', function(req, res, next) {
 				res.json({error: "ID not found",success:false}, 500);
 			}else{
 				if (!req.isAuthenticated()){ 
-					res.json({success:true,result:borrow.LikeNumber,status:-1,date:borrow.Updated});
+					res.json({success:true,result:borrow.Likes.length,status:-1,date:borrow.Updated});
 				}else{
 					var i = 0;
 					var flag = 0;
@@ -198,7 +196,7 @@ router.post('/iflike', function(req, res, next) {
 					if(borrow.CreatedBy==req.user._id){
 						flag = 2;
 					}
-					res.json({success:true,result:borrow.LikeNumber,status:flag,date:borrow.Updated});
+					res.json({success:true,result:borrow.Likes.length,status:flag,date:borrow.Updated});
 				}
 			}
 		}

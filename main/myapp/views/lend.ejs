@@ -171,7 +171,7 @@
 						<% }else{ %>
 							<input id="f7" type="number" style="width:95%;" class="textForm" name="MinInterestInFutureMonth" value="<%if(lfJSON){%><%=lfJSON.FormContent.F7%><%}else{%><%=jsonLend.MinInterestInFutureMonth.toFixed(0)%><%}%>">
 						<% } %>
-						&nbsp;元
+						&nbsp;元/月
 					</div>
 				</div>
 				<br>
@@ -185,7 +185,7 @@
 						<% }else{ %>
 							<input id="f8" type="number" style="width:95%;" class="textForm" name="MinInterestInFutureMoneyMonth" value="<%if(lfJSON){%><%=lfJSON.FormContent.F8%><%}else{%><%=jsonLend.MinInterestInFutureMoneyMonth.toFixed(0)%><%}%>">
 						<% } %>
-						&nbsp;元
+						&nbsp;元/月
 					</div>
 				</div>
 				<br>
@@ -372,16 +372,19 @@
 						</div>
 						<div class="panel-body">
 							<%if(!jsonLend){%>
-								<input id="lboundSel" type="text" placeholder="(元/%/個月/級)" class="textForm" name="AutoComfirmToBorrowMsgLbound" disabled="disabled">
+								<input id="lboundSel" style="width:95%;" type="text" placeholder="" class="textForm" name="AutoComfirmToBorrowMsgLbound" disabled="disabled">
 							<%}else{%>
 								<%if((jsonLend.AutoComfirmToBorrowMsgSorter=="Updated")||(jsonLend.AutoComfirmToBorrowMsgSorter=="Created")){%>
-									<input id="lboundSel" type="date" placeholder="(yyyy/mm/dd)" class="textForm" name="AutoComfirmToBorrowMsgLbound"<%if(jsonLend.AutoComfirmToBorrowMsgLbound!==-1){%> value="<%=new Date(parseInt(jsonLend.AutoComfirmToBorrowMsgLbound)).getFullYear()%>-<%if(new Date(parseInt(jsonLend.AutoComfirmToBorrowMsgLbound)).getMonth()<9){%>0<%}%><%=new Date(parseInt(jsonLend.AutoComfirmToBorrowMsgLbound)).getMonth()+1%>-<%if(new Date(parseInt(jsonLend.AutoComfirmToBorrowMsgLbound)).getDate()<10){%>0<%}%><%=new Date(parseInt(jsonLend.AutoComfirmToBorrowMsgLbound)).getDate()%>"<%}%><% if(jsonLend.AutoComfirmToBorrowMsgPeriod<=0){ %> disabled="disabled"<%}%>>
-								<%}else if((jsonLend.AutoComfirmToBorrowMsgSorter=="InterestRate")||(jsonLend.AutoComfirmToBorrowMsgSorter=="InterestInFutureDivMoney")){%>
-									<input id="lboundSel" type="text" placeholder="(元/%/個月/級)" class="textForm" name="AutoComfirmToBorrowMsgLbound"<%if(jsonLend.AutoComfirmToBorrowMsgLbound!==-1){%> value="<%=jsonLend.AutoComfirmToBorrowMsgLbound.toFixed(2)%>"<%}%><% if(jsonLend.AutoComfirmToBorrowMsgPeriod<=0){ %> disabled="disabled"<%}%>>
+									<input id="lboundSel" style="width:95%;" type="date" placeholder="年/月/日" class="textForm" name="AutoComfirmToBorrowMsgLbound"<%if(jsonLend.AutoComfirmToBorrowMsgLbound!==-1){%> value="<%=new Date(parseInt(jsonLend.AutoComfirmToBorrowMsgLbound)).getFullYear()%>-<%if(new Date(parseInt(jsonLend.AutoComfirmToBorrowMsgLbound)).getMonth()<9){%>0<%}%><%=new Date(parseInt(jsonLend.AutoComfirmToBorrowMsgLbound)).getMonth()+1%>-<%if(new Date(parseInt(jsonLend.AutoComfirmToBorrowMsgLbound)).getDate()<10){%>0<%}%><%=new Date(parseInt(jsonLend.AutoComfirmToBorrowMsgLbound)).getDate()%>"<%}%><% if(jsonLend.AutoComfirmToBorrowMsgPeriod<=0){ %> disabled="disabled"<%}%>>
+								<%}else if(jsonLend.AutoComfirmToBorrowMsgSorter=="InterestRate"){%>
+									<input id="lboundSel" style="width:95%;" type="text" placeholder="" class="textForm" name="AutoComfirmToBorrowMsgLbound"<%if(jsonLend.AutoComfirmToBorrowMsgLbound!==-1){%> value="<%=((jsonLend.AutoComfirmToBorrowMsgLbound-scr)*100).toFixed(2)%>"<%}%><% if(jsonLend.AutoComfirmToBorrowMsgPeriod<=0){ %> disabled="disabled"<%}%>>
+								<%}else if(jsonLend.AutoComfirmToBorrowMsgSorter=="InterestInFutureDivMoney"){%>
+									<input id="lboundSel" style="width:95%;" type="text" placeholder="" class="textForm" name="AutoComfirmToBorrowMsgLbound"<%if(jsonLend.AutoComfirmToBorrowMsgLbound!==-1){%> value="<%=(jsonLend.AutoComfirmToBorrowMsgLbound*100).toFixed(2)%>"<%}%><% if(jsonLend.AutoComfirmToBorrowMsgPeriod<=0){ %> disabled="disabled"<%}%>>
 								<%}else{%>
-									<input id="lboundSel" type="text" placeholder="(元/%/個月/級)" class="textForm" name="AutoComfirmToBorrowMsgLbound"<%if(jsonLend.AutoComfirmToBorrowMsgLbound!==-1){%> value="<%=jsonLend.AutoComfirmToBorrowMsgLbound.toFixed(0)%>"<%}%><% if(jsonLend.AutoComfirmToBorrowMsgPeriod<=0){ %> disabled="disabled"<%}%>>
+									<input id="lboundSel" style="width:95%;" type="text" placeholder="" class="textForm" name="AutoComfirmToBorrowMsgLbound"<%if(jsonLend.AutoComfirmToBorrowMsgLbound!==-1){%> value="<%=jsonLend.AutoComfirmToBorrowMsgLbound.toFixed(0)%>"<%}%><% if(jsonLend.AutoComfirmToBorrowMsgPeriod<=0){ %> disabled="disabled"<%}%>>
 								<%}%>
 							<%}%>
+							&nbsp;<span style="display:inline;" id='lbd'></span>
 						</div>
 					</div>
 				<%}else{%>
@@ -391,10 +394,11 @@
 						</div>
 						<div class="panel-body">
 							<%if((lfJSON.FormContent.F12=="Updated")||(lfJSON.FormContent.F12=="Created")){%>
-								<input id="lboundSel" type="date" placeholder="(yyyy/mm/dd)" class="textForm" name="AutoComfirmToBorrowMsgLbound" value="<%=lfJSON.FormContent.F14%>"<% if(lfJSON.FormContent.F10<=0){ %> disabled="disabled"<%}%>>
+								<input id="lboundSel" style="width:95%;" type="date" placeholder="年/月/日" class="textForm" name="AutoComfirmToBorrowMsgLbound" value="<%=lfJSON.FormContent.F14%>"<% if(lfJSON.FormContent.F10<=0){ %> disabled="disabled"<%}%>>
 							<%}else{%>
-								<input id="lboundSel" type="text" placeholder="(元/%/個月/級)" class="textForm" name="AutoComfirmToBorrowMsgLbound" value="<%=lfJSON.FormContent.F14%>"<% if(lfJSON.FormContent.F10<=0){ %> disabled="disabled"<%}%>>
+								<input id="lboundSel" style="width:95%;" type="text" placeholder="" class="textForm" name="AutoComfirmToBorrowMsgLbound" value="<%=lfJSON.FormContent.F14%>"<% if(lfJSON.FormContent.F10<=0){ %> disabled="disabled"<%}%>>
 							<%}%>
+							&nbsp;<span style="display:inline;" id='lbd'></span>
 						</div>
 					</div>
 				<%}%>
@@ -406,16 +410,19 @@
 						</div>
 						<div class="panel-body">
 							<%if(!jsonLend){%>
-								<input id="uboundSel" type="text" placeholder="(元/%/個月/級)" class="textForm" name="AutoComfirmToBorrowMsgUbound" disabled="disabled">
+								<input id="uboundSel" style="width:95%;" type="text" placeholder="" class="textForm" name="AutoComfirmToBorrowMsgUbound" disabled="disabled">
 							<%}else{%>
 								<%if((jsonLend.AutoComfirmToBorrowMsgSorter=="Updated")||(jsonLend.AutoComfirmToBorrowMsgSorter=="Created")){%>
-									<input id="uboundSel" type="date" placeholder="(yyyy/mm/dd)" class="textForm" name="AutoComfirmToBorrowMsgUbound"<%if(jsonLend.AutoComfirmToBorrowMsgUbound!==-1){%> value="<%=new Date(parseInt(jsonLend.AutoComfirmToBorrowMsgUbound)).getFullYear()%>-<%if(new Date(parseInt(jsonLend.AutoComfirmToBorrowMsgUbound)).getMonth()<9){%>0<%}%><%=new Date(parseInt(jsonLend.AutoComfirmToBorrowMsgUbound)).getMonth()+1%>-<%if(new Date(parseInt(jsonLend.AutoComfirmToBorrowMsgUbound)).getDate()<10){%>0<%}%><%=new Date(parseInt(jsonLend.AutoComfirmToBorrowMsgUbound)).getDate()%>"<%}%><% if(jsonLend.AutoComfirmToBorrowMsgPeriod<=0){ %> disabled="disabled"<%}%>>
-								<%}else if((jsonLend.AutoComfirmToBorrowMsgSorter=="InterestRate")||(jsonLend.AutoComfirmToBorrowMsgSorter=="InterestInFutureDivMoney")){%>
-									<input id="uboundSel" type="text" placeholder="(元/%/個月/級)" class="textForm" name="AutoComfirmToBorrowMsgUbound"<%if(jsonLend.AutoComfirmToBorrowMsgUbound!==-1){%> value="<%=jsonLend.AutoComfirmToBorrowMsgUbound.toFixed(2)%>"<%}%><% if(jsonLend.AutoComfirmToBorrowMsgPeriod<=0){ %> disabled="disabled"<%}%>>
+									<input id="uboundSel" style="width:95%;" type="date" placeholder="年/月/日" class="textForm" name="AutoComfirmToBorrowMsgUbound"<%if(jsonLend.AutoComfirmToBorrowMsgUbound!==-1){%> value="<%=new Date(parseInt(jsonLend.AutoComfirmToBorrowMsgUbound)).getFullYear()%>-<%if(new Date(parseInt(jsonLend.AutoComfirmToBorrowMsgUbound)).getMonth()<9){%>0<%}%><%=new Date(parseInt(jsonLend.AutoComfirmToBorrowMsgUbound)).getMonth()+1%>-<%if(new Date(parseInt(jsonLend.AutoComfirmToBorrowMsgUbound)).getDate()<10){%>0<%}%><%=new Date(parseInt(jsonLend.AutoComfirmToBorrowMsgUbound)).getDate()%>"<%}%><% if(jsonLend.AutoComfirmToBorrowMsgPeriod<=0){ %> disabled="disabled"<%}%>>
+								<%}else if(jsonLend.AutoComfirmToBorrowMsgSorter=="InterestRate"){%>
+									<input id="uboundSel" style="width:95%;" type="text" placeholder="" class="textForm" name="AutoComfirmToBorrowMsgUbound"<%if(jsonLend.AutoComfirmToBorrowMsgUbound!==-1){%> value="<%=((jsonLend.AutoComfirmToBorrowMsgUbound-scr)*100).toFixed(2)%>"<%}%><% if(jsonLend.AutoComfirmToBorrowMsgPeriod<=0){ %> disabled="disabled"<%}%>>
+								<%}else if(jsonLend.AutoComfirmToBorrowMsgSorter=="InterestInFutureDivMoney"){%>
+									<input id="uboundSel" style="width:95%;" type="text" placeholder="" class="textForm" name="AutoComfirmToBorrowMsgUbound"<%if(jsonLend.AutoComfirmToBorrowMsgUbound!==-1){%> value="<%=(jsonLend.AutoComfirmToBorrowMsgUbound*100).toFixed(2)%>"<%}%><% if(jsonLend.AutoComfirmToBorrowMsgPeriod<=0){ %> disabled="disabled"<%}%>>
 								<%}else{%>
-									<input id="uboundSel" type="text" placeholder="(元/%/個月/級)" class="textForm" name="AutoComfirmToBorrowMsgUbound"<%if(jsonLend.AutoComfirmToBorrowMsgUbound!==-1){%> value="<%=jsonLend.AutoComfirmToBorrowMsgUbound.toFixed(0)%>"<%}%><% if(jsonLend.AutoComfirmToBorrowMsgPeriod<=0){ %> disabled="disabled"<%}%>>
+									<input id="uboundSel" style="width:95%;" type="text" placeholder="" class="textForm" name="AutoComfirmToBorrowMsgUbound"<%if(jsonLend.AutoComfirmToBorrowMsgUbound!==-1){%> value="<%=jsonLend.AutoComfirmToBorrowMsgUbound.toFixed(0)%>"<%}%><% if(jsonLend.AutoComfirmToBorrowMsgPeriod<=0){ %> disabled="disabled"<%}%>>
 								<%}%>
 							<%}%>
+							&nbsp;<span style="display:inline;" id='ubd'></span>
 						</div>
 					</div>
 				<%}else{%>
@@ -425,10 +432,11 @@
 						</div>
 						<div class="panel-body">
 							<%if((lfJSON.FormContent.F12=="Updated")||(lfJSON.FormContent.F12=="Created")){%>
-								<input id="uboundSel" type="date" placeholder="(yyyy/mm/dd)" class="textForm" name="AutoComfirmToBorrowMsgUbound" value="<%=lfJSON.FormContent.F15%>"<% if(lfJSON.FormContent.F10<=0){ %> disabled="disabled"<%}%>>
+								<input id="uboundSel" style="width:95%;" type="date" placeholder="年/月/日" class="textForm" name="AutoComfirmToBorrowMsgUbound" value="<%=lfJSON.FormContent.F15%>"<% if(lfJSON.FormContent.F10<=0){ %> disabled="disabled"<%}%>>
 							<%}else{%>
-								<input id="uboundSel" type="text" placeholder="(元/%/個月/級)" class="textForm" name="AutoComfirmToBorrowMsgUbound" value="<%=lfJSON.FormContent.F15%>"<% if(lfJSON.FormContent.F10<=0){ %> disabled="disabled"<%}%>>
+								<input id="uboundSel" style="width:95%;" type="text" placeholder="" class="textForm" name="AutoComfirmToBorrowMsgUbound" value="<%=lfJSON.FormContent.F15%>"<% if(lfJSON.FormContent.F10<=0){ %> disabled="disabled"<%}%>>
 							<%}%>
+							&nbsp;<span style="display:inline;" id='ubd'></span>
 						</div>
 					</div>
 				<%}%>
@@ -555,23 +563,99 @@
 	</div>
 </div>
 <script>
-<%if(lfJSON){%>
 	$(document).ready(function (){
-		<%for(i=0;i<lfJSON.Target.length;i++){%>
-			<%if(lfJSON.Target[i]){%>
-				$('#f<%=i+1%>').focus();
-				<%break;%>
+		<%if(lfJSON){%>
+			<%for(i=0;i<lfJSON.Target.length;i++){%>
+				<%if(lfJSON.Target[i]){%>
+					<%if(i==13){%>
+						$('#lboundSel').focus();
+					<%}else if(i==14){%>
+						$('#uboundSel').focus();
+					<%}else if(i==15){%>
+						$('#keywordSel').focus();
+					<%}else{%>
+						$('#f<%=i+1%>').focus();
+					<%}%>
+					<%break;%>
+				<%}%>
+			<%}%>
+		<%}%>
+		<%if(!lfJSON){%>
+			<%if(!jsonLend){%>
+				$('#lbd').html('%');
+				$('#ubd').html('%');
+			<%}else{%>
+				<%if(jsonLend.AutoComfirmToBorrowMsgPeriod>0){%>
+					<%if((jsonLend.AutoComfirmToBorrowMsgSorter=='InterestInFutureDivMoney')||(jsonLend.AutoComfirmToBorrowMsgSorter=='InterestRate')){%>
+						$('#lbd').html('%');
+						$('#ubd').html('%');
+					<%}else if(jsonLend.AutoComfirmToBorrowMsgSorter=='MonthPeriod'){%>
+						$('#lbd').html('個月');
+						$('#ubd').html('個月');
+					<%}else if(jsonLend.AutoComfirmToBorrowMsgSorter=='Level'){%>
+						$('#lbd').html('級');
+						$('#ubd').html('級');
+					<%}else if((jsonLend.AutoComfirmToBorrowMsgSorter=='InterestInFutureMoneyMonth')||(jsonLend.AutoComfirmToBorrowMsgSorter=='InterestInFutureMonth')){%>
+						$('#lbd').html('元/月');
+						$('#ubd').html('元/月');
+					<%}else{%>
+						$('#lbd').html('元');
+						$('#ubd').html('元');
+					<%}%>
+				<%}else{%>
+					$('#lbd').html('%');
+					$('#ubd').html('%');
+				<%}%>
+			<%}%>
+		<%}else{%>
+			<%if(lfJSON.FormContent.F10>0){%>
+				<%if((lfJSON.FormContent.F12=='InterestInFutureDivMoney')||(lfJSON.FormContent.F12=='InterestRate')){%>
+					$('#lbd').html('%');
+					$('#ubd').html('%');
+				<%}else if(lfJSON.FormContent.F12=='MonthPeriod'){%>
+					$('#lbd').html('個月');
+					$('#ubd').html('個月');
+				<%}else if(lfJSON.FormContent.F12=='Level'){%>
+					$('#lbd').html('級');
+					$('#ubd').html('級');
+				<%}else if((lfJSON.FormContent.F12=='InterestInFutureMoneyMonth')||(lfJSON.FormContent.F12=='InterestInFutureMonth')){%>
+					$('#lbd').html('元/月');
+					$('#ubd').html('元/月');
+				<%}else{%>
+					$('#lbd').html('元');
+					$('#ubd').html('元');
+				<%}%>
+			<%}else{%>
+				$('#lbd').html('%');
+				$('#ubd').html('%');
 			<%}%>
 		<%}%>
 	});
-<%}%>
 
 function autoSorter(){
 	$('#lboundSel').val('');
 	$('#uboundSel').val('');
 	if(($('#sorterSel').val()=='Updated')||($('#sorterSel').val()=='Created')){
+		$('#lbd').html('');
+		$('#ubd').html('');
 		enableDater();
 	}else{
+		if(($('#sorterSel').val()=='InterestInFutureDivMoney')||($('#sorterSel').val()=='InterestRate')){
+			$('#lbd').html('%');
+			$('#ubd').html('%');
+		}else if($('#sorterSel').val()=='MonthPeriod'){
+			$('#lbd').html('個月');
+			$('#ubd').html('個月');
+		}else if($('#sorterSel').val()=='Level'){
+			$('#lbd').html('級');
+			$('#ubd').html('級');
+		}else if(($('#sorterSel').val()=='InterestInFutureMoneyMonth')||($('#sorterSel').val()=='InterestInFutureMonth')){
+			$('#lbd').html('元/月');
+			$('#ubd').html('元/月');
+		}else{
+			$('#lbd').html('元');
+			$('#ubd').html('元');
+		}
 		disableDater();
 	}
 }
@@ -598,6 +682,8 @@ function autoChanger(){
 	}else{
 		$('#sorterSel').prop('disabled', true);
 		$('#sorterSel').val('InterestRate');
+		$('#lbd').html('%');
+		$('#ubd').html('%');
 		$('#sorterPnl').attr('style','display:none;');
 		
 		$('#directorSel').prop('disabled', true);
@@ -645,8 +731,8 @@ function enableDater(){
 	if(!ifDater){
 		$('#lboundSel').attr('type','date');
 		$('#uboundSel').attr('type','date');
-		$('#lboundSel').attr('placeholder','(yyyy/mm/dd)');
-		$('#uboundSel').attr('placeholder','(yyyy/mm/dd)');
+		$('#lboundSel').attr('placeholder','年/月/日');
+		$('#uboundSel').attr('placeholder','年/月/日');
 		ifDater=true;
 	}
 }
@@ -655,8 +741,8 @@ function disableDater(){
 	if(ifDater){
 		$('#lboundSel').attr('type','text');
 		$('#uboundSel').attr('type','text');
-		$('#lboundSel').attr('placeholder','(元/%/個月/級)');
-		$('#uboundSel').attr('placeholder','(元/%/個月/級)');
+		$('#lboundSel').attr('placeholder','');
+		$('#uboundSel').attr('placeholder','');
 		ifDater=false;
 	}
 }

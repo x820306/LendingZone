@@ -13,7 +13,6 @@ var Borrows = new Schema({
 	StoryTitle: { type: String, default:''},
 	Story: { type: String, default:''},
 	Category:{ type: String, default:'general'},//'general','education','family','tour' etc. we can add more
-	LikeNumber: { type: Number, default: 0 },
 	Likes: [{ type: Schema.Types.ObjectId, ref: 'Users' }],
 	IfReadable: { type: Boolean, default: true },
 	Level:{ type: Number, default: 0 },//Have to be copied from User when creating, for sorting convenience
@@ -390,7 +389,6 @@ Users.pre('remove', function (next){
 					for(j=brw.Likes.length-1;j>-1;j--){
 						if(brw.Likes[j].toString()===user_id.toString()){
 							brw.Likes.splice(j, 1);
-							brw.LikeNumber--;
 							foundFlag=true;
 						}
 					}

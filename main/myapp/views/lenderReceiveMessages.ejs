@@ -66,16 +66,16 @@
 					<tr>
 						<td>
 							<%if((sorterDefault=='建立日期')||(sorterDefault=='更新日期')){%>
-								<input type="date" placeholder="下限(yyyy/mm/dd)" class="form-control boundIpt" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode==13){linker();}">
-								&nbsp;~&nbsp;
-								<input type="date" placeholder="上限(yyyy/mm/dd)" class="form-control boundIpt" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode==13){linker();}">
+								<input type="date" placeholder="下限(年/月/日)" class="form-control boundIpt" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode==13){linker();}">&nbsp;&nbsp;<span style="display:inline;" id='lbd'></span>
+								&nbsp;&nbsp;~&nbsp;&nbsp;
+								<input type="date" placeholder="上限(年/月/日)" class="form-control boundIpt" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode==13){linker();}">&nbsp;&nbsp;<span style="display:inline;" id='ubd'></span>
 							<%}else{%>
-								<input type="text" placeholder="下限(元/%/個月/級)" class="form-control boundIpt" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode==13){linker();}">
-								&nbsp;~&nbsp;
-								<input type="text" placeholder="上限(元/%/個月/級)" class="form-control boundIpt" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode==13){linker();}">
+								<input type="text" placeholder="下限" class="form-control boundIpt" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode==13){linker();}">&nbsp;&nbsp;<span style="display:inline;" id='lbd'></span>
+								&nbsp;&nbsp;~&nbsp;&nbsp;
+								<input type="text" placeholder="上限" class="form-control boundIpt" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode==13){linker();}">&nbsp;&nbsp;<span style="display:inline;" id='ubd'></span>
 							<%}%>
 						</td>
-						<%if((msgKeywordDefault!=='')&&(totalResultNum>0)){%>
+						<%if((msgKeywordDefault!=='')&&(totalResultNum>0)&&(!oflg)){%>
 							<td align="right">
 								<button class="btn btn-default disabled" style="display:inline;" id="highlightBtn" onclick="enableHighlight();">
 									關鍵字上色
@@ -129,10 +129,10 @@
 									<div style="display:inline;"><%=cfJSON.InfoJSON.info3.toFixed(0)%></div><div style="display:inline;">元</div>
 								</td>
 								<td>
-									<div style="display:inline;"><%=cfJSON.InfoJSON.info4.toFixed(0)%></div><div style="display:inline;">元</div>
+									<div style="display:inline;"><%=cfJSON.InfoJSON.info4.toFixed(0)%></div><div style="display:inline;">元/月</div>
 								</td>
 								<td>
-									<div style="display:inline;"><%=cfJSON.InfoJSON.info5.toFixed(0)%></div><div style="display:inline;">元</div>
+									<div style="display:inline;"><%=cfJSON.InfoJSON.info5.toFixed(0)%></div><div style="display:inline;">元/月</div>
 								</td>
 								<td>
 									<%if(cfJSON.InfoJSON.info1>0){%>
@@ -189,6 +189,7 @@
 								</tr>
 							</tbody>
 						</table>
+						<br>
 						<br>
 						<table style="display:inline;" class="table">
 							<thead class="myThead">
@@ -272,10 +273,10 @@
 										<div style="display:inline;" id="value3All"><%=value3AllDefault.toFixed(0)%></div><div style="display:inline;">元</div>
 									</td>
 									<td>
-										<div style="display:inline;" id="value4All"><%=value4AllDefault.toFixed(0)%></div><div style="display:inline;">元</div>
+										<div style="display:inline;" id="value4All"><%=value4AllDefault.toFixed(0)%></div><div style="display:inline;">元/月</div>
 									</td>
 									<td>
-										<div style="display:inline;" id="value5All"><%=value5AllDefault.toFixed(0)%></div><div style="display:inline;">元</div>
+										<div style="display:inline;" id="value5All"><%=value5AllDefault.toFixed(0)%></div><div style="display:inline;">元/月</div>
 									</td>
 									<td>
 									<%if(value1AllDefault>0){%>
@@ -402,10 +403,10 @@
 										<div style="display:inline;" id="value3">0</div><div style="display:none;" id="value3R">0</div><div style="display:inline;">元</div>
 									</td>
 									<td>
-										<div style="display:inline;" id="value4">0</div><div style="display:none;" id="value4R">0</div><div style="display:inline;">元</div>
+										<div style="display:inline;" id="value4">0</div><div style="display:none;" id="value4R">0</div><div style="display:inline;">元/月</div>
 									</td>
 									<td>
-										<div style="display:inline;" id="value5">0</div><div style="display:none;" id="value5R">0</div><div style="display:inline;">元</div>
+										<div style="display:inline;" id="value5">0</div><div style="display:none;" id="value5R">0</div><div style="display:inline;">元/月</div>
 									</td>
 									<td>
 										<div style="display:inline;" id="value6">0.00</div><div style="display:inline;">%</div>
@@ -641,7 +642,7 @@
 									<tr>
 										<td>
 											<div>
-												&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:none;" id="value4<%=i%>"><%=jsonMessage[i].InterestInFutureMonth%></div><%=jsonMessage[i].InterestInFutureMonth.toFixed(0)%>元
+												&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:none;" id="value4<%=i%>"><%=jsonMessage[i].InterestInFutureMonth%></div><%=jsonMessage[i].InterestInFutureMonth.toFixed(0)%>元/月
 											</div>	
 										</td>
 									</tr>
@@ -655,7 +656,7 @@
 									<tr>
 										<td>
 											<div>
-												&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:none;" id="value5<%=i%>"><%=jsonMessage[i].InterestInFutureMoneyMonth%></div><%=jsonMessage[i].InterestInFutureMoneyMonth.toFixed(0)%>元
+												&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:none;" id="value5<%=i%>"><%=jsonMessage[i].InterestInFutureMoneyMonth%></div><%=jsonMessage[i].InterestInFutureMoneyMonth.toFixed(0)%>元/月
 											</div>	
 										</td>
 									</tr>
@@ -669,7 +670,7 @@
 									<tr>
 										<td>
 											<div>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].InterestInFutureDivMoney.toFixed(2)%>%
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=(jsonMessage[i].InterestInFutureDivMoney*100).toFixed(2)%>%
 											</div>	
 										</td>
 									</tr>
@@ -802,7 +803,7 @@
 										<tr>
 											<td>
 												<div>
-													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].InterestMonth.toFixed(0)%>元
+													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].InterestMonth.toFixed(0)%>元/月
 												</div>	
 											</td>
 										</tr>
@@ -816,7 +817,7 @@
 										<tr>
 											<td>
 												<div>
-													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].PrincipalInterestMonth.toFixed(0)%>元
+													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].PrincipalInterestMonth.toFixed(0)%>元/月
 												</div>	
 											</td>
 										</tr>
@@ -834,7 +835,7 @@
 										<tr>
 											<td>
 												<div>
-													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].InterestDivPrincipal.toFixed(2)%>%
+													&nbsp;&nbsp;&nbsp;&nbsp;<%=(jsonMessage[i].Transaction[0].InterestDivPrincipal*100).toFixed(2)%>%
 												</div>	
 											</td>
 										</tr>
@@ -992,7 +993,7 @@
 										<tr>
 											<td>
 												<div>
-													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].InterestInFutureMonth.toFixed(0)%>元
+													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].InterestInFutureMonth.toFixed(0)%>元/月
 												</div>	
 											</td>
 										</tr>
@@ -1006,7 +1007,7 @@
 										<tr>
 											<td>
 												<div>
-													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].InterestInFutureMoneyMonth.toFixed(0)%>元
+													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].InterestInFutureMoneyMonth.toFixed(0)%>元/月
 												</div>	
 											</td>
 										</tr>
@@ -1020,7 +1021,7 @@
 										<tr>
 											<td>
 												<div>
-													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].InterestInFutureDivMoney.toFixed(2)%>%
+													&nbsp;&nbsp;&nbsp;&nbsp;<%=(jsonMessage[i].Transaction[0].InterestInFutureDivMoney*100).toFixed(2)%>%
 												</div>	
 											</td>
 										</tr>
@@ -1260,6 +1261,7 @@ function sorterSelector(index){
 		$('#slis'+i).attr('class','');
 	}
 	$('#slis'+index).attr('class','active');
+	spanner($('#sorter0').text());
 }
 
 function directorSelector(index){
@@ -1285,8 +1287,8 @@ function enableDater(){
 	if(!ifDater){
 		$('#lbound').attr('type','date');
 		$('#ubound').attr('type','date');
-		$('#lbound').attr('placeholder','下限(yyyy/mm/dd)');
-		$('#ubound').attr('placeholder','上限(yyyy/mm/dd)');
+		$('#lbound').attr('placeholder','下限(年/月/日)');
+		$('#ubound').attr('placeholder','上限(年/月/日)');
 		ifDater=true;
 	}
 }
@@ -1295,8 +1297,8 @@ function disableDater(){
 	if(ifDater){
 		$('#lbound').attr('type','text');
 		$('#ubound').attr('type','text');
-		$('#lbound').attr('placeholder','下限(元/%/個月/級)');
-		$('#ubound').attr('placeholder','上限(元/%/個月/級)');
+		$('#lbound').attr('placeholder','下限');
+		$('#ubound').attr('placeholder','上限');
 		ifDater=false;
 	}
 }
@@ -1310,7 +1312,7 @@ function linker(){
 	var myCtr2MaxPoint;
 	var myCtr3MaxPoint;
 	
-	var stringPro='<%=msgKeywordDefault%>';
+	var stringPro='<%if(!oflg){%><%=msgKeywordDefault%><%}%>';
 	var highLightFlag=false;
 	var stringArray;
 	function enableHighlight(){
@@ -1366,6 +1368,27 @@ function linker(){
 			}
 		}
 	}
+	function spanner(tgtString){
+		if((tgtString=='建立日期')||(tgtString=='更新日期')){
+			$('#lbd').html('');
+			$('#ubd').html('');
+		}else if(tgtString=='欲借入期數'){
+			$('#lbd').html('個月');
+			$('#ubd').html('個月');
+		}else if((tgtString=='欲借入年利率')||(tgtString=='預計利本比')){
+			$('#lbd').html('%');
+			$('#ubd').html('%');
+		}else if((tgtString=='預計平均本利和')||(tgtString=='預計平均利息')){
+			$('#lbd').html('元/月');
+			$('#ubd').html('元/月');
+		}else if(tgtString=='信用等級'){
+			$('#lbd').html('級');
+			$('#ubd').html('級');
+		}else{
+			$('#lbd').html('元');
+			$('#ubd').html('元');
+		}
+	}
 	$(document).ready(function(){
 		<% if(filterDefault=='未確認'){%>
 			$("#selectAll").prop("checked", false);
@@ -1386,6 +1409,7 @@ function linker(){
 		$('.myCtr2').click(function(){setTimeout(checkPoint,250);});
 		$('.myCtr3').click(function(){setTimeout(checkPoint,250);});
 		
+		spanner('<%=sorterDefault%>');
 		if(stringPro!==''){
 			stringPro=stringPro.replace(/\s\s+/g,' ');
 			stringArray=stringPro.split(' ');

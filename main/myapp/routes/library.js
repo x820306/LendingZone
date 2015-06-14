@@ -1247,7 +1247,7 @@ exports.transactionProcessor=function(target,flag){
 		target.PrincipalInterestMonth=0;
 	}
 	if(target.PrincipalReturn>0){
-		target.InterestDivPrincipal=target.Interest/target.PrincipalReturn*100;
+		target.InterestDivPrincipal=target.Interest/target.PrincipalReturn;
 	}else{
 		target.InterestDivPrincipal=0;
 	}
@@ -1257,7 +1257,7 @@ exports.transactionProcessor=function(target,flag){
 		target.InterestInFuture=exports.interestInFutureCalculator(target.PrincipalNotReturn,target.InterestRate,target.MonthPeriodLeft);
 		target.MoneyFuture=target.InterestInFuture+target.PrincipalNotReturn;
 		if(target.PrincipalNotReturn>0){
-			target.InterestInFutureDivMoney=target.InterestInFuture/target.PrincipalNotReturn*100;
+			target.InterestInFutureDivMoney=target.InterestInFuture/target.PrincipalNotReturn;
 		}else{
 			target.InterestInFutureDivMoney=0;
 		}
