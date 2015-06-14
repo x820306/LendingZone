@@ -1202,9 +1202,7 @@
 			if(stringPro!==''){
 				if(!highLightFlag){
 					highLightFlag=true;
-					for(i=0;i<stringArray.length;i++){
-						$('.colorCnt').highlight(stringArray[i]);
-					}
+					$('.colorCnt').highlight(stringArray);
 					$('#unhighlightBtn').removeClass('disabled');
 					$('#unhighlightBtn').css('display','');
 					$('#highlightBtn').addClass('disabled');
@@ -1249,6 +1247,28 @@
 				$('#ubd').html('元');
 			}
 		}
+		
+		var toselect = [];
+		function overlap(a, b) {
+			var l = b.length,
+				m = a.length;
+			for (var j = 1; j < l; j++) {
+				if (a.indexOf(b.substr(l - j)) === 0) {
+					toselect.push(b.concat(a.substr(j)));
+				} else if (a.substr(m - j).indexOf(b.substr(0, j)) === 0) {
+					toselect.push(a.concat(b.substr(j)));
+				}
+			}
+		}
+		function overdiag(arr) {
+			toselect = []; //empties to select
+			$.each(arr, function (i) {
+				$.each(arr.slice(i + 1), function (i, v) {
+					overlap(arr[i], v);
+				});
+			});
+		}
+		
 		$(document).ready(function(){
 			<%if(sorterDefault.search(/收款前/)>-1){%>
 				piller(2);
@@ -1271,6 +1291,14 @@
 			if(stringPro!==''){
 				stringPro=stringPro.replace(/\s\s+/g,' ');
 				stringArray=stringPro.split(' ');
+				overdiag(stringArray);
+				stringArray = stringArray.concat(toselect);
+				stringArray = $.grep(stringArray, function (a, b) {
+					return $.inArray(a,stringArray) === b;
+				});
+				stringArray.sort(function(a, b){
+				  return b.length - a.length;
+				});
 				enableHighlight();
 			}
 		});
