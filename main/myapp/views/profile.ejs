@@ -194,16 +194,8 @@
 	var submitFlag=false;
 	function disableButton(){
 		if(!submitFlag){
-			var orig=$('#sbmtBtn').attr('class');
-			if(orig.search(' disabled')<0){
-				orig=orig+' disabled';
-				$('#sbmtBtn').attr('class',orig);
-			}
-			orig=$('#changePWbtn').attr('class');
-			if(orig.search(' disabled')<0){
-				orig=orig+' disabled';
-				$('#changePWbtn').attr('class',orig);
-			}
+			$('#sbmtBtn').addClass('disabled');
+			$('#changePWbtn').addClass('disabled');
 			submitFlag=true;
 			return true;
 		}else{
@@ -239,4 +231,4 @@
 		}
 	}
 </script>
-<%- include('layout_footer',{imgSettingCode:"var ifLoadedCount=0;",imgDrawingCode:""}); -%>
+<%- include('layout_footer',{imgSettingCode:"var ifLoadedCount=0;",imgDrawingCode:"",nav_cur:'profile'}); -%>

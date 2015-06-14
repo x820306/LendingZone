@@ -148,7 +148,7 @@
 						</div> 
 					</div>
 					<ul class="nav navbar-nav navbar-right">
-						<!--<li><a href="#" onclick="if(ifLoadedCount<=0){if(!ifDrawed){doneResizing();}$('#introCanvas').attr('style',$('#introCanvas').attr('style').replace(/display:none;/g, ''));}else{alert('請等候圖片載入完畢');}return false;">引導</a></li>%>-->
+						<!--<li><a href="#" onclick="if(ifLoadedCount<=0){if(!ifDrawed){doneResizing();}$('#introCanvas').css('display','');}else{alert('請等候圖片載入完畢');}return false;">引導</a></li>%>-->
 						<% if(nav_cur!='signup'){ %>
 							<% if(userName===null){ %>
 								<li><a href="#" data-toggle="modal" data-target="#myModal">登入</a></li>
@@ -253,6 +253,6 @@
 		}
 		
 		function linkerMain(){
-			window.open('/lender/search?keyword='+encodeURIComponent($('#keywordIptMain').val().trim())+'&category='+encodeURIComponent($('#categoryMain0').text())+'&messenger='+encodeURIComponent($('#messengerMain0').text())+'&action='+encodeURIComponent($('#searchAction0').text())+'&director='+encodeURIComponent($('#directorMain0').text())+'&lbound=&ubound=&page=1','_self');
+			window.open('/lender/search?keyword='+encodeURIComponent($('#keywordIptMain').val())+'&category='+encodeURIComponent($('#categoryMain0').text())+'&messenger='+encodeURIComponent($('#messengerMain0').text())+'&action='+encodeURIComponent($('#searchAction0').text())+'&director='+encodeURIComponent($('#directorMain0').text())+'&lbound=&ubound=&page=1','_self');
 		}
 	</script>

@@ -161,7 +161,7 @@ function samePart(res,req,differentPart,outterPara){
 						if(isNaN(level)){
 							errorTarget[3]=true;
 							errorMessage[3]='非數字參數!';
-						}else if(level<0){
+						}else if(level<1){
 							errorTarget[3]=true;
 							errorMessage[3]='錯誤參數!';
 						}
@@ -169,7 +169,7 @@ function samePart(res,req,differentPart,outterPara){
 						if(isNaN(MinInterestInFuture)){
 							errorTarget[4]=true;
 							errorMessage[4]='非數字參數!';
-						}else if(MinInterestInFuture<0){
+						}else if(MinInterestInFuture<1){
 							errorTarget[4]=true;
 							errorMessage[4]='錯誤參數!';
 						}
@@ -177,7 +177,7 @@ function samePart(res,req,differentPart,outterPara){
 						if(isNaN(MinMoneyFuture)){
 							errorTarget[5]=true;
 							errorMessage[5]='非數字參數!';
-						}else if(MinMoneyFuture<0){
+						}else if(MinMoneyFuture<1){
 							errorTarget[5]=true;
 							errorMessage[5]='錯誤參數!';
 						}
@@ -185,7 +185,7 @@ function samePart(res,req,differentPart,outterPara){
 						if(isNaN(MinInterestInFutureMonth)){
 							errorTarget[6]=true;
 							errorMessage[6]='非數字參數!';
-						}else if(MinInterestInFutureMonth<0){
+						}else if(MinInterestInFutureMonth<1){
 							errorTarget[6]=true;
 							errorMessage[6]='錯誤參數!';
 						}
@@ -193,7 +193,7 @@ function samePart(res,req,differentPart,outterPara){
 						if(isNaN(MinInterestInFutureMoneyMonth)){
 							errorTarget[7]=true;
 							errorMessage[7]='非數字參數!';
-						}else if(MinInterestInFutureMoneyMonth<0){
+						}else if(MinInterestInFutureMoneyMonth<1){
 							errorTarget[7]=true;
 							errorMessage[7]='錯誤參數!';
 						}
@@ -201,7 +201,7 @@ function samePart(res,req,differentPart,outterPara){
 						if(isNaN(MinInterestInFutureDivMoney)){
 							errorTarget[8]=true;
 							errorMessage[8]='非數字參數!';
-						}else if((MinInterestInFutureDivMoney<0)||(MinInterestInFutureDivMoney>0.99)){
+						}else if((MinInterestInFutureDivMoney<0.0001)||(MinInterestInFutureDivMoney>0.99)){
 							errorTarget[8]=true;
 							errorMessage[8]='錯誤參數!';
 						}
@@ -331,14 +331,14 @@ function createPart(res,req,outterPara){
 	var period=parseInt(sanitizer.sanitize(req.body.AutoComfirmToBorrowMsgPeriod.trim()));
 	toCreate.AutoComfirmToBorrowMsgPeriod=period;
 	if(period>0){
-		var sorter=sanitizer.sanitize(req.body.AutoComfirmToBorrowMsgSorter.trim());
-		var lbound=sanitizer.sanitize(req.body.AutoComfirmToBorrowMsgLbound.trim());
-		var ubound=sanitizer.sanitize(req.body.AutoComfirmToBorrowMsgUbound.trim());
+		var sorter=sanitizer.sanitize(library.replacer(req.body.AutoComfirmToBorrowMsgSorter,false));
+		var lbound=sanitizer.sanitize(library.replacer(req.body.AutoComfirmToBorrowMsgLbound,false));
+		var ubound=sanitizer.sanitize(library.replacer(req.body.AutoComfirmToBorrowMsgUbound,false));
 		var rtnJSON=luMaker(sorter,lbound,ubound);
 		toCreate.AutoComfirmToBorrowMsgSorter=sorter;
-		toCreate.AutoComfirmToBorrowMsgDirector=sanitizer.sanitize(req.body.AutoComfirmToBorrowMsgDirector.trim());
-		toCreate.AutoComfirmToBorrowMsgClassor=sanitizer.sanitize(req.body.AutoComfirmToBorrowMsgClassor.trim());
-		toCreate.AutoComfirmToBorrowMsgKeyWord=sanitizer.sanitize(req.body.AutoComfirmToBorrowMsgKeyWord.trim());
+		toCreate.AutoComfirmToBorrowMsgDirector=sanitizer.sanitize(library.replacer(req.body.AutoComfirmToBorrowMsgDirector,false));
+		toCreate.AutoComfirmToBorrowMsgClassor=sanitizer.sanitize(library.replacer(req.body.AutoComfirmToBorrowMsgClassor,false));
+		toCreate.AutoComfirmToBorrowMsgKeyWord=sanitizer.sanitize(library.replacer(req.body.AutoComfirmToBorrowMsgKeyWord,true));
 		toCreate.AutoComfirmToBorrowMsgLbound=rtnJSON.lboundSave;
 		toCreate.AutoComfirmToBorrowMsgUbound=rtnJSON.uboundSave;
 		
@@ -407,45 +407,45 @@ function updatePart(res,req,lend){
 	if(sanitizer.sanitize(req.body.MinLevelAccepted.trim())!=''){
 		lend.MinLevelAccepted=parseInt(sanitizer.sanitize(req.body.MinLevelAccepted.trim()));
 	}else{
-		lend.MinLevelAccepted=0;
+		lend.MinLevelAccepted=-1;
 	}
 	if(sanitizer.sanitize(req.body.MinInterestInFuture.trim())!=''){
 		lend.MinInterestInFuture=parseInt(sanitizer.sanitize(req.body.MinInterestInFuture.trim()));
 	}else{
-		lend.MinInterestInFuture=0;
+		lend.MinInterestInFuture=-1;
 	}
 	if(sanitizer.sanitize(req.body.MinMoneyFuture.trim())!=''){
 		lend.MinMoneyFuture=parseInt(sanitizer.sanitize(req.body.MinMoneyFuture.trim()));
 	}else{
-		lend.MinMoneyFuture=0;
+		lend.MinMoneyFuture=-1;
 	}
 	if(sanitizer.sanitize(req.body.MinInterestInFutureMonth.trim())!=''){
 		lend.MinInterestInFutureMonth=parseInt(sanitizer.sanitize(req.body.MinInterestInFutureMonth.trim()));
 	}else{
-		lend.MinInterestInFutureMonth=0;
+		lend.MinInterestInFutureMonth=-1;
 	}
 	if(sanitizer.sanitize(req.body.MinInterestInFutureMoneyMonth.trim())!=''){
 		lend.MinInterestInFutureMoneyMonth=parseInt(sanitizer.sanitize(req.body.MinInterestInFutureMoneyMonth.trim()));
 	}else{
-		lend.MinInterestInFutureMoneyMonth=0;
+		lend.MinInterestInFutureMoneyMonth=-1;
 	}
 	if(sanitizer.sanitize(req.body.MinInterestInFutureDivMoney.trim())!=''){
 		lend.MinInterestInFutureDivMoney=parseFloat(sanitizer.sanitize(req.body.MinInterestInFutureDivMoney.trim()))/100;
 	}else{
-		lend.MinInterestInFutureDivMoney=0;
+		lend.MinInterestInFutureDivMoney=-1;
 	}
 	
 	var period=parseInt(sanitizer.sanitize(req.body.AutoComfirmToBorrowMsgPeriod.trim()));
 	lend.AutoComfirmToBorrowMsgPeriod=period;
 	if(period>0){
-		var sorter=sanitizer.sanitize(req.body.AutoComfirmToBorrowMsgSorter.trim());
-		var lbound=sanitizer.sanitize(req.body.AutoComfirmToBorrowMsgLbound.trim());
-		var ubound=sanitizer.sanitize(req.body.AutoComfirmToBorrowMsgUbound.trim());
+		var sorter=sanitizer.sanitize(library.replacer(req.body.AutoComfirmToBorrowMsgSorter,false));
+		var lbound=sanitizer.sanitize(library.replacer(req.body.AutoComfirmToBorrowMsgLbound,false));
+		var ubound=sanitizer.sanitize(library.replacer(req.body.AutoComfirmToBorrowMsgUbound,false));
 		var rtnJSON=luMaker(sorter,lbound,ubound);
 		lend.AutoComfirmToBorrowMsgSorter=sorter;
-		lend.AutoComfirmToBorrowMsgDirector=sanitizer.sanitize(req.body.AutoComfirmToBorrowMsgDirector.trim());
-		lend.AutoComfirmToBorrowMsgClassor=sanitizer.sanitize(req.body.AutoComfirmToBorrowMsgClassor.trim());
-		lend.AutoComfirmToBorrowMsgKeyWord=sanitizer.sanitize(req.body.AutoComfirmToBorrowMsgKeyWord.trim());
+		lend.AutoComfirmToBorrowMsgDirector=sanitizer.sanitize(library.replacer(req.body.AutoComfirmToBorrowMsgDirector,false));
+		lend.AutoComfirmToBorrowMsgClassor=sanitizer.sanitize(library.replacer(req.body.AutoComfirmToBorrowMsgClassor,false));
+		lend.AutoComfirmToBorrowMsgKeyWord=sanitizer.sanitize(library.replacer(req.body.AutoComfirmToBorrowMsgKeyWord,true));
 		lend.AutoComfirmToBorrowMsgLbound=rtnJSON.lboundSave;
 		lend.AutoComfirmToBorrowMsgUbound=rtnJSON.uboundSave;
 		

@@ -20,11 +20,7 @@
 	var submitFlag=false;
 	function disableButton(){
 		if(!submitFlag){
-			var orig=$('#goBtn').attr('class');
-			if(orig.search(' disabled')<0){
-				orig=orig+' disabled';
-				$('#goBtn').attr('class',orig);
-			}
+			$('#goBtn').addClass('disabled');
 			submitFlag=true;
 			return true;
 		}else{
@@ -32,4 +28,4 @@
 		}
 	}
 </script>
-<%- include('layout_footer',{imgSettingCode:"var ifLoadedCount=0;",imgDrawingCode:""}); -%>
+<%- include('layout_footer',{imgSettingCode:"var ifLoadedCount=0;",imgDrawingCode:"",nav_cur:'autoConfirmPage'}); -%>

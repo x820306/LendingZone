@@ -156,13 +156,13 @@ router.post('/buyInsurance',library.loginFormChecker,library.ensureAuthenticated
 });
 
 router.post('/buyInsuranceAll',library.loginFormChecker,library.ensureAuthenticated, function(req, res, next) {
-	var oneid=sanitizer.sanitize(req.body.oneid.trim());
-	var sorter=sanitizer.sanitize(req.body.sorter.trim());
-	var director=sanitizer.sanitize(req.body.director.trim());
-	var lbound=sanitizer.sanitize(req.body.lbound.trim());
-	var ubound=sanitizer.sanitize(req.body.ubound.trim());
-	var classor=sanitizer.sanitize(req.body.classor.trim());
-	var messenger=sanitizer.sanitize(req.body.messenger.trim());
+	var oneid=sanitizer.sanitize(library.replacer(req.body.oneid,true));
+	var sorter=sanitizer.sanitize(library.replacer(req.body.sorter,false));
+	var director=sanitizer.sanitize(library.replacer(req.body.director,false));
+	var lbound=sanitizer.sanitize(library.replacer(req.body.lbound,false));
+	var ubound=sanitizer.sanitize(library.replacer(req.body.ubound,false));
+	var classor=sanitizer.sanitize(library.replacer(req.body.classor,false));
+	var messenger=sanitizer.sanitize(library.replacer(req.body.messenger,false));
 	
 	if((director!='大至小')&&(director!='小至大')){
 		director='大至小';
@@ -398,7 +398,6 @@ router.post('/buyInsuranceAll',library.loginFormChecker,library.ensureAuthentica
 		}
 	}
 	
-	oneid=oneid.replace(/\s\s+/g,' ');
 	var stringArray=oneid.split(' ');
 	var keywordArray=[];
 	for(i=0;i<stringArray.length;i++){
@@ -456,12 +455,6 @@ router.post('/buyInsuranceAll',library.loginFormChecker,library.ensureAuthentica
 							}
 						}
 						
-						for(j=transactions.length-1;j>-1;j--){
-							if((transactions[j].InsuranceFeePaid!==0)||(transactions[j].PrincipalNotReturn<=0)){
-								transactions.splice(j, 1);
-							}
-						}
-						
 						if(messengerRec){
 							for(j=transactions.length-1;j>-1;j--){
 								if(messenger=='收到訊息'){
@@ -487,6 +480,12 @@ router.post('/buyInsuranceAll',library.loginFormChecker,library.ensureAuthentica
 						for(i=0;i<transactions.length;i++){
 							transactions[i].Level=transactions[i].Borrower.Level;
 							library.transactionProcessor(transactions[i],true);
+						}
+						
+						for(j=transactions.length-1;j>-1;j--){
+							if((transactions[j].InsuranceFeePaid!==0)||(transactions[j].PrincipalNotReturn<=0)){
+								transactions.splice(j, 1);
+							}
 						}
 						
 						if(sorter=='預計剩餘利息'){

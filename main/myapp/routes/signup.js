@@ -684,7 +684,7 @@ function userCreator(req,res,callback){
 						res.redirect('/message?content='+encodeURIComponent('此帳號已存在!'));
 					}else{
 						if(sanitizer.sanitize(req.body.Password.trim())==sanitizer.sanitize(req.body.Password2nd.trim())){
-							if((sanitizer.sanitize(req.body.Username.trim()).search(/[^\w\.\/]/ig)==-1)&&(sanitizer.sanitize(req.body.Password.trim()).search(/[^\w\.\/]/ig)==-1)&&(sanitizer.sanitize(req.body.Password.trim()).length>6)){
+							if((sanitizer.sanitize(req.body.Username.trim()).search(/[^\w]/ig)==-1)&&(sanitizer.sanitize(req.body.Password.trim()).search(/[^\w]/ig)==-1)&&(sanitizer.sanitize(req.body.Password.trim()).length>6)){
 								var toCreate = new Users();
 								toCreate.Username=sanitizer.sanitize(req.body.Username.trim());
 								toCreate.Password=sanitizer.sanitize(req.body.Password.trim());

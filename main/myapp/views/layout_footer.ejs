@@ -4,7 +4,7 @@
         <p>Copyright © Lending Zone 2015</p>
       </div>
     </footer>
-	<% if(userName===null){ %>
+	<% if((userName===null)&&((nav_cur!='signup'))){ %>
 		<!--modal-->
 		<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 			<div class="modal-dialog modal-sm">
@@ -79,7 +79,12 @@
 	
 	$(document).ready(function () {
 		var id;
-		<% if(userName===null){ %>
+		<% if((userName===null)&&(nav_cur!='signup')){ %>
+			if ($.cookie("rmbUser") == "true") {
+				$("#rememberID").prop("checked", true);
+				$("#usernameID").val($.cookie("username"));
+				$("#passwordID").val($.cookie("password"));
+			}
 			ajaxCaptcha();
 			<% if(lgfJSON){ %>
 				$('#myModal').on('shown.bs.modal.myevent', function () {
@@ -115,22 +120,10 @@
 			clearTimeout(id);
 			id = setTimeout(doneResizing, 500);
 		}); 
-		
-		<% if(userName===null){ %>
-			if ($.cookie("rmbUser") == "true") {
-				$("#rememberID").prop("checked", true);
-				$("#usernameID").val($.cookie("username"));
-				$("#passwordID").val($.cookie("password"));
-			}
-		<%}%>
 	});
 
 	function canvasOnClick(){
-		var orig=$('#introCanvas').attr('style');
-		if(orig.search('display:none;')<0){
-			orig = orig + 'display:none;';
-			$('#introCanvas').attr('style',orig);
-		}
+		$('#introCanvas').css('display','none');
 	}
 	
 	function doneResizing(){
@@ -159,7 +152,7 @@
 		}
 	}
 	
-	<% if(userName===null){ %>
+	<% if((userName===null)&&(nav_cur!='signup')){ %>
 		var captchaFlag=false;
 		function ajaxCaptcha(){
 			if(captchaFlag){
@@ -214,11 +207,7 @@
 		var submitFlag=false;
 		function disableButtonFooter(){
 			if(!submitFlag){
-				var orig=$('#lgBtn').attr('class');
-				if(orig.search(' disabled')<0){
-					orig=orig+' disabled';
-					$('#lgBtn').attr('class',orig);
-				}
+				$('#lgBtn').addClass('disabled');
 				forgettingFlag=true;
 				captchaFlag=true;
 				submitFlag=true;

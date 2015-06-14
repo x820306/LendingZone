@@ -48,6 +48,16 @@ exports.captchaTextArray=captchaTextArray;
 exports.formIdfrCtr=formIdfrCtr;
 exports.formIdfrArray=formIdfrArray;
 
+
+exports.replacer=function(input,flag){
+	if(!flag){
+		return input.trim().replace(/[^\w\s\/\.\-\u0800-\u9fa5]/ig,'').replace(/\s\s+/g,'');
+		
+	}else{
+		return input.trim().replace(/[^\w\s\/\.\-\u0800-\u9fa5]/ig,' ').replace(/\s\s+/g,' ');
+	}
+}
+
 exports.setCaptchaTimer = function(){
 	if(captchaTimer){
 		clearInterval(captchaTimer);
@@ -1565,7 +1575,6 @@ function autoConfirm(req,res,lend){
 		}
 	}
 	
-	msgKeyword=msgKeyword.replace(/\s\s+/g,' ');
 	var stringArray=msgKeyword.split(' ');
 	var keywordArray=[];
 	for(i=0;i<stringArray.length;i++){

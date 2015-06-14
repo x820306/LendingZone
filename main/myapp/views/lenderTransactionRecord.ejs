@@ -108,7 +108,7 @@
 						</td>
 						<%if((oneidDefault!=='')&&(totalResultNum>0)&&(!oflg)){%>
 							<td align="right">
-								<button class="btn btn-default disabled" style="display:inline;" id="highlightBtn" onclick="enableHighlight();">
+								<button class="btn btn-default disabled" style="display:none;" id="highlightBtn" onclick="enableHighlight();">
 									關鍵字上色
 								</button>
 								<button class="btn btn-default" style="" id="unhighlightBtn" onclick="disableHighlight();">
@@ -128,14 +128,14 @@
 					<table style="display:inline;" class="table">
 						<thead class="myThead">
 							<tr>
-								<th>
+								<th style="text-align:center">
 								實際合計費用
 								</th>
 							</tr>
 						</thead>
 						<tbody class="myTbody">
 							<tr>
-								<td>
+								<td align="center">
 									<div style="display:inline;"><%=biJSON.InfoJSON.info1.toFixed(0)%></div><div style="display:inline;">元</div>
 								</td>
 							</tr>
@@ -151,14 +151,14 @@
 						<table style="display:inline;" class="table">
 							<thead class="myThead">
 								<tr>
-									<th>
+									<th style="text-align:center">
 									全部合計費用
 									</th>
 								</tr>
 							</thead>
 							<tbody class="myTbody">
 								<tr>
-									<td>
+									<td align="center">
 										<div style="display:inline;" id="selectedFeeAll"><%=selectedFeeAll.toFixed(0)%></div><div style="display:inline;">元</div>
 									</td>
 								</tr>
@@ -198,14 +198,14 @@
 						<table style="display:inline;" class="table">
 							<thead class="myThead">
 								<tr>
-									<th>
+									<th style="text-align:center">
 									已選合計費用
 									</th>
 								</tr>
 							</thead>
 							<tbody class="myTbody">
 								<tr>
-									<td>
+									<td align="center">
 										<div style="display:inline;" id="selectedFee">0</div><div style="display:none;" id="selectedFeeR">0</div><div style="display:inline;">元</div>
 									</td>
 								</tr>
@@ -914,7 +914,7 @@ function disableDater(){
 }
 
 function linker(){
-	window.open('/lender/lenderTransactionRecord?oneid='+encodeURIComponent($('#oneidIpt').val())+'&filter='+encodeURIComponent($('#filter0').text())+'&messenger='+encodeURIComponent($('#messenger0').text())+'&classor='+encodeURIComponent($('#classor0').text())+'&sorter='+encodeURIComponent($('#sorter0').text())+'&director='+encodeURIComponent($('#director0').text())+'&lbound='+encodeURIComponent($('#lbound').val().trim())+'&ubound='+encodeURIComponent($('#ubound').val().trim())+'&page=1','_self');
+	window.open('/lender/lenderTransactionRecord?oneid='+encodeURIComponent($('#oneidIpt').val())+'&filter='+encodeURIComponent($('#filter0').text())+'&messenger='+encodeURIComponent($('#messenger0').text())+'&classor='+encodeURIComponent($('#classor0').text())+'&sorter='+encodeURIComponent($('#sorter0').text())+'&director='+encodeURIComponent($('#director0').text())+'&lbound='+encodeURIComponent($('#lbound').val())+'&ubound='+encodeURIComponent($('#ubound').val())+'&page=1','_self');
 }
 
 <% if(totalResultNum>0){%>
@@ -929,23 +929,10 @@ function linker(){
 				for(i=0;i<stringArray.length;i++){
 					$('.colorCnt').highlight(stringArray[i]);
 				}
-				var orig=$('#unhighlightBtn').attr('class');
-				orig=orig.replace(/ disabled/g, '');
-				$('#unhighlightBtn').attr('class',orig);
-				orig=$('#unhighlightBtn').attr('style');
-				orig=orig.replace(/display:none;/g, '');
-				$('#unhighlightBtn').attr('style',orig);
-				
-				orig=$('#highlightBtn').attr('class');
-				if(orig.search(' disabled')<0){
-					orig=orig+' disabled';
-					$(highlightBtn).attr('class',orig);
-				}
-				orig=$('#highlightBtn').attr('style');
-				if(orig.search('display:none;')<0){
-					orig=orig+'display:none;';
-					$(highlightBtn).attr('style',orig);
-				}
+				$('#unhighlightBtn').removeClass('disabled');
+				$('#unhighlightBtn').css('display','');
+				$('#highlightBtn').addClass('disabled');
+				$('#highlightBtn').css('display','none');
 			}
 		}
 	}
@@ -955,23 +942,10 @@ function linker(){
 			if(highLightFlag){
 				highLightFlag=false;
 				$('.colorCnt').unhighlight();
-				var orig=$('#highlightBtn').attr('class');
-				orig=orig.replace(/ disabled/g, '');
-				$('#highlightBtn').attr('class',orig);
-				orig=$('#highlightBtn').attr('style');
-				orig=orig.replace(/display:none;/g, '');
-				$('#highlightBtn').attr('style',orig);
-				
-				orig=$('#unhighlightBtn').attr('class');
-				if(orig.search(' disabled')<0){
-					orig=orig+' disabled';
-					$(unhighlightBtn).attr('class',orig);
-				}
-				orig=$('#unhighlightBtn').attr('style');
-				if(orig.search('display:none;')<0){
-					orig=orig+'display:none;';
-					$(unhighlightBtn).attr('style',orig);
-				}
+				$('#highlightBtn').removeClass('disabled');
+				$('#highlightBtn').css('display','');
+				$('#unhighlightBtn').addClass('disabled');
+				$('#unhighlightBtn').css('display','none');
 			}
 		}
 	}
@@ -1113,33 +1087,21 @@ function linker(){
 
 		function disableButton(){
 			buyFlag=true;
-			var orig=$('#buyBtn').attr('class');
-			if(orig.search(' disabled')<0){
-				orig=orig+' disabled';
-				$('#buyBtn').attr('class',orig);
-			}
+			$('#buyBtn').addClass('disabled');
 			
 			<%if(pageNumber>1){%>
 				buyAllFlag=true;
-				orig=$('#buyBtnAll').attr('class');
-				if(orig.search(' disabled')<0){
-					orig=orig+' disabled';
-					$(buyBtnAll).attr('class',orig);
-				}
+				$('#buyBtnAll').addClass('disabled');
 			<%}%>
 		}
 
 		function enableButton(){
 			buyFlag=false;
-			var orig=$('#buyBtn').attr('class');
-			orig=orig.replace(/ disabled/g, '');
-			$('#buyBtn').attr('class',orig);
+			$('#buyBtn').removeClass('disabled');
 			
 			<%if(pageNumber>1){%>
 				buyAllFlag=false;
-				orig=$('#buyBtnAll').attr('class');
-				orig=orig.replace(/ disabled/g, '');
-				$('#buyBtnAll').attr('class',orig);
+				$('#buyBtnAll').removeClass('disabled');
 			<%}%>
 		}
 
@@ -1166,4 +1128,4 @@ function linker(){
 	<%}%>
 <%}%>
 </script>
-<%- include('layout_footer',{imgSettingCode:"var ifLoadedCount=0;",imgDrawingCode:""}); -%>
+<%- include('layout_footer',{imgSettingCode:"var ifLoadedCount=0;",imgDrawingCode:"",nav_cur:'lenderTransactionRecord'}); -%>
