@@ -77,7 +77,7 @@
 						</td>
 						<%if((msgKeywordDefault!=='')&&(totalResultNum>0)&&(!oflg)){%>
 							<td align="right">
-								<button class="btn btn-default disabled" style="display:inline;" id="highlightBtn" onclick="enableHighlight();">
+								<button class="btn btn-default disabled" style="display:none;" id="highlightBtn" onclick="enableHighlight();">
 									關鍵字上色
 								</button>
 								<button class="btn btn-default" style="" id="unhighlightBtn" onclick="disableHighlight();">
@@ -97,44 +97,44 @@
 					<table style="display:inline;" class="table">
 						<thead class="myThead">
 							<tr>
-								<th>
+								<th style="text-align:center">
 								實際借出金額
 								</th>
-								<th>
+								<th style="text-align:center">
 								實際合計總利息
 								</th>
-								<th>
+								<th style="text-align:center">
 								實際合計本利和
 								</th>
-								<th>
+								<th style="text-align:center">
 								實際合計平均利息
 								</th>
-								<th>
+								<th style="text-align:center">
 								實際合計平均本利和
 								</th>
-								<th>
+								<th style="text-align:center">
 								實際合計利本比
 								</th>
 							</tr>
 						</thead>
 						<tbody class="myTbody">
 							<tr>
-								<td>
+								<td align="center">
 									<div style="display:inline;"><%=cfJSON.InfoJSON.info1.toFixed(0)%></div><div style="display:inline;">元</div>
 								</td>
-								<td>
+								<td align="center">
 									<div style="display:inline;"><%=cfJSON.InfoJSON.info2.toFixed(0)%></div><div style="display:inline;">元</div>
 								</td>
-								<td>
+								<td align="center">
 									<div style="display:inline;"><%=cfJSON.InfoJSON.info3.toFixed(0)%></div><div style="display:inline;">元</div>
 								</td>
-								<td>
+								<td align="center">
 									<div style="display:inline;"><%=cfJSON.InfoJSON.info4.toFixed(0)%></div><div style="display:inline;">元/月</div>
 								</td>
-								<td>
+								<td align="center">
 									<div style="display:inline;"><%=cfJSON.InfoJSON.info5.toFixed(0)%></div><div style="display:inline;">元/月</div>
 								</td>
-								<td>
+								<td align="center">
 									<%if(cfJSON.InfoJSON.info1>0){%>
 										<div style="display:inline;"><%=(cfJSON.InfoJSON.info2/cfJSON.InfoJSON.info1*100).toFixed(2)%></div><div style="display:inline;">%</div>
 									<%}else{%>
@@ -158,32 +158,32 @@
 						<table style="display:inline;" class="table">
 							<thead class="myThead">
 								<tr>
-									<th>
+									<th style="text-align:center">
 									銀行帳戶內餘額
 									</th>
-									<th>
+									<th style="text-align:center">
 									已借出總金額
 									</th>
-									<th>
+									<th style="text-align:center">
 									尚可手動借出金額
 									</th>
-									<th>
+									<th style="text-align:center">
 									已手動借出金額
 									</th>
 								</tr>
 							</thead>
 							<tbody class="myTbody">
 								<tr>
-									<td>
+									<td align="center">
 										<input style="display:inline;width:90%;" id="lendChangerIpt0" type="text" class="form-control" readonly="readonly" value="<%=MoneyInBankAccountValue.toFixed(0)%>"><div style="display:inline;">&nbsp;元</div>
 									</td>
-									<td>
+									<td align="center">
 										<input style="display:inline;width:90%;" id="lendChangerIpt2" type="text" class="form-control" readonly="readonly" value="<%=MoneyLended.moneyLendedCumulated.toFixed(0)%>"><div style="display:inline;">&nbsp;元</div>
 									</td>
-									<td>
+									<td align="center">
 										<input style="display:inline;width:90%;" id="lendChangerIpt4" type="text" class="form-control" readonly="readonly" value="<%=MoneyLended.moneyLeftToHendLend.toFixed(0)%>"><div style="display:inline;">&nbsp;元</div>
 									</td>
-									<td>
+									<td align="center">
 										<input style="display:inline;width:90%;" id="lendChangerIpt3" type="text" class="form-control" readonly="readonly" value="<%=MoneyLended.hendLendCumulated.toFixed(0)%>"><div style="display:inline;">&nbsp;元</div>
 									</td>
 								</tr>
@@ -194,36 +194,36 @@
 						<table style="display:inline;" class="table">
 							<thead class="myThead">
 								<tr>
-									<th>
+									<th style="text-align:center">
 									最大可自動借出金額
 									</th>
-									<th>
+									<th style="text-align:center">
 									目前最高可設定自動借出金額
 									</th>
-									<th>
+									<th style="text-align:center">
 									尚可自動借出金額
 									</th>
-									<th>
+									<th style="text-align:center">
 									已自動借出金額
 									</th>
 								</tr>
 							</thead>
 							<tbody class="myTbody">
 								<tr>
-									<td>
+									<td align="center">
 										<%if(jsonLend){%>
 											<input style="display:inline;width:90%;" id="lendChangerIpt" type="text" class="form-control" value="<%=jsonLend.MaxMoneyToLend.toFixed(0)%>" onkeypress="if(event.keyCode==13){lendChanger();}"><div style="display:inline;">&nbsp;元</div>
 										<%}else{%>
 											<input type="text" class="form-control" readonly="readonly" value="未找到自動出借設定！">
 										<%}%>
 									</td>
-									<td>
+									<td align="center">
 										<input style="display:inline;width:90%;" id="lendChangerIpt1" type="text" class="form-control" readonly="readonly" value="<%=MoneyLended.maxSettingAutoLend.toFixed(0)%>"><div style="display:inline;">&nbsp;元</div>
 									</td>
-									<td>
+									<td align="center">
 										<input style="display:inline;width:90%;" id="lendChangerIpt6" type="text" class="form-control" readonly="readonly" value="<%=MoneyLended.moneyLeftToAutoLend.toFixed(0)%>"><div style="display:inline;">&nbsp;元</div>
 									</td>
-									<td>
+									<td align="center">
 										<input style="display:inline;width:90%;" id="lendChangerIpt5" type="text" class="form-control" readonly="readonly" value="<%=MoneyLended.autoLendCumulated.toFixed(0)%>"><div style="display:inline;">&nbsp;元</div>
 									</td>
 								</tr>
@@ -241,44 +241,44 @@
 						<table style="display:inline;" class="table">
 							<thead class="myThead">
 								<tr>
-									<th>
+									<th style="text-align:center">
 									全部合計借出金額
 									</th>
-									<th>
+									<th style="text-align:center">
 									全部合計總利息
 									</th>
-									<th>
+									<th style="text-align:center">
 									全部合計本利和
 									</th>
-									<th>
+									<th style="text-align:center">
 									全部合計平均利息
 									</th>
-									<th>
+									<th style="text-align:center">
 									全部合計平均本利和
 									</th>
-									<th>
+									<th style="text-align:center">
 									全部合計利本比
 									</th>
 								</tr>
 							</thead>
 							<tbody class="myTbody">
 								<tr>
-									<td>
+									<td align="center">
 										<div style="display:inline;" id="value1All"><%=value1AllDefault.toFixed(0)%></div><div style="display:inline;">元</div>
 									</td>
-									<td>
+									<td align="center">
 										<div style="display:inline;" id="value2All"><%=value2AllDefault.toFixed(0)%></div><div style="display:inline;">元</div>
 									</td>
-									<td>
+									<td align="center">
 										<div style="display:inline;" id="value3All"><%=value3AllDefault.toFixed(0)%></div><div style="display:inline;">元</div>
 									</td>
-									<td>
+									<td align="center">
 										<div style="display:inline;" id="value4All"><%=value4AllDefault.toFixed(0)%></div><div style="display:inline;">元/月</div>
 									</td>
-									<td>
+									<td align="center">
 										<div style="display:inline;" id="value5All"><%=value5AllDefault.toFixed(0)%></div><div style="display:inline;">元/月</div>
 									</td>
-									<td>
+									<td align="center">
 									<%if(value1AllDefault>0){%>
 										<div style="display:inline;" id="value6All"><%=(value2AllDefault/value1AllDefault*100).toFixed(2)%></div><div style="display:inline;">%</div>
 									<%}else{%>
@@ -371,44 +371,44 @@
 						<table style="display:inline;" class="table">
 							<thead class="myThead">
 								<tr>
-									<th>
+									<th style="text-align:center">
 									已選合計借出金額
 									</th>
-									<th>
+									<th style="text-align:center">
 									已選合計總利息
 									</th>
-									<th>
+									<th style="text-align:center">
 									已選合計本利和
 									</th>
-									<th>
+									<th style="text-align:center">
 									已選合計平均利息
 									</th>
-									<th>
+									<th style="text-align:center">
 									已選合計平均本利和
 									</th>
-									<th>
+									<th style="text-align:center">
 									已選合計利本比
 									</th>
 								</tr>
 							</thead>
 							<tbody class="myTbody">
 								<tr>
-									<td>
+									<td align="center">
 										<div style="display:inline;" id="value1">0</div><div style="display:none;" id="value1R">0</div><div style="display:inline;">元</div>
 									</td>
-									<td>
+									<td align="center">
 										<div style="display:inline;" id="value2">0</div><div style="display:none;" id="value2R">0</div><div style="display:inline;">元</div>
 									</td>
-									<td>
+									<td align="center">
 										<div style="display:inline;" id="value3">0</div><div style="display:none;" id="value3R">0</div><div style="display:inline;">元</div>
 									</td>
-									<td>
+									<td align="center">
 										<div style="display:inline;" id="value4">0</div><div style="display:none;" id="value4R">0</div><div style="display:inline;">元/月</div>
 									</td>
-									<td>
+									<td align="center">
 										<div style="display:inline;" id="value5">0</div><div style="display:none;" id="value5R">0</div><div style="display:inline;">元/月</div>
 									</td>
-									<td>
+									<td align="center">
 										<div style="display:inline;" id="value6">0.00</div><div style="display:inline;">%</div>
 									</td>
 								</tr>
@@ -1308,7 +1308,7 @@ function disableDater(){
 }
 
 function linker(){
-	window.open('/lender/lenderReceiveMessages?msgKeyword='+encodeURIComponent($('#msgKeywordIpt').val().trim())+'&filter='+encodeURIComponent($('#filter0').text())+'&classor='+encodeURIComponent($('#classor0').text())+'&sorter='+encodeURIComponent($('#sorter0').text())+'&director='+encodeURIComponent($('#director0').text())+'&lbound='+encodeURIComponent($('#lbound').val().trim())+'&ubound='+encodeURIComponent($('#ubound').val().trim())+'&page=1','_self');
+	window.open('/lender/lenderReceiveMessages?msgKeyword='+encodeURIComponent($('#msgKeywordIpt').val())+'&filter='+encodeURIComponent($('#filter0').text())+'&classor='+encodeURIComponent($('#classor0').text())+'&sorter='+encodeURIComponent($('#sorter0').text())+'&director='+encodeURIComponent($('#director0').text())+'&lbound='+encodeURIComponent($('#lbound').val())+'&ubound='+encodeURIComponent($('#ubound').val())+'&page=1','_self');
 }
 
 <% if(totalResultNum>0){%>
@@ -1326,23 +1326,10 @@ function linker(){
 				for(i=0;i<stringArray.length;i++){
 					$('.colorCnt').highlight(stringArray[i]);
 				}
-				var orig=$('#unhighlightBtn').attr('class');
-				orig=orig.replace(/ disabled/g, '');
-				$('#unhighlightBtn').attr('class',orig);
-				orig=$('#unhighlightBtn').attr('style');
-				orig=orig.replace(/display:none;/g, '');
-				$('#unhighlightBtn').attr('style',orig);
-				
-				orig=$('#highlightBtn').attr('class');
-				if(orig.search(' disabled')<0){
-					orig=orig+' disabled';
-					$(highlightBtn).attr('class',orig);
-				}
-				orig=$('#highlightBtn').attr('style');
-				if(orig.search('display:none;')<0){
-					orig=orig+'display:none;';
-					$(highlightBtn).attr('style',orig);
-				}
+				$('#unhighlightBtn').removeClass('disabled');
+				$('#unhighlightBtn').css('display','');
+				$('#highlightBtn').addClass('disabled');
+				$('#highlightBtn').css('display','none');
 			}
 		}
 	}
@@ -1352,23 +1339,10 @@ function linker(){
 			if(highLightFlag){
 				highLightFlag=false;
 				$('.colorCnt').unhighlight();
-				var orig=$('#highlightBtn').attr('class');
-				orig=orig.replace(/ disabled/g, '');
-				$('#highlightBtn').attr('class',orig);
-				orig=$('#highlightBtn').attr('style');
-				orig=orig.replace(/display:none;/g, '');
-				$('#highlightBtn').attr('style',orig);
-				
-				orig=$('#unhighlightBtn').attr('class');
-				if(orig.search(' disabled')<0){
-					orig=orig+' disabled';
-					$(unhighlightBtn).attr('class',orig);
-				}
-				orig=$('#unhighlightBtn').attr('style');
-				if(orig.search('display:none;')<0){
-					orig=orig+'display:none;';
-					$(unhighlightBtn).attr('style',orig);
-				}
+				$('#highlightBtn').removeClass('disabled');
+				$('#highlightBtn').css('display','');
+				$('#unhighlightBtn').addClass('disabled');
+				$('#unhighlightBtn').css('display','none');
 			}
 		}
 	}
@@ -1490,7 +1464,6 @@ function linker(){
 					data:{Value:value,TargetID:"<%=jsonLend._id%>"},
 					dataType: 'json',
 					success: function(Jdata) {
-						var origInner;
 						if(Jdata.success){
 							$('#lendChangerIpt0').val(Jdata.result0.toFixed(0));
 							$('#lendChangerIpt1').val(Jdata.result.maxSettingAutoLend.toFixed(0));
@@ -1523,11 +1496,7 @@ function linker(){
 				lendChangerFlag=true;
 				$('#lendChangerIpt').attr('onkeypress','');
 				$('#lendChangerIpt').attr('readonly','readonly');
-				var orig=$('#lendChangerBtn').attr('class');
-				if(orig.search(' disabled')<0){
-					orig=orig+' disabled';
-					$('#lendChangerBtn').attr('class',orig);
-				}
+				$('#lendChangerBtn').addClass('disabled');
 				
 				disableButton();
 			}
@@ -1536,9 +1505,7 @@ function linker(){
 				lendChangerFlag=false;
 				$('#lendChangerIpt').attr('onkeypress','if(event.keyCode==13){lendChanger();}');
 				$('#lendChangerIpt').removeAttr("readonly");
-				var orig=$('#lendChangerBtn').attr('class');
-				orig=orig.replace(/ disabled/g, '');
-				$('#lendChangerBtn').attr('class',orig);
+				$('#lendChangerBtn').removeClass('disabled');
 				
 				enableButton();
 			}
@@ -1748,64 +1715,40 @@ function linker(){
 		function disableButton(){
 			<%if(jsonLend){%>
 				confirmFlag=true;
-				var orig=$('#confirmBtn').attr('class');
-				if(orig.search(' disabled')<0){
-					orig=orig+' disabled';
-					$('#confirmBtn').attr('class',orig);
-				}
+				$('#confirmBtn').addClass('disabled');
 			<%}%>
 			
 			rejectFlag=true;
-			orig=$('#rejectBtn').attr('class');
-			if(orig.search(' disabled')<0){
-				orig=orig+' disabled';
-				$(rejectBtn).attr('class',orig);
-			}
+			$('#rejectBtn').addClass('disabled');
 			
 			<%if(pageNumber>1){%>
 				<%if(jsonLend){%>	
 					confirmAllFlag=true;
-					orig=$('#confirmAllBtn').attr('class');
-					if(orig.search(' disabled')<0){
-						orig=orig+' disabled';
-						$('#confirmAllBtn').attr('class',orig);
-					}
+					$('#confirmAllBtn').addClass('disabled');
 				<%}%>
 					
 			rejectAllFlag=true;
-			orig=$('#rejectAllBtn').attr('class');
-			if(orig.search(' disabled')<0){
-				orig=orig+' disabled';
-				$('#rejectAllBtn').attr('class',orig);
-			}
+			$('#rejectAllBtn').addClass('disabled');
 			<%}%>
 		}
 
 		function enableButton(){
 			<%if(jsonLend){%>
 				confirmFlag=false;
-				var orig=$('#confirmBtn').attr('class');
-				orig=orig.replace(/ disabled/g, '');
-				$('#confirmBtn').attr('class',orig);
+				$('#confirmBtn').removeClass('disabled');
 			<%}%>
 			
 			rejectFlag=false;
-			orig=$('#rejectBtn').attr('class');
-			orig=orig.replace(/ disabled/g, '');
-			$('#rejectBtn').attr('class',orig);
+			$('#rejectBtn').removeClass('disabled');
 			
 			<%if(pageNumber>1){%>
 				<%if(jsonLend){%>
 					confirmAllFlag=false;
-					orig=$('#confirmAllBtn').attr('class');
-					orig=orig.replace(/ disabled/g, '');
-					$('#confirmAllBtn').attr('class',orig);
+					$('#confirmAllBtn').removeClass('disabled');
 				<%}%>
 
 				rejectAllFlag=false;
-				orig=$('#rejectAllBtn').attr('class');
-				orig=orig.replace(/ disabled/g, '');
-				$('#rejectAllBtn').attr('class',orig);
+				$('#rejectAllBtn').removeClass('disabled');
 			<%}%>
 		}
 
@@ -1841,4 +1784,4 @@ function linker(){
 	<%}%>
 <%}%>
 </script>
-<%- include('layout_footer',{imgSettingCode:"var ifLoadedCount=0;",imgDrawingCode:""}); -%>
+<%- include('layout_footer',{imgSettingCode:"var ifLoadedCount=0;",imgDrawingCode:"",nav_cur:'lenderReceiveMessages'}); -%>

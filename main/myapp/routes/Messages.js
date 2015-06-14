@@ -649,12 +649,12 @@ router.post('/confirmToBorrowMessageInLRM',library.loginFormChecker, library.ens
 });
 
 router.post('/rejectToBorrowMessageInLRMall',library.loginFormChecker, library.ensureAuthenticated, function(req, res, next) {
-	var msgKeyword=sanitizer.sanitize(req.body.msgKeyword.trim());
-	var sorter=sanitizer.sanitize(req.body.sorter.trim());
-	var classor=sanitizer.sanitize(req.body.classor.trim());
-	var director=sanitizer.sanitize(req.body.director.trim());
-	var lbound=sanitizer.sanitize(req.body.lbound.trim());
-	var ubound=sanitizer.sanitize(req.body.ubound.trim());
+	var msgKeyword=sanitizer.sanitize(library.replacer(req.body.msgKeyword,true));
+	var sorter=sanitizer.sanitize(library.replacer(req.body.sorter,false));
+	var classor=sanitizer.sanitize(library.replacer(req.body.classor,false));
+	var director=sanitizer.sanitize(library.replacer(req.body.director,false));
+	var lbound=sanitizer.sanitize(library.replacer(req.body.lbound,false));
+	var ubound=sanitizer.sanitize(library.replacer(req.body.ubound,false));
 	
 	if((director!='大至小')&&(director!='小至大')){
 		director='大至小';
@@ -832,7 +832,6 @@ router.post('/rejectToBorrowMessageInLRMall',library.loginFormChecker, library.e
 		}
 	}
 	
-	msgKeyword=msgKeyword.replace(/\s\s+/g,' ');
 	var stringArray=msgKeyword.split(' ');
 	var keywordArray=[];
 	for(i=0;i<stringArray.length;i++){
@@ -956,12 +955,12 @@ router.post('/rejectToBorrowMessageInLRMall',library.loginFormChecker, library.e
 });
 
 router.post('/confirmToBorrowMessageInLRMall',library.loginFormChecker, library.ensureAuthenticated, function(req, res, next) {
-	var msgKeyword=sanitizer.sanitize(req.body.msgKeyword.trim());
-	var sorter=sanitizer.sanitize(req.body.sorter.trim());
-	var classor=sanitizer.sanitize(req.body.classor.trim());
-	var director=sanitizer.sanitize(req.body.director.trim());
-	var lbound=sanitizer.sanitize(req.body.lbound.trim());
-	var ubound=sanitizer.sanitize(req.body.ubound.trim());
+	var msgKeyword=sanitizer.sanitize(library.replacer(req.body.msgKeyword,true));
+	var sorter=sanitizer.sanitize(library.replacer(req.body.sorter,false));
+	var classor=sanitizer.sanitize(library.replacer(req.body.classor,false));
+	var director=sanitizer.sanitize(library.replacer(req.body.director,false));
+	var lbound=sanitizer.sanitize(library.replacer(req.body.lbound,false));
+	var ubound=sanitizer.sanitize(library.replacer(req.body.ubound,false));
 	
 	if((director!='大至小')&&(director!='小至大')){
 		director='大至小';
@@ -1139,7 +1138,6 @@ router.post('/confirmToBorrowMessageInLRMall',library.loginFormChecker, library.
 		}
 	}
 	
-	msgKeyword=msgKeyword.replace(/\s\s+/g,' ');
 	var stringArray=msgKeyword.split(' ');
 	var keywordArray=[];
 	for(i=0;i<stringArray.length;i++){
@@ -1274,12 +1272,12 @@ router.post('/deleteToLendMessageInLRM',library.loginFormChecker, library.ensure
 });
 
 router.post('/deleteToLendMessageInLRMall',library.loginFormChecker, library.ensureAuthenticated, function(req, res, next) {
-	var msgKeyword=sanitizer.sanitize(req.body.msgKeyword.trim());
-	var sorter=sanitizer.sanitize(req.body.sorter.trim());
-	var classor=sanitizer.sanitize(req.body.classor.trim());
-	var director=sanitizer.sanitize(req.body.director.trim());
-	var lbound=sanitizer.sanitize(req.body.lbound.trim());
-	var ubound=sanitizer.sanitize(req.body.ubound.trim());
+	var msgKeyword=sanitizer.sanitize(library.replacer(req.body.msgKeyword,true));
+	var sorter=sanitizer.sanitize(library.replacer(req.body.sorter,false));
+	var classor=sanitizer.sanitize(library.replacer(req.body.classor,false));
+	var director=sanitizer.sanitize(library.replacer(req.body.director,false));
+	var lbound=sanitizer.sanitize(library.replacer(req.body.lbound,false));
+	var ubound=sanitizer.sanitize(library.replacer(req.body.ubound,false));
 	
 	if((director!='大至小')&&(director!='小至大')){
 		director='大至小';
@@ -1457,7 +1455,6 @@ router.post('/deleteToLendMessageInLRMall',library.loginFormChecker, library.ens
 		}
 	}
 	
-	msgKeyword=msgKeyword.replace(/\s\s+/g,' ');
 	var stringArray=msgKeyword.split(' ');
 	var keywordArray=[];
 	for(i=0;i<stringArray.length;i++){

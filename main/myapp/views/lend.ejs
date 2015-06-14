@@ -127,7 +127,7 @@
 						<% if(!jsonLend){ %>
 							<input id="f4" type="number" style="width:95%;" class="textForm" name="MinLevelAccepted"<%if(lfJSON){%> value="<%=lfJSON.FormContent.F4%>"<%}%>>
 						<% }else{ %>
-							<input id="f4" type="number" style="width:95%;" class="textForm" name="MinLevelAccepted" value="<%if(lfJSON){%><%=lfJSON.FormContent.F4%><%}else{%><%=jsonLend.MinLevelAccepted.toFixed(0)%><%}%>">
+							<input id="f4" type="number" style="width:95%;" class="textForm" name="MinLevelAccepted" value="<%if(lfJSON){%><%=lfJSON.FormContent.F4%><%}else{%><%if(jsonLend.MinLevelAccepted!==-1){%><%=jsonLend.MinLevelAccepted.toFixed(0)%><%}%><%}%>">
 						<% } %>
 						&nbsp;級
 					</div>
@@ -141,7 +141,7 @@
 						<% if(!jsonLend){ %>
 							<input id="f5" type="number" style="width:95%;" class="textForm" name="MinInterestInFuture"<%if(lfJSON){%> value="<%=lfJSON.FormContent.F5%>"<%}%>>
 						<% }else{ %>
-							<input id="f5" type="number" style="width:95%;" class="textForm" name="MinInterestInFuture" value="<%if(lfJSON){%><%=lfJSON.FormContent.F5%><%}else{%><%=jsonLend.MinInterestInFuture.toFixed(0)%><%}%>">
+							<input id="f5" type="number" style="width:95%;" class="textForm" name="MinInterestInFuture" value="<%if(lfJSON){%><%=lfJSON.FormContent.F5%><%}else{%><%if(jsonLend.MinInterestInFuture!==-1){%><%=jsonLend.MinInterestInFuture.toFixed(0)%><%}%><%}%>">
 						<% } %>
 						&nbsp;元
 					</div>
@@ -155,7 +155,7 @@
 						<% if(!jsonLend){ %>
 							<input id="f6" type="number" style="width:95%;" class="textForm" name="MinMoneyFuture"<%if(lfJSON){%> value="<%=lfJSON.FormContent.F6%>"<%}%>>
 						<% }else{ %>
-							<input id="f6" type="number" style="width:95%;" class="textForm" name="MinMoneyFuture" value="<%if(lfJSON){%><%=lfJSON.FormContent.F6%><%}else{%><%=jsonLend.MinMoneyFuture.toFixed(0)%><%}%>">
+							<input id="f6" type="number" style="width:95%;" class="textForm" name="MinMoneyFuture" value="<%if(lfJSON){%><%=lfJSON.FormContent.F6%><%}else{%><%if(jsonLend.MinMoneyFuture!==-1){%><%=jsonLend.MinMoneyFuture.toFixed(0)%><%}%><%}%>">
 						<% } %>
 						&nbsp;元
 					</div>
@@ -169,7 +169,7 @@
 						<% if(!jsonLend){ %>
 							<input id="f7" type="number" style="width:95%;" class="textForm" name="MinInterestInFutureMonth"<%if(lfJSON){%> value="<%=lfJSON.FormContent.F7%>"<%}%>>
 						<% }else{ %>
-							<input id="f7" type="number" style="width:95%;" class="textForm" name="MinInterestInFutureMonth" value="<%if(lfJSON){%><%=lfJSON.FormContent.F7%><%}else{%><%=jsonLend.MinInterestInFutureMonth.toFixed(0)%><%}%>">
+							<input id="f7" type="number" style="width:95%;" class="textForm" name="MinInterestInFutureMonth" value="<%if(lfJSON){%><%=lfJSON.FormContent.F7%><%}else{%><%if(jsonLend.MinInterestInFutureMonth!==-1){%><%=jsonLend.MinInterestInFutureMonth.toFixed(0)%><%}%><%}%>">
 						<% } %>
 						&nbsp;元/月
 					</div>
@@ -183,7 +183,7 @@
 						<% if(!jsonLend){ %>
 							<input id="f8" type="number" style="width:95%;" class="textForm" name="MinInterestInFutureMoneyMonth"<%if(lfJSON){%> value="<%=lfJSON.FormContent.F8%>"<%}%>>
 						<% }else{ %>
-							<input id="f8" type="number" style="width:95%;" class="textForm" name="MinInterestInFutureMoneyMonth" value="<%if(lfJSON){%><%=lfJSON.FormContent.F8%><%}else{%><%=jsonLend.MinInterestInFutureMoneyMonth.toFixed(0)%><%}%>">
+							<input id="f8" type="number" style="width:95%;" class="textForm" name="MinInterestInFutureMoneyMonth" value="<%if(lfJSON){%><%=lfJSON.FormContent.F8%><%}else{%><%if(jsonLend.MinInterestInFutureMoneyMonth!==-1){%><%=jsonLend.MinInterestInFutureMoneyMonth.toFixed(0)%><%}%><%}%>">
 						<% } %>
 						&nbsp;元/月
 					</div>
@@ -197,7 +197,7 @@
 						<% if(!jsonLend){ %>
 							<input id="f9" type="text" style="width:95%;" class="textForm" name="MinInterestInFutureDivMoney"<%if(lfJSON){%> value="<%=lfJSON.FormContent.F9%>"<%}%>>
 						<% }else{ %>
-							<input id="f9" type="text" style="width:95%;" class="textForm" name="MinInterestInFutureDivMoney" value="<%if(lfJSON){%><%=lfJSON.FormContent.F9%><%}else{%><%=(jsonLend.MinInterestInFutureDivMoney*100).toFixed(2)%><%}%>">
+							<input id="f9" type="text" style="width:95%;" class="textForm" name="MinInterestInFutureDivMoney" value="<%if(lfJSON){%><%=lfJSON.FormContent.F9%><%}else{%><%if(jsonLend.MinInterestInFutureDivMoney!==-1){%><%=(jsonLend.MinInterestInFutureDivMoney*100).toFixed(2)%><%}%><%}%>">
 						<% } %>
 						&nbsp;%
 					</div>
@@ -663,45 +663,45 @@ function autoSorter(){
 function autoChanger(){
 	if($('#periodSel').val()>0){
 		$('#sorterSel').prop('disabled', false);
-		$('#sorterPnl').attr('style','');
+		$('#sorterPnl').css('display','');
 		
 		$('#directorSel').prop('disabled', false);
-		$('#directorPnl').attr('style','');
+		$('#directorPnl').css('display','');
 		
 		$('#classorSel').prop('disabled', false);
-		$('#classorPnl').attr('style','');
+		$('#classorPnl').css('display','');
 		
 		$('#lboundSel').prop('disabled', false);
-		$('#lboundPnl').attr('style','');
+		$('#lboundPnl').css('display','');
 		
 		$('#uboundSel').prop('disabled', false);
-		$('#uboundPnl').attr('style','');
+		$('#uboundPnl').css('display','');
 		
 		$('#keywordSel').prop('disabled', false);
-		$('#keywordPnl').attr('style','');
+		$('#keywordPnl').css('display','');
 	}else{
 		$('#sorterSel').prop('disabled', true);
 		$('#sorterSel').val('InterestRate');
 		$('#lbd').html('%');
 		$('#ubd').html('%');
-		$('#sorterPnl').attr('style','display:none;');
+		$('#sorterPnl').css('display','none');
 		
 		$('#directorSel').prop('disabled', true);
 		$('#directorSel').val('minus');
-		$('#directorPnl').attr('style','display:none;');
+		$('#directorPnl').css('display','none');
 		
 		$('#classorSel').prop('disabled', true);
 		$('#classorSel').val('none');
-		$('#classorPnl').attr('style','display:none;');
+		$('#classorPnl').css('display','none');
 		
 		$('#lboundSel').prop('disabled', true);
-		$('#lboundPnl').attr('style','display:none;');
+		$('#lboundPnl').css('display','none');
 		
 		$('#uboundSel').prop('disabled', true);
-		$('#uboundPnl').attr('style','display:none;');
+		$('#uboundPnl').css('display','none');
 		
 		$('#keywordSel').prop('disabled', true);
-		$('#keywordPnl').attr('style','display:none;');
+		$('#keywordPnl').css('display','none');
 		
 		$('#lboundSel').val('');
 		$('#uboundSel').val('');
@@ -851,7 +851,7 @@ function checkAndOpenModal(target,cntNumber,cntTail,flag){
 	}
 	
 	if(flag){
-		if((a!='')&&(b!='')&&(c!='')&&(aa>=1)&&(bb>=0.01)&&(bb<=99)&&(cc>=1)&&(cc<=36)&&(dd>=0)&&(ee>=0)&&(ff>=0)&&(gg>=0)&&(hh>=0)&&(ii>=0)&&(ii<=99)&&(keepFlag)){
+		if((a!='')&&(b!='')&&(c!='')&&(aa>=1)&&(bb>=0.01)&&(bb<=99)&&(cc>=1)&&(cc<=36)&&(dd>=1)&&(ee>=1)&&(ff>=1)&&(gg>=1)&&(hh>=1)&&(ii>=0.01)&&(ii<=99)&&(keepFlag)){
 			$("input[name='MaxMoneyToLend']").val(aa);
 			$("input[name='InterestRate']").val(bb);
 			$("input[name='MonthPeriod']").val(cc);
@@ -893,12 +893,8 @@ function checkAndOpenModal(target,cntNumber,cntTail,flag){
 	var submitFlag=false;
 	function disableButton(){
 		if(!submitFlag){
-			var orig=$('#createBtnID').attr('class');
-			if(orig.search(' disabled')<0){
-				orig=orig+' disabled';
-				$('#createBtnID').attr('class',orig);
-			}
 			submitFlag=true;
+			$('#createBtnID').addClass('disabled');
 			return true;
 		}else{
 			return false;
@@ -912,18 +908,10 @@ function checkAndOpenModal(target,cntNumber,cntTail,flag){
 	var submitFlag=false;
 	function disableButton(){
 		if(!submitFlag){
-			var orig=$('#destroyBtnID').attr('class');
-			if(orig.search(' disabled')<0){
-				orig=orig+' disabled';
-				$('#destroyBtnID').attr('class',orig);
-			}
-			
-			var orig=$('#updateBtnID').attr('class');
-			if(orig.search(' disabled')<0){
-				orig=orig+' disabled';
-				$('#updateBtnID').attr('class',orig);
-			}
 			submitFlag=true;
+			$('#destroyBtnID').addClass('disabled');
+			$('#updateBtnID').addClass('disabled');
+			
 			return true;
 		}else{
 			return false;
@@ -940,4 +928,4 @@ function checkAndOpenModal(target,cntNumber,cntTail,flag){
 	}
 <% }%>
 </script>
-<%- include('layout_footer',{imgSettingCode:"var ifLoadedCount=0;",imgDrawingCode:""}); -%>
+<%- include('layout_footer',{imgSettingCode:"var ifLoadedCount=0;",imgDrawingCode:"",nav_cur:'lend'}); -%>

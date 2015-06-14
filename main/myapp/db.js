@@ -15,7 +15,6 @@ var Borrows = new Schema({
 	Category:{ type: String, default:'general'},//'general','education','family','tour' etc. we can add more
 	Likes: [{ type: Schema.Types.ObjectId, ref: 'Users' }],
 	IfReadable: { type: Boolean, default: true },
-	Level:{ type: Number, default: 0 },//Have to be copied from User when creating, for sorting convenience
 	AutoComfirmToLendMsgPeriod: { type: Number, default: -1 },
 	AutoComfirmToLendMsgSorter: { type: String, default: 'invalid' },
 	AutoComfirmToLendMsgDirector: { type: String, default: 'invalid' },
@@ -30,12 +29,12 @@ var Lends = new Schema({
     MaxMoneyToLend: { type: Number, default: 0 },
 	InterestRate: { type: Number, default: 0.01 },
 	MonthPeriod: { type: Number, default: 1 },
-	MinLevelAccepted: { type: Number, default: 0 },
-	MinInterestInFuture: { type: Number, default: 0 },
-	MinMoneyFuture: { type: Number, default: 0 },
-	MinInterestInFutureMonth: { type: Number, default: 0 },
-	MinInterestInFutureMoneyMonth: { type: Number, default: 0 },
-	MinInterestInFutureDivMoney:{ type: Number, default: 0 },
+	MinLevelAccepted: { type: Number, default: -1 },
+	MinInterestInFuture: { type: Number, default: -1 },
+	MinMoneyFuture: { type: Number, default: -1 },
+	MinInterestInFutureMonth: { type: Number, default: -1 },
+	MinInterestInFutureMoneyMonth: { type: Number, default: -1 },
+	MinInterestInFutureDivMoney:{ type: Number, default: -1 },
 	AutoComfirmToBorrowMsgPeriod: { type: Number, default: -1 },
 	AutoComfirmToBorrowMsgSorter: { type: String, default: 'invalid' },
 	AutoComfirmToBorrowMsgDirector: { type: String, default: 'invalid' },
@@ -59,7 +58,6 @@ var Messages = new Schema({
 	OldMonthPeriod: { type: Number, default: 1 },
 	Status: { type: String, default:'NotConfirmed' },// 'NotConfirmed' or 'Confirmed' or 'Rejected'
 	Type: {type: String, default:'NoType'},// 'toLend' or 'toBorrow'
-	Level:{ type: Number, default: 0 },//Have to be copied from Borrows, for sorting convenience
 	SendTo:{ type: Schema.Types.ObjectId, ref: 'Users' },
 	Transaction: [{ type: Schema.Types.ObjectId, ref: 'Transactions' }],
 	CreatedBy: { type: Schema.Types.ObjectId, ref: 'Users' },
@@ -81,9 +79,9 @@ var Users = new Schema({
 	SecondCardType: { type: String},
 	Phone: { type: String},
 	Address: { type: String},
-	OrignalLevel: { type: Number, default: 0 },
-	Level: { type: Number, default: 0 },
-	MaxTotalMoneyCanBorrow: { type: Number, default: 0 },
+	OrignalLevel: { type: Number, default: 1 },
+	Level: { type: Number, default: 1 },
+	MaxTotalMoneyCanBorrow: { type: Number, default: 1 },
 	Updated: { type: Date, default: Date.now },
 	Created: { type: Date, default: Date.now },
 	resetPasswordToken: { type: String},
@@ -103,7 +101,6 @@ var Transactions = new Schema({
 	Principal: { type: Number, default: 0 },//本金
 	InterestRate: { type: Number, default: 0.01 },
 	MonthPeriod: { type: Number, default: 1 },//期數
-	Level:{ type: Number, default: 0 },//Have to be copied from Messages, for sorting convenience
 	CreatedFrom: { type: Schema.Types.ObjectId, ref: 'Messages' },
 	Borrower: { type: Schema.Types.ObjectId, ref: 'Users' },
 	Lender: { type: Schema.Types.ObjectId, ref: 'Users' },
@@ -153,7 +150,7 @@ var Returns = new Schema({
 	ReturnCountBeforePaid: { type: Number, default: 0 },
 	previousPayDateBeforePaid: { type: Date, default: Date.now },
 	nextPayDateBeforePaid: { type: Date, default: Date.now },
-	LevelBeforePaid: { type: Number, default: 0 },
+	LevelBeforePaid: { type: Number, default: 1 },
 	ExtendPrincipalAfterPaid: { type: Number, default: 0 },
 	TotalPrincipalNowAfterPaid: { type: Number, default: 0 },
 	PrincipalNotReturnAfterPaid: { type: Number, default: 0 },
@@ -176,8 +173,7 @@ var Returns = new Schema({
 	ReturnCountAfterPaid: { type: Number, default: 0 },
 	previousPayDateAfterPaid: { type: Date, default: Date.now },
 	nextPayDateAfterPaid: { type: Date, default: Date.now },
-	LevelAfterPaid: { type: Number, default: 0 },
-	Level:{ type: Number, default: 0 },
+	LevelAfterPaid: { type: Number, default: 1 },
 	BorrowerBankAccountNumber: {type: String, default:''},
 	Updated: { type: Date, default: Date.now },
 	Created: { type: Date, default: Date.now }

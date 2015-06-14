@@ -169,14 +169,14 @@
 							<br>
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%-json.Discussion[i].Content.replace(new RegExp('\n','g'),'<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;').replace(new RegExp(' ','g'),'&nbsp;')%>
 							<br>
-							<div style="display:inline;" class="myTitle"><%=json.Discussion[i].Updated.getFullYear()%>/<%=json.Discussion[i].Updated.getMonth()+1%>/<%=json.Discussion[i].Updated.getDate()%></div>
+							<div style="display:inline;" class="myTitle">No.<%=i+1%>&nbsp;&nbsp;&nbsp;<%=json.Discussion[i].Updated.getFullYear()%>/<%=json.Discussion[i].Updated.getMonth()+1%>/<%=json.Discussion[i].Updated.getDate()%></div>
 							<br>
 							<br>
 						<%}%>
 					</div>
 					<div class="input-group my_discussion_ipt">
 						<%if(userName===null){ %>
-							<textarea style="height:35px;" placeholder="留言...Enter送出，Shift+Enter換行" class="form-control" onkeypress="if(event.keyCode==13){$('#myModal').modal('show');}"></textarea>
+							<textarea style="height:35px;" placeholder="留言...Enter送出，Shift+Enter換行" class="form-control" onkeypress="if(event.keyCode==13){if(!event.shiftKey){$('#myModal').modal('show');}}"></textarea>
 							<span class="input-group-btn">
 								<button style="height:35px;" class="btn btn-default" type="button" id="sendButton" data-toggle="modal" data-target="#myModal">
 									<span class="glyphicon glyphicon-comment myTitle2"></span>
@@ -530,7 +530,7 @@
 									<br>
 									<div class="my-divider"></div>
 									<h4>訊息：</h4>
-									<textarea class="form-control" name="Message" rows="3" readonly="readonly"><%if(jsonMessage.Message!==''){%><%=jsonMessage.Message%><%}else{%>無內容<%}%></textarea>
+									<textarea class="form-control" name="Message" rows="3" readonly="readonly"><%if(jsonMessage.Message!==''){%><%=jsonMessage.Message.replace(/&gt;/g,'>').replace(/&lt;/g,'<').replace(/&amp;/g,'&')%><%}else{%>無內容<%}%></textarea>
 									<br>
 								</div>
 								<%if(jsonMessage.Status=='NotConfirmed'){%>
@@ -694,7 +694,7 @@
 									<br>
 									<div class="my-divider"></div>
 									<h4>訊息（選填）：<span id="s4" style="color:red;"><%if(hlfJSON){%><%if(hlfJSON.Target[3]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=hlfJSON.Message[3]%><%}%><%}%></span></h4>
-									<textarea class="form-control" name="Message" rows="3"><%if(hlfJSON){%><%=hlfJSON.FormContent.F4%><%}else{%><%=jsonMessage.Message%><%}%></textarea>
+									<textarea class="form-control" name="Message" rows="3"><%if(hlfJSON){%><%=hlfJSON.FormContent.F4%><%}else{%><%=jsonMessage.Message.replace(/&gt;/g,'>').replace(/&lt;/g,'<').replace(/&amp;/g,'&')%><%}%></textarea>
 								</div>
 								<input type="hidden" name="FromBorrowRequest" value="<%=json._id%>">
 								<input type="hidden" name="_id" value="<%=jsonMessage._id%>">
@@ -817,7 +817,7 @@
 								<br>
 								<div class="my-divider"></div>
 								<h4>訊息：</h4>
-								<textarea class="form-control" name="Message" rows="3" readonly="readonly"><%if(jsonBorrowMessage.Message!==''){%><%=jsonBorrowMessage.Message%><%}else{%>無內容<%}%></textarea>
+								<textarea class="form-control" name="Message" rows="3" readonly="readonly"><%if(jsonBorrowMessage.Message!==''){%><%=jsonBorrowMessage.Message.replace(/&gt;/g,'>').replace(/&lt;/g,'<').replace(/&amp;/g,'&')%><%}else{%>無內容<%}%></textarea>
 								<br>
 							</div>
 							<%if(jsonBorrowMessage.Status=='NotConfirmed'){%>
@@ -981,7 +981,7 @@
 								<br>
 								<div class="my-divider"></div>
 								<h4>訊息：</h4>
-								<textarea class="form-control" name="Message" rows="3" readonly="readonly"><%if(cfJSON){%><%=cfJSON.FormContent.F4%><%}else{%><%if(jsonBorrowMessage.Message!==''){%><%=jsonBorrowMessage.Message%><%}else{%>無內容<%}%><%}%></textarea>
+								<textarea class="form-control" name="Message" rows="3" readonly="readonly"><%if(cfJSON){%><%=cfJSON.FormContent.F4%><%}else{%><%if(jsonBorrowMessage.Message!==''){%><%=jsonBorrowMessage.Message.replace(/&gt;/g,'>').replace(/&lt;/g,'<').replace(/&amp;/g,'&')%><%}else{%>無內容<%}%><%}%></textarea>
 							</div>
 							<input type="hidden" name="FromBorrowRequest" value="<%=json._id%>">
 							<input type="hidden" name="MessageID" value="<%=jsonBorrowMessage._id%>">
@@ -1150,11 +1150,7 @@
 					$('#confirmModal').modal('show');
 				<%}%>
 				
-				var orig=$('#btnID').attr('class');
-				if(orig.search(' disabled')<0){
-					orig=orig+' disabled';
-					$('#btnID').attr('class',orig);
-				}
+				$('#btnID').addClass('disabled');
 				$.ajax({ 
 					url: '/Borrows/iflike',
 					type: 'POST',
@@ -1188,7 +1184,6 @@
 					data:{_id:"<%=json._id%>"},
 					dataType: 'json',
 					success: function(Jdata) {
-						var origInner;
 						if(Jdata.success){
 							renderComments(Jdata);
 						}else{
@@ -1214,20 +1209,12 @@
 		function startRenderComments(){
 			$('#iptCtr').attr('onkeypress','');
 			$('#iptCtr').attr('readonly','readonly');
-			var orig=$('#sendButton').attr('class');
-			if(orig.search(' disabled')<0){
-				orig=orig+' disabled';
-				$('#sendButton').attr('class',orig);
-			}
+			$('#sendButton').addClass('disabled');
 			$(".actionTa").each(function() {
 				$(this).attr('readonly','readonly');
 			});
 			$(".actionLi").each(function() {
-				orig=$(this).attr('class');
-				if(orig.search(' disabled')<0){
-					orig=orig+' disabled';
-					$(this).attr('class',orig);
-				}
+				$(this).addClass('disabled');
 			});
 			dcFlag=true;
 			ecFlag=true;
@@ -1244,9 +1231,9 @@
 				var month=dateObj2.getMonth()+1;
 				var date=dateObj2.getDate();
 				if(!Jdata.CreatedByViewer[i]){
-					$('#discussionDiv').append('<div style="display:inline;" class="myTitle">'+Jdata.result[i].CreatedBy.Username+'：</div><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+Jdata.result[i].Content+'<br><div style="display:inline;" class="myTitle">'+year+'/'+month+'/'+date+'</div><br><br>');
+					$('#discussionDiv').append('<div style="display:inline;" class="myTitle">'+Jdata.result[i].CreatedBy.Username+'：</div><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+Jdata.result[i].Content+'<br><div style="display:inline;" class="myTitle">No.'+(i+1)+'&nbsp;&nbsp;&nbsp;'+year+'/'+month+'/'+date+'</div><br><br>');
 				}else{
-					$('#discussionDiv').append('<table width="95%"><tr><td><div style="display:inline;" class="myTitle">'+Jdata.result[i].CreatedBy.Username+'：</div><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;" id="cntIptDiv'+i+'">'+Jdata.result[i].Content.replace(new RegExp('\n','g'),'<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;').replace(new RegExp(' ','g'),'&nbsp;')+'</div><br><div style="display:inline;" class="myTitle">'+year+'/'+month+'/'+date+'</div></td><td align="right"><div class="btn-group"><button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-pencil myTitle2"></span> <span class="caret myTitle2"></span></button><ul style="width:75px;min-width:75px;" class="dropdown-menu" role="menu"><li class="actionLi"><a href="#" onclick="startEdit('+i+');return false;">編輯</a></li><li class="actionLi"><a href="#" onclick="deleteComment('+i+');return false;">刪除</a></li></ul></div></td></tr></table><input type="hidden" id="hdIpt'+i+'" value="'+Jdata.result[i]._id+'"><input type="hidden" id="hdIpt2'+i+'" value="'+Jdata.result[i].Content+'"><input type="hidden" id="hdIpt3'+i+'" value="'+Jdata.result[i].Content.replace(new RegExp('\n','g'),'<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;').replace(new RegExp(' ','g'),'&nbsp;')+'"><br>');
+					$('#discussionDiv').append('<table width="95%"><tr><td><div style="display:inline;" class="myTitle">'+Jdata.result[i].CreatedBy.Username+'：</div><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;" id="cntIptDiv'+i+'">'+Jdata.result[i].Content.replace(/"/g,'&quot;').replace(new RegExp('\n','g'),'<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;').replace(new RegExp(' ','g'),'&nbsp;')+'</div><br><div style="display:inline;" class="myTitle">No.'+(i+1)+'&nbsp;&nbsp;&nbsp;'+year+'/'+month+'/'+date+'</div></td><td align="right"><div class="btn-group"><button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-pencil myTitle2"></span> <span class="caret myTitle2"></span></button><ul style="width:75px;min-width:75px;" class="dropdown-menu" role="menu"><li class="actionLi"><a href="#" onclick="startEdit('+i+');return false;">編輯</a></li><li class="actionLi"><a href="#" onclick="deleteComment('+i+');return false;">刪除</a></li></ul></div></td></tr></table><input type="hidden" id="hdIpt'+i+'" value="'+Jdata.result[i]._id+'"><input type="hidden" id="hdIpt2'+i+'" value="'+Jdata.result[i].Content.replace(/"/g,'&quot;')+'"><input type="hidden" id="hdIpt3'+i+'" value="'+Jdata.result[i].Content.replace(/"/g,'&quot;').replace(new RegExp('\n','g'),'<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;').replace(new RegExp(' ','g'),'&nbsp;')+'"><br>');
 				}	
 			}
 		}
@@ -1254,16 +1241,12 @@
 		function endRenderComments(){
 			$('#iptCtr').attr('onkeypress','if(event.keyCode==13){if(!event.shiftKey){sendComment();}}');
 			$('#iptCtr').removeAttr("readonly");
-			var orig=$('#sendButton').attr('class');
-			orig=orig.replace(/ disabled/g, '');
-			$('#sendButton').attr('class',orig);
+			$('#sendButton').removeClass('disabled');
 			$(".actionTa").each(function() {
 				$(this).removeAttr("readonly");
 			});
 			$(".actionLi").each(function() {
-				orig=$(this).attr('class');
-				orig=orig.replace(/ disabled/g, '');
-				$(this).attr('class',orig);
+				$(this).removeClass('disabled');
 			});
 			dcFlag=false;
 			ecFlag=false;
@@ -1323,7 +1306,7 @@
 		}
 		
 		function startEdit(index){
-			$('#cntIptDiv'+index).html('<textarea id="actionTa'+index+'" class="actionTa form-control" style="display:inline;width:70%;height:35px;" placeholder="ESC鍵可取消編輯" onkeypress="if(event.keyCode==13){if(!event.shiftKey){editComment('+index+');}}" onkeyup="if(event.keyCode==27){endEdit('+index+');}">'+$('#hdIpt2'+index).val()+'</textarea>');
+			$('#cntIptDiv'+index).html('<textarea id="actionTa'+index+'" class="actionTa form-control" style="display:inline;width:70%;height:35px;" placeholder="ESC鍵可取消編輯" onkeypress="if(event.keyCode==13){if(!event.shiftKey){editComment('+index+');}}" onkeyup="if(event.keyCode==27){endEdit('+index+');}">'+$('#hdIpt2'+index).val().replace(/&quot;/g,'"').replace(/&gt;/g,'>').replace(/&lt;/g,'<').replace(/&amp;/g,'&')+'</textarea>');
 		}
 		
 		function endEdit(index){
@@ -1368,7 +1351,6 @@
 							data:{Content:$('#iptCtr').val().trim(),BelongTo:"<%=json._id%>"},
 							dataType: 'json',
 							success: function(Jdata) {
-								var origInner;
 								if(Jdata.success){
 									renderComments(Jdata);
 									$('#discussionDiv').stop().animate({
@@ -1391,11 +1373,7 @@
 
 		<%if(!ifSelf){ %>
 			function like(){
-				var orig=$('#btnID').attr('class');
-				if(orig.search(' disabled')<0){
-					orig=orig+' disabled';
-					$('#btnID').attr('class',orig);
-				}
+				$('#btnID').addClass('disabled');
 				$.ajax({ 
 						url: '/Borrows/like',
 						type: 'POST',
@@ -1409,26 +1387,18 @@
 								$('#likeNum').html('&nbsp;'+Jdata.result);
 							}else{
 								alert('something wrong.');
-								var origInner=$('#btnID').attr('class');
-								origInner=origInner.replace(/ disabled/g, '');
-								$('#btnID').attr('class',origInner);
+								$('#btnID').removeClass('disabled');
 							}
 						},
 						error: function() {
 							alert('something wrong.');
-							var origInner=$('#btnID').attr('class');
-							origInner=origInner.replace(/ disabled/g, '');
-							$('#btnID').attr('class',origInner);
+							$('#btnID').removeClass('disabled');
 						}
 				});	
 			}
 			
 			function unlike(){
-				var orig=$('#btnID').attr('class');
-				if(orig.search(' disabled')<0){
-					orig=orig+' disabled';
-					$('#btnID').attr('class',orig);
-				}
+				$('#btnID').addClass('disabled');
 				$.ajax({ 
 						url: '/Borrows/unlike',
 						type: 'POST',
@@ -1442,16 +1412,12 @@
 								$('#likeNum').html('&nbsp;'+Jdata.result);
 							}else{
 								alert('something wrong.');
-								var origInner=$('#btnID').attr('class');
-								origInner=origInner.replace(/ disabled/g, '');
-								$('#btnID').attr('class',origInner);
+								$('#btnID').removeClass('disabled');
 							}
 						},
 						error: function() {
 							alert('something wrong.');
-							var origInner=$('#btnID').attr('class');
-							origInner=origInner.replace(/ disabled/g, '');
-							$('#btnID').attr('class',origInner);
+							$('#btnID').removeClass('disabled');
 						}
 				});	
 			}
@@ -1547,7 +1513,6 @@
 						data:{Value:value,TargetID:"<%=jsonLend._id%>"},
 						dataType: 'json',
 						success: function(Jdata) {
-							var origInner;
 							if(Jdata.success){
 								$('#lendChangerIpt0').val(Jdata.result0.toFixed(0));
 								$('#lendChangerIpt1').val(Jdata.result.maxSettingAutoLend.toFixed(0));
@@ -1580,11 +1545,7 @@
 					lendChangerFlag=true;
 					$('#lendChangerIpt').attr('onkeypress','');
 					$('#lendChangerIpt').attr('readonly','readonly');
-					var orig=$('#lendChangerBtn').attr('class');
-					if(orig.search(' disabled')<0){
-						orig=orig+' disabled';
-						$('#lendChangerBtn').attr('class',orig);
-					}
+					$('#lendChangerBtn').addClass('disabled');
 					
 					submitFlag=true;
 					disableButtonInner();
@@ -1594,9 +1555,7 @@
 					lendChangerFlag=false;
 					$('#lendChangerIpt').attr('onkeypress','if(event.keyCode==13){lendChanger();}');
 					$('#lendChangerIpt').removeAttr("readonly");
-					var orig=$('#lendChangerBtn').attr('class');
-					orig=orig.replace(/ disabled/g, '');
-					$('#lendChangerBtn').attr('class',orig);
+					$('#lendChangerBtn').removeClass('disabled');
 					
 					submitFlag=false;
 					enableButtonInner();
@@ -1621,17 +1580,11 @@
 						}
 						
 						function disableButtonInner(){
-							var orig=$('#createBtnID').attr('class');
-							if(orig.search(' disabled')<0){
-								orig=orig+' disabled';
-								$('#createBtnID').attr('class',orig);
-							}
+							$('#createBtnID').addClass('disabled');
 						}
 						
 						function enableButtonInner(){
-							var orig=$('#createBtnID').attr('class');
-							orig=orig.replace(/ disabled/g, '');
-							$('#createBtnID').attr('class',orig);
+							$('#createBtnID').removeClass('disabled');
 						}
 					<%}%>
 				<%}else{%>
@@ -1660,27 +1613,13 @@
 						}
 						
 						function disableButtonInner(){
-							var orig=$('#destroyBtnID').attr('class');
-							if(orig.search(' disabled')<0){
-								orig=orig+' disabled';
-								$('#destroyBtnID').attr('class',orig);
-							}
-							
-							orig=$('#updateBtnID').attr('class');
-							if(orig.search(' disabled')<0){
-								orig=orig+' disabled';
-								$('#updateBtnID').attr('class',orig);
-							}
+							$('#destroyBtnID').addClass('disabled');
+							$('#updateBtnID').addClass('disabled');
 						}
 						
 						function enableButtonInner(){
-							var orig=$('#destroyBtnID').attr('class');
-							orig=orig.replace(/ disabled/g, '');
-							$('#destroyBtnID').attr('class',orig);
-							
-							orig=$('#updateBtnID').attr('class');
-							orig=orig.replace(/ disabled/g, '');
-							$('#updateBtnID').attr('class',orig);
+							$('#destroyBtnID').removeClass('disabled');
+							$('#updateBtnID').removeClass('disabled');
 						}
 					<%}else if((!json.IfReadable)&&(jsonMessage.Status=='NotConfirmed')){%>
 						function destroy(){
@@ -1698,17 +1637,11 @@
 						}
 						
 						function disableButtonInner(){
-							var orig=$('#destroyBtnID').attr('class');
-							if(orig.search(' disabled')<0){
-								orig=orig+' disabled';
-								$('#destroyBtnID').attr('class',orig);
-							}
+							$('#destroyBtnID').addClass('disabled');
 						}
 						
 						function enableButtonInner(){
-							var orig=$('#destroyBtnID').attr('class');
-							orig=orig.replace(/ disabled/g, '');
-							$('#destroyBtnID').attr('class',orig);
+							$('#destroyBtnID').removeClass('disabled');
 						}
 					<%}%>
 				<%}%>
@@ -1757,34 +1690,18 @@
 					}
 					
 					function disableButtonInner(){
-						var orig;
-						
-						orig=$('#rfsBtnID').attr('class');
-						if(orig.search(' disabled')<0){
-							orig=orig+' disabled';
-							$('#rfsBtnID').attr('class',orig);
-						}
+						$('#rfsBtnID').addClass('disabled');
 
 						if(jsonLendFlag){
-							orig=$('#argBtnID').attr('class');
-							if(orig.search(' disabled')<0){
-								orig=orig+' disabled';
-								$('#argBtnID').attr('class',orig);
-							}
+							$('#argBtnID').addClass('disabled');
 						}
 					}
 					
 					function enableButtonInner(){
-						var orig;
-						
-						orig=$('#rfsBtnID').attr('class');
-						orig=orig.replace(/ disabled/g, '');
-						$('#rfsBtnID').attr('class',orig);
+						$('#rfsBtnID').removeClass('disabled');
 						
 						if(jsonLendFlag){
-							orig=$('#argBtnID').attr('class');
-							orig=orig.replace(/ disabled/g, '');
-							$('#argBtnID').attr('class',orig);
+							$('#argBtnID').removeClass('disabled');
 						}
 					}
 				<%}else if((!json.IfReadable)&&(jsonBorrowMessage.Status=='NotConfirmed')){%>
@@ -1803,17 +1720,11 @@
 					}
 					
 					function disableButtonInner(){
-						var orig=$('#rfsBtnID').attr('class');
-						if(orig.search(' disabled')<0){
-							orig=orig+' disabled';
-							$('#rfsBtnID').attr('class',orig);
-						}
+						$('#rfsBtnID').addClass('disabled');
 					}
 					
 					function enableButtonInner(){
-						var orig=$('#rfsBtnID').attr('class');
-						orig=orig.replace(/ disabled/g, '');
-						$('#rfsBtnID').attr('class',orig);
+						$('#rfsBtnID').removeClass('disabled');
 					}
 				<%}%>
 			<%}%>	
@@ -1834,20 +1745,14 @@
 				}
 				
 				function disableButtonInner(){
-					var orig=$('#readableBtnID').attr('class');
-					if(orig.search(' disabled')<0){
-						orig=orig+' disabled';
-						$('#readableBtnID').attr('class',orig);
-					}
+					$('#readableBtnID').addClass('disabled');
 				}
 				
 				function enableButtonInner(){
-					var orig=$('#readableBtnID').attr('class');
-					orig=orig.replace(/ disabled/g, '');
-					$('#readableBtnID').attr('class',orig);
+					$('#readableBtnID').removeClass('disabled');
 				}
 			<%}%>
 		<%}%>
 	<%}%>
 </script>
-<%- include('layout_footer',{imgSettingCode:"var ifLoadedCount=0;",imgDrawingCode:""}); -%>
+<%- include('layout_footer',{imgSettingCode:"var ifLoadedCount=0;",imgDrawingCode:"",nav_cur:'story'}); -%>

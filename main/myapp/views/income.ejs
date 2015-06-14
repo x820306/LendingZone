@@ -302,6 +302,87 @@
 									<br>
 									<br>
 									借入者信用等級圓餅比例圖
+									<br>
+									<br>
+									<br>
+									<table class="table">
+										<thead class="myThead">
+											<tr>
+												<th style="text-align:center">
+												5級以下
+												</th>
+												<th style="text-align:center">
+												5~10級
+												</th>
+												<th style="text-align:center">
+												10~15級
+												</th>
+												<th style="text-align:center">
+												15~20級
+												</th>
+												<th style="text-align:center">
+												20級以上
+												</th>
+											</tr>
+										</thead>
+										<tbody class="myTbody">
+											<tr>
+												<td align="center">
+													<div style="display:inline;"><%=dpk.d7%></div><div style="display:inline;">筆</div>
+												</td>
+												<td align="center">
+													<div style="display:inline;"><%=dpk.d8%></div><div style="display:inline;">筆</div>
+												</td>
+												<td align="center">
+													<div style="display:inline;"><%=dpk.d9%></div><div style="display:inline;">筆</div>
+												</td>
+												<td align="center">
+													<div style="display:inline;"><%=dpk.d10%></div><div style="display:inline;">筆</div>
+												</td>
+												<td align="center">
+													<div style="display:inline;"><%=dpk.d11%></div><div style="display:inline;">筆</div>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+									<br>
+									<br>
+									<br>
+									<canvas id="myChart12" width="300" height="300"></canvas>
+									<br>
+									<br>
+									借出記錄狀態圓餅比例圖
+									<br>
+									<br>
+									<br>
+									<table class="table">
+										<thead class="myThead">
+											<tr>
+												<th style="text-align:center">
+												已還清
+												</th>
+												<th style="text-align:center">
+												未保險
+												</th>
+												<th style="text-align:center">
+												已保險
+												</th>
+											</tr>
+										</thead>
+										<tbody class="myTbody">
+											<tr>
+												<td align="center">
+													<div style="display:inline;"><%=dpk.d12%></div><div style="display:inline;">筆</div>
+												</td>
+												<td align="center">
+													<div style="display:inline;"><%=dpk.d13%></div><div style="display:inline;">筆</div>
+												</td>
+												<td align="center">
+													<div style="display:inline;"><%=dpk.d14%></div><div style="display:inline;">筆</div>
+												</td>
+											</tr>
+										</tbody>
+									</table>
 								<td>
 							<tr>
 						</table>
@@ -319,6 +400,7 @@
 			<input type="hidden" name="line9" id="lineIpt9" value='<%=JSON.stringify(data09);%>'>
 			<input type="hidden" name="line10" id="lineIpt10" value='<%=JSON.stringify(data010);%>'>
 			<input type="hidden" name="pie" id="pieIpt" value='<%=JSON.stringify(data011);%>'>
+			<input type="hidden" name="pie2" id="pieIpt2" value='<%=JSON.stringify(data012);%>'>
 		</div>
 	<%}%>
 </div>
@@ -336,6 +418,7 @@
 		var ctx9 = $("#myChart9").get(0).getContext("2d");
 		var ctx10 = $("#myChart10").get(0).getContext("2d");
 		var ctx11 = $("#myChart11").get(0).getContext("2d");
+		var ctx12 = $("#myChart12").get(0).getContext("2d");
 		var data1JSON=JSON.parse($("#lineIpt").val());
 		var data2JSON=JSON.parse($("#lineIpt2").val());
 		var data3JSON=JSON.parse($("#lineIpt3").val());
@@ -347,6 +430,7 @@
 		var data9JSON=JSON.parse($("#lineIpt9").val());
 		var data10JSON=JSON.parse($("#lineIpt10").val());
 		var data11JSON=JSON.parse($("#pieIpt").val());
+		var data12JSON=JSON.parse($("#pieIpt2").val());
 		
 		if(data1JSON.labels){
 			if(data1JSON.labels.length>0){
@@ -444,7 +528,11 @@
 		if(data11JSON.array){
 			var myPieChart = new Chart(ctx11).Pie(data11JSON.array ,{tooltipTemplate: "<%%if (label){%><%%=label%>: <%%}%><%%= value.toFixed(2) %>%",multiTooltipTemplate: "<%%= value.toFixed(2) %>%"});
 		}
+		
+		if(data12JSON.array){
+			var myPieChart2 = new Chart(ctx12).Pie(data12JSON.array ,{tooltipTemplate: "<%%if (label){%><%%=label%>: <%%}%><%%= value.toFixed(2) %>%",multiTooltipTemplate: "<%%= value.toFixed(2) %>%"});
+		}
 	});
 </script>
 <%}%>
-<%- include('layout_footer',{imgSettingCode:"var ifLoadedCount=0;",imgDrawingCode:""}); -%>
+<%- include('layout_footer',{imgSettingCode:"var ifLoadedCount=0;",imgDrawingCode:"",nav_cur:'income'}); -%>
