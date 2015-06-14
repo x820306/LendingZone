@@ -1697,7 +1697,7 @@ router.get('/lenderReturnRecord/:oneid?/:id?/:messenger?/:classor?/:sorter?/:dir
 						var options = {
 							path: 'ToTransaction.CreatedFrom',
 							model: Messages,
-							select: 'FromBorrowRequest Type'
+							select: 'FromBorrowRequest Type Status'
 						};
 
 						Transactions.populate(returns, options, function(err, returns) {

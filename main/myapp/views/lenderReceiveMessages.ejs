@@ -947,7 +947,11 @@
 										<tr>
 											<td>
 												<div>
-													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].ReturnCount.toFixed(0)%>次
+													<%if(jsonMessage[i].Transaction[0].ReturnCount>0){%>
+														&nbsp;&nbsp;&nbsp;&nbsp;<a href="/lender/lenderReturnRecord?oneid=&id=<%=jsonMessage[i].Transaction[0]._id%>&messenger=<%=encodeURIComponent('不分訊息種類')%>&classor=<%=encodeURIComponent("不分故事種類");%>&sorter=<%=encodeURIComponent("建立日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1"><%=jsonMessage[i].Transaction[0].ReturnCount.toFixed(0)%>次</a>
+													<%}else{%>
+														&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].ReturnCount.toFixed(0)%>次
+													<%}%>
 												</div>	
 											</td>
 										</tr>
