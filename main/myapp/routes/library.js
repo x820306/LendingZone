@@ -51,11 +51,135 @@ exports.formIdfrArray=formIdfrArray;
 
 exports.replacer=function(input,flag){
 	if(!flag){
-		return input.replace(/[^\w\s\/\.\-\u0800-\u9fa5]/ig,'').replace(/\s\s+/g,'').trim();
+		return input.replace(/[^\w\s\/\.\-\"\u0800-\u9fa5]/ig,'').replace(/\s\s+/g,'').trim();
 		
 	}else{
-		return input.replace(/[^\w\s\/\.\-\u0800-\u9fa5]/ig,' ').replace(/\s\s+/g,' ').trim();
+		return input.replace(/[^\w\s\/\.\-\"\u0800-\u9fa5]/ig,' ').replace(/\s\s+/g,' ').trim();
 	}
+}
+
+
+exports.keywordFilter=function(orFlag,testString,testID,keywordArray,keywordArrayM,IDarray){
+	var rtnObjson={
+		localFlag0:false,
+		localFlag1:false,
+		localFlag2:false,
+		localObjFlag:false
+	};
+	var ctr;
+	
+	for(we=0;we<IDarray.length;we++){
+		if(IDarray[we].equals(testID)){
+			rtnObjson.localFlag0=true;
+			rtnObjson.localObjFlag=true;
+			break;
+		}
+	}
+	
+	if(keywordArray.length>0){
+		ctr=0;
+		for(k=0;k<keywordArray.length;k++){
+			if(!keywordArray[k].flag){
+				if(testString.search(keywordArray[k].cnt)>-1){
+					ctr++;
+				}
+			}else{
+				var restrictFlag=exports.restrictFinder(keywordArray[k].cnt,testString);
+				if(restrictFlag){
+					ctr++;
+				}
+			}
+		}
+		if(!orFlag){
+			if(ctr==keywordArray.length){
+				rtnObjson.localFlag1=true;
+			}
+		}else{
+			if(ctr>0){
+				rtnObjson.localFlag1=true;
+			}
+		}
+	}else{
+		rtnObjson.localFlag1=true;
+	}
+	
+	if(keywordArrayM.length>0){
+		ctr=0;
+		for(k=0;k<keywordArrayM.length;k++){
+			if(!keywordArrayM[k].flag){
+				if(testString.search(keywordArrayM[k].cnt)>-1){
+					ctr++;
+				}
+			}else{
+				var restrictFlag=exports.restrictFinder(keywordArrayM[k].cnt,testString);
+				if(restrictFlag){
+					ctr++;
+				}
+			}
+		}
+		if(ctr==0){
+			rtnObjson.localFlag2=true;
+		}
+	}else{
+		rtnObjson.localFlag2=true;
+	}	
+
+	return rtnObjson;
+}
+
+exports.arrayPro=function(stringArray,keywordArray,keywordArrayM,IDarray){
+	for(i=0;i<stringArray.length;i++){
+		if(stringArray[i].charAt(0)=='-'){
+			var temper1=stringArray[i].substring(1);
+			if((temper1.charAt(0)=='"')&&(temper1.charAt(temper1.length-1)=='"')){
+				var tempCnt=temper1.substring(1);
+				tempCnt=tempCnt.substring(0,tempCnt.length-1);
+				var pusher={
+					flag:true,
+					cnt:tempCnt
+				}
+				keywordArrayM.push(pusher);
+			}else{
+				var pusher={
+					flag:false,
+					cnt:new RegExp(temper1,'i')
+				}
+				keywordArrayM.push(pusher);
+			}
+		}else if((stringArray[i].charAt(0)=='"')&&(stringArray[i].charAt(stringArray[i].length-1)=='"')){
+			var tempCnt=stringArray[i].substring(1);
+			tempCnt=tempCnt.substring(0,tempCnt.length-1);
+			var pusher={
+				flag:true,
+				cnt:tempCnt
+			}
+			keywordArray.push(pusher);
+		}else{
+			var pusher={
+				flag:false,
+				cnt:new RegExp(stringArray[i],'i')
+			}
+			keywordArray.push(pusher);
+		}
+		if(mongoose.Types.ObjectId.isValid(stringArray[i])){
+			IDarray.push(mongoose.Types.ObjectId(stringArray[i]));
+		}
+	}
+}
+
+exports.restrictFinder=function(finder,befounderOrig){
+	var rtnFlag=false;
+	var befounder=befounderOrig.replace(/\r\n/g,' ').replace(/\n/g,' ');
+	if(befounder.length>finder.length){
+		if((befounder.search(new RegExp(' '+finder+' ','i'))>-1)||(befounder.search(new RegExp(finder+' ','i'))==0)||(befounder.search(new RegExp(' '+finder+'(?=[^ '+finder+']*$)','i'))==(befounder.length-(finder.length+1)))){
+			rtnFlag=true;
+		}
+	}else{
+		if(befounder.search(new RegExp(finder,'i'))>-1){
+			rtnFlag=true;
+		}
+	}
+	return rtnFlag;
 }
 
 exports.orReplacer=function(input){
@@ -63,7 +187,7 @@ exports.orReplacer=function(input){
 		rtn:'',
 		flag:false
 	};
-	obj.rtn=input;
+	obj.rtn=input.replace(/\r\n/g,' ').replace(/\n/g,' ');
 	
 	if(obj.rtn.length>2){
 		if((obj.rtn.search(/ or /i)>-1)||(obj.rtn.search(/or /i)==0)||(obj.rtn.search(/ or(?=[^ or]*$)/i)==obj.rtn.length-3)){
@@ -1620,19 +1744,7 @@ function autoConfirm(req,res,lend){
 	var keywordArray=[];
 	var keywordArrayM=[];
 	var msgObjIDarray=[];
-	for(i=0;i<stringArray.length;i++){
-		if(stringArray[i].charAt(0)=='-'){
-			var temper1=stringArray[i].substring(1);
-			if(temper1!==''){
-				keywordArrayM.push(new RegExp(temper1,'i'));
-			}
-		}else{
-			keywordArray.push(new RegExp(stringArray[i],'i'));
-		}
-		if(mongoose.Types.ObjectId.isValid(stringArray[i])){
-			msgObjIDarray.push(mongoose.Types.ObjectId(stringArray[i]));
-		}
-	}
+	exports.arrayPro(stringArray,keywordArray,keywordArrayM,msgObjIDarray);
 	
 	var moneyLendedJson={
 		autoLendCumulated:0,
@@ -1663,54 +1775,9 @@ function autoConfirm(req,res,lend){
 						if(messages.length>0){
 							for(j=messages.length-1;j>-1;j--){
 								var testString=messages[j].Message+' '+messages[j].FromBorrowRequest.StoryTitle+' '+messages[j].CreatedBy.Username;
-								var localFlag=[];
-								var ctr;
-								localFlag[0]=false;
-								localFlag[1]=false;
-								localFlag[2]=false;
-								
-								for(we=0;we<msgObjIDarray.length;we++){
-									if(msgObjIDarray[we].equals(Message[j]._id)){
-										localFlag[0]=true;
-										break;
-									}
-								}
-								
-								if(keywordArray.length>0){
-									ctr=0;
-									for(k=0;k<keywordArray.length;k++){
-										if(testString.search(keywordArray[k])>-1){
-											ctr++;
-										}
-									}
-									if(!orFlag){
-										if(ctr==keywordArray.length){
-											localFlag[1]=true;
-										}
-									}else{
-										if(ctr>0){
-											localFlag[1]=true;
-										}
-									}
-								}else{
-									localFlag[1]=true;
-								}
-
-								if(keywordArrayM.length>0){
-									ctr=0;
-									for(k=0;k<keywordArrayM.length;k++){
-										if(testString.search(keywordArrayM[k])>-1){
-											ctr++;
-										}
-									}
-									if(ctr==0){
-										localFlag[2]=true;
-									}
-								}else{
-									localFlag[2]=true;
-								}									
-
-								if((!localFlag[0])&&((!localFlag[1])||(!localFlag[2]))){
+								var filterResponse=exports.keywordFilter(orFlag,testString,Message[j]._id,keywordArray,keywordArrayM,msgObjIDarray);
+																	
+								if((!filterResponse.localFlag0)&&((!filterResponse.localFlag1)||(!filterResponse.localFlag2))){
 									messages.splice(j, 1);
 								}
 							}

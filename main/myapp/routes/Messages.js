@@ -842,19 +842,7 @@ router.post('/rejectToBorrowMessageInLRMall',library.loginFormChecker, library.e
 	var keywordArray=[];
 	var keywordArrayM=[];
 	var msgObjIDarray=[];
-	for(i=0;i<stringArray.length;i++){
-		if(stringArray[i].charAt(0)=='-'){
-			var temper1=stringArray[i].substring(1);
-			if(temper1!==''){
-				keywordArrayM.push(new RegExp(temper1,'i'));
-			}
-		}else{
-			keywordArray.push(new RegExp(stringArray[i],'i'));
-		}
-		if(mongoose.Types.ObjectId.isValid(stringArray[i])){
-			msgObjIDarray.push(mongoose.Types.ObjectId(stringArray[i]));
-		}
-	}
+	library.arrayPro(stringArray,keywordArray,keywordArrayM,msgObjIDarray);
 	
 	Messages.find({$and:andFindCmdAry}).populate('CreatedBy', 'Username Level').populate('FromBorrowRequest', 'StoryTitle Category').sort(sorterRec).exec(function (err, messages){
 		if (err) {
@@ -866,54 +854,9 @@ router.post('/rejectToBorrowMessageInLRMall',library.loginFormChecker, library.e
 			}else{
 				for(j=messages.length-1;j>-1;j--){
 					var testString=messages[j].Message+' '+messages[j].FromBorrowRequest.StoryTitle+' '+messages[j].CreatedBy.Username;
-					var localFlag=[];
-					var ctr;
-					localFlag[0]=false;
-					localFlag[1]=false;
-					localFlag[2]=false;
-					
-					for(we=0;we<msgObjIDarray.length;we++){
-						if(msgObjIDarray[we].equals(messages[j]._id)){
-							localFlag[0]=true;
-							break;
-						}
-					}
-					
-					if(keywordArray.length>0){
-						ctr=0;
-						for(k=0;k<keywordArray.length;k++){
-							if(testString.search(keywordArray[k])>-1){
-								ctr++;
-							}
-						}
-						if(!orFlag){
-							if(ctr==keywordArray.length){
-								localFlag[1]=true;
-							}
-						}else{
-							if(ctr>0){
-								localFlag[1]=true;
-							}
-						}
-					}else{
-						localFlag[1]=true;
-					}
-
-					if(keywordArrayM.length>0){
-						ctr=0;
-						for(k=0;k<keywordArrayM.length;k++){
-							if(testString.search(keywordArrayM[k])>-1){
-								ctr++;
-							}
-						}
-						if(ctr==0){
-							localFlag[2]=true;
-						}
-					}else{
-						localFlag[2]=true;
-					}									
-
-					if((!localFlag[0])&&((!localFlag[1])||(!localFlag[2]))){
+					var filterResponse=library.keywordFilter(orFlag,testString,messages[j]._id,keywordArray,keywordArrayM,msgObjIDarray);
+																	
+					if((!filterResponse.localFlag0)&&((!filterResponse.localFlag1)||(!filterResponse.localFlag2))){
 						messages.splice(j, 1);
 					}
 				}
@@ -1188,19 +1131,7 @@ router.post('/confirmToBorrowMessageInLRMall',library.loginFormChecker, library.
 	var keywordArray=[];
 	var keywordArrayM=[];
 	var msgObjIDarray=[];
-	for(i=0;i<stringArray.length;i++){
-		if(stringArray[i].charAt(0)=='-'){
-			var temper1=stringArray[i].substring(1);
-			if(temper1!==''){
-				keywordArrayM.push(new RegExp(temper1,'i'));
-			}
-		}else{
-			keywordArray.push(new RegExp(stringArray[i],'i'));
-		}
-		if(mongoose.Types.ObjectId.isValid(stringArray[i])){
-			msgObjIDarray.push(mongoose.Types.ObjectId(stringArray[i]));
-		}
-	}
+	library.arrayPro(stringArray,keywordArray,keywordArrayM,msgObjIDarray);
 	
 	Messages.find({$and:andFindCmdAry}).populate('CreatedBy', 'Username Level').populate('FromBorrowRequest', 'StoryTitle Category').sort(sorterRec).exec(function (err, messages){
 		if (err) {
@@ -1212,54 +1143,9 @@ router.post('/confirmToBorrowMessageInLRMall',library.loginFormChecker, library.
 			}else{
 				for(j=messages.length-1;j>-1;j--){
 					var testString=messages[j].Message+' '+messages[j].FromBorrowRequest.StoryTitle+' '+messages[j].CreatedBy.Username;
-					var localFlag=[];
-					var ctr;
-					localFlag[0]=false;
-					localFlag[1]=false;
-					localFlag[2]=false;
-					
-					for(we=0;we<msgObjIDarray.length;we++){
-						if(msgObjIDarray[we].equals(messages[j]._id)){
-							localFlag[0]=true;
-							break;
-						}
-					}
-					
-					if(keywordArray.length>0){
-						ctr=0;
-						for(k=0;k<keywordArray.length;k++){
-							if(testString.search(keywordArray[k])>-1){
-								ctr++;
-							}
-						}
-						if(!orFlag){
-							if(ctr==keywordArray.length){
-								localFlag[1]=true;
-							}
-						}else{
-							if(ctr>0){
-								localFlag[1]=true;
-							}
-						}
-					}else{
-						localFlag[1]=true;
-					}
-
-					if(keywordArrayM.length>0){
-						ctr=0;
-						for(k=0;k<keywordArrayM.length;k++){
-							if(testString.search(keywordArrayM[k])>-1){
-								ctr++;
-							}
-						}
-						if(ctr==0){
-							localFlag[2]=true;
-						}
-					}else{
-						localFlag[2]=true;
-					}									
-
-					if((!localFlag[0])&&((!localFlag[1])||(!localFlag[2]))){
+					var filterResponse=library.keywordFilter(orFlag,testString,messages[j]._id,keywordArray,keywordArrayM,msgObjIDarray);
+																	
+					if((!filterResponse.localFlag0)&&((!filterResponse.localFlag1)||(!filterResponse.localFlag2))){
 						messages.splice(j, 1);
 					}
 				}
@@ -1545,19 +1431,7 @@ router.post('/deleteToLendMessageInLRMall',library.loginFormChecker, library.ens
 	var keywordArray=[];
 	var keywordArrayM=[];
 	var msgObjIDarray=[];
-	for(i=0;i<stringArray.length;i++){
-		if(stringArray[i].charAt(0)=='-'){
-			var temper1=stringArray[i].substring(1);
-			if(temper1!==''){
-				keywordArrayM.push(new RegExp(temper1,'i'));
-			}
-		}else{
-			keywordArray.push(new RegExp(stringArray[i],'i'));
-		}
-		if(mongoose.Types.ObjectId.isValid(stringArray[i])){
-			msgObjIDarray.push(mongoose.Types.ObjectId(stringArray[i]));
-		}
-	}
+	library.arrayPro(stringArray,keywordArray,keywordArrayM,msgObjIDarray);
 	
 	Messages.find({$and:andFindCmdAry}).populate('SendTo', 'Username Level').populate('FromBorrowRequest', 'StoryTitle Category').sort(sorterRec).exec(function (err, messages){
 		if (err) {
@@ -1569,54 +1443,9 @@ router.post('/deleteToLendMessageInLRMall',library.loginFormChecker, library.ens
 			}else{
 				for(j=messages.length-1;j>-1;j--){
 					var testString=messages[j].Message+' '+messages[j].FromBorrowRequest.StoryTitle+' '+messages[j].SendTo.Username;
-					var localFlag=[];
-					var ctr;
-					localFlag[0]=false;
-					localFlag[1]=false;
-					localFlag[2]=false;
-					
-					for(we=0;we<msgObjIDarray.length;we++){
-						if(msgObjIDarray[we].equals(messages[j]._id)){
-							localFlag[0]=true;
-							break;
-						}
-					}
-					
-					if(keywordArray.length>0){
-						ctr=0;
-						for(k=0;k<keywordArray.length;k++){
-							if(testString.search(keywordArray[k])>-1){
-								ctr++;
-							}
-						}
-						if(!orFlag){
-							if(ctr==keywordArray.length){
-								localFlag[1]=true;
-							}
-						}else{
-							if(ctr>0){
-								localFlag[1]=true;
-							}
-						}
-					}else{
-						localFlag[1]=true;
-					}
-
-					if(keywordArrayM.length>0){
-						ctr=0;
-						for(k=0;k<keywordArrayM.length;k++){
-							if(testString.search(keywordArrayM[k])>-1){
-								ctr++;
-							}
-						}
-						if(ctr==0){
-							localFlag[2]=true;
-						}
-					}else{
-						localFlag[2]=true;
-					}									
-
-					if((!localFlag[0])&&((!localFlag[1])||(!localFlag[2]))){
+					var filterResponse=library.keywordFilter(orFlag,testString,messages[j]._id,keywordArray,keywordArrayM,msgObjIDarray);
+																	
+					if((!filterResponse.localFlag0)&&((!filterResponse.localFlag1)||(!filterResponse.localFlag2))){
 						messages.splice(j, 1);
 					}
 				}

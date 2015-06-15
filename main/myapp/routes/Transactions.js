@@ -408,19 +408,7 @@ router.post('/buyInsuranceAll',library.loginFormChecker,library.ensureAuthentica
 	var keywordArray=[];
 	var keywordArrayM=[];
 	var ObjIDarray=[];
-	for(i=0;i<stringArray.length;i++){
-		if(stringArray[i].charAt(0)=='-'){
-			var temper1=stringArray[i].substring(1);
-			if(temper1!==''){
-				keywordArrayM.push(new RegExp(temper1,'i'));
-			}
-		}else{
-			keywordArray.push(new RegExp(stringArray[i],'i'));
-		}
-		if(mongoose.Types.ObjectId.isValid(stringArray[i])){
-			ObjIDarray.push(mongoose.Types.ObjectId(stringArray[i]));
-		}
-	}
+	library.arrayPro(stringArray,keywordArray,keywordArrayM,ObjIDarray);
 	
 	Transactions.find({$and:andFindCmdAry}).populate('Borrower', 'Username Level').populate('CreatedFrom', 'FromBorrowRequest Type').populate('Return').sort(sorterRec).exec(function (err, transactions){
 		if (err) {
@@ -443,54 +431,9 @@ router.post('/buyInsuranceAll',library.loginFormChecker,library.ensureAuthentica
 					}else{
 						for(j=transactions.length-1;j>-1;j--){
 							var testString=transactions[j].Borrower.Username+' '+transactions[j].CreatedFrom.FromBorrowRequest.StoryTitle;
-							var localFlag=[];
-							var ctr;
-							localFlag[0]=false;
-							localFlag[1]=false;
-							localFlag[2]=false;
-							
-							for(we=0;we<ObjIDarray.length;we++){
-								if(ObjIDarray[we].equals(transactions[j]._id)){
-									localFlag[0]=true;
-									break;
-								}
-							}
-							
-							if(keywordArray.length>0){
-								ctr=0;
-								for(k=0;k<keywordArray.length;k++){
-									if(testString.search(keywordArray[k])>-1){
-										ctr++;
-									}
-								}
-								if(!orFlag){
-									if(ctr==keywordArray.length){
-										localFlag[1]=true;
-									}
-								}else{
-									if(ctr>0){
-										localFlag[1]=true;
-									}
-								}
-							}else{
-								localFlag[1]=true;
-							}
-
-							if(keywordArrayM.length>0){
-								ctr=0;
-								for(k=0;k<keywordArrayM.length;k++){
-									if(testString.search(keywordArrayM[k])>-1){
-										ctr++;
-									}
-								}
-								if(ctr==0){
-									localFlag[2]=true;
-								}
-							}else{
-								localFlag[2]=true;
-							}									
-
-							if((!localFlag[0])&&((!localFlag[1])||(!localFlag[2]))){
+							var filterResponse=library.keywordFilter(orFlag,testString,transactions[j]._id,keywordArray,keywordArrayM,ObjIDarray);
+																	
+							if((!filterResponse.localFlag0)&&((!filterResponse.localFlag1)||(!filterResponse.localFlag2))){
 								transactions.splice(j, 1);
 							}
 						}

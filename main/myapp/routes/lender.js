@@ -243,19 +243,9 @@ router.get('/search/:keyword?/:category?/:messenger?/:action?/:director?/:lbound
 			var keywordArray=[];
 			var keywordArrayM=[];
 			var keyObjIDarray=[];
-			for(i=0;i<stringArray.length;i++){
-				if(stringArray[i].charAt(0)=='-'){
-					var temper1=stringArray[i].substring(1);
-					if(temper1!==''){
-						keywordArrayM.push(new RegExp(temper1,'i'));
-					}
-				}else{
-					keywordArray.push(new RegExp(stringArray[i],'i'));
-				}
-				if(mongoose.Types.ObjectId.isValid(stringArray[i])){
-					keyObjIDarray.push(mongoose.Types.ObjectId(stringArray[i]));
-				}
-			}
+			library.arrayPro(stringArray,keywordArray,keywordArrayM,keyObjIDarray);
+			
+			
 			var plusFlag=false;
 			if(keywordArray.length>0){
 				plusFlag=true;
@@ -288,55 +278,11 @@ router.get('/search/:keyword?/:category?/:messenger?/:action?/:director?/:lbound
 							}else{
 								for(j=borrows.length-1;j>-1;j--){
 									var testString=borrows[j].StoryTitle+' '+borrows[j].Story+' '+borrows[j].CreatedBy.Username;
-									var localFlag=[];
-									var ctr;
-									localFlag[0]=false;
-									localFlag[1]=false;
-									localFlag[2]=false;
 									
-									for(we=0;we<keyObjIDarray.length;we++){
-										if(keyObjIDarray[we].equals(borrows[j]._id)){
-											localFlag[0]=true;
-											objFlag=true;
-											break;
-										}
-									}
-									
-									if(keywordArray.length>0){
-										ctr=0;
-										for(k=0;k<keywordArray.length;k++){
-											if(testString.search(keywordArray[k])>-1){
-												ctr++;
-											}
-										}
-										if(!orFlag){
-											if(ctr==keywordArray.length){
-												localFlag[1]=true;
-											}
-										}else{
-											if(ctr>0){
-												localFlag[1]=true;
-											}
-										}
-									}else{
-										localFlag[1]=true;
-									}
-									
-									if(keywordArrayM.length>0){
-										ctr=0;
-										for(k=0;k<keywordArrayM.length;k++){
-											if(testString.search(keywordArrayM[k])>-1){
-												ctr++;
-											}
-										}
-										if(ctr==0){
-											localFlag[2]=true;
-										}
-									}else{
-										localFlag[2]=true;
-									}									
-									
-									if((!localFlag[0])&&((!localFlag[1])||(!localFlag[2]))){
+									var filterResponse=library.keywordFilter(orFlag,testString,borrows[j]._id,keywordArray,keywordArrayM,keyObjIDarray);
+																	
+									objFlag=filterResponse.localObjFlag;
+									if((!filterResponse.localFlag0)&&((!filterResponse.localFlag1)||(!filterResponse.localFlag2))){
 										borrows.splice(j, 1);
 									}
 								}
@@ -1073,19 +1019,8 @@ router.get('/lenderTransactionRecord/:oneid?/:filter?/:messenger?/:classor?/:sor
 			var keywordArray=[];
 			var keywordArrayM=[];
 			var ObjIDarray=[];
-			for(i=0;i<stringArray.length;i++){
-				if(stringArray[i].charAt(0)=='-'){
-					var temper1=stringArray[i].substring(1);
-					if(temper1!==''){
-						keywordArrayM.push(new RegExp(temper1,'i'));
-					}
-				}else{
-					keywordArray.push(new RegExp(stringArray[i],'i'));
-				}
-				if(mongoose.Types.ObjectId.isValid(stringArray[i])){
-					ObjIDarray.push(mongoose.Types.ObjectId(stringArray[i]));
-				}
-			}
+			library.arrayPro(stringArray,keywordArray,keywordArrayM,ObjIDarray);
+			
 			var plusFlag=false;
 			if(keywordArray.length>0){
 				plusFlag=true;
@@ -1119,55 +1054,10 @@ router.get('/lenderTransactionRecord/:oneid?/:filter?/:messenger?/:classor?/:sor
 							}else{
 								for(j=transactions.length-1;j>-1;j--){
 									var testString=transactions[j].Borrower.Username+' '+transactions[j].CreatedFrom.FromBorrowRequest.StoryTitle;
-									var localFlag=[];
-									var ctr;
-									localFlag[0]=false;
-									localFlag[1]=false;
-									localFlag[2]=false;
-									
-									for(we=0;we<ObjIDarray.length;we++){
-										if(ObjIDarray[we].equals(transactions[j]._id)){
-											localFlag[0]=true;
-											objFlag=true;
-											break;
-										}
-									}
-									
-									if(keywordArray.length>0){
-										ctr=0;
-										for(k=0;k<keywordArray.length;k++){
-											if(testString.search(keywordArray[k])>-1){
-												ctr++;
-											}
-										}
-										if(!orFlag){
-											if(ctr==keywordArray.length){
-												localFlag[1]=true;
-											}
-										}else{
-											if(ctr>0){
-												localFlag[1]=true;
-											}
-										}
-									}else{
-										localFlag[1]=true;
-									}
-
-									if(keywordArrayM.length>0){
-										ctr=0;
-										for(k=0;k<keywordArrayM.length;k++){
-											if(testString.search(keywordArrayM[k])>-1){
-												ctr++;
-											}
-										}
-										if(ctr==0){
-											localFlag[2]=true;
-										}
-									}else{
-										localFlag[2]=true;
-									}									
-
-									if((!localFlag[0])&&((!localFlag[1])||(!localFlag[2]))){
+									var filterResponse=library.keywordFilter(orFlag,testString,transactions[j]._id,keywordArray,keywordArrayM,ObjIDarray);
+																	
+									objFlag=filterResponse.localObjFlag;
+									if((!filterResponse.localFlag0)&&((!filterResponse.localFlag1)||(!filterResponse.localFlag2))){
 										transactions.splice(j, 1);
 									}
 								}
@@ -1764,19 +1654,8 @@ router.get('/lenderReturnRecord/:oneid?/:id?/:messenger?/:classor?/:sorter?/:dir
 			var keywordArray=[];
 			var keywordArrayM=[];
 			var ObjIDarray=[];
-			for(i=0;i<stringArray.length;i++){
-				if(stringArray[i].charAt(0)=='-'){
-					var temper1=stringArray[i].substring(1);
-					if(temper1!==''){
-						keywordArrayM.push(new RegExp(temper1,'i'));
-					}
-				}else{
-					keywordArray.push(new RegExp(stringArray[i],'i'));
-				}
-				if(mongoose.Types.ObjectId.isValid(stringArray[i])){
-					ObjIDarray.push(mongoose.Types.ObjectId(stringArray[i]));
-				}
-			}
+			library.arrayPro(stringArray,keywordArray,keywordArrayM,ObjIDarray);
+			
 			var plusFlag=false;
 			if(keywordArray.length>0){
 				plusFlag=true;
@@ -1822,55 +1701,10 @@ router.get('/lenderReturnRecord/:oneid?/:id?/:messenger?/:classor?/:sorter?/:dir
 									}else{
 										for(j=returns.length-1;j>-1;j--){
 											var testString=returns[j].Borrower.Username+' '+returns[j].ToTransaction.CreatedFrom.FromBorrowRequest.StoryTitle;
-											var localFlag=[];
-											var ctr;
-											localFlag[0]=false;
-											localFlag[1]=false;
-											localFlag[2]=false;
-											
-											for(we=0;we<ObjIDarray.length;we++){
-												if(ObjIDarray[we].equals(returns[j]._id)){
-													localFlag[0]=true;
-													objFlag=true;
-													break;
-												}
-											}
-											
-											if(keywordArray.length>0){
-												ctr=0;
-												for(k=0;k<keywordArray.length;k++){
-													if(testString.search(keywordArray[k])>-1){
-														ctr++;
-													}
-												}
-												if(!orFlag){
-													if(ctr==keywordArray.length){
-														localFlag[1]=true;
-													}
-												}else{
-													if(ctr>0){
-														localFlag[1]=true;
-													}
-												}
-											}else{
-												localFlag[1]=true;
-											}
-
-											if(keywordArrayM.length>0){
-												ctr=0;
-												for(k=0;k<keywordArrayM.length;k++){
-													if(testString.search(keywordArrayM[k])>-1){
-														ctr++;
-													}
-												}
-												if(ctr==0){
-													localFlag[2]=true;
-												}
-											}else{
-												localFlag[2]=true;
-											}									
-
-											if((!localFlag[0])&&((!localFlag[1])||(!localFlag[2]))){
+											var filterResponse=library.keywordFilter(orFlag,testString,returns[j]._id,keywordArray,keywordArrayM,ObjIDarray);
+																	
+											objFlag=filterResponse.localObjFlag;
+											if((!filterResponse.localFlag0)&&((!filterResponse.localFlag1)||(!filterResponse.localFlag2))){
 												returns.splice(j, 1);
 											}
 										}
@@ -2250,19 +2084,8 @@ router.get('/lendsList/:oneid?/:classOne?/:classTwo?/:sorter?/:director?/:lbound
 			var keywordArray=[];
 			var keywordArrayM=[];
 			var ObjIDarray=[];
-			for(i=0;i<stringArray.length;i++){
-				if(stringArray[i].charAt(0)=='-'){
-					var temper1=stringArray[i].substring(1);
-					if(temper1!==''){
-						keywordArrayM.push(new RegExp(temper1,'i'));
-					}
-				}else{
-					keywordArray.push(new RegExp(stringArray[i],'i'));
-				}
-				if(mongoose.Types.ObjectId.isValid(stringArray[i])){
-					ObjIDarray.push(mongoose.Types.ObjectId(stringArray[i]));
-				}
-			}
+			library.arrayPro(stringArray,keywordArray,keywordArrayM,ObjIDarray);
+			
 			var plusFlag=false;
 			if(keywordArray.length>0){
 				plusFlag=true;
@@ -2283,55 +2106,11 @@ router.get('/lendsList/:oneid?/:classOne?/:classTwo?/:sorter?/:director?/:lbound
 					}else{			
 						for(j=lends.length-1;j>-1;j--){
 							var testString=lends[j].CreatedBy.Username+' '+lends[j].AutoComfirmToBorrowMsgKeyWord;
-							var localFlag=[];
-							var ctr;
-							localFlag[0]=false;
-							localFlag[1]=false;
-							localFlag[2]=false;
 							
-							for(we=0;we<ObjIDarray.length;we++){
-								if(ObjIDarray[we].equals(lends[j]._id)){
-									localFlag[0]=true;
-									objFlag=true;
-									break;
-								}
-							}
-							
-							if(keywordArray.length>0){
-								ctr=0;
-								for(k=0;k<keywordArray.length;k++){
-									if(testString.search(keywordArray[k])>-1){
-										ctr++;
-									}
-								}
-								if(!orFlag){
-									if(ctr==keywordArray.length){
-										localFlag[1]=true;
-									}
-								}else{
-									if(ctr>0){
-										localFlag[1]=true;
-									}
-								}
-							}else{
-								localFlag[1]=true;
-							}
-
-							if(keywordArrayM.length>0){
-								ctr=0;
-								for(k=0;k<keywordArrayM.length;k++){
-									if(testString.search(keywordArrayM[k])>-1){
-										ctr++;
-									}
-								}
-								if(ctr==0){
-									localFlag[2]=true;
-								}
-							}else{
-								localFlag[2]=true;
-							}									
-
-							if((!localFlag[0])&&((!localFlag[1])||(!localFlag[2]))){
+							var filterResponse=library.keywordFilter(orFlag,testString,lends[j]._id,keywordArray,keywordArrayM,ObjIDarray);
+																	
+							objFlag=filterResponse.localObjFlag;
+							if((!filterResponse.localFlag0)&&((!filterResponse.localFlag1)||(!filterResponse.localFlag2))){
 								lends.splice(j, 1);
 							}
 						}
@@ -2593,19 +2372,8 @@ router.get('/lenderSendMessages/:msgKeyword?/:filter?/:classor?/:sorter?/:direct
 			var keywordArray=[];
 			var keywordArrayM=[];
 			var msgObjIDarray=[];
-			for(i=0;i<stringArray.length;i++){
-				if(stringArray[i].charAt(0)=='-'){
-					var temper1=stringArray[i].substring(1);
-					if(temper1!==''){
-						keywordArrayM.push(new RegExp(temper1,'i'));
-					}
-				}else{
-					keywordArray.push(new RegExp(stringArray[i],'i'));
-				}
-				if(mongoose.Types.ObjectId.isValid(stringArray[i])){
-					msgObjIDarray.push(mongoose.Types.ObjectId(stringArray[i]));
-				}
-			}
+			library.arrayPro(stringArray,keywordArray,keywordArrayM,msgObjIDarray);
+			
 			var plusFlag=false;
 			if(keywordArray.length>0){
 				plusFlag=true;
@@ -2638,55 +2406,10 @@ router.get('/lenderSendMessages/:msgKeyword?/:filter?/:classor?/:sorter?/:direct
 							}else{
 								for(j=messages.length-1;j>-1;j--){
 									var testString=messages[j].Message+' '+messages[j].FromBorrowRequest.StoryTitle+' '+messages[j].SendTo.Username;
-									var localFlag=[];
-									var ctr;
-									localFlag[0]=false;
-									localFlag[1]=false;
-									localFlag[2]=false;
-									
-									for(we=0;we<msgObjIDarray.length;we++){
-										if(msgObjIDarray[we].equals(messages[j]._id)){
-											localFlag[0]=true;
-											objFlag=true;
-											break;
-										}
-									}
-									
-									if(keywordArray.length>0){
-										ctr=0;
-										for(k=0;k<keywordArray.length;k++){
-											if(testString.search(keywordArray[k])>-1){
-												ctr++;
-											}
-										}
-										if(!orFlag){
-											if(ctr==keywordArray.length){
-												localFlag[1]=true;
-											}
-										}else{
-											if(ctr>0){
-												localFlag[1]=true;
-											}
-										}
-									}else{
-										localFlag[1]=true;
-									}
-
-									if(keywordArrayM.length>0){
-										ctr=0;
-										for(k=0;k<keywordArrayM.length;k++){
-											if(testString.search(keywordArrayM[k])>-1){
-												ctr++;
-											}
-										}
-										if(ctr==0){
-											localFlag[2]=true;
-										}
-									}else{
-										localFlag[2]=true;
-									}									
-
-									if((!localFlag[0])&&((!localFlag[1])||(!localFlag[2]))){
+									var filterResponse=library.keywordFilter(orFlag,testString,messages[j]._id,keywordArray,keywordArrayM,msgObjIDarray);
+																	
+									objFlag=filterResponse.localObjFlag;
+									if((!filterResponse.localFlag0)&&((!filterResponse.localFlag1)||(!filterResponse.localFlag2))){
 										messages.splice(j, 1);
 									}
 								}
@@ -3042,19 +2765,8 @@ router.get('/lenderReceiveMessages/:msgKeyword?/:filter?/:classor?/:sorter?/:dir
 			var keywordArray=[];
 			var keywordArrayM=[];
 			var msgObjIDarray=[];
-			for(i=0;i<stringArray.length;i++){
-				if(stringArray[i].charAt(0)=='-'){
-					var temper1=stringArray[i].substring(1);
-					if(temper1!==''){
-						keywordArrayM.push(new RegExp(temper1,'i'));
-					}
-				}else{
-					keywordArray.push(new RegExp(stringArray[i],'i'));
-				}
-				if(mongoose.Types.ObjectId.isValid(stringArray[i])){
-					msgObjIDarray.push(mongoose.Types.ObjectId(stringArray[i]));
-				}
-			}
+			library.arrayPro(stringArray,keywordArray,keywordArrayM,msgObjIDarray);
+			
 			var plusFlag=false;
 			if(keywordArray.length>0){
 				plusFlag=true;
@@ -3089,55 +2801,10 @@ router.get('/lenderReceiveMessages/:msgKeyword?/:filter?/:classor?/:sorter?/:dir
 							}else{
 								for(j=messages.length-1;j>-1;j--){
 									var testString=messages[j].Message+' '+messages[j].FromBorrowRequest.StoryTitle+' '+messages[j].CreatedBy.Username;
-									var localFlag=[];
-									var ctr;
-									localFlag[0]=false;
-									localFlag[1]=false;
-									localFlag[2]=false;
-									
-									for(we=0;we<msgObjIDarray.length;we++){
-										if(msgObjIDarray[we].equals(messages[j]._id)){
-											localFlag[0]=true;
-											objFlag=true;
-											break;
-										}
-									}
-									
-									if(keywordArray.length>0){
-										ctr=0;
-										for(k=0;k<keywordArray.length;k++){
-											if(testString.search(keywordArray[k])>-1){
-												ctr++;
-											}
-										}
-										if(!orFlag){
-											if(ctr==keywordArray.length){
-												localFlag[1]=true;
-											}
-										}else{
-											if(ctr>0){
-												localFlag[1]=true;
-											}
-										}
-									}else{
-										localFlag[1]=true;
-									}
-
-									if(keywordArrayM.length>0){
-										ctr=0;
-										for(k=0;k<keywordArrayM.length;k++){
-											if(testString.search(keywordArrayM[k])>-1){
-												ctr++;
-											}
-										}
-										if(ctr==0){
-											localFlag[2]=true;
-										}
-									}else{
-										localFlag[2]=true;
-									}									
-
-									if((!localFlag[0])&&((!localFlag[1])||(!localFlag[2]))){
+									var filterResponse=library.keywordFilter(orFlag,testString,messages[j]._id,keywordArray,keywordArrayM,msgObjIDarray);
+																	
+									objFlag=filterResponse.localObjFlag;
+									if((!filterResponse.localFlag0)&&((!filterResponse.localFlag1)||(!filterResponse.localFlag2))){
 										messages.splice(j, 1);
 									}
 								}
