@@ -75,7 +75,7 @@
 								<input type="text" placeholder="上限" class="form-control boundIpt" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode==13){linker();}">&nbsp;&nbsp;<span style="display:inline;" id='ubd'></span>
 							<%}%>
 						</td>
-						<%if((msgKeywordDefault!=='')&&(totalResultNum>0)&&(!oflg)){%>
+						<%if((msgKeywordDefault!=='')&&(totalResultNum>0)&&(!oflg)&&(pflg)){%>
 							<td align="right">
 								<button class="btn btn-default disabled" style="display:none;" id="highlightBtn" onclick="enableHighlight();">
 									關鍵字上色
@@ -1316,7 +1316,7 @@ function linker(){
 	var myCtr2MaxPoint;
 	var myCtr3MaxPoint;
 	
-	var stringPro='<%if(!oflg){%><%=msgKeywordDefault%><%}%>';
+	var stringPro='<%if((!oflg)&&(pflg)){%><%=msgKeywordDefault.replace(/ or /gi,' ')%><%}%>';
 	var highLightFlag=false;
 	var stringArray;
 	function enableHighlight(){
@@ -1411,6 +1411,11 @@ function linker(){
 		if(stringPro!==''){
 			stringPro=stringPro.replace(/\s\s+/g,' ');
 			stringArray=stringPro.split(' ');
+			for(j=stringArray.length-1;j>-1;j--){
+				if(stringArray[j].charAt(0)=='-'){
+					stringArray.splice(j,1);
+				}
+			}
 			overdiag(stringArray);
 			stringArray = stringArray.concat(toselect);
 			stringArray = $.grep(stringArray, function (a, b) {
