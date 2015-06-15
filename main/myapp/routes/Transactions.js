@@ -400,9 +400,17 @@ router.post('/buyInsuranceAll',library.loginFormChecker,library.ensureAuthentica
 	
 	var orFlag=false;
 	var keeper=oneid;
-	if(keeper.search(/ or /i)>-1){
+	if((keeper.search(/ or /i)>-1)||(keeper.search(/or /i)==0)||(keeper.search(/ or(?=[^ or]*$)/i)==keeper.length-3)){
 		orFlag=true;
-		keeper=keeper.replace(/ or /gi,' ');
+		while(keeper.search(/ or /i)>-1){
+			keeper=keeper.replace(/ or /gi,' ');
+		}
+		if(keeper.search(/or /i)==0){
+			keeper=keeper.substring(3);
+		}
+		if(keeper.search(/ or(?=[^ or]*$)/i)==keeper.length-3){
+			keeper=keeper.substring(0,keeper.length-3);
+		}
 	}
 
 	var stringArray=keeper.split(' ');
