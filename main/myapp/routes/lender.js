@@ -233,21 +233,11 @@ router.get('/search/:keyword?/:category?/:messenger?/:action?/:director?/:lbound
 				}
 			}
 			
-			
 			var orFlag=false;
 			var keeper=keyword;
-			if((keeper.search(/ or /i)>-1)||(keeper.search(/or /i)==0)||(keeper.search(/ or(?=[^ or]*$)/i)==keeper.length-3)){
-				orFlag=true;
-				while(keeper.search(/ or /i)>-1){
-					keeper=keeper.replace(/ or /gi,' ');
-				}
-				if(keeper.search(/or /i)==0){
-					keeper=keeper.substring(3);
-				}
-				if(keeper.search(/ or(?=[^ or]*$)/i)==keeper.length-3){
-					keeper=keeper.substring(0,keeper.length-3);
-				}
-			}
+			var orResult=library.orReplacer(keeper);
+			keeper=orResult.rtn;
+			orFlag=orResult.flag;
 			
 			var stringArray=keeper.split(' ');
 			var keywordArray=[];
@@ -1075,18 +1065,9 @@ router.get('/lenderTransactionRecord/:oneid?/:filter?/:messenger?/:classor?/:sor
 			
 			var orFlag=false;
 			var keeper=oneid;
-			if((keeper.search(/ or /i)>-1)||(keeper.search(/or /i)==0)||(keeper.search(/ or(?=[^ or]*$)/i)==keeper.length-3)){
-				orFlag=true;
-				while(keeper.search(/ or /i)>-1){
-					keeper=keeper.replace(/ or /gi,' ');
-				}
-				if(keeper.search(/or /i)==0){
-					keeper=keeper.substring(3);
-				}
-				if(keeper.search(/ or(?=[^ or]*$)/i)==keeper.length-3){
-					keeper=keeper.substring(0,keeper.length-3);
-				}
-			}
+			var orResult=library.orReplacer(keeper);
+			keeper=orResult.rtn;
+			orFlag=orResult.flag;
 			
 			var stringArray=keeper.split(' ');
 			var keywordArray=[];
@@ -1775,18 +1756,9 @@ router.get('/lenderReturnRecord/:oneid?/:id?/:messenger?/:classor?/:sorter?/:dir
 			
 			var orFlag=false;
 			var keeper=oneid;
-			if((keeper.search(/ or /i)>-1)||(keeper.search(/or /i)==0)||(keeper.search(/ or(?=[^ or]*$)/i)==keeper.length-3)){
-				orFlag=true;
-				while(keeper.search(/ or /i)>-1){
-					keeper=keeper.replace(/ or /gi,' ');
-				}
-				if(keeper.search(/or /i)==0){
-					keeper=keeper.substring(3);
-				}
-				if(keeper.search(/ or(?=[^ or]*$)/i)==keeper.length-3){
-					keeper=keeper.substring(0,keeper.length-3);
-				}
-			}
+			var orResult=library.orReplacer(keeper);
+			keeper=orResult.rtn;
+			orFlag=orResult.flag;
 
 			var stringArray=keeper.split(' ');
 			var keywordArray=[];
@@ -2270,18 +2242,9 @@ router.get('/lendsList/:oneid?/:classOne?/:classTwo?/:sorter?/:director?/:lbound
 			
 			var orFlag=false;
 			var keeper=oneid;
-			if((keeper.search(/ or /i)>-1)||(keeper.search(/or /i)==0)||(keeper.search(/ or(?=[^ or]*$)/i)==keeper.length-3)){
-				orFlag=true;
-				while(keeper.search(/ or /i)>-1){
-					keeper=keeper.replace(/ or /gi,' ');
-				}
-				if(keeper.search(/or /i)==0){
-					keeper=keeper.substring(3);
-				}
-				if(keeper.search(/ or(?=[^ or]*$)/i)==keeper.length-3){
-					keeper=keeper.substring(0,keeper.length-3);
-				}
-			}
+			var orResult=library.orReplacer(keeper);
+			keeper=orResult.rtn;
+			orFlag=orResult.flag;
 
 			var stringArray=keeper.split(' ');
 			var keywordArray=[];
@@ -2622,18 +2585,9 @@ router.get('/lenderSendMessages/:msgKeyword?/:filter?/:classor?/:sorter?/:direct
 			
 			var orFlag=false;
 			var keeper=msgKeyword;
-			if((keeper.search(/ or /i)>-1)||(keeper.search(/or /i)==0)||(keeper.search(/ or(?=[^ or]*$)/i)==keeper.length-3)){
-				orFlag=true;
-				while(keeper.search(/ or /i)>-1){
-					keeper=keeper.replace(/ or /gi,' ');
-				}
-				if(keeper.search(/or /i)==0){
-					keeper=keeper.substring(3);
-				}
-				if(keeper.search(/ or(?=[^ or]*$)/i)==keeper.length-3){
-					keeper=keeper.substring(0,keeper.length-3);
-				}
-			}
+			var orResult=library.orReplacer(keeper);
+			keeper=orResult.rtn;
+			orFlag=orResult.flag;
 
 			var stringArray=keeper.split(' ');
 			var keywordArray=[];
@@ -3080,18 +3034,9 @@ router.get('/lenderReceiveMessages/:msgKeyword?/:filter?/:classor?/:sorter?/:dir
 			
 			var orFlag=false;
 			var keeper=msgKeyword;
-			if((keeper.search(/ or /i)>-1)||(keeper.search(/or /i)==0)||(keeper.search(/ or(?=[^ or]*$)/i)==keeper.length-3)){
-				orFlag=true;
-				while(keeper.search(/ or /i)>-1){
-					keeper=keeper.replace(/ or /gi,' ');
-				}
-				if(keeper.search(/or /i)==0){
-					keeper=keeper.substring(3);
-				}
-				if(keeper.search(/ or(?=[^ or]*$)/i)==keeper.length-3){
-					keeper=keeper.substring(0,keeper.length-3);
-				}
-			}
+			var orResult=library.orReplacer(keeper);
+			keeper=orResult.rtn;
+			orFlag=orResult.flag;
 
 			var stringArray=keeper.split(' ');
 			var keywordArray=[];
