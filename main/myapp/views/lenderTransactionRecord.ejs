@@ -919,14 +919,24 @@ function linker(){
 
 <% if(totalResultNum>0){%>
 	
-	var stringPro='<%if((!oflg)&&(pflg)){%><%=kpr%><%}%>';
+	var stringPro='<%if((!oflg)&&(pflg)){%><%-kpr%><%}%>';
 	var highLightFlag=false;
-	var stringArray;
+	var stringArray=[];
+	var stringArray2=[];
 	function enableHighlight(){
 		if(stringPro!==''){
 			if(!highLightFlag){
 				highLightFlag=true;
 				$('.colorCnt').highlight(stringArray);
+				for(yu=0;yu<stringArray2.length;yu++){
+					var tmp1=stringArray2[yu].charAt(0);
+					var tmp2=stringArray2[yu].charAt(stringArray2[yu].length-1);
+					if((tmp1.search(/[^\w\u0800-\u9fa5]/ig)>-1)||(tmp2.search(/[^\w\u0800-\u9fa5]/ig)>-1)){
+						$('.colorCnt').highlight(stringArray2[yu]);
+					}else{
+						$('.colorCnt').highlight(stringArray2[yu], { wordsOnly: true });
+					}
+				}
 				$('#unhighlightBtn').removeClass('disabled');
 				$('#unhighlightBtn').css('display','');
 				$('#highlightBtn').addClass('disabled');
@@ -1008,6 +1018,11 @@ function linker(){
 			for(j=stringArray.length-1;j>-1;j--){
 				if(stringArray[j].charAt(0)=='-'){
 					stringArray.splice(j,1);
+				}else if((stringArray[j].charAt(0)=='"')&&(stringArray[j].charAt(stringArray[j].length-1)=='"')){
+					var tempCnt=stringArray[j].substring(1);
+					tempCnt=tempCnt.substring(0,tempCnt.length-1);
+					stringArray2.push(tempCnt);
+					stringArray.splice(j,1);
 				}
 			}
 			overdiag(stringArray);
@@ -1016,7 +1031,10 @@ function linker(){
 				return $.inArray(a,stringArray) === b;
 			});
 			stringArray.sort(function(a, b){
-			  return b.length - a.length;
+				return b.length - a.length;
+			});
+			stringArray2.sort(function(a, b){
+				return b.length - a.length;
 			});
 			enableHighlight();
 		}
