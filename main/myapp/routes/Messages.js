@@ -834,18 +834,9 @@ router.post('/rejectToBorrowMessageInLRMall',library.loginFormChecker, library.e
 	
 	var orFlag=false;
 	var keeper=msgKeyword;
-	if((keeper.search(/ or /i)>-1)||(keeper.search(/or /i)==0)||(keeper.search(/ or(?=[^ or]*$)/i)==keeper.length-3)){
-		orFlag=true;
-		while(keeper.search(/ or /i)>-1){
-			keeper=keeper.replace(/ or /gi,' ');
-		}
-		if(keeper.search(/or /i)==0){
-			keeper=keeper.substring(3);
-		}
-		if(keeper.search(/ or(?=[^ or]*$)/i)==keeper.length-3){
-			keeper=keeper.substring(0,keeper.length-3);
-		}
-	}
+	var orResult=library.orReplacer(keeper);
+	keeper=orResult.rtn;
+	orFlag=orResult.flag;
 
 	var stringArray=keeper.split(' ');
 	var keywordArray=[];
@@ -1189,18 +1180,9 @@ router.post('/confirmToBorrowMessageInLRMall',library.loginFormChecker, library.
 	
 	var orFlag=false;
 	var keeper=msgKeyword;
-	if((keeper.search(/ or /i)>-1)||(keeper.search(/or /i)==0)||(keeper.search(/ or(?=[^ or]*$)/i)==keeper.length-3)){
-		orFlag=true;
-		while(keeper.search(/ or /i)>-1){
-			keeper=keeper.replace(/ or /gi,' ');
-		}
-		if(keeper.search(/or /i)==0){
-			keeper=keeper.substring(3);
-		}
-		if(keeper.search(/ or(?=[^ or]*$)/i)==keeper.length-3){
-			keeper=keeper.substring(0,keeper.length-3);
-		}
-	}
+	var orResult=library.orReplacer(keeper);
+	keeper=orResult.rtn;
+	orFlag=orResult.flag;
 
 	var stringArray=keeper.split(' ');
 	var keywordArray=[];
@@ -1555,18 +1537,9 @@ router.post('/deleteToLendMessageInLRMall',library.loginFormChecker, library.ens
 	
 	var orFlag=false;
 	var keeper=msgKeyword;
-	if((keeper.search(/ or /i)>-1)||(keeper.search(/or /i)==0)||(keeper.search(/ or(?=[^ or]*$)/i)==keeper.length-3)){
-		orFlag=true;
-		while(keeper.search(/ or /i)>-1){
-			keeper=keeper.replace(/ or /gi,' ');
-		}
-		if(keeper.search(/or /i)==0){
-			keeper=keeper.substring(3);
-		}
-		if(keeper.search(/ or(?=[^ or]*$)/i)==keeper.length-3){
-			keeper=keeper.substring(0,keeper.length-3);
-		}
-	}
+	var orResult=library.orReplacer(keeper);
+	keeper=orResult.rtn;
+	orFlag=orResult.flag;
 
 	var stringArray=keeper.split(' ');
 	var keywordArray=[];
