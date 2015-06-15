@@ -184,12 +184,36 @@ exports.restrictFinder=function(finder,befounderOrig){
 
 exports.orReplacer=function(input){
 	var obj={
-		rtn:'',
+		rtn:input,
+		rtn2:input,
 		flag:false
 	};
-	obj.rtn=input.replace(/\r\n/g,' ').replace(/\n/g,' ');
 	
 	if(obj.rtn.length>2){
+		var tester1=obj.rtn.search(/ or /i);
+		var tester2=obj.rtn.search(/or /i);
+		var tester3=obj.rtn.search(/ or(?=[^ or]*$)/i);
+		if(tester1==-1){
+			tester1=Number.MAX_VALUE;
+		}
+		if(tester2==-1){
+			tester2=Number.MAX_VALUE;
+		}
+		if(tester3==-1){
+			tester3=Number.MAX_VALUE;
+		}
+		var min=Math.min(tester1, tester2, tester3);
+		var flagX=null;
+		if(min!=Number.MAX_VALUE){
+			if(min==tester1){
+				flagX=0;
+			}else if(min==tester2){
+				flagX=1;
+			}else if(min==tester3){
+				flagX=2;
+			}
+		}
+		
 		if((obj.rtn.search(/ or /i)>-1)||(obj.rtn.search(/or /i)==0)||(obj.rtn.search(/ or(?=[^ or]*$)/i)==obj.rtn.length-3)){
 			obj.flag=true;
 			while(obj.rtn.search(/ or /i)>-1){
@@ -207,6 +231,19 @@ exports.orReplacer=function(input){
 					obj.rtn='';
 				}
 			}
+		}
+		
+		if(flagX!==null){
+			var tempStr=obj.rtn.substring(0,min);
+			var tempStr2=obj.rtn.substring(min,obj.rtn.length);
+			if(flagX==0){
+				obj.rtn2=tempStr+' or '+tempStr2;
+			}else if(flagX==1){
+				obj.rtn2=tempStr+'or '+tempStr2;
+			}else if(flagX==2){
+				obj.rtn2=tempStr+' or'+tempStr2;
+			}
+			obj.rtn2=obj.rtn2.trim();
 		}
 	}else{
 		if(obj.rtn.search(/or/i)>-1){
@@ -1459,7 +1496,7 @@ exports.transactionProcessor=function(target,flag){
 			target.nextPayDateNum=tempDate.getTime();
 		}else{
 			target.nextPayDate=null;
-			target.nextPayDateNum=9999999999999;
+			target.nextPayDateNum=Number.MAX_VALUE;
 		}
 	}
 }
@@ -1738,6 +1775,7 @@ function autoConfirm(req,res,lend){
 	var keeper=msgKeyword;
 	var orResult=exports.orReplacer(keeper);
 	keeper=orResult.rtn;
+	msgKeyword=orResult.rtn2;
 	orFlag=orResult.flag;
 
 	var stringArray=keeper.split(' ');

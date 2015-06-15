@@ -402,6 +402,7 @@ router.post('/buyInsuranceAll',library.loginFormChecker,library.ensureAuthentica
 	var keeper=oneid;
 	var orResult=library.orReplacer(keeper);
 	keeper=orResult.rtn;
+	oneid=orResult.rtn2;
 	orFlag=orResult.flag;
 
 	var stringArray=keeper.split(' ');

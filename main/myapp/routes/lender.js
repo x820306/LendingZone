@@ -237,6 +237,7 @@ router.get('/search/:keyword?/:category?/:messenger?/:action?/:director?/:lbound
 			var keeper=keyword;
 			var orResult=library.orReplacer(keeper);
 			keeper=orResult.rtn;
+			keyword=orResult.rtn2;
 			orFlag=orResult.flag;
 			
 			var stringArray=keeper.split(' ');
@@ -1013,6 +1014,7 @@ router.get('/lenderTransactionRecord/:oneid?/:filter?/:messenger?/:classor?/:sor
 			var keeper=oneid;
 			var orResult=library.orReplacer(keeper);
 			keeper=orResult.rtn;
+			oneid=orResult.rtn2;
 			orFlag=orResult.flag;
 			
 			var stringArray=keeper.split(' ');
@@ -1648,6 +1650,7 @@ router.get('/lenderReturnRecord/:oneid?/:id?/:messenger?/:classor?/:sorter?/:dir
 			var keeper=oneid;
 			var orResult=library.orReplacer(keeper);
 			keeper=orResult.rtn;
+			oneid=orResult.rtn2;
 			orFlag=orResult.flag;
 
 			var stringArray=keeper.split(' ');
@@ -2078,6 +2081,7 @@ router.get('/lendsList/:oneid?/:classOne?/:classTwo?/:sorter?/:director?/:lbound
 			var keeper=oneid;
 			var orResult=library.orReplacer(keeper);
 			keeper=orResult.rtn;
+			oneid=orResult.rtn2;
 			orFlag=orResult.flag;
 
 			var stringArray=keeper.split(' ');
@@ -2366,6 +2370,7 @@ router.get('/lenderSendMessages/:msgKeyword?/:filter?/:classor?/:sorter?/:direct
 			var keeper=msgKeyword;
 			var orResult=library.orReplacer(keeper);
 			keeper=orResult.rtn;
+			msgKeyword=orResult.rtn2;
 			orFlag=orResult.flag;
 
 			var stringArray=keeper.split(' ');
@@ -2759,6 +2764,7 @@ router.get('/lenderReceiveMessages/:msgKeyword?/:filter?/:classor?/:sorter?/:dir
 			var keeper=msgKeyword;
 			var orResult=library.orReplacer(keeper);
 			keeper=orResult.rtn;
+			msgKeyword=orResult.rtn2;
 			orFlag=orResult.flag;
 
 			var stringArray=keeper.split(' ');
