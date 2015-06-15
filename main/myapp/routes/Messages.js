@@ -836,6 +836,7 @@ router.post('/rejectToBorrowMessageInLRMall',library.loginFormChecker, library.e
 	var keeper=msgKeyword;
 	var orResult=library.orReplacer(keeper);
 	keeper=orResult.rtn;
+	msgKeyword=orResult.rtn2;
 	orFlag=orResult.flag;
 
 	var stringArray=keeper.split(' ');
@@ -1125,6 +1126,7 @@ router.post('/confirmToBorrowMessageInLRMall',library.loginFormChecker, library.
 	var keeper=msgKeyword;
 	var orResult=library.orReplacer(keeper);
 	keeper=orResult.rtn;
+	msgKeyword=orResult.rtn2;
 	orFlag=orResult.flag;
 
 	var stringArray=keeper.split(' ');
@@ -1425,6 +1427,7 @@ router.post('/deleteToLendMessageInLRMall',library.loginFormChecker, library.ens
 	var keeper=msgKeyword;
 	var orResult=library.orReplacer(keeper);
 	keeper=orResult.rtn;
+	msgKeyword=orResult.rtn2;
 	orFlag=orResult.flag;
 
 	var stringArray=keeper.split(' ');
