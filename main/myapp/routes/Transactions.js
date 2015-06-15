@@ -398,14 +398,29 @@ router.post('/buyInsuranceAll',library.loginFormChecker,library.ensureAuthentica
 		}
 	}
 	
-	var stringArray=oneid.split(' ');
-	var keywordArray=[];
-	for(i=0;i<stringArray.length;i++){
-		keywordArray.push(new RegExp(stringArray[i],'i'));
+	var orFlag=false;
+	var keeper=oneid;
+	if(keeper.search(/ or /i)>-1){
+		orFlag=true;
+		keeper=keeper.replace(/ or /gi,' ');
 	}
-	var ObjID=null;
-	if(mongoose.Types.ObjectId.isValid(stringArray[0])){
-		ObjID=mongoose.Types.ObjectId(stringArray[0]);
+
+	var stringArray=keeper.split(' ');
+	var keywordArray=[];
+	var keywordArrayM=[];
+	var ObjIDarray=[];
+	for(i=0;i<stringArray.length;i++){
+		if(stringArray[i].charAt(0)=='-'){
+			var temper1=stringArray[i].substring(1);
+			if(temper1!==''){
+				keywordArrayM.push(new RegExp(temper1,'i'));
+			}
+		}else{
+			keywordArray.push(new RegExp(stringArray[i],'i'));
+		}
+		if(mongoose.Types.ObjectId.isValid(stringArray[i])){
+			ObjIDarray.push(mongoose.Types.ObjectId(stringArray[i]));
+		}
 	}
 	
 	Transactions.find({$and:andFindCmdAry}).populate('Borrower', 'Username Level').populate('CreatedFrom', 'FromBorrowRequest Type').populate('Return').sort(sorterRec).exec(function (err, transactions){
@@ -433,24 +448,50 @@ router.post('/buyInsuranceAll',library.loginFormChecker,library.ensureAuthentica
 							var ctr;
 							localFlag[0]=false;
 							localFlag[1]=false;
+							localFlag[2]=false;
 							
-							if(ObjID){
-								if(ObjID.equals(transactions[j]._id)){
+							for(we=0;we<ObjIDarray.length;we++){
+								if(ObjIDarray[we].equals(borrows[j]._id)){
 									localFlag[0]=true;
+									break;
 								}
 							}
 							
-							ctr=0;
-							for(k=0;k<keywordArray.length;k++){
-								if(testString.search(keywordArray[k])>-1){
-									ctr++;
+							if(keywordArray.length>0){
+								ctr=0;
+								for(k=0;k<keywordArray.length;k++){
+									if(testString.search(keywordArray[k])>-1){
+										ctr++;
+									}
 								}
-							}
-							if(ctr==keywordArray.length){
+								if(!orFlag){
+									if(ctr==keywordArray.length){
+										localFlag[1]=true;
+									}
+								}else{
+									if(ctr>0){
+										localFlag[1]=true;
+									}
+								}
+							}else{
 								localFlag[1]=true;
 							}
-							
-							if((!localFlag[0])&&(!localFlag[1])){
+
+							if(keywordArrayM.length>0){
+								ctr=0;
+								for(k=0;k<keywordArrayM.length;k++){
+									if(testString.search(keywordArrayM[k])>-1){
+										ctr++;
+									}
+								}
+								if(ctr==0){
+									localFlag[2]=true;
+								}
+							}else{
+								localFlag[2]=true;
+							}									
+
+							if((!localFlag[0])&&((!localFlag[1])||(!localFlag[2]))){
 								transactions.splice(j, 1);
 							}
 						}

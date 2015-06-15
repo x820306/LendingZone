@@ -51,10 +51,10 @@ exports.formIdfrArray=formIdfrArray;
 
 exports.replacer=function(input,flag){
 	if(!flag){
-		return input.trim().replace(/[^\w\s\/\.\-\u0800-\u9fa5]/ig,'').replace(/\s\s+/g,'');
+		return input.replace(/[^\w\s\/\.\-\u0800-\u9fa5]/ig,'').replace(/\s\s+/g,'').trim();
 		
 	}else{
-		return input.trim().replace(/[^\w\s\/\.\-\u0800-\u9fa5]/ig,' ').replace(/\s\s+/g,' ');
+		return input.replace(/[^\w\s\/\.\-\u0800-\u9fa5]/ig,' ').replace(/\s\s+/g,' ').trim();
 	}
 }
 
@@ -1575,14 +1575,30 @@ function autoConfirm(req,res,lend){
 		}
 	}
 	
-	var stringArray=msgKeyword.split(' ');
-	var keywordArray=[];
-	for(i=0;i<stringArray.length;i++){
-		keywordArray.push(new RegExp(stringArray[i],'i'));
+	
+	var orFlag=false;
+	var keeper=msgKeyword;
+	if(keeper.search(/ or /i)>-1){
+		orFlag=true;
+		keeper=keeper.replace(/ or /gi,' ');
 	}
-	var msgObjID=null;
-	if(mongoose.Types.ObjectId.isValid(stringArray[0])){
-		msgObjID=mongoose.Types.ObjectId(stringArray[0]);
+
+	var stringArray=keeper.split(' ');
+	var keywordArray=[];
+	var keywordArrayM=[];
+	var msgObjIDarray=[];
+	for(i=0;i<stringArray.length;i++){
+		if(stringArray[i].charAt(0)=='-'){
+			var temper1=stringArray[i].substring(1);
+			if(temper1!==''){
+				keywordArrayM.push(new RegExp(temper1,'i'));
+			}
+		}else{
+			keywordArray.push(new RegExp(stringArray[i],'i'));
+		}
+		if(mongoose.Types.ObjectId.isValid(stringArray[i])){
+			msgObjIDarray.push(mongoose.Types.ObjectId(stringArray[i]));
+		}
 	}
 	
 	var moneyLendedJson={
@@ -1618,24 +1634,50 @@ function autoConfirm(req,res,lend){
 								var ctr;
 								localFlag[0]=false;
 								localFlag[1]=false;
+								localFlag[2]=false;
 								
-								if(msgObjID){
-									if(msgObjID.equals(messages[j]._id)){
+								for(we=0;we<msgObjIDarray.length;we++){
+									if(msgObjIDarray[we].equals(borrows[j]._id)){
 										localFlag[0]=true;
+										break;
 									}
 								}
 								
-								ctr=0;
-								for(k=0;k<keywordArray.length;k++){
-									if(testString.search(keywordArray[k])>-1){
-										ctr++;
+								if(keywordArray.length>0){
+									ctr=0;
+									for(k=0;k<keywordArray.length;k++){
+										if(testString.search(keywordArray[k])>-1){
+											ctr++;
+										}
 									}
-								}
-								if(ctr==keywordArray.length){
+									if(!orFlag){
+										if(ctr==keywordArray.length){
+											localFlag[1]=true;
+										}
+									}else{
+										if(ctr>0){
+											localFlag[1]=true;
+										}
+									}
+								}else{
 									localFlag[1]=true;
 								}
-								
-								if((!localFlag[0])&&(!localFlag[1])){
+
+								if(keywordArrayM.length>0){
+									ctr=0;
+									for(k=0;k<keywordArrayM.length;k++){
+										if(testString.search(keywordArrayM[k])>-1){
+											ctr++;
+										}
+									}
+									if(ctr==0){
+										localFlag[2]=true;
+									}
+								}else{
+									localFlag[2]=true;
+								}									
+
+								if((!localFlag[0])&&((!localFlag[1])||(!localFlag[2]))){
 									messages.splice(j, 1);
 								}
 							}

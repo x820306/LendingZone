@@ -233,14 +233,34 @@ router.get('/search/:keyword?/:category?/:messenger?/:action?/:director?/:lbound
 				}
 			}
 			
-			var stringArray=keyword.split(' ');
-			var keywordArray=[];
-			for(i=0;i<stringArray.length;i++){
-				keywordArray.push(new RegExp(stringArray[i],'i'));
+			
+			var orFlag=false;
+			var keeper=keyword;
+			if(keeper.search(/ or /i)>-1){
+				orFlag=true;
+				keeper=keeper.replace(/ or /gi,' ');
 			}
-			var keyObjID=null;
-			if(mongoose.Types.ObjectId.isValid(stringArray[0])){
-				keyObjID=mongoose.Types.ObjectId(stringArray[0]);
+			
+			var stringArray=keeper.split(' ');
+			var keywordArray=[];
+			var keywordArrayM=[];
+			var keyObjIDarray=[];
+			for(i=0;i<stringArray.length;i++){
+				if(stringArray[i].charAt(0)=='-'){
+					var temper1=stringArray[i].substring(1);
+					if(temper1!==''){
+						keywordArrayM.push(new RegExp(temper1,'i'));
+					}
+				}else{
+					keywordArray.push(new RegExp(stringArray[i],'i'));
+				}
+				if(mongoose.Types.ObjectId.isValid(stringArray[i])){
+					keyObjIDarray.push(mongoose.Types.ObjectId(stringArray[i]));
+				}
+			}
+			var plusFlag=false;
+			if(keywordArray.length>0){
+				plusFlag=true;
 			}
 			
 			var Borrows  = mongoose.model('Borrows');
@@ -253,7 +273,7 @@ router.get('/search/:keyword?/:category?/:messenger?/:action?/:director?/:lbound
 						if(targetPage>1){
 							res.redirect('/message?content='+encodeURIComponent('錯誤頁碼!'));
 						}else{
-							res.render('search',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,keywordDefault:keyword,messengerDefault:messenger,actionDefault:action,categoryDefault:category,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,jsonArray:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,oflg:objFlag});
+							res.render('search',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,keywordDefault:keyword,messengerDefault:messenger,actionDefault:action,categoryDefault:category,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,jsonArray:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,oflg:objFlag,pflg:plusFlag});
 						}
 					}else{
 						var Transactions  = mongoose.model('Transactions');
@@ -274,25 +294,51 @@ router.get('/search/:keyword?/:category?/:messenger?/:action?/:director?/:lbound
 									var ctr;
 									localFlag[0]=false;
 									localFlag[1]=false;
+									localFlag[2]=false;
 									
-									if(keyObjID){
-										if(keyObjID.equals(borrows[j]._id)){
+									for(we=0;we<keyObjIDarray.length;we++){
+										if(keyObjIDarray[we].equals(borrows[j]._id)){
 											localFlag[0]=true;
 											objFlag=true;
+											break;
 										}
 									}
 									
-									ctr=0;
-									for(k=0;k<keywordArray.length;k++){
-										if(testString.search(keywordArray[k])>-1){
-											ctr++;
+									if(keywordArray.length>0){
+										ctr=0;
+										for(k=0;k<keywordArray.length;k++){
+											if(testString.search(keywordArray[k])>-1){
+												ctr++;
+											}
 										}
-									}
-									if(ctr==keywordArray.length){
+										if(!orFlag){
+											if(ctr==keywordArray.length){
+												localFlag[1]=true;
+											}
+										}else{
+											if(ctr>0){
+												localFlag[1]=true;
+											}
+										}
+									}else{
 										localFlag[1]=true;
 									}
 									
-									if((!localFlag[0])&&(!localFlag[1])){
+									if(keywordArrayM.length>0){
+										ctr=0;
+										for(k=0;k<keywordArrayM.length;k++){
+											if(testString.search(keywordArrayM[k])>-1){
+												ctr++;
+											}
+										}
+										if(ctr==0){
+											localFlag[2]=true;
+										}
+									}else{
+										localFlag[2]=true;
+									}									
+									
+									if((!localFlag[0])&&((!localFlag[1])||(!localFlag[2]))){
 										borrows.splice(j, 1);
 									}
 								}
@@ -433,7 +479,7 @@ router.get('/search/:keyword?/:category?/:messenger?/:action?/:director?/:lbound
 									if(targetPage>1){
 										res.redirect('/message?content='+encodeURIComponent('錯誤頁碼!'));
 									}else{
-										res.render('search',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,keywordDefault:keyword,messengerDefault:messenger,actionDefault:action,categoryDefault:category,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,jsonArray:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,oflg:objFlag});
+										res.render('search',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,keywordDefault:keyword,messengerDefault:messenger,actionDefault:action,categoryDefault:category,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,jsonArray:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,oflg:objFlag,pflg:plusFlag});
 									}
 								}else{
 									var divider=10;
@@ -464,7 +510,7 @@ router.get('/search/:keyword?/:category?/:messenger?/:action?/:director?/:lbound
 												}
 											}
 										}
-										res.render('search',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,keywordDefault:keyword,messengerDefault:messenger,actionDefault:action,categoryDefault:category,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,jsonArray:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,oflg:objFlag});
+										res.render('search',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,keywordDefault:keyword,messengerDefault:messenger,actionDefault:action,categoryDefault:category,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,jsonArray:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,oflg:objFlag,pflg:plusFlag});
 									}
 								}
 							}
@@ -1019,14 +1065,33 @@ router.get('/lenderTransactionRecord/:oneid?/:filter?/:messenger?/:classor?/:sor
 				}
 			}
 			
-			var stringArray=oneid.split(' ');
-			var keywordArray=[];
-			for(i=0;i<stringArray.length;i++){
-				keywordArray.push(new RegExp(stringArray[i],'i'));
+			var orFlag=false;
+			var keeper=oneid;
+			if(keeper.search(/ or /i)>-1){
+				orFlag=true;
+				keeper=keeper.replace(/ or /gi,' ');
 			}
-			var ObjID=null;
-			if(mongoose.Types.ObjectId.isValid(stringArray[0])){
-				ObjID=mongoose.Types.ObjectId(stringArray[0]);
+			
+			var stringArray=keeper.split(' ');
+			var keywordArray=[];
+			var keywordArrayM=[];
+			var ObjIDarray=[];
+			for(i=0;i<stringArray.length;i++){
+				if(stringArray[i].charAt(0)=='-'){
+					var temper1=stringArray[i].substring(1);
+					if(temper1!==''){
+						keywordArrayM.push(new RegExp(temper1,'i'));
+					}
+				}else{
+					keywordArray.push(new RegExp(stringArray[i],'i'));
+				}
+				if(mongoose.Types.ObjectId.isValid(stringArray[i])){
+					ObjIDarray.push(mongoose.Types.ObjectId(stringArray[i]));
+				}
+			}
+			var plusFlag=false;
+			if(keywordArray.length>0){
+				plusFlag=true;
 			}
 			
 			var Borrows  = mongoose.model('Borrows');
@@ -1041,7 +1106,7 @@ router.get('/lenderTransactionRecord/:oneid?/:filter?/:messenger?/:classor?/:sor
 						if(targetPage>1){
 							res.redirect('/message?content='+encodeURIComponent('錯誤頁碼!'));
 						}else{
-							res.render('lenderTransactionRecord',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,oneidDefault:oneid,filterDefault:filter,messengerDefault:messenger,sorterDefault:sorter,classorDefault:classor,jsonTransaction:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,insuranceRate:library.insuranceRate,selectedFeeAll:selectedFeeAllIpt,biJSON:buyInsuranceJson,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,oflg:objFlag});
+							res.render('lenderTransactionRecord',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,oneidDefault:oneid,filterDefault:filter,messengerDefault:messenger,sorterDefault:sorter,classorDefault:classor,jsonTransaction:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,insuranceRate:library.insuranceRate,selectedFeeAll:selectedFeeAllIpt,biJSON:buyInsuranceJson,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,oflg:objFlag,pflg:plusFlag});
 						}
 					}else{
 						var options = {
@@ -1061,25 +1126,51 @@ router.get('/lenderTransactionRecord/:oneid?/:filter?/:messenger?/:classor?/:sor
 									var ctr;
 									localFlag[0]=false;
 									localFlag[1]=false;
+									localFlag[2]=false;
 									
-									if(ObjID){
-										if(ObjID.equals(transactions[j]._id)){
+									for(we=0;we<ObjIDarray.length;we++){
+										if(ObjIDarray[we].equals(borrows[j]._id)){
 											localFlag[0]=true;
 											objFlag=true;
+											break;
 										}
 									}
 									
-									ctr=0;
-									for(k=0;k<keywordArray.length;k++){
-										if(testString.search(keywordArray[k])>-1){
-											ctr++;
+									if(keywordArray.length>0){
+										ctr=0;
+										for(k=0;k<keywordArray.length;k++){
+											if(testString.search(keywordArray[k])>-1){
+												ctr++;
+											}
 										}
-									}
-									if(ctr==keywordArray.length){
+										if(!orFlag){
+											if(ctr==keywordArray.length){
+												localFlag[1]=true;
+											}
+										}else{
+											if(ctr>0){
+												localFlag[1]=true;
+											}
+										}
+									}else{
 										localFlag[1]=true;
 									}
-									
-									if((!localFlag[0])&&(!localFlag[1])){
+
+									if(keywordArrayM.length>0){
+										ctr=0;
+										for(k=0;k<keywordArrayM.length;k++){
+											if(testString.search(keywordArrayM[k])>-1){
+												ctr++;
+											}
+										}
+										if(ctr==0){
+											localFlag[2]=true;
+										}
+									}else{
+										localFlag[2]=true;
+									}									
+
+									if((!localFlag[0])&&((!localFlag[1])||(!localFlag[2]))){
 										transactions.splice(j, 1);
 									}
 								}
@@ -1298,7 +1389,7 @@ router.get('/lenderTransactionRecord/:oneid?/:filter?/:messenger?/:classor?/:sor
 									if(targetPage>1){
 										res.redirect('/message?content='+encodeURIComponent('錯誤頁碼!'));
 									}else{
-										res.render('lenderTransactionRecord',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,oneidDefault:oneid,filterDefault:filter,messengerDefault:messenger,sorterDefault:sorter,classorDefault:classor,jsonTransaction:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,insuranceRate:library.insuranceRate,selectedFeeAll:selectedFeeAllIpt,biJSON:buyInsuranceJson,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,oflg:objFlag});
+										res.render('lenderTransactionRecord',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,oneidDefault:oneid,filterDefault:filter,messengerDefault:messenger,sorterDefault:sorter,classorDefault:classor,jsonTransaction:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,insuranceRate:library.insuranceRate,selectedFeeAll:selectedFeeAllIpt,biJSON:buyInsuranceJson,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,oflg:objFlag,pflg:plusFlag});
 									}
 								}else{
 									for(p=0;p<totalResultNumber;p++){
@@ -1334,7 +1425,7 @@ router.get('/lenderTransactionRecord/:oneid?/:filter?/:messenger?/:classor?/:sor
 											}
 										}
 										
-										res.render('lenderTransactionRecord',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,oneidDefault:oneid,filterDefault:filter,messengerDefault:messenger,sorterDefault:sorter,classorDefault:classor,jsonTransaction:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,insuranceRate:library.insuranceRate,selectedFeeAll:selectedFeeAllIpt,biJSON:buyInsuranceJson,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,oflg:objFlag});
+										res.render('lenderTransactionRecord',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,oneidDefault:oneid,filterDefault:filter,messengerDefault:messenger,sorterDefault:sorter,classorDefault:classor,jsonTransaction:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,insuranceRate:library.insuranceRate,selectedFeeAll:selectedFeeAllIpt,biJSON:buyInsuranceJson,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,oflg:objFlag,pflg:plusFlag});
 									}
 								}
 							}
@@ -1665,14 +1756,34 @@ router.get('/lenderReturnRecord/:oneid?/:id?/:messenger?/:classor?/:sorter?/:dir
 				}
 			}
 			
-			var stringArray=oneid.split(' ');
-			var keywordArray=[];
-			for(i=0;i<stringArray.length;i++){
-				keywordArray.push(new RegExp(stringArray[i],'i'));
+			
+			var orFlag=false;
+			var keeper=oneid;
+			if(keeper.search(/ or /i)>-1){
+				orFlag=true;
+				keeper=keeper.replace(/ or /gi,' ');
 			}
-			var ObjID=null;
-			if(mongoose.Types.ObjectId.isValid(stringArray[0])){
-				ObjID=mongoose.Types.ObjectId(stringArray[0]);
+
+			var stringArray=keeper.split(' ');
+			var keywordArray=[];
+			var keywordArrayM=[];
+			var ObjIDarray=[];
+			for(i=0;i<stringArray.length;i++){
+				if(stringArray[i].charAt(0)=='-'){
+					var temper1=stringArray[i].substring(1);
+					if(temper1!==''){
+						keywordArrayM.push(new RegExp(temper1,'i'));
+					}
+				}else{
+					keywordArray.push(new RegExp(stringArray[i],'i'));
+				}
+				if(mongoose.Types.ObjectId.isValid(stringArray[i])){
+					ObjIDarray.push(mongoose.Types.ObjectId(stringArray[i]));
+				}
+			}
+			var plusFlag=false;
+			if(keywordArray.length>0){
+				plusFlag=true;
 			}
 			
 			var Borrows  = mongoose.model('Borrows');
@@ -1688,7 +1799,7 @@ router.get('/lenderReturnRecord/:oneid?/:id?/:messenger?/:classor?/:sorter?/:dir
 						if(targetPage>1){
 							res.redirect('/message?content='+encodeURIComponent('錯誤頁碼!'));
 						}else{
-							res.render('lenderReturnRecord',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,oneidDefault:oneid,idDefault:id,messengerDefault:messenger,sorterDefault:sorter,classorDefault:classor,jsonReturns:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,oflg:objFlag});
+							res.render('lenderReturnRecord',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,oneidDefault:oneid,idDefault:id,messengerDefault:messenger,sorterDefault:sorter,classorDefault:classor,jsonReturns:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,oflg:objFlag,pflg:plusFlag});
 						}
 					}else{
 						var options = {
@@ -1719,25 +1830,51 @@ router.get('/lenderReturnRecord/:oneid?/:id?/:messenger?/:classor?/:sorter?/:dir
 											var ctr;
 											localFlag[0]=false;
 											localFlag[1]=false;
+											localFlag[2]=false;
 											
-											if(ObjID){
-												if(ObjID.equals(returns[j]._id)){
+											for(we=0;we<ObjIDarray.length;we++){
+												if(ObjIDarray[we].equals(borrows[j]._id)){
 													localFlag[0]=true;
 													objFlag=true;
+													break;
 												}
 											}
 											
-											ctr=0;
-											for(k=0;k<keywordArray.length;k++){
-												if(testString.search(keywordArray[k])>-1){
-													ctr++;
+											if(keywordArray.length>0){
+												ctr=0;
+												for(k=0;k<keywordArray.length;k++){
+													if(testString.search(keywordArray[k])>-1){
+														ctr++;
+													}
 												}
-											}
-											if(ctr==keywordArray.length){
+												if(!orFlag){
+													if(ctr==keywordArray.length){
+														localFlag[1]=true;
+													}
+												}else{
+													if(ctr>0){
+														localFlag[1]=true;
+													}
+												}
+											}else{
 												localFlag[1]=true;
 											}
-											
-											if((!localFlag[0])&&(!localFlag[1])){
+
+											if(keywordArrayM.length>0){
+												ctr=0;
+												for(k=0;k<keywordArrayM.length;k++){
+													if(testString.search(keywordArrayM[k])>-1){
+														ctr++;
+													}
+												}
+												if(ctr==0){
+													localFlag[2]=true;
+												}
+											}else{
+												localFlag[2]=true;
+											}									
+
+											if((!localFlag[0])&&((!localFlag[1])||(!localFlag[2]))){
 												returns.splice(j, 1);
 											}
 										}
@@ -1830,7 +1967,7 @@ router.get('/lenderReturnRecord/:oneid?/:id?/:messenger?/:classor?/:sorter?/:dir
 											if(targetPage>1){
 												res.redirect('/message?content='+encodeURIComponent('錯誤頁碼!'));
 											}else{
-												res.render('lenderReturnRecord',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,oneidDefault:oneid,idDefault:id,messengerDefault:messenger,sorterDefault:sorter,classorDefault:classor,jsonReturns:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,oflg:objFlag});
+												res.render('lenderReturnRecord',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,oneidDefault:oneid,idDefault:id,messengerDefault:messenger,sorterDefault:sorter,classorDefault:classor,jsonReturns:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,oflg:objFlag,pflg:plusFlag});
 											}
 										}else{
 											var divider=10;
@@ -1870,7 +2007,7 @@ router.get('/lenderReturnRecord/:oneid?/:id?/:messenger?/:classor?/:sorter?/:dir
 														for(i=0;i<resArrays.length;i++){
 															library.transactionProcessor(resArrays[i].ToTransaction,false);
 														}
-														res.render('lenderReturnRecord',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,oneidDefault:oneid,idDefault:id,messengerDefault:messenger,sorterDefault:sorter,classorDefault:classor,jsonReturns:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,oflg:objFlag});
+														res.render('lenderReturnRecord',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,oneidDefault:oneid,idDefault:id,messengerDefault:messenger,sorterDefault:sorter,classorDefault:classor,jsonReturns:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,oflg:objFlag,pflg:plusFlag});
 													}
 												});
 											}
@@ -2107,14 +2244,33 @@ router.get('/lendsList/:oneid?/:classOne?/:classTwo?/:sorter?/:director?/:lbound
 				command={$and:andFindCmdAry};
 			}
 			
-			var stringArray=oneid.split(' ');
-			var keywordArray=[];
-			for(i=0;i<stringArray.length;i++){
-				keywordArray.push(new RegExp(stringArray[i],'i'));
+			var orFlag=false;
+			var keeper=oneid;
+			if(keeper.search(/ or /i)>-1){
+				orFlag=true;
+				keeper=keeper.replace(/ or /gi,' ');
 			}
-			var ObjID=null;
-			if(mongoose.Types.ObjectId.isValid(stringArray[0])){
-				ObjID=mongoose.Types.ObjectId(stringArray[0]);
+
+			var stringArray=keeper.split(' ');
+			var keywordArray=[];
+			var keywordArrayM=[];
+			var ObjIDarray=[];
+			for(i=0;i<stringArray.length;i++){
+				if(stringArray[i].charAt(0)=='-'){
+					var temper1=stringArray[i].substring(1);
+					if(temper1!==''){
+						keywordArrayM.push(new RegExp(temper1,'i'));
+					}
+				}else{
+					keywordArray.push(new RegExp(stringArray[i],'i'));
+				}
+				if(mongoose.Types.ObjectId.isValid(stringArray[i])){
+					ObjIDarray.push(mongoose.Types.ObjectId(stringArray[i]));
+				}
+			}
+			var plusFlag=false;
+			if(keywordArray.length>0){
+				plusFlag=true;
 			}
 			
 			var Lends  = mongoose.model('Lends');
@@ -2127,34 +2283,60 @@ router.get('/lendsList/:oneid?/:classOne?/:classTwo?/:sorter?/:director?/:lbound
 						if(targetPage>1){
 							res.redirect('/message?content='+encodeURIComponent('錯誤頁碼!'));
 						}else{
-							res.render('lendsList',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,oneidDefault:oneid,classOneDefault:classOne,classTwoDefault:classTwo,sorterDefault:sorter,jsonLends:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,scr:library.serviceChargeRate,oflg:objFlag});
+							res.render('lendsList',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,oneidDefault:oneid,classOneDefault:classOne,classTwoDefault:classTwo,sorterDefault:sorter,jsonLends:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,scr:library.serviceChargeRate,oflg:objFlag,pflg:plusFlag});
 						}
 					}else{			
 						for(j=lends.length-1;j>-1;j--){
-							var testingString=lends[j].CreatedBy.Username+' '+lends[j].AutoComfirmToBorrowMsgKeyWord;
+							var testString=lends[j].CreatedBy.Username+' '+lends[j].AutoComfirmToBorrowMsgKeyWord;
 							var localFlag=[];
 							var ctr;
 							localFlag[0]=false;
 							localFlag[1]=false;
+							localFlag[2]=false;
 							
-							if(ObjID){
-								if(ObjID.equals(lends[j]._id)){
+							for(we=0;we<ObjIDarray.length;we++){
+								if(ObjIDarray[we].equals(borrows[j]._id)){
 									localFlag[0]=true;
 									objFlag=true;
+									break;
 								}
 							}
 							
-							ctr=0;
-							for(k=0;k<keywordArray.length;k++){
-								if(testingString.search(keywordArray[k])>-1){
-									ctr++;
+							if(keywordArray.length>0){
+								ctr=0;
+								for(k=0;k<keywordArray.length;k++){
+									if(testString.search(keywordArray[k])>-1){
+										ctr++;
+									}
 								}
-							}
-							if(ctr==keywordArray.length){
+								if(!orFlag){
+									if(ctr==keywordArray.length){
+										localFlag[1]=true;
+									}
+								}else{
+									if(ctr>0){
+										localFlag[1]=true;
+									}
+								}
+							}else{
 								localFlag[1]=true;
 							}
-							
-							if((!localFlag[0])&&(!localFlag[1])){
+
+							if(keywordArrayM.length>0){
+								ctr=0;
+								for(k=0;k<keywordArrayM.length;k++){
+									if(testString.search(keywordArrayM[k])>-1){
+										ctr++;
+									}
+								}
+								if(ctr==0){
+									localFlag[2]=true;
+								}
+							}else{
+								localFlag[2]=true;
+							}									
+
+							if((!localFlag[0])&&((!localFlag[1])||(!localFlag[2]))){
 								lends.splice(j, 1);
 							}
 						}
@@ -2164,7 +2346,7 @@ router.get('/lendsList/:oneid?/:classOne?/:classTwo?/:sorter?/:director?/:lbound
 							if(targetPage>1){
 								res.redirect('/message?content='+encodeURIComponent('錯誤頁碼!'));
 							}else{
-								res.render('lendsList',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,oneidDefault:oneid,classOneDefault:classOne,classTwoDefault:classTwo,sorterDefault:sorter,jsonLends:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,scr:library.serviceChargeRate,oflg:objFlag});
+								res.render('lendsList',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,oneidDefault:oneid,classOneDefault:classOne,classTwoDefault:classTwo,sorterDefault:sorter,jsonLends:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,scr:library.serviceChargeRate,oflg:objFlag,pflg:plusFlag});
 							}
 						}else{
 							var divider=10;
@@ -2183,7 +2365,7 @@ router.get('/lendsList/:oneid?/:classOne?/:classTwo?/:sorter?/:director?/:lbound
 								for(i=starter;i<ender;i++){
 									resArrays.push(lends[i]);
 								}
-								res.render('lendsList',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,oneidDefault:oneid,classOneDefault:classOne,classTwoDefault:classTwo,sorterDefault:sorter,jsonLends:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,scr:library.serviceChargeRate,oflg:objFlag});
+								res.render('lendsList',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,oneidDefault:oneid,classOneDefault:classOne,classTwoDefault:classTwo,sorterDefault:sorter,jsonLends:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,scr:library.serviceChargeRate,oflg:objFlag,pflg:plusFlag});
 							}
 						}
 					}
@@ -2406,14 +2588,33 @@ router.get('/lenderSendMessages/:msgKeyword?/:filter?/:classor?/:sorter?/:direct
 				}
 			}
 			
-			var stringArray=msgKeyword.split(' ');
-			var keywordArray=[];
-			for(i=0;i<stringArray.length;i++){
-				keywordArray.push(new RegExp(stringArray[i],'i'));
+			var orFlag=false;
+			var keeper=msgKeyword;
+			if(keeper.search(/ or /i)>-1){
+				orFlag=true;
+				keeper=keeper.replace(/ or /gi,' ');
 			}
-			var msgObjID=null;
-			if(mongoose.Types.ObjectId.isValid(stringArray[0])){
-				msgObjID=mongoose.Types.ObjectId(stringArray[0]);
+
+			var stringArray=keeper.split(' ');
+			var keywordArray=[];
+			var keywordArrayM=[];
+			var msgObjIDarray=[];
+			for(i=0;i<stringArray.length;i++){
+				if(stringArray[i].charAt(0)=='-'){
+					var temper1=stringArray[i].substring(1);
+					if(temper1!==''){
+						keywordArrayM.push(new RegExp(temper1,'i'));
+					}
+				}else{
+					keywordArray.push(new RegExp(stringArray[i],'i'));
+				}
+				if(mongoose.Types.ObjectId.isValid(stringArray[i])){
+					msgObjIDarray.push(mongoose.Types.ObjectId(stringArray[i]));
+				}
+			}
+			var plusFlag=false;
+			if(keywordArray.length>0){
+				plusFlag=true;
 			}
 			
 			var Messages  = mongoose.model('Messages');
@@ -2428,7 +2629,7 @@ router.get('/lenderSendMessages/:msgKeyword?/:filter?/:classor?/:sorter?/:direct
 						if(targetPage>1){
 							res.redirect('/message?content='+encodeURIComponent('錯誤頁碼!'));
 						}else{
-							res.render('lenderSendMessages',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,msgKeywordDefault:msgKeyword,filterDefault:filter,sorterDefault:sorter,classorDefault:classor,jsonMessage:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,insuranceRate:library.insuranceRate,delJSON:deleteJson,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,oflg:objFlag});
+							res.render('lenderSendMessages',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,msgKeywordDefault:msgKeyword,filterDefault:filter,sorterDefault:sorter,classorDefault:classor,jsonMessage:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,insuranceRate:library.insuranceRate,delJSON:deleteJson,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,oflg:objFlag,pflg:plusFlag});
 						}
 					}else{
 						var options = {
@@ -2447,25 +2648,51 @@ router.get('/lenderSendMessages/:msgKeyword?/:filter?/:classor?/:sorter?/:direct
 									var ctr;
 									localFlag[0]=false;
 									localFlag[1]=false;
+									localFlag[2]=false;
 									
-									if(msgObjID){
-										if(msgObjID.equals(messages[j]._id)){
+									for(we=0;we<msgObjIDarray.length;we++){
+										if(msgObjIDarray[we].equals(borrows[j]._id)){
 											localFlag[0]=true;
 											objFlag=true;
+											break;
 										}
 									}
 									
-									ctr=0;
-									for(k=0;k<keywordArray.length;k++){
-										if(testString.search(keywordArray[k])>-1){
-											ctr++;
+									if(keywordArray.length>0){
+										ctr=0;
+										for(k=0;k<keywordArray.length;k++){
+											if(testString.search(keywordArray[k])>-1){
+												ctr++;
+											}
 										}
-									}
-									if(ctr==keywordArray.length){
+										if(!orFlag){
+											if(ctr==keywordArray.length){
+												localFlag[1]=true;
+											}
+										}else{
+											if(ctr>0){
+												localFlag[1]=true;
+											}
+										}
+									}else{
 										localFlag[1]=true;
 									}
-									
-									if((!localFlag[0])&&(!localFlag[1])){
+
+									if(keywordArrayM.length>0){
+										ctr=0;
+										for(k=0;k<keywordArrayM.length;k++){
+											if(testString.search(keywordArrayM[k])>-1){
+												ctr++;
+											}
+										}
+										if(ctr==0){
+											localFlag[2]=true;
+										}
+									}else{
+										localFlag[2]=true;
+									}									
+
+									if((!localFlag[0])&&((!localFlag[1])||(!localFlag[2]))){
 										messages.splice(j, 1);
 									}
 								}
@@ -2536,7 +2763,7 @@ router.get('/lenderSendMessages/:msgKeyword?/:filter?/:classor?/:sorter?/:direct
 									if(targetPage>1){
 										res.redirect('/message?content='+encodeURIComponent('錯誤頁碼!'));
 									}else{
-										res.render('lenderSendMessages',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,msgKeywordDefault:msgKeyword,filterDefault:filter,sorterDefault:sorter,classorDefault:classor,jsonMessage:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,insuranceRate:library.insuranceRate,delJSON:deleteJson,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,oflg:objFlag});
+										res.render('lenderSendMessages',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,msgKeywordDefault:msgKeyword,filterDefault:filter,sorterDefault:sorter,classorDefault:classor,jsonMessage:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,insuranceRate:library.insuranceRate,delJSON:deleteJson,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,oflg:objFlag,pflg:plusFlag});
 									}
 								}else{
 									var divider=10;
@@ -2566,7 +2793,7 @@ router.get('/lenderSendMessages/:msgKeyword?/:filter?/:classor?/:sorter?/:direct
 											}
 										}
 										
-										res.render('lenderSendMessages',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,msgKeywordDefault:msgKeyword,filterDefault:filter,sorterDefault:sorter,classorDefault:classor,jsonMessage:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,insuranceRate:library.insuranceRate,delJSON:deleteJson,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,oflg:objFlag});
+										res.render('lenderSendMessages',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,msgKeywordDefault:msgKeyword,filterDefault:filter,sorterDefault:sorter,classorDefault:classor,jsonMessage:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,insuranceRate:library.insuranceRate,delJSON:deleteJson,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,oflg:objFlag,pflg:plusFlag});
 									}
 								}
 							}
@@ -2811,14 +3038,33 @@ router.get('/lenderReceiveMessages/:msgKeyword?/:filter?/:classor?/:sorter?/:dir
 				}
 			}
 			
-			var stringArray=msgKeyword.split(' ');
-			var keywordArray=[];
-			for(i=0;i<stringArray.length;i++){
-				keywordArray.push(new RegExp(stringArray[i],'i'));
+			var orFlag=false;
+			var keeper=msgKeyword;
+			if(keeper.search(/ or /i)>-1){
+				orFlag=true;
+				keeper=keeper.replace(/ or /gi,' ');
 			}
-			var msgObjID=null;
-			if(mongoose.Types.ObjectId.isValid(stringArray[0])){
-				msgObjID=mongoose.Types.ObjectId(stringArray[0]);
+
+			var stringArray=keeper.split(' ');
+			var keywordArray=[];
+			var keywordArrayM=[];
+			var msgObjIDarray=[];
+			for(i=0;i<stringArray.length;i++){
+				if(stringArray[i].charAt(0)=='-'){
+					var temper1=stringArray[i].substring(1);
+					if(temper1!==''){
+						keywordArrayM.push(new RegExp(temper1,'i'));
+					}
+				}else{
+					keywordArray.push(new RegExp(stringArray[i],'i'));
+				}
+				if(mongoose.Types.ObjectId.isValid(stringArray[i])){
+					msgObjIDarray.push(mongoose.Types.ObjectId(stringArray[i]));
+				}
+			}
+			var plusFlag=false;
+			if(keywordArray.length>0){
+				plusFlag=true;
 			}
 			
 			var Lends = mongoose.model('Lends');
@@ -2835,7 +3081,7 @@ router.get('/lenderReceiveMessages/:msgKeyword?/:filter?/:classor?/:sorter?/:dir
 						if(targetPage>1){
 							res.redirect('/message?content='+encodeURIComponent('錯誤頁碼!'));
 						}else{
-							res.render('lenderReceiveMessages',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,msgKeywordDefault:msgKeyword,filterDefault:filter,sorterDefault:sorter,classorDefault:classor,jsonMessage:resArrays,jsonLend:null,MoneyInBankAccountValue:0,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,value1AllDefault:value1ALL,value2AllDefault:value2ALL,value3AllDefault:value3ALL,value4AllDefault:value4ALL,value5AllDefault:value5ALL,insuranceRate:library.insuranceRate,cfJSON:confirmJson,rjJSON:rejectJson,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,MoneyLended:moneyLendedJson,oflg:objFlag});
+							res.render('lenderReceiveMessages',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,msgKeywordDefault:msgKeyword,filterDefault:filter,sorterDefault:sorter,classorDefault:classor,jsonMessage:resArrays,jsonLend:null,MoneyInBankAccountValue:0,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,value1AllDefault:value1ALL,value2AllDefault:value2ALL,value3AllDefault:value3ALL,value4AllDefault:value4ALL,value5AllDefault:value5ALL,insuranceRate:library.insuranceRate,cfJSON:confirmJson,rjJSON:rejectJson,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,MoneyLended:moneyLendedJson,oflg:objFlag,pflg:plusFlag});
 						}
 					}else{
 						var options = {
@@ -2854,25 +3100,51 @@ router.get('/lenderReceiveMessages/:msgKeyword?/:filter?/:classor?/:sorter?/:dir
 									var ctr;
 									localFlag[0]=false;
 									localFlag[1]=false;
+									localFlag[2]=false;
 									
-									if(msgObjID){
-										if(msgObjID.equals(messages[j]._id)){
+									for(we=0;we<msgObjIDarray.length;we++){
+										if(msgObjIDarray[we].equals(borrows[j]._id)){
 											localFlag[0]=true;
 											objFlag=true;
+											break;
 										}
 									}
 									
-									ctr=0;
-									for(k=0;k<keywordArray.length;k++){
-										if(testString.search(keywordArray[k])>-1){
-											ctr++;
+									if(keywordArray.length>0){
+										ctr=0;
+										for(k=0;k<keywordArray.length;k++){
+											if(testString.search(keywordArray[k])>-1){
+												ctr++;
+											}
 										}
-									}
-									if(ctr==keywordArray.length){
+										if(!orFlag){
+											if(ctr==keywordArray.length){
+												localFlag[1]=true;
+											}
+										}else{
+											if(ctr>0){
+												localFlag[1]=true;
+											}
+										}
+									}else{
 										localFlag[1]=true;
 									}
-									
-									if((!localFlag[0])&&(!localFlag[1])){
+
+									if(keywordArrayM.length>0){
+										ctr=0;
+										for(k=0;k<keywordArrayM.length;k++){
+											if(testString.search(keywordArrayM[k])>-1){
+												ctr++;
+											}
+										}
+										if(ctr==0){
+											localFlag[2]=true;
+										}
+									}else{
+										localFlag[2]=true;
+									}									
+
+									if((!localFlag[0])&&((!localFlag[1])||(!localFlag[2]))){
 										messages.splice(j, 1);
 									}
 								}
@@ -2943,7 +3215,7 @@ router.get('/lenderReceiveMessages/:msgKeyword?/:filter?/:classor?/:sorter?/:dir
 									if(targetPage>1){
 										res.redirect('/message?content='+encodeURIComponent('錯誤頁碼!'));
 									}else{
-										res.render('lenderReceiveMessages',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,msgKeywordDefault:msgKeyword,filterDefault:filter,sorterDefault:sorter,classorDefault:classor,jsonMessage:resArrays,jsonLend:null,MoneyInBankAccountValue:0,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,value1AllDefault:value1ALL,value2AllDefault:value2ALL,value3AllDefault:value3ALL,value4AllDefault:value4ALL,value5AllDefault:value5ALL,insuranceRate:library.insuranceRate,cfJSON:confirmJson,rjJSON:rejectJson,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,MoneyLended:moneyLendedJson,oflg:objFlag});
+										res.render('lenderReceiveMessages',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,msgKeywordDefault:msgKeyword,filterDefault:filter,sorterDefault:sorter,classorDefault:classor,jsonMessage:resArrays,jsonLend:null,MoneyInBankAccountValue:0,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,value1AllDefault:value1ALL,value2AllDefault:value2ALL,value3AllDefault:value3ALL,value4AllDefault:value4ALL,value5AllDefault:value5ALL,insuranceRate:library.insuranceRate,cfJSON:confirmJson,rjJSON:rejectJson,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,MoneyLended:moneyLendedJson,oflg:objFlag,pflg:plusFlag});
 									}
 								}else{
 									for(p=0;p<totalResultNumber;p++){
@@ -3022,7 +3294,7 @@ router.get('/lenderReceiveMessages/:msgKeyword?/:filter?/:classor?/:sorter?/:dir
 																		moneyLendedJson.moneyLeftToHendLend=0;
 																	}
 																	moneyLendedJson.maxSettingAutoLend=bankaccount.MoneyInBankAccount+moneyLendedJson.autoLendCumulated;
-																	res.render('lenderReceiveMessages',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,msgKeywordDefault:msgKeyword,filterDefault:filter,sorterDefault:sorter,classorDefault:classor,jsonMessage:resArrays,jsonLend:lend,MoneyInBankAccountValue:bankaccount.MoneyInBankAccount,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,value1AllDefault:value1ALL,value2AllDefault:value2ALL,value3AllDefault:value3ALL,value4AllDefault:value4ALL,value5AllDefault:value5ALL,insuranceRate:library.insuranceRate,cfJSON:confirmJson,rjJSON:rejectJson,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,MoneyLended:moneyLendedJson,oflg:objFlag});
+																	res.render('lenderReceiveMessages',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,msgKeywordDefault:msgKeyword,filterDefault:filter,sorterDefault:sorter,classorDefault:classor,jsonMessage:resArrays,jsonLend:lend,MoneyInBankAccountValue:bankaccount.MoneyInBankAccount,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,value1AllDefault:value1ALL,value2AllDefault:value2ALL,value3AllDefault:value3ALL,value4AllDefault:value4ALL,value5AllDefault:value5ALL,insuranceRate:library.insuranceRate,cfJSON:confirmJson,rjJSON:rejectJson,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,MoneyLended:moneyLendedJson,oflg:objFlag,pflg:plusFlag});
 																}
 															});
 														}
