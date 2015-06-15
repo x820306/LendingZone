@@ -451,7 +451,7 @@ router.post('/buyInsuranceAll',library.loginFormChecker,library.ensureAuthentica
 							localFlag[2]=false;
 							
 							for(we=0;we<ObjIDarray.length;we++){
-								if(ObjIDarray[we].equals(borrows[j]._id)){
+								if(ObjIDarray[we].equals(transactions[j]._id)){
 									localFlag[0]=true;
 									break;
 								}

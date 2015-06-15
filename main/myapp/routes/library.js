@@ -1637,7 +1637,7 @@ function autoConfirm(req,res,lend){
 								localFlag[2]=false;
 								
 								for(we=0;we<msgObjIDarray.length;we++){
-									if(msgObjIDarray[we].equals(borrows[j]._id)){
+									if(msgObjIDarray[we].equals(Message[j]._id)){
 										localFlag[0]=true;
 										break;
 									}
