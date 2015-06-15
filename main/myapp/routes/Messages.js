@@ -874,7 +874,7 @@ router.post('/rejectToBorrowMessageInLRMall',library.loginFormChecker, library.e
 					localFlag[2]=false;
 					
 					for(we=0;we<msgObjIDarray.length;we++){
-						if(msgObjIDarray[we].equals(borrows[j]._id)){
+						if(msgObjIDarray[we].equals(messages[j]._id)){
 							localFlag[0]=true;
 							break;
 						}
@@ -1221,7 +1221,7 @@ router.post('/confirmToBorrowMessageInLRMall',library.loginFormChecker, library.
 					localFlag[2]=false;
 					
 					for(we=0;we<msgObjIDarray.length;we++){
-						if(msgObjIDarray[we].equals(borrows[j]._id)){
+						if(msgObjIDarray[we].equals(messages[j]._id)){
 							localFlag[0]=true;
 							break;
 						}
@@ -1579,7 +1579,7 @@ router.post('/deleteToLendMessageInLRMall',library.loginFormChecker, library.ens
 					localFlag[2]=false;
 					
 					for(we=0;we<msgObjIDarray.length;we++){
-						if(msgObjIDarray[we].equals(borrows[j]._id)){
+						if(msgObjIDarray[we].equals(messages[j]._id)){
 							localFlag[0]=true;
 							break;
 						}

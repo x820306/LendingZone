@@ -1129,7 +1129,7 @@ router.get('/lenderTransactionRecord/:oneid?/:filter?/:messenger?/:classor?/:sor
 									localFlag[2]=false;
 									
 									for(we=0;we<ObjIDarray.length;we++){
-										if(ObjIDarray[we].equals(borrows[j]._id)){
+										if(ObjIDarray[we].equals(transactions[j]._id)){
 											localFlag[0]=true;
 											objFlag=true;
 											break;
@@ -1833,7 +1833,7 @@ router.get('/lenderReturnRecord/:oneid?/:id?/:messenger?/:classor?/:sorter?/:dir
 											localFlag[2]=false;
 											
 											for(we=0;we<ObjIDarray.length;we++){
-												if(ObjIDarray[we].equals(borrows[j]._id)){
+												if(ObjIDarray[we].equals(returns[j]._id)){
 													localFlag[0]=true;
 													objFlag=true;
 													break;
@@ -2295,7 +2295,7 @@ router.get('/lendsList/:oneid?/:classOne?/:classTwo?/:sorter?/:director?/:lbound
 							localFlag[2]=false;
 							
 							for(we=0;we<ObjIDarray.length;we++){
-								if(ObjIDarray[we].equals(borrows[j]._id)){
+								if(ObjIDarray[we].equals(lends[j]._id)){
 									localFlag[0]=true;
 									objFlag=true;
 									break;
@@ -2651,7 +2651,7 @@ router.get('/lenderSendMessages/:msgKeyword?/:filter?/:classor?/:sorter?/:direct
 									localFlag[2]=false;
 									
 									for(we=0;we<msgObjIDarray.length;we++){
-										if(msgObjIDarray[we].equals(borrows[j]._id)){
+										if(msgObjIDarray[we].equals(messages[j]._id)){
 											localFlag[0]=true;
 											objFlag=true;
 											break;
@@ -3103,7 +3103,7 @@ router.get('/lenderReceiveMessages/:msgKeyword?/:filter?/:classor?/:sorter?/:dir
 									localFlag[2]=false;
 									
 									for(we=0;we<msgObjIDarray.length;we++){
-										if(msgObjIDarray[we].equals(borrows[j]._id)){
+										if(msgObjIDarray[we].equals(messages[j]._id)){
 											localFlag[0]=true;
 											objFlag=true;
 											break;
