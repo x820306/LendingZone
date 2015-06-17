@@ -923,19 +923,17 @@ function linker(){
 	var highLightFlag=false;
 	var stringArray=[];
 	var stringArray2=[];
+	var stringArrayRegex=[];
+	var stringArray2Regex=[];
 	function enableHighlight(){
 		if(stringPro!==''){
 			if(!highLightFlag){
 				highLightFlag=true;
-				$('.colorCnt').highlight(stringArray);
-				for(yu=0;yu<stringArray2.length;yu++){
-					var tmp1=stringArray2[yu].charAt(0);
-					var tmp2=stringArray2[yu].charAt(stringArray2[yu].length-1);
-					if((tmp1.search(/[^\w\u0800-\u9fa5]/ig)>-1)||(tmp2.search(/[^\w\u0800-\u9fa5]/ig)>-1)){
-						$('.colorCnt').highlight(stringArray2[yu]);
-					}else{
-						$('.colorCnt').highlight(stringArray2[yu], { wordsOnly: true });
-					}
+				for(we=0;we<stringArray2Regex.length;we++){
+					$('.colorCnt').highlightRegex(stringArray2Regex[we]);
+				}
+				for(we=0;we<stringArrayRegex.length;we++){
+					$('.colorCnt').highlightRegex(stringArrayRegex[we]);
 				}
 				$('#unhighlightBtn').removeClass('disabled');
 				$('#unhighlightBtn').css('display','');
@@ -949,7 +947,7 @@ function linker(){
 		if(stringPro!==''){
 			if(highLightFlag){
 				highLightFlag=false;
-				$('.colorCnt').unhighlight();
+				$('.colorCnt').highlightRegex();
 				$('#highlightBtn').removeClass('disabled');
 				$('#highlightBtn').css('display','');
 				$('#unhighlightBtn').addClass('disabled');
@@ -1036,6 +1034,13 @@ function linker(){
 			stringArray2.sort(function(a, b){
 				return b.length - a.length;
 			});
+			for(we=0;we<stringArray.length;we++){
+				stringArrayRegex.push(new RegExp(stringArray[we].replace(/\./g,'\\.'),'ig'));
+			}
+			for(we=0;we<stringArray2.length;we++){
+				var temperrr=stringArray2[we].replace(/%/g,'[^\\w\\u0800-\\u9fa5]+').replace(/\./g,'\\.');
+				stringArray2Regex.push(new RegExp('(^|[^\\w\\u0800-\\u9fa5])'+temperrr+'($|[^\\w\\u0800-\\u9fa5])','ig'));
+			}
 			enableHighlight();
 		}
 	});

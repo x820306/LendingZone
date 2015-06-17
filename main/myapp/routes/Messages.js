@@ -833,11 +833,13 @@ router.post('/rejectToBorrowMessageInLRMall',library.loginFormChecker, library.e
 	}
 	
 	var orFlag=false;
+	var orFlagM=false;
 	var keeper=msgKeyword;
 	var orResult=library.orReplacer(keeper);
 	keeper=orResult.rtn;
 	msgKeyword=orResult.rtn2;
 	orFlag=orResult.flag;
+	orFlagM=orResult.flagM;
 
 	var stringArray=keeper.split(' ');
 	var keywordArray=[];
@@ -854,8 +856,8 @@ router.post('/rejectToBorrowMessageInLRMall',library.loginFormChecker, library.e
 				res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 			}else{
 				for(j=messages.length-1;j>-1;j--){
-					var testString=messages[j].Message+' '+messages[j].FromBorrowRequest.StoryTitle+' '+messages[j].CreatedBy.Username;
-					var filterResponse=library.keywordFilter(orFlag,testString,messages[j]._id,keywordArray,keywordArrayM,msgObjIDarray);
+					var testString=messages[j].Message+'\r\n'+messages[j].FromBorrowRequest.StoryTitle+'\r\n'+messages[j].CreatedBy.Username;
+					var filterResponse=library.keywordFilter(orFlag,orFlagM,testString,messages[j]._id,keywordArray,keywordArrayM,msgObjIDarray);
 																	
 					if((!filterResponse.localFlag0)&&((!filterResponse.localFlag1)||(!filterResponse.localFlag2))){
 						messages.splice(j, 1);
@@ -1123,11 +1125,13 @@ router.post('/confirmToBorrowMessageInLRMall',library.loginFormChecker, library.
 	}
 	
 	var orFlag=false;
+	var orFlagM=false;
 	var keeper=msgKeyword;
 	var orResult=library.orReplacer(keeper);
 	keeper=orResult.rtn;
 	msgKeyword=orResult.rtn2;
 	orFlag=orResult.flag;
+	orFlagM=orResult.flagM;
 
 	var stringArray=keeper.split(' ');
 	var keywordArray=[];
@@ -1144,8 +1148,8 @@ router.post('/confirmToBorrowMessageInLRMall',library.loginFormChecker, library.
 				res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 			}else{
 				for(j=messages.length-1;j>-1;j--){
-					var testString=messages[j].Message+' '+messages[j].FromBorrowRequest.StoryTitle+' '+messages[j].CreatedBy.Username;
-					var filterResponse=library.keywordFilter(orFlag,testString,messages[j]._id,keywordArray,keywordArrayM,msgObjIDarray);
+					var testString=messages[j].Message+'\r\n'+messages[j].FromBorrowRequest.StoryTitle+'\r\n'+messages[j].CreatedBy.Username;
+					var filterResponse=library.keywordFilter(orFlag,orFlagM,testString,messages[j]._id,keywordArray,keywordArrayM,msgObjIDarray);
 																	
 					if((!filterResponse.localFlag0)&&((!filterResponse.localFlag1)||(!filterResponse.localFlag2))){
 						messages.splice(j, 1);
@@ -1424,11 +1428,13 @@ router.post('/deleteToLendMessageInLRMall',library.loginFormChecker, library.ens
 	}
 	
 	var orFlag=false;
+	var orFlagM=false;
 	var keeper=msgKeyword;
 	var orResult=library.orReplacer(keeper);
 	keeper=orResult.rtn;
 	msgKeyword=orResult.rtn2;
 	orFlag=orResult.flag;
+	orFlagM=orResult.flagM;
 
 	var stringArray=keeper.split(' ');
 	var keywordArray=[];
@@ -1445,8 +1451,8 @@ router.post('/deleteToLendMessageInLRMall',library.loginFormChecker, library.ens
 				res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 			}else{
 				for(j=messages.length-1;j>-1;j--){
-					var testString=messages[j].Message+' '+messages[j].FromBorrowRequest.StoryTitle+' '+messages[j].SendTo.Username;
-					var filterResponse=library.keywordFilter(orFlag,testString,messages[j]._id,keywordArray,keywordArrayM,msgObjIDarray);
+					var testString=messages[j].Message+'\r\n'+messages[j].FromBorrowRequest.StoryTitle+'\r\n'+messages[j].SendTo.Username;
+					var filterResponse=library.keywordFilter(orFlag,orFlagM,testString,messages[j]._id,keywordArray,keywordArrayM,msgObjIDarray);
 																	
 					if((!filterResponse.localFlag0)&&((!filterResponse.localFlag1)||(!filterResponse.localFlag2))){
 						messages.splice(j, 1);

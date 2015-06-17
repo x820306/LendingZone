@@ -234,11 +234,13 @@ router.get('/search/:keyword?/:category?/:messenger?/:action?/:director?/:lbound
 			}
 			
 			var orFlag=false;
+			var orFlagM=false;
 			var keeper=keyword;
 			var orResult=library.orReplacer(keeper);
 			keeper=orResult.rtn;
 			keyword=orResult.rtn2;
 			orFlag=orResult.flag;
+			orFlagM=orResult.flagM;
 			
 			var stringArray=keeper.split(' ');
 			var keywordArray=[];
@@ -278,9 +280,9 @@ router.get('/search/:keyword?/:category?/:messenger?/:action?/:director?/:lbound
 								res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 							}else{
 								for(j=borrows.length-1;j>-1;j--){
-									var testString=borrows[j].StoryTitle+' '+borrows[j].Story+' '+borrows[j].CreatedBy.Username;
+									var testString=borrows[j].StoryTitle+'\r\n'+borrows[j].Story+'\r\n'+borrows[j].CreatedBy.Username;
 									
-									var filterResponse=library.keywordFilter(orFlag,testString,borrows[j]._id,keywordArray,keywordArrayM,keyObjIDarray);
+									var filterResponse=library.keywordFilter(orFlag,orFlagM,testString,borrows[j]._id,keywordArray,keywordArrayM,keyObjIDarray);
 																	
 									objFlag=filterResponse.localObjFlag;
 									if((!filterResponse.localFlag0)&&((!filterResponse.localFlag1)||(!filterResponse.localFlag2))){
@@ -1011,11 +1013,13 @@ router.get('/lenderTransactionRecord/:oneid?/:filter?/:messenger?/:classor?/:sor
 			}
 			
 			var orFlag=false;
+			var orFlagM=false;
 			var keeper=oneid;
 			var orResult=library.orReplacer(keeper);
 			keeper=orResult.rtn;
 			oneid=orResult.rtn2;
 			orFlag=orResult.flag;
+			orFlagM=orResult.flagM;
 			
 			var stringArray=keeper.split(' ');
 			var keywordArray=[];
@@ -1055,8 +1059,8 @@ router.get('/lenderTransactionRecord/:oneid?/:filter?/:messenger?/:classor?/:sor
 								res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 							}else{
 								for(j=transactions.length-1;j>-1;j--){
-									var testString=transactions[j].Borrower.Username+' '+transactions[j].CreatedFrom.FromBorrowRequest.StoryTitle;
-									var filterResponse=library.keywordFilter(orFlag,testString,transactions[j]._id,keywordArray,keywordArrayM,ObjIDarray);
+									var testString=transactions[j].Borrower.Username+'\r\n'+transactions[j].CreatedFrom.FromBorrowRequest.StoryTitle;
+									var filterResponse=library.keywordFilter(orFlag,orFlagM,testString,transactions[j]._id,keywordArray,keywordArrayM,ObjIDarray);
 																	
 									objFlag=filterResponse.localObjFlag;
 									if((!filterResponse.localFlag0)&&((!filterResponse.localFlag1)||(!filterResponse.localFlag2))){
@@ -1647,11 +1651,13 @@ router.get('/lenderReturnRecord/:oneid?/:id?/:messenger?/:classor?/:sorter?/:dir
 			
 			
 			var orFlag=false;
+			var orFlagM=false;
 			var keeper=oneid;
 			var orResult=library.orReplacer(keeper);
 			keeper=orResult.rtn;
 			oneid=orResult.rtn2;
 			orFlag=orResult.flag;
+			orFlagM=orResult.flagM;
 
 			var stringArray=keeper.split(' ');
 			var keywordArray=[];
@@ -1703,8 +1709,8 @@ router.get('/lenderReturnRecord/:oneid?/:id?/:messenger?/:classor?/:sorter?/:dir
 										res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 									}else{
 										for(j=returns.length-1;j>-1;j--){
-											var testString=returns[j].Borrower.Username+' '+returns[j].ToTransaction.CreatedFrom.FromBorrowRequest.StoryTitle;
-											var filterResponse=library.keywordFilter(orFlag,testString,returns[j]._id,keywordArray,keywordArrayM,ObjIDarray);
+											var testString=returns[j].Borrower.Username+'\r\n'+returns[j].ToTransaction.CreatedFrom.FromBorrowRequest.StoryTitle;
+											var filterResponse=library.keywordFilter(orFlag,orFlagM,testString,returns[j]._id,keywordArray,keywordArrayM,ObjIDarray);
 																	
 											objFlag=filterResponse.localObjFlag;
 											if((!filterResponse.localFlag0)&&((!filterResponse.localFlag1)||(!filterResponse.localFlag2))){
@@ -2078,11 +2084,13 @@ router.get('/lendsList/:oneid?/:classOne?/:classTwo?/:sorter?/:director?/:lbound
 			}
 			
 			var orFlag=false;
+			var orFlagM=false;
 			var keeper=oneid;
 			var orResult=library.orReplacer(keeper);
 			keeper=orResult.rtn;
 			oneid=orResult.rtn2;
 			orFlag=orResult.flag;
+			orFlagM=orResult.flagM;
 
 			var stringArray=keeper.split(' ');
 			var keywordArray=[];
@@ -2109,9 +2117,9 @@ router.get('/lendsList/:oneid?/:classOne?/:classTwo?/:sorter?/:director?/:lbound
 						}
 					}else{			
 						for(j=lends.length-1;j>-1;j--){
-							var testString=lends[j].CreatedBy.Username+' '+lends[j].AutoComfirmToBorrowMsgKeyWord;
+							var testString=lends[j].CreatedBy.Username+'\r\n'+lends[j].AutoComfirmToBorrowMsgKeyWord;
 							
-							var filterResponse=library.keywordFilter(orFlag,testString,lends[j]._id,keywordArray,keywordArrayM,ObjIDarray);
+							var filterResponse=library.keywordFilter(orFlag,orFlagM,testString,lends[j]._id,keywordArray,keywordArrayM,ObjIDarray);
 																	
 							objFlag=filterResponse.localObjFlag;
 							if((!filterResponse.localFlag0)&&((!filterResponse.localFlag1)||(!filterResponse.localFlag2))){
@@ -2367,11 +2375,13 @@ router.get('/lenderSendMessages/:msgKeyword?/:filter?/:classor?/:sorter?/:direct
 			}
 			
 			var orFlag=false;
+			var orFlagM=false;
 			var keeper=msgKeyword;
 			var orResult=library.orReplacer(keeper);
 			keeper=orResult.rtn;
 			msgKeyword=orResult.rtn2;
 			orFlag=orResult.flag;
+			orFlagM=orResult.flagM;
 
 			var stringArray=keeper.split(' ');
 			var keywordArray=[];
@@ -2410,8 +2420,8 @@ router.get('/lenderSendMessages/:msgKeyword?/:filter?/:classor?/:sorter?/:direct
 								res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 							}else{
 								for(j=messages.length-1;j>-1;j--){
-									var testString=messages[j].Message+' '+messages[j].FromBorrowRequest.StoryTitle+' '+messages[j].SendTo.Username;
-									var filterResponse=library.keywordFilter(orFlag,testString,messages[j]._id,keywordArray,keywordArrayM,msgObjIDarray);
+									var testString=messages[j].Message+'\r\n'+messages[j].FromBorrowRequest.StoryTitle+'\r\n'+messages[j].SendTo.Username;
+									var filterResponse=library.keywordFilter(orFlag,orFlagM,testString,messages[j]._id,keywordArray,keywordArrayM,msgObjIDarray);
 																	
 									objFlag=filterResponse.localObjFlag;
 									if((!filterResponse.localFlag0)&&((!filterResponse.localFlag1)||(!filterResponse.localFlag2))){
@@ -2761,11 +2771,13 @@ router.get('/lenderReceiveMessages/:msgKeyword?/:filter?/:classor?/:sorter?/:dir
 			}
 			
 			var orFlag=false;
+			var orFlagM=false;
 			var keeper=msgKeyword;
 			var orResult=library.orReplacer(keeper);
 			keeper=orResult.rtn;
 			msgKeyword=orResult.rtn2;
 			orFlag=orResult.flag;
+			orFlagM=orResult.flagM;
 
 			var stringArray=keeper.split(' ');
 			var keywordArray=[];
@@ -2806,8 +2818,8 @@ router.get('/lenderReceiveMessages/:msgKeyword?/:filter?/:classor?/:sorter?/:dir
 								res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 							}else{
 								for(j=messages.length-1;j>-1;j--){
-									var testString=messages[j].Message+' '+messages[j].FromBorrowRequest.StoryTitle+' '+messages[j].CreatedBy.Username;
-									var filterResponse=library.keywordFilter(orFlag,testString,messages[j]._id,keywordArray,keywordArrayM,msgObjIDarray);
+									var testString=messages[j].Message+'\r\n'+messages[j].FromBorrowRequest.StoryTitle+'\r\n'+messages[j].CreatedBy.Username;
+									var filterResponse=library.keywordFilter(orFlag,orFlagM,testString,messages[j]._id,keywordArray,keywordArrayM,msgObjIDarray);
 																	
 									objFlag=filterResponse.localObjFlag;
 									if((!filterResponse.localFlag0)&&((!filterResponse.localFlag1)||(!filterResponse.localFlag2))){

@@ -399,11 +399,13 @@ router.post('/buyInsuranceAll',library.loginFormChecker,library.ensureAuthentica
 	}
 	
 	var orFlag=false;
+	var orFlagM=false;
 	var keeper=oneid;
 	var orResult=library.orReplacer(keeper);
 	keeper=orResult.rtn;
 	oneid=orResult.rtn2;
 	orFlag=orResult.flag;
+	orFlagM=orResult.flagM;
 
 	var stringArray=keeper.split(' ');
 	var keywordArray=[];
@@ -431,8 +433,8 @@ router.post('/buyInsuranceAll',library.loginFormChecker,library.ensureAuthentica
 						res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 					}else{
 						for(j=transactions.length-1;j>-1;j--){
-							var testString=transactions[j].Borrower.Username+' '+transactions[j].CreatedFrom.FromBorrowRequest.StoryTitle;
-							var filterResponse=library.keywordFilter(orFlag,testString,transactions[j]._id,keywordArray,keywordArrayM,ObjIDarray);
+							var testString=transactions[j].Borrower.Username+'\r\n'+transactions[j].CreatedFrom.FromBorrowRequest.StoryTitle;
+							var filterResponse=library.keywordFilter(orFlag,orFlagM,testString,transactions[j]._id,keywordArray,keywordArrayM,ObjIDarray);
 																	
 							if((!filterResponse.localFlag0)&&((!filterResponse.localFlag1)||(!filterResponse.localFlag2))){
 								transactions.splice(j, 1);
