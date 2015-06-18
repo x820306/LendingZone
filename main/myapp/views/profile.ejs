@@ -10,7 +10,7 @@
 						姓名<br>
 						<span id="s1" style="color:red;"><%if(dcdJSON){%><%if(dcdJSON.Target[0]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=dcdJSON.Message[0]%><%}%><%}%></span>
 					</td>
-					<td><input type="text" class="form-control" id="nameIpt" name="Name" placeholder="姓名" required="required" value="<%if(dcdJSON){%><%=dcdJSON.FormContent.F1%><%}else{%><%=user.Name%><%}%>"></td>
+					<td><input type="text" class="form-control" id="f1" name="Name" placeholder="姓名" required="required" value="<%if(dcdJSON){%><%=dcdJSON.FormContent.F1%><%}else{%><%=user.Name%><%}%>"></td>
 				</tr>
 				<tr>
 					<td align = "right" style = "width:15%">
@@ -18,26 +18,29 @@
 						<span id="s2" style="color:red;"><%if(dcdJSON){%><%if(dcdJSON.Target[1]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=dcdJSON.Message[1]%><%}%><%}%></span>
 					</td>
 					<td><label class="radio-inline">
-					<input type="radio" name="Gender" id="inlineRadio1" value="Male" required="required"<%if(dcdJSON){%><%if(dcdJSON.FormContent.F2=='Male'){%> checked="true"<%}%><%}else{%><%if(user.Gender=='Male'){%> checked="true"<%}%><%}%>> 男性</label>
+					<input type="radio" name="Gender" id="f2a" value="Male" required="required"<%if(dcdJSON){%><%if(dcdJSON.FormContent.F2=='Male'){%> checked="true"<%}%><%}else{%><%if(user.Gender=='Male'){%> checked="true"<%}%><%}%>> 男性</label>
 					<label class="radio-inline">
-					<input type="radio" name="Gender" id="inlineRadio2" value="Female" required="required"<%if(dcdJSON){%><%if(dcdJSON.FormContent.F2=='Female'){%> checked="true"<%}%><%}else{%><%if(user.Gender=='Female'){%> checked="true"<%}%><%}%>> 女性</label></td>
+					<input type="radio" name="Gender" id="f2b" value="Female" required="required"<%if(dcdJSON){%><%if(dcdJSON.FormContent.F2=='Female'){%> checked="true"<%}%><%}else{%><%if(user.Gender=='Female'){%> checked="true"<%}%><%}%>> 女性</label></td>
 				</tr>
 				<tr>
 					<td align = "right" style = "width:15%">
 						生日<br>
 						<span id="s3" style="color:red;"><%if(dcdJSON){%><%if(dcdJSON.Target[2]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=dcdJSON.Message[2]%><%}%><%}%></span>
 					</td>
-					<td><input type="date" class="form-control" id="birthIpt" name="BirthDay" placeholder="生日(yyyy/mm/dd)" required="required" value="<%if(dcdJSON){%><%=dcdJSON.FormContent.F3%><%}else{%><%=user.BirthDay.getFullYear()%>-<%if(user.BirthDay.getMonth()<9){%>0<%}%><%=user.BirthDay.getMonth()+1%>-<%if(user.BirthDay.getDate()<10){%>0<%}%><%=user.BirthDay.getDate()%><%}%>"></td>
+					<td><input type="date" class="form-control" id="f3" name="BirthDay" placeholder="生日(yyyy/mm/dd)" required="required" value="<%if(dcdJSON){%><%=dcdJSON.FormContent.F3%><%}else{%><%=user.BirthDay.getFullYear()%>-<%if(user.BirthDay.getMonth()<9){%>0<%}%><%=user.BirthDay.getMonth()+1%>-<%if(user.BirthDay.getDate()<10){%>0<%}%><%=user.BirthDay.getDate()%><%}%>"></td>
 				</tr>
 				<tr>
 					<td align = "right" style = "width:15%">
 						身分證字號<br>
 						<span id="s4" style="color:red;"><%if(dcdJSON){%><%if(dcdJSON.Target[3]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=dcdJSON.Message[3]%><%}%><%}%></span>
 					</td>
-					<td><input type="text" class="form-control" id="ssnIpt" name="IdCardNumber" placeholder="身分證字號" required="required" value="<%if(dcdJSON){%><%=dcdJSON.FormContent.F4%><%}else{%><%=user.IdCardNumber%><%}%>"></td>
+					<td><input type="text" class="form-control" id="f4" name="IdCardNumber" placeholder="身分證字號" required="required" value="<%if(dcdJSON){%><%=dcdJSON.FormContent.F4%><%}else{%><%=user.IdCardNumber%><%}%>"></td>
 				</tr>
 				<tr>
-					<td align = "right" style="width:15%">身分證圖檔</td>
+					<td align = "right" style="width:15%">
+						身分證圖檔<br>
+						<span id="s5" style="color:red;"><%if(dcdJSON){%><%if(dcdJSON.Target[4]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=dcdJSON.Message[4]%><%}%><%}%></span>
+					</td>
 					<td>
 						<table>
 							<tr>
@@ -48,7 +51,7 @@
 							<tr>
 								<td>
 									<br>
-									<input type="file" id="ssnImg" name="IdCard" accept="image/*">
+									<input type="file" id="f5" name="IdCard" accept="image/*">
 									<p class="help-block">如您需要修改請重新選擇檔案</p>
 								</td>
 							</tr>
@@ -56,7 +59,10 @@
 					</td>
 				</tr>
 				<tr>
-					<td align = "right" style = "width:15%">第二證件圖檔</td>
+					<td align = "right" style = "width:15%">
+						第二證件圖檔<br>
+						<span id="s6" style="color:red;"><%if(dcdJSON){%><%if(dcdJSON.Target[5]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=dcdJSON.Message[5]%><%}%><%}%></span>
+					</td>
 					<td>
 						<table>
 							<tr>
@@ -67,7 +73,7 @@
 							<tr>
 								<td>
 									<br>
-									<input type="file" id="cerImg" name="SecondCard" accept="image/*">
+									<input type="file" id="f6" name="SecondCard" accept="image/*">
 									<p class="help-block">如您需要修改請重新選擇檔案</p>
 								</td>
 							</tr>
@@ -77,37 +83,37 @@
 				<tr>
 					<td align = "right" style = "width:15%">
 						行動電話<br>
-						<span id="s5" style="color:red;"><%if(dcdJSON){%><%if(dcdJSON.Target[4]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=dcdJSON.Message[4]%><%}%><%}%></span>
+						<span id="s7" style="color:red;"><%if(dcdJSON){%><%if(dcdJSON.Target[6]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=dcdJSON.Message[6]%><%}%><%}%></span>
 					</td>
-					<td><input type="text" class="form-control" id="telIpt" name="Phone" placeholder="行動電話" required="required" value="<%if(dcdJSON){%><%=dcdJSON.FormContent.F5%><%}else{%><%=user.Phone%><%}%>"></td>
+					<td><input type="text" class="form-control" id="f7" name="Phone" placeholder="行動電話" required="required" value="<%if(dcdJSON){%><%=dcdJSON.FormContent.F7%><%}else{%><%=user.Phone%><%}%>"></td>
 				</tr>
 				<tr>
 					<td align = "right" style = "width:15%">
 						E-mail<br>
-						<span id="s6" style="color:red;"><%if(dcdJSON){%><%if(dcdJSON.Target[5]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=dcdJSON.Message[5]%><%}%><%}%></span>
+						<span id="s8" style="color:red;"><%if(dcdJSON){%><%if(dcdJSON.Target[7]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=dcdJSON.Message[7]%><%}%><%}%></span>
 					</td>
-					<td><input type="email" class="form-control" id="emailIpt" name="Email" placeholder="E-mail" required="required" value="<%if(dcdJSON){%><%=dcdJSON.FormContent.F6%><%}else{%><%=user.Email%><%}%>"></td>
+					<td><input type="email" class="form-control" id="f8" name="Email" placeholder="E-mail" required="required" value="<%if(dcdJSON){%><%=dcdJSON.FormContent.F8%><%}else{%><%=user.Email%><%}%>"></td>
 				</tr>
 				<tr>
 					<td align = "right" style = "width:15%">
 						住址<br>
-						<span id="s7" style="color:red;"><%if(dcdJSON){%><%if(dcdJSON.Target[6]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=dcdJSON.Message[6]%><%}%><%}%></span>
+						<span id="s9" style="color:red;"><%if(dcdJSON){%><%if(dcdJSON.Target[8]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=dcdJSON.Message[8]%><%}%><%}%></span>
 					</td>
-					<td><input type="text" class="form-control" id="addrIpt" name="Address" placeholder="住址" required="required" value="<%if(dcdJSON){%><%=dcdJSON.FormContent.F7%><%}else{%><%=user.Address%><%}%>"></td>
+					<td><input type="text" class="form-control" id="f9" name="Address" placeholder="住址" required="required" value="<%if(dcdJSON){%><%=dcdJSON.FormContent.F9%><%}else{%><%=user.Address%><%}%>"></td>
 				</tr>
 				<tr>
 					<td align = "right" style = "width:15%">
 						卡片卡號<br>
-						<span id="s8" style="color:red;"><%if(dcdJSON){%><%if(dcdJSON.Target[7]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=dcdJSON.Message[7]%><%}%><%}%></span>
+						<span id="s10" style="color:red;"><%if(dcdJSON){%><%if(dcdJSON.Target[9]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=dcdJSON.Message[9]%><%}%><%}%></span>
 					</td>
-					<td><input type="text" class="form-control" id="cardIpt" name="BankAccountNumber" placeholder="欲使用卡片之卡號" required="required" value="<%if(dcdJSON){%><%=dcdJSON.FormContent.F8%><%}else{%><%=account.BankAccountNumber%><%}%>"></td>
+					<td><input type="text" class="form-control" id="f10" name="BankAccountNumber" placeholder="欲使用卡片之卡號" required="required" value="<%if(dcdJSON){%><%=dcdJSON.FormContent.F10%><%}else{%><%=account.BankAccountNumber%><%}%>"></td>
 				</tr>
 				<tr>
 					<td align = "right" style = "width:15%">
 						卡片密碼<br>
-						<span id="s9" style="color:red;"><%if(dcdJSON){%><%if(dcdJSON.Target[8]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=dcdJSON.Message[8]%><%}%><%}%></span>
+						<span id="s11" style="color:red;"><%if(dcdJSON){%><%if(dcdJSON.Target[10]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=dcdJSON.Message[10]%><%}%><%}%></span>
 					</td>
-					<td><input type="password" class="form-control" id="cardPwdIpt" name="BankAccountPassword" placeholder="卡片密碼" required="required" value="<%if(dcdJSON){%><%=dcdJSON.FormContent.F9%><%}else{%><%=account.BankAccountPassword%><%}%>"></td>
+					<td><input type="password" class="form-control" id="f11" name="BankAccountPassword" placeholder="卡片密碼" required="required" value="<%if(dcdJSON){%><%=dcdJSON.FormContent.F11%><%}else{%><%=account.BankAccountPassword%><%}%>"></td>
 				</tr>
 				</table>
 				<div class="btn-toolbar" role="toolbar" style = "margin-top: 10px;">
@@ -230,5 +236,18 @@
 			$('#msgModal').modal('show');
 		}
 	}
+	
+	<%if(dcdJSON){%>
+		$(document).ready(function (){
+			<%for(i=0;i<dcdJSON.Target.length;i++){%>
+				<%if(dcdJSON.Target[i]){%>
+					<%if(i!=1){%>
+						$('#f<%=i+1%>').focus();
+					<%}%>
+					<%break;%>
+				<%}%>
+			<%}%>
+		});
+	<%}%>
 </script>
 <%- include('layout_footer',{imgSettingCode:"var ifLoadedCount=0;",imgDrawingCode:"",nav_cur:'profile'}); -%>
