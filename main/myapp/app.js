@@ -36,6 +36,7 @@ var app = express();
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
+app.enable('trust proxy');
 
 // uncomment after placing your favicon in /public
 app.use(favicon(__dirname + '/public/favicon.ico'));
@@ -53,7 +54,10 @@ app.use(passport.session());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(multer({
     dest: "./temp/",
-	inMemory: true
+	inMemory: true,
+	limits: {
+		fileSize: 8388608
+	}
 }));
 
 passport.use('local', new LocalStrategy({
@@ -107,6 +111,10 @@ passport.serializeUser(function (user, done) {
 
 passport.deserializeUser(function (user, done) {
     done(null, user);
+});
+
+app.get('/protocol', function (req, res) {
+    res.send(req.protocol);
 });
 
 app.get('/',library.loginFormChecker,library.newMsgChecker, function (req, res) {

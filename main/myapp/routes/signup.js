@@ -53,7 +53,7 @@ router.post('/changeData',library.loginFormChecker, library.ensureAuthenticated,
 	
 	var errorTarget=[];
 	var errorMessage=[];
-	for(i=0;i<9;i++){
+	for(i=0;i<11;i++){
 		errorTarget.push(false);
 		errorMessage.push('');
 	}
@@ -63,7 +63,7 @@ router.post('/changeData',library.loginFormChecker, library.ensureAuthenticated,
 		errorMessage[0]='必要參數未填!';
 	}
 	
-	if(sanitizer.sanitize(req.body.Gender.trim())==''){
+	if(!req.body.Gender){
 		errorTarget[1]=true;
 		errorMessage[1]='必要參數未填!';
 	}
@@ -87,32 +87,46 @@ router.post('/changeData',library.loginFormChecker, library.ensureAuthenticated,
 		errorMessage[3]='格式錯誤!';
 	}
 	
+	if(req.files.IdCard){
+		if(req.files.IdCard.truncated){
+			errorTarget[4]=true;
+			errorMessage[4]='檔案不得超過8MB!';
+		}
+	}
+	
+	if(req.files.SecondCard){
+		if(req.files.SecondCard.truncated){
+			errorTarget[5]=true;
+			errorMessage[5]='檔案不得超過8MB!';
+		}
+	}
+	
 	if(sanitizer.sanitize(req.body.Phone.trim())==''){
-		errorTarget[4]=true;
-		errorMessage[4]='必要參數未填!';
-	}
-	
-	if(sanitizer.sanitize(req.body.Email.trim())==''){
-		errorTarget[5]=true;
-		errorMessage[5]='必要參數未填!';
-	}else if(sanitizer.sanitize(req.body.Email.trim()).search(/@/)==-1){
-		errorTarget[5]=true;
-		errorMessage[5]='Email格式錯誤!';
-	}
-	
-	if(sanitizer.sanitize(req.body.Address.trim())==''){
 		errorTarget[6]=true;
 		errorMessage[6]='必要參數未填!';
 	}
 	
-	if(sanitizer.sanitize(req.body.BankAccountNumber.trim())==''){
+	if(sanitizer.sanitize(req.body.Email.trim())==''){
 		errorTarget[7]=true;
 		errorMessage[7]='必要參數未填!';
+	}else if(sanitizer.sanitize(req.body.Email.trim()).search(/@/)==-1){
+		errorTarget[7]=true;
+		errorMessage[7]='Email格式錯誤!';
+	}
+	
+	if(sanitizer.sanitize(req.body.Address.trim())==''){
+		errorTarget[8]=true;
+		errorMessage[8]='必要參數未填!';
+	}
+	
+	if(sanitizer.sanitize(req.body.BankAccountNumber.trim())==''){
+		errorTarget[9]=true;
+		errorMessage[9]='必要參數未填!';
 	}
 	
 	if(sanitizer.sanitize(req.body.BankAccountPassword.trim())==''){
-		errorTarget[8]=true;
-		errorMessage[8]='必要參數未填!';
+		errorTarget[10]=true;
+		errorMessage[10]='必要參數未填!';
 	}
 	
 	var valiFlag=true;
@@ -182,6 +196,18 @@ router.post('/changeData',library.loginFormChecker, library.ensureAuthenticated,
 			}
 		});
 	}else{
+		if(req.files.IdCard){
+			if(!errorTarget[4]){
+				errorTarget[4]=true;
+				errorMessage[4]='重新上傳檔案';
+			}
+		}
+		if(req.files.SecondCard){
+			if(!errorTarget[5]){
+				errorTarget[5]=true;
+				errorMessage[5]='重新上傳檔案';
+			}
+		}
 		redirectorCD(req,res,errorTarget,errorMessage);
 	}
 });
@@ -192,11 +218,11 @@ function redirectorCD(req,res,target,message){
 		F2:req.body.Gender,
 		F3:req.body.BirthDay,
 		F4:req.body.IdCardNumber,
-		F5:req.body.Phone,
-		F6:req.body.Email,
-		F7:req.body.Address,
-		F8:req.body.BankAccountNumber,
-		F9:req.body.BankAccountPassword
+		F7:req.body.Phone,
+		F8:req.body.Email,
+		F9:req.body.Address,
+		F10:req.body.BankAccountNumber,
+		F11:req.body.BankAccountPassword
 	};
 	
 	var json={FormContent:formContent,Target:target,Message:message};
@@ -417,7 +443,7 @@ router.post('/_apply',library.loginFormChecker,library.newMsgChecker, function (
 			errorMessage[0]='必要參數未填!';
 		}
 		
-		if(sanitizer.sanitize(req.body.genderIpt.trim())==''){
+		if(!req.body.genderIpt){
 			errorTarget[1]=true;
 			errorMessage[1]='必要參數未填!';
 		}
@@ -444,11 +470,21 @@ router.post('/_apply',library.loginFormChecker,library.newMsgChecker, function (
 		if(!req.files.ssnImg){
 			errorTarget[4]=true;
 			errorMessage[4]='重新上傳檔案';
+		}else{
+			if(req.files.ssnImg.truncated){
+				errorTarget[4]=true;
+				errorMessage[4]='檔案不得超過8MB!';
+			}
 		}
 		
 		if(!req.files.cerImg){
 			errorTarget[5]=true;
 			errorMessage[5]='重新上傳檔案';
+		}else{
+			if(req.files.cerImg.truncated){
+				errorTarget[5]=true;
+				errorMessage[5]='檔案不得超過8MB!';
+			}
 		}
 		
 		if(sanitizer.sanitize(req.body.telIpt.trim())==''){
@@ -519,10 +555,14 @@ router.post('/_apply',library.loginFormChecker,library.newMsgChecker, function (
 				BirthDay:req.body.birthIpt, Phone:req.body.telIpt, Address:req.body.addrIpt,IdCardNumber:req.body.ssnIpt,IdCard:IdCardBase64,IdCardType:varIdCardType,SecondCard:SecondCardBase64,SecondCardType:varSecondCardType,
 				BankAccountNumber:req.body.cardIpt,BankAccountPassword:req.body.cardPwdIpt,formSession1:req.body.FormSession1,formSession2:tempIdfr});
 		}else{
-			errorTarget[4]=true;
-			errorMessage[4]='重新上傳檔案';
-			errorTarget[5]=true;
-			errorMessage[5]='重新上傳檔案';
+			if(!errorTarget[4]){
+				errorTarget[4]=true;
+				errorMessage[4]='重新上傳檔案';
+			}
+			if(!errorTarget[5]){
+				errorTarget[5]=true;
+				errorMessage[5]='重新上傳檔案';
+			}
 			redirectorNewACC(req,res,errorTarget,errorMessage);
 		}
 	}else{
