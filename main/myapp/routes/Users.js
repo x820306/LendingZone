@@ -241,6 +241,11 @@ router.get('/resetPWpage/:token?',library.loginFormChecker, library.newMsgChecke
 		if(req.isAuthenticated()){
 			auRst=req.user.Username;
 		}
+		var stringArrayFlash=req.flash('backerReset');
+		var formJson=null;
+		if(stringArrayFlash.length>0){
+			formJson=JSON.parse(stringArrayFlash[0]);
+		}
 		Users.findOne({ resetPasswordToken: req.query.token, resetPasswordExpires: { $gt: Date.now() } }, function(err, user) {
 			if(err){
 				res.redirect('/message?content='+encodeURIComponent('錯誤!'));
@@ -248,7 +253,7 @@ router.get('/resetPWpage/:token?',library.loginFormChecker, library.newMsgChecke
 				if (!user) {
 					res.redirect('/message?content='+encodeURIComponent('token過期或無效!'));
 				}else{
-					res.render('resetPWpage',{lgfJSON:req.loginFormJson,newlrmNum: req.newlrmNumber,newlsmNum: req.newlsmNumber,userName: auRst,tk:req.query.token});
+					res.render('resetPWpage',{lgfJSON:req.loginFormJson,newlrmNum: req.newlrmNumber,newlsmNum: req.newlsmNumber,userName: auRst,tk:req.query.token,fJSON:formJson});
 				}
 			}
 		});
@@ -283,13 +288,16 @@ router.post('/resetPW', function(req, res, next) {
 								}
 							});
 						}else{
-							res.redirect('/message?content='+encodeURIComponent('新密碼格式不合規定!'));
+							//res.redirect('/message?content='+encodeURIComponent('新密碼格式不合規定!'));
+							backerReset(req,res)
 						}
 					}else{
-						res.redirect('/message?content='+encodeURIComponent('兩次密碼輸入不一致!'));
+						//res.redirect('/message?content='+encodeURIComponent('兩次密碼輸入不一致!'));
+						backerReset(req,res)
 					}
 				}else{
-					res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+					//res.redirect('/message?content='+encodeURIComponent('必填欄位未填!'));
+					backerReset(req,res)
 				}
 			}
 		}
@@ -311,7 +319,8 @@ router.post('/changePW',library.loginFormChecker,library.ensureAuthenticated,fun
 							res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 						}else{
 							if(!isMatch){
-								res.redirect('/message?content='+encodeURIComponent('舊密碼輸入錯誤!'));
+								//res.redirect('/message?content='+encodeURIComponent('舊密碼輸入錯誤!'));
+								backerChange(req,res);
 							}else{
 								if(sanitizer.sanitize(req.body.Password.trim())==sanitizer.sanitize(req.body.Password2nd.trim())){
 									if((sanitizer.sanitize(req.body.Password.trim()).search(/[^\w]/ig)==-1)&&(sanitizer.sanitize(req.body.Password.trim()).length>6)){
@@ -327,21 +336,49 @@ router.post('/changePW',library.loginFormChecker,library.ensureAuthenticated,fun
 											}
 										});
 									}else{
-										res.redirect('/message?content='+encodeURIComponent('新密碼格式不合規定!'));
+										//res.redirect('/message?content='+encodeURIComponent('新密碼格式不合規定!'));
+										backerChange(req,res);
 									}
 								}else{
-									res.redirect('/message?content='+encodeURIComponent('兩次密碼輸入不一致!'));
+									//res.redirect('/message?content='+encodeURIComponent('兩次密碼輸入不一致!'));
+									backerChange(req,res);
 								}
 							}
 						}
 					});
 				}else{
-					res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+					//res.redirect('/message?content='+encodeURIComponent('必填欄位未填!'));
+					backerChange(req,res);
 				}
 			}
 		}
 	});
 });
+
+function backerChange(req,res){
+	var formContent={
+		F1:req.body.OldPassword,
+		F2:req.body.Password,
+		F3:req.body.Password2nd
+	};
+
+	var json={FormContent:formContent};
+	var string=JSON.stringify(json);
+	req.flash('backerChange',string);
+	res.redirect(req.get('referer'));
+}
+
+function backerReset(req,res){
+	var formContent={
+		F1:req.body.Password,
+		F2:req.body.Password2nd
+	};
+
+	var json={FormContent:formContent};
+	var string=JSON.stringify(json);
+	req.flash('backerReset',string);
+	res.redirect(req.get('referer'));
+}
 
 router.post('/ifUsernameExist',function(req, res, next) {
 	Users.findOne({Username:sanitizer.sanitize(req.body.Urname.trim())}).exec(function (err, user){
