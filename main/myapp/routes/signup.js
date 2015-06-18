@@ -40,7 +40,13 @@ router.get('/profile',library.loginFormChecker,library.ensureAuthenticated,libra
 });
 
 router.get('/changePWpage',library.loginFormChecker,library.ensureAuthenticated,library.newMsgChecker, function (req, res) {
-	res.render('changePWpage',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username});
+	var stringArrayFlash=req.flash('backerChange');
+	var formJson=null;
+	if(stringArrayFlash.length>0){
+		formJson=JSON.parse(stringArrayFlash[0]);
+	}
+	
+	res.render('changePWpage',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,fJSON:formJson});
 });
 
 router.post('/changeData',library.loginFormChecker, library.ensureAuthenticated, function (req, res) {
