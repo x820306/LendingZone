@@ -56,7 +56,7 @@ app.use(multer({
     dest: "./temp/",
 	inMemory: true,
 	limits: {
-		fileSize: 8388608
+		fileSize: 4194304
 	}
 }));
 

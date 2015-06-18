@@ -90,14 +90,14 @@ router.post('/changeData',library.loginFormChecker, library.ensureAuthenticated,
 	if(req.files.IdCard){
 		if(req.files.IdCard.truncated){
 			errorTarget[4]=true;
-			errorMessage[4]='檔案不得超過8MB!';
+			errorMessage[4]='檔案不得超過4MB!';
 		}
 	}
 	
 	if(req.files.SecondCard){
 		if(req.files.SecondCard.truncated){
 			errorTarget[5]=true;
-			errorMessage[5]='檔案不得超過8MB!';
+			errorMessage[5]='檔案不得超過4MB!';
 		}
 	}
 	
@@ -473,7 +473,7 @@ router.post('/_apply',library.loginFormChecker,library.newMsgChecker, function (
 		}else{
 			if(req.files.ssnImg.truncated){
 				errorTarget[4]=true;
-				errorMessage[4]='檔案不得超過8MB!';
+				errorMessage[4]='檔案不得超過4MB!';
 			}
 		}
 		
@@ -483,7 +483,7 @@ router.post('/_apply',library.loginFormChecker,library.newMsgChecker, function (
 		}else{
 			if(req.files.cerImg.truncated){
 				errorTarget[5]=true;
-				errorMessage[5]='檔案不得超過8MB!';
+				errorMessage[5]='檔案不得超過4MB!';
 			}
 		}
 		
