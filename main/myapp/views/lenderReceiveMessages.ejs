@@ -175,16 +175,16 @@
 							<tbody class="myTbody">
 								<tr>
 									<td align="center">
-										<input style="display:inline;width:90%;" id="lendChangerIpt0" type="text" class="form-control" readonly="readonly" value="<%=MoneyInBankAccountValue.toFixed(0)%>"><div style="display:inline;">&nbsp;元</div>
+										<input style="display:inline;width:85%;" id="lendChangerIpt0" type="text" class="form-control" readonly="readonly" value="<%=MoneyInBankAccountValue.toFixed(0)%>"><div style="display:inline;">&nbsp;元</div>
 									</td>
 									<td align="center">
-										<input style="display:inline;width:90%;" id="lendChangerIpt2" type="text" class="form-control" readonly="readonly" value="<%=MoneyLended.moneyLendedCumulated.toFixed(0)%>"><div style="display:inline;">&nbsp;元</div>
+										<input style="display:inline;width:85%;" id="lendChangerIpt2" type="text" class="form-control" readonly="readonly" value="<%=MoneyLended.moneyLendedCumulated.toFixed(0)%>"><div style="display:inline;">&nbsp;元</div>
 									</td>
 									<td align="center">
-										<input style="display:inline;width:90%;" id="lendChangerIpt4" type="text" class="form-control" readonly="readonly" value="<%=MoneyLended.moneyLeftToHendLend.toFixed(0)%>"><div style="display:inline;">&nbsp;元</div>
+										<input style="display:inline;width:85%;" id="lendChangerIpt4" type="text" class="form-control" readonly="readonly" value="<%=MoneyLended.moneyLeftToHendLend.toFixed(0)%>"><div style="display:inline;">&nbsp;元</div>
 									</td>
 									<td align="center">
-										<input style="display:inline;width:90%;" id="lendChangerIpt3" type="text" class="form-control" readonly="readonly" value="<%=MoneyLended.hendLendCumulated.toFixed(0)%>"><div style="display:inline;">&nbsp;元</div>
+										<input style="display:inline;width:85%;" id="lendChangerIpt3" type="text" class="form-control" readonly="readonly" value="<%=MoneyLended.hendLendCumulated.toFixed(0)%>"><div style="display:inline;">&nbsp;元</div>
 									</td>
 								</tr>
 							</tbody>
@@ -212,19 +212,19 @@
 								<tr>
 									<td align="center">
 										<%if(jsonLend){%>
-											<input style="display:inline;width:90%;" id="lendChangerIpt" type="text" class="form-control" value="<%=jsonLend.MaxMoneyToLend.toFixed(0)%>" onkeypress="if(event.keyCode==13){lendChanger();}"><div style="display:inline;">&nbsp;元</div>
+											<input style="display:inline;width:85%;" id="lendChangerIpt" type="text" class="form-control" value="<%=jsonLend.MaxMoneyToLend.toFixed(0)%>" onkeypress="if(event.keyCode==13){lendChanger();}"><div style="display:inline;">&nbsp;元</div>
 										<%}else{%>
 											<input type="text" class="form-control" readonly="readonly" value="未找到自動出借設定！">
 										<%}%>
 									</td>
 									<td align="center">
-										<input style="display:inline;width:90%;" id="lendChangerIpt1" type="text" class="form-control" readonly="readonly" value="<%=MoneyLended.maxSettingAutoLend.toFixed(0)%>"><div style="display:inline;">&nbsp;元</div>
+										<input style="display:inline;width:85%;" id="lendChangerIpt1" type="text" class="form-control" readonly="readonly" value="<%=MoneyLended.maxSettingAutoLend.toFixed(0)%>"><div style="display:inline;">&nbsp;元</div>
 									</td>
 									<td align="center">
-										<input style="display:inline;width:90%;" id="lendChangerIpt6" type="text" class="form-control" readonly="readonly" value="<%=MoneyLended.moneyLeftToAutoLend.toFixed(0)%>"><div style="display:inline;">&nbsp;元</div>
+										<input style="display:inline;width:85%;" id="lendChangerIpt6" type="text" class="form-control" readonly="readonly" value="<%=MoneyLended.moneyLeftToAutoLend.toFixed(0)%>"><div style="display:inline;">&nbsp;元</div>
 									</td>
 									<td align="center">
-										<input style="display:inline;width:90%;" id="lendChangerIpt5" type="text" class="form-control" readonly="readonly" value="<%=MoneyLended.autoLendCumulated.toFixed(0)%>"><div style="display:inline;">&nbsp;元</div>
+										<input style="display:inline;width:85%;" id="lendChangerIpt5" type="text" class="form-control" readonly="readonly" value="<%=MoneyLended.autoLendCumulated.toFixed(0)%>"><div style="display:inline;">&nbsp;元</div>
 									</td>
 								</tr>
 							</tbody>
