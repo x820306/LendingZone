@@ -279,7 +279,7 @@
 						</div>
 						<div class="panel-body">
 							<% if(!jsonLend){ %>
-								<select class="textForm" class="textForm" name="AutoComfirmToBorrowMsgSorter" id="sorterSel" disabled="disabled" onchange="autoSorter();">
+								<select class="textForm" class="textForm" name="AutoComfirmToBorrowMsgSorter" id="sorterSel" disabled="disabled" onchange="autoSorter('','');">
 									<option value="InterestRate">欲借入年利率</option>
 									<option value="MoneyToLend">欲借入金額</option>
 									<option value="MonthPeriod">欲借入期數</option>
@@ -293,7 +293,7 @@
 									<option value="Created">建立日期</option>
 								 </select>
 							<% }else{ %>
-								<select class="textForm" class="textForm" name="AutoComfirmToBorrowMsgSorter" id="sorterSel"<% if(jsonLend.AutoComfirmToBorrowMsgPeriod<=0){ %> disabled="disabled"<%}%> onchange="autoSorter();">
+								<select class="textForm" class="textForm" name="AutoComfirmToBorrowMsgSorter" id="sorterSel"<% if(jsonLend.AutoComfirmToBorrowMsgPeriod<=0){ %> disabled="disabled"<%}%> onchange="autoSorter('','');">
 									<option value="InterestRate"<%if(jsonLend.AutoComfirmToBorrowMsgSorter=="InterestRate"){%> selected<%}%>>欲借入年利率</option>
 									<option value="MoneyToLend"<%if(jsonLend.AutoComfirmToBorrowMsgSorter=="MoneyToLend"){%> selected<%}%>>欲借入金額</option>
 									<option value="MonthPeriod"<%if(jsonLend.AutoComfirmToBorrowMsgSorter=="MonthPeriod"){%> selected<%}%>>欲借入期數</option>
@@ -315,7 +315,7 @@
 							<h3 class="panel-title">自動同意排序依據</h3>
 						</div>
 						<div class="panel-body">
-							<select class="textForm" class="textForm" name="AutoComfirmToBorrowMsgSorter" id="sorterSel"<% if(lfJSON.FormContent.F10<=0){ %> disabled="disabled"<%}%> onchange="autoSorter();">
+							<select class="textForm" class="textForm" name="AutoComfirmToBorrowMsgSorter" id="sorterSel"<% if(lfJSON.FormContent.F10<=0){ %> disabled="disabled"<%}%> onchange="autoSorter('','');">
 								<option value="InterestRate"<%if(lfJSON.FormContent.F12=="InterestRate"){%> selected<%}%>>欲借入年利率</option>
 								<option value="MoneyToLend"<%if(lfJSON.FormContent.F12=="MoneyToLend"){%> selected<%}%>>欲借入金額</option>
 								<option value="MonthPeriod"<%if(lfJSON.FormContent.F12=="MonthPeriod"){%> selected<%}%>>欲借入期數</option>
@@ -580,61 +580,23 @@
 				<%}%>
 			<%}%>
 		<%}%>
-		<%if(!lfJSON){%>
-			<%if(!jsonLend){%>
-				$('#lbd').html('%');
-				$('#ubd').html('%');
-			<%}else{%>
-				<%if(jsonLend.AutoComfirmToBorrowMsgPeriod>0){%>
-					<%if((jsonLend.AutoComfirmToBorrowMsgSorter=='InterestInFutureDivMoney')||(jsonLend.AutoComfirmToBorrowMsgSorter=='InterestRate')){%>
-						$('#lbd').html('%');
-						$('#ubd').html('%');
-					<%}else if(jsonLend.AutoComfirmToBorrowMsgSorter=='MonthPeriod'){%>
-						$('#lbd').html('個月');
-						$('#ubd').html('個月');
-					<%}else if(jsonLend.AutoComfirmToBorrowMsgSorter=='Level'){%>
-						$('#lbd').html('級');
-						$('#ubd').html('級');
-					<%}else if((jsonLend.AutoComfirmToBorrowMsgSorter=='InterestInFutureMoneyMonth')||(jsonLend.AutoComfirmToBorrowMsgSorter=='InterestInFutureMonth')){%>
-						$('#lbd').html('元/月');
-						$('#ubd').html('元/月');
-					<%}else{%>
-						$('#lbd').html('元');
-						$('#ubd').html('元');
-					<%}%>
-				<%}else{%>
-					$('#lbd').html('%');
-					$('#ubd').html('%');
-				<%}%>
-			<%}%>
-		<%}else{%>
-			<%if(lfJSON.FormContent.F10>0){%>
-				<%if((lfJSON.FormContent.F12=='InterestInFutureDivMoney')||(lfJSON.FormContent.F12=='InterestRate')){%>
-					$('#lbd').html('%');
-					$('#ubd').html('%');
-				<%}else if(lfJSON.FormContent.F12=='MonthPeriod'){%>
-					$('#lbd').html('個月');
-					$('#ubd').html('個月');
-				<%}else if(lfJSON.FormContent.F12=='Level'){%>
-					$('#lbd').html('級');
-					$('#ubd').html('級');
-				<%}else if((lfJSON.FormContent.F12=='InterestInFutureMoneyMonth')||(lfJSON.FormContent.F12=='InterestInFutureMonth')){%>
-					$('#lbd').html('元/月');
-					$('#ubd').html('元/月');
-				<%}else{%>
-					$('#lbd').html('元');
-					$('#ubd').html('元');
-				<%}%>
-			<%}else{%>
-				$('#lbd').html('%');
-				$('#ubd').html('%');
-			<%}%>
-		<%}%>
+		
+		if($('#periodSel').val()>0){
+			if(($('#sorterSel').val()=='Updated')||($('#sorterSel').val()=='Created')){
+				enableDaterInner();
+			}else{
+				disableDaterInner();
+			}
+		}else{
+			disableDaterInner();
+		}
+		autoSorter($('#lboundSel').val(),$('#uboundSel').val());
+		autoChanger();
 	});
 
-function autoSorter(){
-	$('#lboundSel').val('');
-	$('#uboundSel').val('');
+function autoSorter(defaultValuel,defaultValueu){
+	$('#lboundSel').val(defaultValuel);
+	$('#uboundSel').val(defaultValueu);
 	if(($('#sorterSel').val()=='Updated')||($('#sorterSel').val()=='Created')){
 		$('#lbd').html('');
 		$('#ubd').html('');
@@ -710,41 +672,34 @@ function autoChanger(){
 	}
 }
 
-<%if(!lfJSON){%>
-	<%if(!jsonLend){%>
-		var ifDater=false;
-	<%}else{%>
-		<%if((jsonLend.AutoComfirmToBorrowMsgSorter=="Updated")||(jsonLend.AutoComfirmToBorrowMsgSorter=="Created")){%>
-			var ifDater=true;
-		<%}else{%>
-			var ifDater=false;
-		<%}%>
-	<%}%>
-<%}else{%>
-	<%if((lfJSON.FormContent.F12=="Updated")||(lfJSON.FormContent.F12=="Created")){%>
-		var ifDater=true;
-	<%}else{%>
-		var ifDater=false;
-	<%}%>
-<%}%>
+var ifDater=false;
+
 function enableDater(){
 	if(!ifDater){
-		$('#lboundSel').attr('type','date');
-		$('#uboundSel').attr('type','date');
-		$('#lboundSel').attr('placeholder','年/月/日');
-		$('#uboundSel').attr('placeholder','年/月/日');
-		ifDater=true;
+		enableDaterInner();
 	}
+}
+
+function enableDaterInner(){
+	$('#lboundSel').attr('type','date');
+	$('#uboundSel').attr('type','date');
+	$('#lboundSel').attr('placeholder','年/月/日');
+	$('#uboundSel').attr('placeholder','年/月/日');
+	ifDater=true;
 }
 
 function disableDater(){
 	if(ifDater){
-		$('#lboundSel').attr('type','text');
-		$('#uboundSel').attr('type','text');
-		$('#lboundSel').attr('placeholder','');
-		$('#uboundSel').attr('placeholder','');
-		ifDater=false;
+		disableDaterInner();
 	}
+}
+
+function disableDaterInner(){
+	$('#lboundSel').attr('type','text');
+	$('#uboundSel').attr('type','text');
+	$('#lboundSel').attr('placeholder','');
+	$('#uboundSel').attr('placeholder','');
+	ifDater=false;
 }
 
 function checkAndOpenModal(target,cntNumber,cntTail,flag){
