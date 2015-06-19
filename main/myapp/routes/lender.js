@@ -772,7 +772,8 @@ router.get('/lenderTransactionRecord/:oneid?/:filter?/:messenger?/:classor?/:sor
 				v7:0,
 				v8:0,
 				v9:0,
-				v10:0
+				v10:0,
+				v11:0
 			};
 			
 			if((director!='大至小')&&(director!='小至大')){
@@ -1341,7 +1342,20 @@ router.get('/lenderTransactionRecord/:oneid?/:filter?/:messenger?/:classor?/:sor
 											}
 										}
 										
-										res.render('lenderTransactionRecord',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,oneidDefault:oneid,filterDefault:filter,messengerDefault:messenger,sorterDefault:sorter,classorDefault:classor,jsonTransaction:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,insuranceRate:library.insuranceRate,selectedFeeAll:selectedFeeAllIpt,biJSON:buyInsuranceJson,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,oflg:objFlag,pflg:plusFlag,kpr:keeper,dpk:dataPack});
+										var BankAccounts = mongoose.model('BankAccounts');
+										BankAccounts.findOne({"OwnedBy": req.user._id}).exec(function (err, bankaccount){
+											if (err) {
+												console.log(err);
+												res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+											}else{
+												if(!bankaccount){
+													res.redirect('/message?content='+encodeURIComponent('無銀行帳戶!'));
+												}else{
+													dataPack.v11=bankaccount.MoneyInBankAccount;
+													res.render('lenderTransactionRecord',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,oneidDefault:oneid,filterDefault:filter,messengerDefault:messenger,sorterDefault:sorter,classorDefault:classor,jsonTransaction:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,insuranceRate:library.insuranceRate,selectedFeeAll:selectedFeeAllIpt,biJSON:buyInsuranceJson,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,oflg:objFlag,pflg:plusFlag,kpr:keeper,dpk:dataPack});
+												}
+											}
+										});
 									}
 								}
 							}
