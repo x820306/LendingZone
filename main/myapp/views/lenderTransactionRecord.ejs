@@ -144,55 +144,110 @@
 					<br>
 				<%}%>
 				<% if(totalResultNum!=0){ %>
+					<br>
+					<table style="display:inline;" class="table">
+						<thead class="myThead">
+							<tr>
+								<th style="text-align:center">
+								合計未還本金
+								</th>
+								<th style="text-align:center">
+								合計剩餘總利息
+								</th>
+								<th style="text-align:center">
+								合計剩餘本利和
+								</th>
+								<th style="text-align:center">
+								合計剩餘平均利息
+								</th>
+								<th style="text-align:center">
+								合計剩餘平均本利和
+								</th>
+								<th style="text-align:center">
+								合計剩餘利本比
+								</th>
+							</tr>
+						</thead>
+						<tbody class="myTbody">
+							<tr>
+								<td align="center">
+									<div style="display:inline;"><%=dpk.v1.toFixed(0)%></div><div style="display:inline;">元</div>
+								</td>
+								<td align="center">
+									<div style="display:inline;"><%=dpk.v2.toFixed(0)%></div><div style="display:inline;">元</div>
+								</td>
+								<td align="center">
+									<div style="display:inline;"><%=dpk.v3.toFixed(0)%></div><div style="display:inline;">元</div>
+								</td>
+								<td align="center">
+									<div style="display:inline;"><%=dpk.v4.toFixed(0)%></div><div style="display:inline;">元/月</div>
+								</td>
+								<td align="center">
+									<div style="display:inline;"><%=dpk.v5.toFixed(0)%></div><div style="display:inline;">元/月</div>
+								</td>
+								<td align="center">
+								<%if(dpk.v1>0){%>
+									<div style="display:inline;"><%=(dpk.v2/dpk.v1*100).toFixed(2)%></div><div style="display:inline;">%</div>
+								<%}else{%>
+									<div style="display:inline;">0.00</div><div style="display:inline;">%</div>
+								<%}%>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<br>
+					<br>
+					<table style="display:inline;" class="table">
+						<thead class="myThead">
+							<tr>
+								<th style="text-align:center">
+								合計已還本金
+								</th>
+								<th style="text-align:center">
+								合計已得利息
+								</th>
+								<th style="text-align:center">
+								合計已得本利和
+								</th>
+								<th style="text-align:center">
+								合計已得平均利息
+								</th>
+								<th style="text-align:center">
+								合計已得平均本利和
+								</th>
+								<th style="text-align:center">
+								合計已得利本比
+								</th>
+							</tr>
+						</thead>
+						<tbody class="myTbody">
+							<tr>
+								<td align="center">
+									<div style="display:inline;"><%=dpk.v6.toFixed(0)%></div><div style="display:inline;">元</div>
+								</td>
+								<td align="center">
+									<div style="display:inline;"><%=dpk.v7.toFixed(0)%></div><div style="display:inline;">元</div>
+								</td>
+								<td align="center">
+									<div style="display:inline;"><%=dpk.v8.toFixed(0)%></div><div style="display:inline;">元</div>
+								</td>
+								<td align="center">
+									<div style="display:inline;"><%=dpk.v9.toFixed(0)%></div><div style="display:inline;">元/月</div>
+								</td>
+								<td align="center">
+									<div style="display:inline;"><%=dpk.v10.toFixed(0)%></div><div style="display:inline;">元/月</div>
+								</td>
+								<td align="center">
+								<%if(dpk.v6>0){%>
+									<div style="display:inline;"><%=(dpk.v7/dpk.v6*100).toFixed(2)%></div><div style="display:inline;">%</div>
+								<%}else{%>
+									<div style="display:inline;">0.00</div><div style="display:inline;">%</div>
+								<%}%>
+								</td>
+							</tr>
+						</tbody>
+					</table>
 					<% if(filterDefault=='未保險'){%>
-						<%if(pageNumber>1){%>
-						<br>
-						<br>
-						<table style="display:inline;" class="table">
-							<thead class="myThead">
-								<tr>
-									<th style="text-align:center">
-									全部合計費用
-									</th>
-								</tr>
-							</thead>
-							<tbody class="myTbody">
-								<tr>
-									<td align="center">
-										<div style="display:inline;" id="selectedFeeAll"><%=selectedFeeAll.toFixed(0)%></div><div style="display:inline;">元</div>
-									</td>
-								</tr>
-							</tbody>
-						</table>
-						<br>
-						<br>
-						<button type="button" class="btn btn-default" data-toggle="modal" data-target="#chkModal1">
-							<span class="myTitle2">為所有交易購買保險</span>
-						</button>
-						<div class="modal fade" id="chkModal1">
-							<div class="modal-dialog modal-sm">
-								<div class="modal-content">
-									<div class="modal-header" style="text-align: center;">
-										<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-										<h4 class="modal-title">再次確認</h4>
-									</div>
-									<div class="modal-body" style="text-align: center;">
-										<br>
-										您確定要為所有交易購買保險嗎?
-										<br>
-										<br>
-									</div>
-									<div class="modal-footer" style="text-align: center;">
-										<button type="button" class="btn btn-primary" id="buyBtnAll" onclick="buyAll();">
-											確定
-										</button>
-										&nbsp;
-										<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-									</div>
-								</div>
-							</div>
-						</div>
-						<%}%>
 						<br>
 						<br>
 						<table style="display:inline;" class="table">
@@ -201,6 +256,11 @@
 									<th style="text-align:center">
 									已選合計費用
 									</th>
+									<%if(pageNumber>1){%>
+										<th style="text-align:center">
+										全部合計費用
+										</th>
+									<%}%>
 								</tr>
 							</thead>
 							<tbody class="myTbody">
@@ -208,6 +268,11 @@
 									<td align="center">
 										<div style="display:inline;" id="selectedFee">0</div><div style="display:none;" id="selectedFeeR">0</div><div style="display:inline;">元</div>
 									</td>
+									<%if(pageNumber>1){%>
+										<td align="center">
+											<div style="display:inline;" id="selectedFeeAll"><%=selectedFeeAll.toFixed(0)%></div><div style="display:inline;">元</div>
+										</td>
+									<%}%>
 								</tr>
 							</tbody>
 						</table>
@@ -217,6 +282,35 @@
 						<button type="button" class="btn btn-default" onclick="checkAndOpenModal('#chkModal2')">
 							<span class="myTitle2">購買保險</span>
 						</button>
+						<%if(pageNumber>1){%>
+							&nbsp;&nbsp;&nbsp;&nbsp;
+							<button type="button" class="btn btn-default" data-toggle="modal" data-target="#chkModal1">
+								<span class="myTitle2">為所有交易購買保險</span>
+							</button>
+							<div class="modal fade" id="chkModal1">
+								<div class="modal-dialog modal-sm">
+									<div class="modal-content">
+										<div class="modal-header" style="text-align: center;">
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+											<h4 class="modal-title">再次確認</h4>
+										</div>
+										<div class="modal-body" style="text-align: center;">
+											<br>
+											您確定要為所有交易購買保險嗎?
+											<br>
+											<br>
+										</div>
+										<div class="modal-footer" style="text-align: center;">
+											<button type="button" class="btn btn-primary" id="buyBtnAll" onclick="buyAll();">
+												確定
+											</button>
+											&nbsp;
+											<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+										</div>
+									</div>
+								</div>
+							</div>
+						<%}%>
 						<div class="modal fade" id="chkModal2">
 							<div class="modal-dialog modal-sm">
 								<div class="modal-content">
@@ -261,7 +355,7 @@
 								</div>
 							</div>
 						</div>
-					<% }else{%>
+					<%}else{%>
 						<br>
 						<br>
 					<%}%>
