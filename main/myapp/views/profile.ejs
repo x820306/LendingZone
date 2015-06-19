@@ -4,6 +4,13 @@
 		<center>
 			<form enctype="multipart/form-data" method="post" action="/signup/changeData" onsubmit="return disableButton();">
 				<h3>查看/修改個人資料<br></h3>
+				<%if(mvString!==null){%>
+					<br>
+					<h4>
+						<%-mvString%>
+					</h4>
+					<br>
+				<%}%>
 				<table class="table table-hover myTbody" style="width:70%">
 				<tr>
 					<td align = "right" style = "width:15%">
@@ -92,7 +99,53 @@
 						E-mail<br>
 						<span id="s8" style="color:red;"><%if(dcdJSON){%><%if(dcdJSON.Target[7]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=dcdJSON.Message[7]%><%}%><%}%></span>
 					</td>
-					<td><input type="email" class="form-control" id="f8" name="Email" placeholder="E-mail" required="required" value="<%if(dcdJSON){%><%=dcdJSON.FormContent.F8%><%}else{%><%=user.Email%><%}%>"></td>
+					<td>
+						<table width="100%">
+							<tr>
+								<td>
+									<input type="email" class="form-control" id="f8" name="Email" placeholder="E-mail" required="required" value="<%if(dcdJSON){%><%=dcdJSON.FormContent.F8%><%}else{%><%=user.Email%><%}%>">
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<br>
+									<%if(!user.ifMailValid){%>
+										<h5 style="color:red;display:inline;">未認證</h5>&nbsp;&nbsp;&nbsp;&nbsp;
+										<button type="button" class="btn btn-default" data-toggle="modal" data-target="#chkModal3">
+											重發認證信
+										</button>
+										<div class="modal fade" id="chkModal3">
+											<div class="modal-dialog modal-sm">
+												<div class="modal-content">
+													<div class="modal-header" style="text-align: center;">
+														<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+														<h4 class="modal-title">再次確認</h4>
+													</div>
+													<div class="modal-body" style="text-align: center;">
+														<br>
+														您確定要重發認證信嗎？
+														<br>
+														<br>
+													</div>
+													<div class="modal-footer" style="text-align: center;">
+														<a href="/signup/resendValidMail">
+															<button type="button" class="btn btn-default" id="resendBtn" onclick="$('#chkModal3').modal('hide');disableButton();">
+																確定
+															</button>
+														</a>
+														&nbsp;
+														<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+													</div>
+												</div>
+											</div>
+										</div>
+									<%}else{%>
+										<h5 style="color:blue;display:inline;">已認證</h5>
+									<%}%>
+								</td>
+							</tr>
+						</table>
+					</td>
 				</tr>
 				<tr>
 					<td align = "right" style = "width:15%">
@@ -162,7 +215,7 @@
 								<br>
 							</div>
 							<div class="modal-footer" style="text-align: center;">
-								<a href="/signup/changePWpage" id="hf">
+								<a href="/signup/changePWpage">
 									<button type="button" class="btn btn-danger" id="changePWbtn" onclick="$('#chkModal2').modal('hide');disableButton();">
 										確定
 									</button>
@@ -202,6 +255,9 @@
 		if(!submitFlag){
 			$('#sbmtBtn').addClass('disabled');
 			$('#changePWbtn').addClass('disabled');
+			<%if(!user.ifMailValid){%>
+				$('#resendBtn').addClass('disabled');
+			<%}%>
 			submitFlag=true;
 			return true;
 		}else{

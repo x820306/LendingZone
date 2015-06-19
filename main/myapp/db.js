@@ -85,7 +85,10 @@ var Users = new Schema({
 	Updated: { type: Date, default: Date.now },
 	Created: { type: Date, default: Date.now },
 	resetPasswordToken: { type: String},
-	resetPasswordExpires: { type: Date}
+	resetPasswordExpires: { type: Date},
+	mailValidToken: { type: String},
+	mailValidExpires: { type: Date},
+	ifMailValid:{ type: Boolean, default: false }
 });
 
 var BankAccounts = new Schema({

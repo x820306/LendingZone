@@ -355,31 +355,6 @@ router.post('/changePW',library.loginFormChecker,library.ensureAuthenticated,fun
 	});
 });
 
-function backerChange(req,res){
-	var formContent={
-		F1:req.body.OldPassword,
-		F2:req.body.Password,
-		F3:req.body.Password2nd
-	};
-
-	var json={FormContent:formContent};
-	var string=JSON.stringify(json);
-	req.flash('backerChange',string);
-	res.redirect(req.get('referer'));
-}
-
-function backerReset(req,res){
-	var formContent={
-		F1:req.body.Password,
-		F2:req.body.Password2nd
-	};
-
-	var json={FormContent:formContent};
-	var string=JSON.stringify(json);
-	req.flash('backerReset',string);
-	res.redirect(req.get('referer'));
-}
-
 router.post('/ifUsernameExist',function(req, res, next) {
 	Users.findOne({Username:sanitizer.sanitize(req.body.Urname.trim())}).exec(function (err, user){
 		if(err){
@@ -420,20 +395,81 @@ router.post('/ifOldPWRight',library.loginFormChecker,library.ensureAuthenticated
 	});
 });
 
-module.exports = router;
+router.get('/confirmMail/:token?',library.loginFormChecker,library.ensureAuthenticated,library.newMsgChecker, function(req, res, next) {
+	if(typeof(req.query.token) !== "undefined"){
+		Users.findOne({ mailValidToken: req.query.token, mailValidExpires: { $gt: Date.now() } }, function(err, user) {
+			if(err){
+				res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+			}else{
+				if (!user) {
+					res.redirect('/message?content='+encodeURIComponent('token過期或無效!'));
+				}else{
+					if(user._id!=req.user._id){
+						res.redirect('/message?content='+encodeURIComponent('身分驗證錯誤!'));
+					}else{
+						user.Updated=Date.now();
+						user.mailValidToken = undefined;
+						user.mailValidExpires = undefined;
+						user.ifMailValid=true;
+						user.save(function (err,newUpdated){
+							if (err){
+								console.log(err);
+								res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+							}else{
+								req.flash('sendValidMail','您的E-mail已完成認證：<br><br><span style="color:red;">'+newUpdated.Email+'</span>');
+								res.redirect('/signup/profile');
+							}
+						});
+					}
+				}
+			}
+		});
+	}else{
+		res.redirect('/');
+	}
+});
+
+function backerChange(req,res){
+	var formContent={
+		F1:req.body.OldPassword,
+		F2:req.body.Password,
+		F3:req.body.Password2nd
+	};
+
+	var json={FormContent:formContent};
+	var string=JSON.stringify(json);
+	req.flash('backerChange',string);
+	res.redirect(req.get('referer'));
+}
+
+function backerReset(req,res){
+	var formContent={
+		F1:req.body.Password,
+		F2:req.body.Password2nd
+	};
+
+	var json={FormContent:formContent};
+	var string=JSON.stringify(json);
+	req.flash('backerReset',string);
+	res.redirect(req.get('referer'));
+}
 
 function pwChangedMail(newUpdated){
-	var mailOptions = {
-		from: 'LendingZone <lendingzonesystem@gmail.com>', // sender address
-		to: newUpdated.Username+' <'+newUpdated.Email+'>', // list of receivers
-		subject: '您於Lending Zone的密碼已經變更', // Subject line
-		text: '您於Lending Zone的密碼已經變更', // plaintext body
-		html: '您於Lending Zone的密碼已經變更'
-	};
-	
-	transporter.sendMail(mailOptions, function(error, info){
-		if(error){
-			console.log(error);
-		}
-	});
+	if(newUpdated.ifMailValid){
+		var mailOptions = {
+			from: 'LendingZone <lendingzonesystem@gmail.com>', // sender address
+			to: newUpdated.Username+' <'+newUpdated.Email+'>', // list of receivers
+			subject: '您於Lending Zone的密碼已經變更', // Subject line
+			text: '您於Lending Zone的密碼已經變更', // plaintext body
+			html: '您於Lending Zone的密碼已經變更'
+		};
+		
+		transporter.sendMail(mailOptions, function(error, info){
+			if(error){
+				console.log(error);
+			}
+		});
+	}
 }
+
+module.exports = router;
