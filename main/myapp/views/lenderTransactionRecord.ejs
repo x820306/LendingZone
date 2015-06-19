@@ -254,6 +254,9 @@
 							<thead class="myThead">
 								<tr>
 									<th style="text-align:center">
+									銀行帳戶內餘額
+									</th>
+									<th style="text-align:center">
 									已選合計費用
 									</th>
 									<%if(pageNumber>1){%>
@@ -265,6 +268,9 @@
 							</thead>
 							<tbody class="myTbody">
 								<tr>
+									<td align="center">
+										<div style="display:inline;"><%=dpk.v11.toFixed(0)%></div><div style="display:inline;">元</div>
+									</td>
 									<td align="center">
 										<div style="display:inline;" id="selectedFee">0</div><div style="display:none;" id="selectedFeeR">0</div><div style="display:inline;">元</div>
 									</td>
