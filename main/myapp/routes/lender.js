@@ -773,7 +773,8 @@ router.get('/lenderTransactionRecord/:oneid?/:filter?/:messenger?/:classor?/:sor
 				v8:0,
 				v9:0,
 				v10:0,
-				v11:0
+				v11:0,
+				v12:0
 			};
 			
 			if((director!='大至小')&&(director!='小至大')){
@@ -1315,6 +1316,7 @@ router.get('/lenderTransactionRecord/:oneid?/:filter?/:messenger?/:classor?/:sor
 										dataPack.v8+=transactions[p].PrincipalInterest;
 										dataPack.v9+=transactions[p].InterestMonth;
 										dataPack.v10+=transactions[p].PrincipalInterestMonth;
+										dataPack.v11+=transactions[p].InsuranceFeePaid;
 									}
 									
 									var divider=10;
@@ -1351,7 +1353,7 @@ router.get('/lenderTransactionRecord/:oneid?/:filter?/:messenger?/:classor?/:sor
 												if(!bankaccount){
 													res.redirect('/message?content='+encodeURIComponent('無銀行帳戶!'));
 												}else{
-													dataPack.v11=bankaccount.MoneyInBankAccount;
+													dataPack.v12=bankaccount.MoneyInBankAccount;
 													res.render('lenderTransactionRecord',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,oneidDefault:oneid,filterDefault:filter,messengerDefault:messenger,sorterDefault:sorter,classorDefault:classor,jsonTransaction:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,insuranceRate:library.insuranceRate,selectedFeeAll:selectedFeeAllIpt,biJSON:buyInsuranceJson,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,oflg:objFlag,pflg:plusFlag,kpr:keeper,dpk:dataPack});
 												}
 											}
