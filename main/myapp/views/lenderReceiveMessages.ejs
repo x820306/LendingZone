@@ -90,7 +90,7 @@
 				<br>
 				<%if((cfJSON)&&(filterDefault=='已同意')){%>
 					<br>
-					<%=cfJSON.Contect%>
+					<%=cfJSON.Content%>
 					<br>
 					欲同意<%=cfJSON.InfoJSON.counter1%>筆訊息，其中<%=cfJSON.InfoJSON.counter2%>筆成功，<%=cfJSON.InfoJSON.counter1-cfJSON.InfoJSON.counter2%>筆失敗
 					<br>
@@ -148,7 +148,7 @@
 				<%}%>
 				<%if((rjJSON)&&(filterDefault=='已婉拒')){%>
 					<br>
-					<%=rjJSON.Contect%>
+					<%=rjJSON.Content%>
 					<br>
 					欲婉拒<%=rjJSON.InfoJSON.counter1%>筆訊息，其中<%=rjJSON.InfoJSON.counter2%>筆成功，<%=rjJSON.InfoJSON.counter1-rjJSON.InfoJSON.counter2%>筆失敗
 				<%}%>

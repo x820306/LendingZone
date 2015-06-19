@@ -14,6 +14,12 @@ router.get('/profile',library.loginFormChecker,library.ensureAuthenticated,libra
 		dataCDFormJson=JSON.parse(stringArrayFlash[0]);
 	}
 	
+	var stringArrayFlash2=req.flash('sendValidMail');
+	var mailValidString=null;
+	if(stringArrayFlash2.length>0){
+		mailValidString=stringArrayFlash2[0];
+	}
+	
 	Users.findById(req.user._id).exec(function (err, foundUser){
 		if (err) {
 			console.log(err);
@@ -30,7 +36,7 @@ router.get('/profile',library.loginFormChecker,library.ensureAuthenticated,libra
 						if(!foundAccount){
 							res.redirect('/message?content='+encodeURIComponent('錯誤'));
 						}else{
-							res.render('profile',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,user:foundUser,account:foundAccount,dcdJSON:dataCDFormJson});
+							res.render('profile',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,user:foundUser,account:foundAccount,dcdJSON:dataCDFormJson,mvString:mailValidString});
 						}
 					}
 				});
@@ -47,6 +53,31 @@ router.get('/changePWpage',library.loginFormChecker,library.ensureAuthenticated,
 	}
 	
 	res.render('changePWpage',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,fJSON:formJson});
+});
+
+router.get('/resendValidMail',library.loginFormChecker,library.ensureAuthenticated,library.newMsgChecker, function (req, res) {
+	Users.findById(req.user._id).exec(function (err, user){
+		if (err) {
+			console.log(err);
+			res.redirect('/message?content='+encodeURIComponent('錯誤'));
+		}else{
+			if(!user){
+				res.redirect('/message?content='+encodeURIComponent('錯誤'));
+			}else{
+				if(!user.ifMailValid){
+					library.mailValid(user._id,req,function(){
+						req.flash('sendValidMail','E-mail認證信已寄往您所填寫的地址：<br><span style="color:red;">'+user.Email+'</span><br>您可於一小時內前往您的信箱點擊連結進行認證或於本頁面重發認證信');
+						res.redirect('/signup/profile');
+					},function(){
+						req.flash('sendValidMail','E-mail認證信已寄往您所填寫的地址：<br><span style="color:red;">'+user.Email+'</span><br>您可於一小時內前往您的信箱點擊連結進行認證或於本頁面重發認證信');
+						res.redirect('/signup/profile');
+					});
+				}else{
+					res.redirect('/signup/profile');
+				}
+			}
+		}
+	});
 });
 
 router.post('/changeData',library.loginFormChecker, library.ensureAuthenticated, function (req, res) {
@@ -146,6 +177,11 @@ router.post('/changeData',library.loginFormChecker, library.ensureAuthenticated,
 				if(!user){
 					res.redirect('/message?content='+encodeURIComponent('錯誤'));
 				}else{
+					var ifEmailChange=false;
+					if(user.Email!=sanitizer.sanitize(req.body.Email.trim())){
+						ifEmailChange=true;
+						user.ifMailValid=false;
+					}
 					user.Name=sanitizer.sanitize(req.body.Name.trim());
 					user.Email=sanitizer.sanitize(req.body.Email.trim());
 					user.Gender=sanitizer.sanitize(req.body.Gender.trim());
@@ -184,7 +220,17 @@ router.post('/changeData',library.loginFormChecker, library.ensureAuthenticated,
 												console.log(err);
 												res.redirect('/message?content='+encodeURIComponent('錯誤'));
 											}else{
-												res.redirect('/signup/profile');
+												if(!ifEmailChange){
+													res.redirect('/signup/profile');
+												}else{
+													library.mailValid(newUpdated._id,req,function(){
+														req.flash('sendValidMail','E-mail認證信已寄往您所填寫的地址：<br><span style="color:red;">'+newUpdated.Email+'</span><br>您可於一小時內前往您的信箱點擊連結進行認證或於本頁面重發認證信');
+														res.redirect('/signup/profile');
+													},function(){
+														req.flash('sendValidMail','E-mail認證信已寄往您所填寫的地址：<br><span style="color:red;">'+newUpdated.Email+'</span><br>您可於一小時內前往您的信箱點擊連結進行認證或於本頁面重發認證信');
+														res.redirect('/signup/profile');
+													});
+												}
 											}
 										});
 									}
@@ -627,7 +673,7 @@ router.post('/community',library.loginFormChecker,library.newMsgChecker, functio
 			if(ctr3>-1){
 				library.formIdfrArray.splice(ctr3, 1);
 			}
-			res.render('community_1',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst});
+			res.render('community_1',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,email:sanitizer.sanitize(req.body.Email.trim())});
 		});
 	}else{
 		res.redirect('/signupTest');
@@ -678,7 +724,7 @@ router.post('/_community',library.loginFormChecker,library.newMsgChecker, functi
 			if(ctr2>-1){
 				library.formIdfrArray.splice(ctr2, 1);
 			}
-			res.render('community_2',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst});
+			res.render('community_2',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,email:sanitizer.sanitize(req.body.Email.trim())});
 		});
 	}else{
 		res.redirect('/signupTest');
@@ -763,7 +809,7 @@ function userCreator(req,res,callback){
 												console.log(err);
 												res.redirect('/message?content='+encodeURIComponent('錯誤'));
 											}else{
-												callback();
+												library.mailValid(newCreate._id,req,callback,callback);
 											}
 										});
 									}
