@@ -296,6 +296,41 @@ exports.orReplacer=function(input){
 		flagM:false
 	};
 	
+	var wordArray=[];
+	var testArray=[];
+	var testFlag;
+	var testMatch;
+	var itrResponse;
+	
+	do{
+		//console.log('start');
+		wordArray=obj.rtn.split(' ');
+		for(gm=0;gm<wordArray.length;gm++){
+			testFlag=true;
+			for(gk=0;gk<testArray.length;gk++){
+				if(wordArray[gm]==testArray[gk]){
+					testFlag=false;
+					break;
+				}
+			}
+			if(testFlag){
+				testArray.push(wordArray[gm]);
+				break;
+			}
+		}
+		if(testFlag){
+			//console.log(gm);
+			testMatch=obj.rtn.match(new RegExp(wordArray[gm],'ig'));
+			if(testMatch.length>=2){
+				itrResponse=exports.replacerInner(wordArray[gm],obj.rtn,true);
+				obj.rtn=itrResponse.rtn2;
+				obj.rtn2=itrResponse.rtn2;
+			}
+		}
+		//console.log('end');
+	}while(testFlag);
+	
+	
 	var notReserveResponse=exports.replacerInner('(""|-""|-)',obj.rtn,false);
 	obj.rtn=notReserveResponse.rtn;
 	obj.rtn2=notReserveResponse.rtn;
