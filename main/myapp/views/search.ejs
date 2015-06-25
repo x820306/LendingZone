@@ -291,6 +291,7 @@
 			$('#mlis'+i).attr('class','');
 		}
 		$('#mlis'+index).attr('class','active');
+		linker();
 	}
 	
 	function categorySelector(index){
@@ -302,6 +303,7 @@
 			$('#clis'+i).attr('class','');
 		}
 		$('#clis'+index).attr('class','active');
+		linker();
 	}
 
 	function sorterSelector(index){
@@ -321,6 +323,7 @@
 		}
 		$('#alis'+index).attr('class','active');
 		spanner($('#sorter0').text());
+		linker();
 	}
 	
 	function directorSelector(index){
@@ -332,6 +335,7 @@
 			$('#dlis'+i).attr('class','');
 		}
 		$('#dlis'+index).attr('class','active');
+		linker();
 	}
 
 	<%if((actionDefault=='建立日期')||(actionDefault=='更新日期')||(actionDefault=='最晚媒合日期')){%>

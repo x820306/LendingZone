@@ -81,7 +81,6 @@ var Users = new Schema({
 	Address: { type: String},
 	OrignalLevel: { type: Number, default: 1 },
 	Level: { type: Number, default: 1 },
-	MaxTotalMoneyCanBorrow: { type: Number, default: 1 },
 	Updated: { type: Date, default: Date.now },
 	Created: { type: Date, default: Date.now },
 	resetPasswordToken: { type: String},

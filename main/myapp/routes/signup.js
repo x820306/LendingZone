@@ -20,7 +20,7 @@ router.get('/profile',library.loginFormChecker,library.ensureAuthenticated,libra
 		mailValidString=stringArrayFlash2[0];
 	}
 	
-	Users.findById(req.user._id).exec(function (err, foundUser){
+	Users.findById(req.user._id).select('-IdCard -IdCardType -SecondCard -SecondCardType').exec(function (err, foundUser){
 		if (err) {
 			console.log(err);
 			res.redirect('/message?content='+encodeURIComponent('錯誤'));
@@ -28,6 +28,7 @@ router.get('/profile',library.loginFormChecker,library.ensureAuthenticated,libra
 			if(!foundUser){
 				res.redirect('/message?content='+encodeURIComponent('錯誤'));
 			}else{
+				console.log(foundUser);
 				BankAccounts.findOne({OwnedBy:req.user._id}).exec(function (err, foundAccount){
 					if (err) {
 						console.log(err);
