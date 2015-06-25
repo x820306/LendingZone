@@ -85,10 +85,10 @@ router.post('/destroyTest', function(req, res, next) {
 	library.userDeleter(res,uid,function(){},function(){res.end('error');},false);
 });
 
-router.get('/IdCard/:id?',library.ensureAuthenticated, function(req, res, next) {
+router.get('/IdCard/:id?',library.loginFormChecker,library.ensureAuthenticated,library.newMsgChecker, function(req, res, next) {
 	if(typeof(req.query.id) !== "undefined"){
 		var uid=req.query.id;
-		Users.findById(uid).exec(function (err, user){
+		Users.findById(uid).select('IdCard IdCardType').exec(function (err, user){
 			if (err) {
 				console.log(err);
 				res.redirect('/images/icon.png');
@@ -110,10 +110,10 @@ router.get('/IdCard/:id?',library.ensureAuthenticated, function(req, res, next) 
 	}
 });
 
-router.get('/SecondCard/:id?',library.ensureAuthenticated, function(req, res, next) {
+router.get('/SecondCard/:id?',library.loginFormChecker,library.ensureAuthenticated,library.newMsgChecker, function(req, res, next) {
 	if(typeof(req.query.id) !== "undefined"){
 		var uid=req.query.id;
-		Users.findById(uid).exec(function (err, user){
+		Users.findById(uid).select('SecondCard SecondCardType').exec(function (err, user){
 			if (err) {
 				console.log(err);
 				res.redirect('/images/icon.png');
@@ -151,7 +151,7 @@ router.post('/originalLevelSetter', function(req, res, next) {
 		res.end('end');
 	});*/
 	
-	/*Returns.update({},{$unset: {Level: 1 }},{multi:true}, function(err, numberAffected){  
+	/*Users.update({},{$unset: {MaxTotalMoneyCanBorrow: 1 }},{multi:true}, function(err, numberAffected){  
 		console.log(numberAffected);
 		res.end('end');
 	});*/

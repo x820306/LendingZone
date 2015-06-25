@@ -66,7 +66,7 @@ passport.use('local', new LocalStrategy({
 	},
     function (Username, Password, done){
         var Users  = mongoose.model('Users');
-		Users.findOne({"Username": Username}).exec(function (err, user){
+		Users.findOne({"Username": Username}).select('-IdCard -IdCardType -SecondCard -SecondCardType').exec(function (err, user){
 			if (err) {
 				console.log(err);
 				return done(null, false, { errorTarget:1, errorMessage: '資料庫錯誤！' });
@@ -92,8 +92,13 @@ passport.use('local', new LocalStrategy({
 									BirthDay: user.BirthDay,
 									Phone: user.Phone,
 									Address: user.Address,
+									Email: user.Email,
+									IdCardNumber: user.IdCardNumber,
+									ifMailValid: user.ifMailValid,
 									Level: user.Level,
-									Created: user.Created
+									OrignalLevel: user.OrignalLevel,
+									Created: user.Created,
+									Updated: user.Updated
 								}
 								return done(null, smaller_user);
 							}

@@ -1231,6 +1231,7 @@ function classorSelector(index){
 		$('#clis'+i).attr('class','');
 	}
 	$('#clis'+index).attr('class','active');
+	linker();
 }
 
 function filterSelector(index){
@@ -1242,6 +1243,7 @@ function filterSelector(index){
 		$('#flis'+i).attr('class','');
 	}
 	$('#flis'+index).attr('class','active');
+	linker();
 }
 
 function sorterSelector(index){
@@ -1266,6 +1268,7 @@ function sorterSelector(index){
 	}
 	$('#slis'+index).attr('class','active');
 	spanner($('#sorter0').text());
+	linker();
 }
 
 function directorSelector(index){
@@ -1280,6 +1283,7 @@ function directorSelector(index){
 		$('#dlis'+i).attr('class','');
 	}
 	$('#dlis'+index).attr('class','active');
+	linker();
 }
 
 <%if((sorterDefault=='建立日期')||(sorterDefault=='更新日期')){%>
