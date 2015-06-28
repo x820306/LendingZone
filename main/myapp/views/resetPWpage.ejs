@@ -68,8 +68,8 @@
 	function checkLength()
 	{
 	    var pwd1 = $('#PwdIpt').val().trim();
-	    if(pwd1!=''){
-			if(pwd1.search(/[^\w]/ig)==-1){
+	    if(pwd1!==''){
+			if(pwd1.search(/[^\w]/ig)===-1){
 				if(pwd1.length<=6){
 					$('#confirmMessage1').html('密碼須大於六碼');
 					$('#confirmMessage1').css('color','red');
@@ -95,9 +95,9 @@
 	{
 	    var pwd1 = $('#PwdIpt').val().trim();
 	    var pwd2 = $('#2PwdIpt').val().trim();
-	    if(pwd2!=''){
-			if(pwd2.search(/[^\w]/ig)==-1){
-				if(pwd1 == pwd2){
+	    if(pwd2!==''){
+			if(pwd2.search(/[^\w]/ig)===-1){
+				if(pwd1 === pwd2){
 					$('#confirmMessage2').html('輸入密碼相同');
 					$('#confirmMessage2').css('color','');
 					valiFlag2=true;

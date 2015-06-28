@@ -6,7 +6,7 @@
 				<div class="subTitle">&nbsp;<%=totalResultNum%> result</div>
 				<br>
 				<div class="input-group">
-					<input type="text" class="form-control pageBar" id="oneidIpt" placeholder="搜尋故事標題或用戶名稱" value="<%=oneidDefault%>" onkeypress="if(event.keyCode==13){linker();}">	
+					<input type="text" class="form-control pageBar" id="oneidIpt" placeholder="搜尋故事標題或用戶名稱" value="<%=oneidDefault%>" onkeypress="if(event.keyCode===13){linker();}">	
 					<span class="input-group-btn">
 						<div class="btn-group">
 							<button type="button" class="btn btn-default dropdown-toggle pageBar" data-toggle="dropdown" id="filterSelected">
@@ -14,10 +14,10 @@
 							</button>
 							<ul class="dropdown-menu">
 								<li style="display:none"><a href="#" id="filter0"><%=filterDefault%></a></li>
-								<li id="flis1"<%if(filterDefault=='不分類'){%> class="active"<%}%>><a href="#" onclick="filterSelector(1);return false;" id="filter1">不分類</a></li>
-								<li id="flis2"<%if(filterDefault=='未保險'){%> class="active"<%}%>><a href="#" onclick="filterSelector(2);return false;" id="filter2">未保險</a></li>
-								<li id="flis3"<%if(filterDefault=='已保險'){%> class="active"<%}%>><a href="#" onclick="filterSelector(3);return false;" id="filter3">已保險</a></li>
-								<li id="flis4"<%if(filterDefault=='已結清'){%> class="active"<%}%>><a href="#" onclick="filterSelector(4);return false;" id="filter4">已結清</a></li>
+								<li id="flis1"<%if(filterDefault==='不分類'){%> class="active"<%}%>><a href="#" onclick="filterSelector(1);return false;" id="filter1">不分類</a></li>
+								<li id="flis2"<%if(filterDefault==='未保險'){%> class="active"<%}%>><a href="#" onclick="filterSelector(2);return false;" id="filter2">未保險</a></li>
+								<li id="flis3"<%if(filterDefault==='已保險'){%> class="active"<%}%>><a href="#" onclick="filterSelector(3);return false;" id="filter3">已保險</a></li>
+								<li id="flis4"<%if(filterDefault==='已結清'){%> class="active"<%}%>><a href="#" onclick="filterSelector(4);return false;" id="filter4">已結清</a></li>
 							</ul>
 						</div>
 						<div class="btn-group">
@@ -26,9 +26,9 @@
 							</button>
 							<ul class="dropdown-menu">
 								<li style="display:none"><a href="#" id="messenger0"><%=messengerDefault%></a></li>
-								<li id="mlis1"<%if(messengerDefault=='不分訊息種類'){%> class="active"<%}%>><a href="#" onclick="messengerSelector(1);return false;" id="messenger1">不分訊息種類</a></li>
-								<li id="mlis2"<%if(messengerDefault=='收到訊息'){%> class="active"<%}%>><a href="#" onclick="messengerSelector(2);return false;" id="messenger2">收到訊息</a></li>
-								<li id="mlis3"<%if(messengerDefault=='送出訊息'){%> class="active"<%}%>><a href="#" onclick="messengerSelector(3);return false;" id="messenger3">送出訊息</a></li>
+								<li id="mlis1"<%if(messengerDefault==='不分訊息種類'){%> class="active"<%}%>><a href="#" onclick="messengerSelector(1);return false;" id="messenger1">不分訊息種類</a></li>
+								<li id="mlis2"<%if(messengerDefault==='收到訊息'){%> class="active"<%}%>><a href="#" onclick="messengerSelector(2);return false;" id="messenger2">收到訊息</a></li>
+								<li id="mlis3"<%if(messengerDefault==='送出訊息'){%> class="active"<%}%>><a href="#" onclick="messengerSelector(3);return false;" id="messenger3">送出訊息</a></li>
 							</ul>
 						</div>
 						<div class="btn-group">
@@ -37,11 +37,11 @@
 							</button>
 							<ul class="dropdown-menu">
 								<li style="display:none"><a href="#" id="classor0"><%=classorDefault%></a></li>
-								<li id="clis1"<%if(classorDefault=='不分故事種類'){%> class="active"<%}%>><a href="#" onclick="classorSelector(1);return false;" id="classor1">不分故事種類</a></li>
-								<li id="clis2"<%if(classorDefault=='一般'){%> class="active"<%}%>><a href="#" onclick="classorSelector(2);return false;" id="classor2">一般</a></li>
-								<li id="clis3"<%if(classorDefault=='教育'){%> class="active"<%}%>><a href="#" onclick="classorSelector(3);return false;" id="classor3">教育</a></li>
-								<li id="clis4"<%if(classorDefault=='家庭'){%> class="active"<%}%>><a href="#" onclick="classorSelector(4);return false;" id="classor4">家庭</a></li>
-								<li id="clis5"<%if(classorDefault=='旅遊'){%> class="active"<%}%>><a href="#" onclick="classorSelector(5);return false;" id="classor5">旅遊</a></li>
+								<li id="clis1"<%if(classorDefault==='不分故事種類'){%> class="active"<%}%>><a href="#" onclick="classorSelector(1);return false;" id="classor1">不分故事種類</a></li>
+								<li id="clis2"<%if(classorDefault==='一般'){%> class="active"<%}%>><a href="#" onclick="classorSelector(2);return false;" id="classor2">一般</a></li>
+								<li id="clis3"<%if(classorDefault==='教育'){%> class="active"<%}%>><a href="#" onclick="classorSelector(3);return false;" id="classor3">教育</a></li>
+								<li id="clis4"<%if(classorDefault==='家庭'){%> class="active"<%}%>><a href="#" onclick="classorSelector(4);return false;" id="classor4">家庭</a></li>
+								<li id="clis5"<%if(classorDefault==='旅遊'){%> class="active"<%}%>><a href="#" onclick="classorSelector(5);return false;" id="classor5">旅遊</a></li>
 							</ul>
 						</div>
 						<div class="btn-group">
@@ -50,43 +50,43 @@
 							</button>
 							<ul class="dropdown-menu">
 								<li style="display:none"><a href="#" id="sorter0"><%=sorterDefault%></a></li>
-								<li id="slis1"<%if(sorterDefault=='建立日期'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(1);return false;" id="sorter1">建立日期</a></li>
-								<li id="slis2"<%if(sorterDefault=='更新日期'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(2);return false;" id="sorter2">更新日期</a></li>
-								<li id="slis3"<%if(sorterDefault=='已得利息'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(3);return false;" id="sorter3">已得利息</a></li>
-								<li id="slis4"<%if(sorterDefault=='已得本利和'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(4);return false;" id="sorter4">已得本利和</a></li>
-								<li id="slis5"<%if(sorterDefault=='已得平均利息'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(5);return false;" id="sorter5">已得平均利息</a></li>
-								<li id="slis6"<%if(sorterDefault=='已得平均本利和'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(6);return false;" id="sorter6">已得平均本利和</a></li>
-								<li id="slis7"<%if(sorterDefault=='已得利本比'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(7);return false;" id="sorter7">已得利本比</a></li>
-								<li id="slis8"<%if(sorterDefault=='年利率'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(8);return false;" id="sorter8">年利率</a></li>
-								<li id="slis9"<%if(sorterDefault=='原始本金'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(9);return false;" id="sorter9">原始本金</a></li>
-								<li id="slis10"<%if(sorterDefault=='額外本金'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(10);return false;" id="sorter10">額外本金</a></li>
-								<li id="slis11"<%if(sorterDefault=='目前總本金'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(11);return false;" id="sorter11">目前總本金</a></li>
-								<li id="slis12"<%if(sorterDefault=='未還本金'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(12);return false;" id="sorter12">未還本金</a></li>
-								<li id="slis13"<%if(sorterDefault=='已還本金'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(13);return false;" id="sorter13">已還本金</a></li>
-								<li id="slis14"<%if(sorterDefault=='原始期數'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(14);return false;" id="sorter14">原始期數</a></li>
-								<li id="slis15"<%if(sorterDefault=='額外期數'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(15);return false;" id="sorter15">額外期數</a></li>
-								<li id="slis16"<%if(sorterDefault=='目前總期數'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(16);return false;" id="sorter16">目前總期數</a></li>
-								<li id="slis17"<%if(sorterDefault=='剩下期數'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(17);return false;" id="sorter17">剩下期數</a></li>
-								<li id="slis18"<%if(sorterDefault=='已過期數'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(18);return false;" id="sorter18">已過期數</a></li>
-								<li id="slis19"<%if(sorterDefault=='信用等級'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(19);return false;" id="sorter19">信用等級</a></li>
-								<li id="slis20"<%if(sorterDefault=='預計剩餘利息'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(20);return false;" id="sorter20">預計剩餘利息</a></li>
-								<li id="slis21"<%if(sorterDefault=='預計剩餘本利和'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(21);return false;" id="sorter21">預計剩餘本利和</a></li>
-								<li id="slis22"<%if(sorterDefault=='預計剩餘平均利息'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(22);return false;" id="sorter22">預計剩餘平均利息</a></li>
-								<li id="slis23"<%if(sorterDefault=='預計剩餘平均本利和'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(23);return false;" id="sorter23">預計剩餘平均本利和</a></li>
-								<li id="slis24"<%if(sorterDefault=='預計剩餘利本比'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(24);return false;" id="sorter24">預計剩餘利本比</a></li>
-								<li id="slis25"<%if(sorterDefault=='收款次數'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(25);return false;" id="sorter25">收款次數</a></li>
-								<li id="slis26"<%if(sorterDefault=='上次成功收款日期'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(26);return false;" id="sorter26">上次成功收款日期</a></li>
-								<li id="slis27"<%if(sorterDefault=='下次應收款日期'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(27);return false;" id="sorter27">下次應收款日期</a></li>
-								<li id="slis28"<%if(sorterDefault=='保險所需費用'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(28);return false;" id="sorter28">保險所需費用</a></li>
-								<li id="slis29"<%if(sorterDefault=='已付保險費用'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(29);return false;" id="sorter29">已付保險費用</a></li>	
+								<li id="slis1"<%if(sorterDefault==='建立日期'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(1);return false;" id="sorter1">建立日期</a></li>
+								<li id="slis2"<%if(sorterDefault==='更新日期'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(2);return false;" id="sorter2">更新日期</a></li>
+								<li id="slis3"<%if(sorterDefault==='已得利息'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(3);return false;" id="sorter3">已得利息</a></li>
+								<li id="slis4"<%if(sorterDefault==='已得本利和'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(4);return false;" id="sorter4">已得本利和</a></li>
+								<li id="slis5"<%if(sorterDefault==='已得平均利息'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(5);return false;" id="sorter5">已得平均利息</a></li>
+								<li id="slis6"<%if(sorterDefault==='已得平均本利和'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(6);return false;" id="sorter6">已得平均本利和</a></li>
+								<li id="slis7"<%if(sorterDefault==='已得利本比'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(7);return false;" id="sorter7">已得利本比</a></li>
+								<li id="slis8"<%if(sorterDefault==='年利率'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(8);return false;" id="sorter8">年利率</a></li>
+								<li id="slis9"<%if(sorterDefault==='原始本金'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(9);return false;" id="sorter9">原始本金</a></li>
+								<li id="slis10"<%if(sorterDefault==='額外本金'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(10);return false;" id="sorter10">額外本金</a></li>
+								<li id="slis11"<%if(sorterDefault==='目前總本金'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(11);return false;" id="sorter11">目前總本金</a></li>
+								<li id="slis12"<%if(sorterDefault==='未還本金'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(12);return false;" id="sorter12">未還本金</a></li>
+								<li id="slis13"<%if(sorterDefault==='已還本金'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(13);return false;" id="sorter13">已還本金</a></li>
+								<li id="slis14"<%if(sorterDefault==='原始期數'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(14);return false;" id="sorter14">原始期數</a></li>
+								<li id="slis15"<%if(sorterDefault==='額外期數'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(15);return false;" id="sorter15">額外期數</a></li>
+								<li id="slis16"<%if(sorterDefault==='目前總期數'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(16);return false;" id="sorter16">目前總期數</a></li>
+								<li id="slis17"<%if(sorterDefault==='剩下期數'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(17);return false;" id="sorter17">剩下期數</a></li>
+								<li id="slis18"<%if(sorterDefault==='已過期數'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(18);return false;" id="sorter18">已過期數</a></li>
+								<li id="slis19"<%if(sorterDefault==='信用等級'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(19);return false;" id="sorter19">信用等級</a></li>
+								<li id="slis20"<%if(sorterDefault==='預計剩餘利息'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(20);return false;" id="sorter20">預計剩餘利息</a></li>
+								<li id="slis21"<%if(sorterDefault==='預計剩餘本利和'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(21);return false;" id="sorter21">預計剩餘本利和</a></li>
+								<li id="slis22"<%if(sorterDefault==='預計剩餘平均利息'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(22);return false;" id="sorter22">預計剩餘平均利息</a></li>
+								<li id="slis23"<%if(sorterDefault==='預計剩餘平均本利和'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(23);return false;" id="sorter23">預計剩餘平均本利和</a></li>
+								<li id="slis24"<%if(sorterDefault==='預計剩餘利本比'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(24);return false;" id="sorter24">預計剩餘利本比</a></li>
+								<li id="slis25"<%if(sorterDefault==='收款次數'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(25);return false;" id="sorter25">收款次數</a></li>
+								<li id="slis26"<%if(sorterDefault==='上次成功收款日期'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(26);return false;" id="sorter26">上次成功收款日期</a></li>
+								<li id="slis27"<%if(sorterDefault==='下次應收款日期'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(27);return false;" id="sorter27">下次應收款日期</a></li>
+								<li id="slis28"<%if(sorterDefault==='保險所需費用'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(28);return false;" id="sorter28">保險所需費用</a></li>
+								<li id="slis29"<%if(sorterDefault==='已付保險費用'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(29);return false;" id="sorter29">已付保險費用</a></li>	
 							</ul>
 						</div>
 						<div class="btn-group">
 							<button type="button" class="btn btn-default pageBar" id="directorSelected" data-toggle="dropdown" aria-expanded="false"><%=directorDefault%> <span class='caret'></span></button>
 							<ul class="dropdown-menu" role="menu">
 								<li style="display:none"><a href="#" id="director0"><%=directorDefault%></a></li>
-								<li id="dlis1"<%if(directorDefault=='大至小'){%> class="active"<%}%>><a href="#" onclick="directorSelector(1);return false;" id="director1">大至小</a></li>
-								<li id="dlis2"<%if(directorDefault=='小至大'){%> class="active"<%}%>><a href="#" onclick="directorSelector(2);return false;" id="director2">小至大</a></li>
+								<li id="dlis1"<%if(directorDefault==='大至小'){%> class="active"<%}%>><a href="#" onclick="directorSelector(1);return false;" id="director1">大至小</a></li>
+								<li id="dlis2"<%if(directorDefault==='小至大'){%> class="active"<%}%>><a href="#" onclick="directorSelector(2);return false;" id="director2">小至大</a></li>
 							</ul>
 						</div>
 						<button type="button" class="btn btn-default pageBar" onclick="linker();">Go!</button>
@@ -96,14 +96,14 @@
 				<table width='100%'>
 					<tr>
 						<td>
-							<%if((sorterDefault=='建立日期')||(sorterDefault=='更新日期')||(sorterDefault=='上次成功收款日期')||(sorterDefault=='下次應收款日期')){%>
-								<input type="date" placeholder="下限(年/月/日)" class="form-control boundIpt" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode==13){linker();}">&nbsp;&nbsp;<span style="display:inline;" id='lbd'></span>
+							<%if((sorterDefault==='建立日期')||(sorterDefault==='更新日期')||(sorterDefault==='上次成功收款日期')||(sorterDefault==='下次應收款日期')){%>
+								<input type="date" placeholder="下限(年/月/日)" class="form-control boundIpt" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode===13){linker();}">&nbsp;&nbsp;<span style="display:inline;" id='lbd'></span>
 								&nbsp;&nbsp;~&nbsp;&nbsp;
-								<input type="date" placeholder="上限(年/月/日)" class="form-control boundIpt" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode==13){linker();}">&nbsp;&nbsp;<span style="display:inline;" id='ubd'></span>
+								<input type="date" placeholder="上限(年/月/日)" class="form-control boundIpt" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode===13){linker();}">&nbsp;&nbsp;<span style="display:inline;" id='ubd'></span>
 							<%}else{%>
-								<input type="text" placeholder="下限" class="form-control boundIpt" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode==13){linker();}">&nbsp;&nbsp;<span style="display:inline;" id='lbd'></span>
+								<input type="text" placeholder="下限" class="form-control boundIpt" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode===13){linker();}">&nbsp;&nbsp;<span style="display:inline;" id='lbd'></span>
 								&nbsp;&nbsp;~&nbsp;&nbsp;
-								<input type="text" placeholder="上限" class="form-control boundIpt" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode==13){linker();}">&nbsp;&nbsp;<span style="display:inline;" id='ubd'></span>
+								<input type="text" placeholder="上限" class="form-control boundIpt" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode===13){linker();}">&nbsp;&nbsp;<span style="display:inline;" id='ubd'></span>
 							<%}%>
 						</td>
 						<%if((kpr!=='')&&(totalResultNum>0)&&(!oflg)&&(pflg)){%>
@@ -119,7 +119,7 @@
 					</tr>
 				</table>
 				<br>
-				<%if((biJSON)&&(filterDefault=='已保險')){%>
+				<%if((biJSON)&&(filterDefault==='已保險')){%>
 					<br>
 					<%=biJSON.Contect%>
 					<br>
@@ -247,14 +247,14 @@
 							</tr>
 						</tbody>
 					</table>
-					<% if(filterDefault=='未保險'){%>
+					<% if(filterDefault==='未保險'){%>
 						<br>
 						<br>
 						<table style="display:inline;" class="table">
 							<thead class="myThead">
 								<tr>
 									<th style="text-align:center">
-									銀行帳戶內餘額
+									可支付餘額
 									</th>
 									<th style="text-align:center">
 									已選合計費用
@@ -269,7 +269,7 @@
 							<tbody class="myTbody">
 								<tr>
 									<td align="center">
-										<div style="display:inline;"><%=dpk.v12.toFixed(0)%></div><div style="display:inline;">元</div>
+										<div style="display:inline;"><%=dpk.moneyLeftToHendLend.toFixed(0)%></div><div style="display:inline;">元</div>
 									</td>
 									<td align="center">
 										<div style="display:inline;" id="selectedFee">0</div><div style="display:none;" id="selectedFeeR">0</div><div style="display:inline;">元</div>
@@ -361,14 +361,14 @@
 								</div>
 							</div>
 						</div>
-					<%}else if(filterDefault=='已保險'){%>
+					<%}else if(filterDefault==='已保險'){%>
 						<br>
 						<br>
 						<table style="display:inline;" class="table">
 							<thead class="myThead">
 								<tr>
 									<th style="text-align:center">
-									銀行帳戶內餘額
+									可支付餘額
 									</th>
 									<th style="text-align:center">
 									合計已繳保險費用
@@ -378,7 +378,7 @@
 							<tbody class="myTbody">
 								<tr>
 									<td align="center">
-										<div style="display:inline;"><%=dpk.v12.toFixed(0)%></div><div style="display:inline;">元</div>
+										<div style="display:inline;"><%=dpk.moneyLeftToHendLend.toFixed(0)%></div><div style="display:inline;">元</div>
 									</td>
 									<td align="center">
 										<div style="display:inline;"><%=dpk.v11.toFixed(0)%></div><div style="display:inline;">元</div>
@@ -397,10 +397,10 @@
 							<table style="margin-bottom: 0px;margin-top: 0px;" class="table" width="100%">
 								<tr>
 									<td style="border-bottom-style: none;border-top-style: none;">
-										<%if(jsonTransaction[i].CreatedFrom.Type=="toBorrow"){%>
-											<a style="font-size:15px;" href="/lender/lenderReceiveMessages?msgKeyword=<%=jsonTransaction[i].CreatedFrom._id%>&filter=<%if(jsonTransaction[i].CreatedFrom.Status=="NotConfirmed"){%><%=encodeURIComponent('未確認')%><%}else if(jsonTransaction[i].CreatedFrom.Status=="Confirmed"){%><%=encodeURIComponent('已同意')%><%}else if(jsonTransaction[i].CreatedFrom.Status=="Rejected"){%><%=encodeURIComponent('已婉拒')%><%}%>&classor=<%=encodeURIComponent("不分故事種類");%>&sorter=<%=encodeURIComponent("更新日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">查看來源訊息</a>
-										<%}else if(jsonTransaction[i].CreatedFrom.Type=="toLend"){%>
-											<a style="font-size:15px;" href="/lender/lenderSendMessages?msgKeyword=<%=jsonTransaction[i].CreatedFrom._id%>&filter=<%if(jsonTransaction[i].CreatedFrom.Status=="NotConfirmed"){%><%=encodeURIComponent('未被確認')%><%}else if(jsonTransaction[i].CreatedFrom.Status=="Confirmed"){%><%=encodeURIComponent('已被同意')%><%}else if(jsonTransaction[i].CreatedFrom.Status=="Rejected"){%><%=encodeURIComponent('已被婉拒')%><%}%>&classor=<%=encodeURIComponent("不分故事種類");%>&sorter=<%=encodeURIComponent("更新日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">查看來源訊息</a>
+										<%if(jsonTransaction[i].CreatedFrom.Type==="toBorrow"){%>
+											<a style="font-size:15px;" href="/lender/lenderReceiveMessages?msgKeyword=<%=jsonTransaction[i].CreatedFrom._id%>&filter=<%if(jsonTransaction[i].CreatedFrom.Status==="NotConfirmed"){%><%=encodeURIComponent('未確認')%><%}else if(jsonTransaction[i].CreatedFrom.Status==="Confirmed"){%><%=encodeURIComponent('已同意')%><%}else if(jsonTransaction[i].CreatedFrom.Status==="Rejected"){%><%=encodeURIComponent('已婉拒')%><%}%>&classor=<%=encodeURIComponent("不分故事種類");%>&sorter=<%=encodeURIComponent("更新日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">查看來源訊息</a>
+										<%}else if(jsonTransaction[i].CreatedFrom.Type==="toLend"){%>
+											<a style="font-size:15px;" href="/lender/lenderSendMessages?msgKeyword=<%=jsonTransaction[i].CreatedFrom._id%>&filter=<%if(jsonTransaction[i].CreatedFrom.Status==="NotConfirmed"){%><%=encodeURIComponent('未被確認')%><%}else if(jsonTransaction[i].CreatedFrom.Status==="Confirmed"){%><%=encodeURIComponent('已被同意')%><%}else if(jsonTransaction[i].CreatedFrom.Status==="Rejected"){%><%=encodeURIComponent('已被婉拒')%><%}%>&classor=<%=encodeURIComponent("不分故事種類");%>&sorter=<%=encodeURIComponent("更新日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">查看來源訊息</a>
 										<%}%>
 									</td>
 								</tr>
@@ -411,7 +411,7 @@
 								<div style="font-size:25px;display:inline;">借給 </div>
 								<div style="font-size:25px;display:inline;" class="myTitle"><div class="colorCnt"><%=jsonTransaction[i].Borrower.Username%></div></div>
 								<br>
-								&nbsp;&nbsp;在&nbsp;&nbsp;<a style="font-size:15px;"<%if(jsonTransaction[i].color=="color1"){%> class="color1"<%}else if(jsonTransaction[i].color=="color2"){%> class="color2"<%}else if(jsonTransaction[i].color=="color3"){%> class="color3"<%}else if(jsonTransaction[i].color=="color4"){%> class="color4"<%}else if(jsonTransaction[i].color=="color5"){%> class="color5"<%}else if(jsonTransaction[i].color=="color6"){%> class="color6"<%}else if(jsonTransaction[i].color=="color7"){%> class="color7"<%}%> href="/lender/story?id=<%=jsonTransaction[i].CreatedFrom.FromBorrowRequest._id%>">[<%if(jsonTransaction[i].CreatedFrom.FromBorrowRequest.Category=='general'){%>一般<%}else if(jsonTransaction[i].CreatedFrom.FromBorrowRequest.Category=='education'){%>教育<%}else if(jsonTransaction[i].CreatedFrom.FromBorrowRequest.Category=='family'){%>家庭<%}else if(jsonTransaction[i].CreatedFrom.FromBorrowRequest.Category=='tour'){%>旅遊<%}%>]&nbsp;<%if(jsonTransaction[i].CreatedFrom.FromBorrowRequest.StoryTitle!==''){%><div class="colorCnt"><%-jsonTransaction[i].CreatedFrom.FromBorrowRequest.StoryTitle.replace(new RegExp(' ','g'),'&nbsp;')%></div><%}else{%>無標題<%}%></a>
+								&nbsp;&nbsp;在&nbsp;&nbsp;<a style="font-size:15px;"<%if(jsonTransaction[i].color==="color1"){%> class="color1"<%}else if(jsonTransaction[i].color==="color2"){%> class="color2"<%}else if(jsonTransaction[i].color==="color3"){%> class="color3"<%}else if(jsonTransaction[i].color==="color4"){%> class="color4"<%}else if(jsonTransaction[i].color==="color5"){%> class="color5"<%}else if(jsonTransaction[i].color==="color6"){%> class="color6"<%}else if(jsonTransaction[i].color==="color7"){%> class="color7"<%}%> href="/lender/story?id=<%=jsonTransaction[i].CreatedFrom.FromBorrowRequest._id%>">[<%if(jsonTransaction[i].CreatedFrom.FromBorrowRequest.Category==='general'){%>一般<%}else if(jsonTransaction[i].CreatedFrom.FromBorrowRequest.Category==='education'){%>教育<%}else if(jsonTransaction[i].CreatedFrom.FromBorrowRequest.Category==='family'){%>家庭<%}else if(jsonTransaction[i].CreatedFrom.FromBorrowRequest.Category==='tour'){%>旅遊<%}%>]&nbsp;<%if(jsonTransaction[i].CreatedFrom.FromBorrowRequest.StoryTitle!==''){%><div class="colorCnt"><%-jsonTransaction[i].CreatedFrom.FromBorrowRequest.StoryTitle.replace(new RegExp(' ','g'),'&nbsp;')%></div><%}else{%>無標題<%}%></a>
 								<br>
 								<br>
 								<div class="col-md-4">
@@ -419,7 +419,7 @@
 										<tr>
 											<td>
 												<div class="myTitle">
-													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault=='原始本金'){%> class="stronger"<%}%>>原始本金：</div>
+													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault==='原始本金'){%> class="stronger"<%}%>>原始本金：</div>
 												</div>
 											</td>
 										</tr>
@@ -433,7 +433,7 @@
 										<tr>
 											<td>
 												<div class="myTitle">
-													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault=='額外本金'){%> class="stronger"<%}%>>額外本金：</div>
+													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault==='額外本金'){%> class="stronger"<%}%>>額外本金：</div>
 												</div>
 											</td>
 										</tr>
@@ -447,7 +447,7 @@
 										<tr>
 											<td>
 												<div class="myTitle">
-													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault=='目前總本金'){%> class="stronger"<%}%>>目前總本金：</div>
+													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault==='目前總本金'){%> class="stronger"<%}%>>目前總本金：</div>
 												</div>
 											</td>
 										</tr>
@@ -461,7 +461,7 @@
 										<tr>
 											<td>
 												<div class="myTitle">
-													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault=='未還本金'){%> class="stronger"<%}%>>未還本金：</div>
+													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault==='未還本金'){%> class="stronger"<%}%>>未還本金：</div>
 												</div>
 											</td>
 										</tr>
@@ -475,7 +475,7 @@
 										<tr>
 											<td>
 												<div class="myTitle">
-													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault=='已還本金'){%> class="stronger"<%}%>>已還本金：</div>
+													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault==='已還本金'){%> class="stronger"<%}%>>已還本金：</div>
 												</div>
 											</td>
 										</tr>
@@ -489,7 +489,7 @@
 										<tr>
 											<td>
 												<div class="myTitle">
-													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault=='年利率'){%> class="stronger"<%}%>>年利率：</div>
+													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault==='年利率'){%> class="stronger"<%}%>>年利率：</div>
 												</div>
 											</td>
 										</tr>
@@ -503,7 +503,7 @@
 										<tr>
 											<td>
 												<div class="myTitle">
-													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault=='已得利息'){%> class="stronger"<%}%>>已得利息：</div>
+													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault==='已得利息'){%> class="stronger"<%}%>>已得利息：</div>
 												</div>
 											</td>
 										</tr>
@@ -517,7 +517,7 @@
 										<tr>
 											<td>
 												<div class="myTitle">
-													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault=='已得本利和'){%> class="stronger"<%}%>>已得本利和：</div>
+													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault==='已得本利和'){%> class="stronger"<%}%>>已得本利和：</div>
 												</div>
 											</td>
 										</tr>
@@ -531,7 +531,7 @@
 										<tr>
 											<td>
 												<div class="myTitle">
-													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault=='已得平均利息'){%> class="stronger"<%}%>>已得平均利息：</div>
+													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault==='已得平均利息'){%> class="stronger"<%}%>>已得平均利息：</div>
 												</div>
 											</td>
 										</tr>
@@ -549,7 +549,7 @@
 										<tr>
 											<td>
 												<div class="myTitle">
-													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault=='已得平均本利和'){%> class="stronger"<%}%>>已得平均本利和：</div>
+													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault==='已得平均本利和'){%> class="stronger"<%}%>>已得平均本利和：</div>
 												</div>
 											</td>
 										</tr>
@@ -563,7 +563,7 @@
 										<tr>
 											<td>
 												<div class="myTitle">
-													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault=='已得利本比'){%> class="stronger"<%}%>>已得利本比：</div>
+													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault==='已得利本比'){%> class="stronger"<%}%>>已得利本比：</div>
 												</div>
 											</td>
 										</tr>
@@ -577,7 +577,7 @@
 										<tr>
 											<td>
 												<div class="myTitle">
-													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault=='原始期數'){%> class="stronger"<%}%>>原始期數：</div>
+													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault==='原始期數'){%> class="stronger"<%}%>>原始期數：</div>
 												</div>
 											</td>
 										</tr>
@@ -590,7 +590,7 @@
 										</tr><tr>
 											<td>
 												<div class="myTitle">
-													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault=='額外期數'){%> class="stronger"<%}%>>額外期數：</div>
+													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault==='額外期數'){%> class="stronger"<%}%>>額外期數：</div>
 												</div>
 											</td>
 										</tr>
@@ -603,7 +603,7 @@
 										</tr><tr>
 											<td>
 												<div class="myTitle">
-													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault=='目前總期數'){%> class="stronger"<%}%>>目前總期數：</div>
+													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault==='目前總期數'){%> class="stronger"<%}%>>目前總期數：</div>
 												</div>
 											</td>
 										</tr>
@@ -617,7 +617,7 @@
 										<tr>
 											<td>
 												<div class="myTitle">
-													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault=='剩下期數'){%> class="stronger"<%}%>>剩下期數：</div>
+													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault==='剩下期數'){%> class="stronger"<%}%>>剩下期數：</div>
 												</div>
 											</td>
 										</tr>
@@ -631,7 +631,7 @@
 										<tr>
 											<td>
 												<div class="myTitle">
-													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault=='已過期數'){%> class="stronger"<%}%>>已過期數：</div>
+													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault==='已過期數'){%> class="stronger"<%}%>>已過期數：</div>
 												</div>
 											</td>
 										</tr>
@@ -645,7 +645,7 @@
 										<tr>
 											<td>
 												<div class="myTitle">
-													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault=='信用等級'){%> class="stronger"<%}%>>信用等級：</div>
+													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault==='信用等級'){%> class="stronger"<%}%>>信用等級：</div>
 												</div>
 											</td>
 										</tr>
@@ -659,7 +659,7 @@
 										<tr>
 											<td>
 												<div class="myTitle">
-													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault=='建立日期'){%> class="stronger"<%}%>>成交日期：</div>
+													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault==='建立日期'){%> class="stronger"<%}%>>成交日期：</div>
 												</div>
 											</td>
 										</tr>
@@ -677,7 +677,7 @@
 										<tr>
 											<td>
 												<div class="myTitle">
-													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault=='預計剩餘總利息'){%> class="stronger"<%}%>>預計剩餘總利息：</div>
+													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault==='預計剩餘總利息'){%> class="stronger"<%}%>>預計剩餘總利息：</div>
 												</div>
 											</td>
 										</tr>
@@ -691,7 +691,7 @@
 										<tr>
 											<td>
 												<div class="myTitle">
-													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault=='預計剩餘本利和'){%> class="stronger"<%}%>>預計剩餘本利和：</div>
+													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault==='預計剩餘本利和'){%> class="stronger"<%}%>>預計剩餘本利和：</div>
 												</div>
 											</td>
 										</tr>
@@ -705,7 +705,7 @@
 										<tr>
 											<td>
 												<div class="myTitle">
-													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault=='預計剩餘平均利息'){%> class="stronger"<%}%>>預計剩餘平均利息：</div>
+													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault==='預計剩餘平均利息'){%> class="stronger"<%}%>>預計剩餘平均利息：</div>
 												</div>
 											</td>
 										</tr>
@@ -719,7 +719,7 @@
 										<tr>
 											<td>
 												<div class="myTitle">
-													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault=='預計剩餘平均本利和'){%> class="stronger"<%}%>>預計剩餘平均本利和：</div>
+													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault==='預計剩餘平均本利和'){%> class="stronger"<%}%>>預計剩餘平均本利和：</div>
 												</div>
 											</td>
 										</tr>
@@ -733,7 +733,7 @@
 										<tr>
 											<td>
 												<div class="myTitle">
-													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault=='預計剩餘利本比'){%> class="stronger"<%}%>>預計剩餘利本比：</div>
+													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault==='預計剩餘利本比'){%> class="stronger"<%}%>>預計剩餘利本比：</div>
 												</div>
 											</td>
 										</tr>
@@ -747,7 +747,7 @@
 										<tr>
 											<td>
 												<div class="myTitle">
-													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault=='上次成功收款日期'){%> class="stronger"<%}%>>上次成功收款日期：</div>
+													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault==='上次成功收款日期'){%> class="stronger"<%}%>>上次成功收款日期：</div>
 												</div>
 											</td>
 										</tr>
@@ -762,7 +762,7 @@
 										<tr>
 											<td>
 												<div class="myTitle">
-													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault=='下次應收款日期'){%> class="stronger"<%}%>>下次應收款日期：</div>
+													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault==='下次應收款日期'){%> class="stronger"<%}%>>下次應收款日期：</div>
 												</div>
 											</td>
 										</tr>
@@ -776,7 +776,7 @@
 										<tr>
 											<td>
 												<div class="myTitle">
-													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault=='保險所需費用'){%> class="stronger"<%}%>>保險所需費用：</div>
+													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault==='保險所需費用'){%> class="stronger"<%}%>>保險所需費用：</div>
 												</div>
 											</td>
 										</tr>
@@ -790,7 +790,7 @@
 										<tr>
 											<td>
 												<div class="myTitle">
-													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault=='已付保險費用'){%> class="stronger"<%}%>>已付保險費用：</div>
+													&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"<%if(sorterDefault==='已付保險費用'){%> class="stronger"<%}%>>已付保險費用：</div>
 												</div>
 											</td>
 										</tr>
@@ -808,13 +808,13 @@
 					<div style="border-top-style: none;border-right-style: none;border-bottom-style: none;border-left-style: none;margin-top: 0px;margin-bottom: 0px;" class="table-responsive">
 						<table style="margin-bottom: 0px;margin-top: 0px;" class="table" width="100%">
 							<tr>
-								<%if(filterDefault=='未保險'){%>
+								<%if(filterDefault==='未保險'){%>
 								<td style="border-bottom-style: none;border-top-style: none;">
 									<div>
 										<input type="checkbox" name="selectCheckBox" id="selectCheckBoxId<%=i%>" onclick="selectFun(<%=i%>);" value='{"TransactionID":"<%=jsonTransaction[i]._id%>"}'> 選擇
 									</div>
 								</td>
-								<%}else if(filterDefault=='不分類'){%>
+								<%}else if(filterDefault==='不分類'){%>
 									<td style="border-bottom-style: none;border-top-style: none;">
 										<%if(jsonTransaction[i].PrincipalNotReturn>0){%>
 											<%if(jsonTransaction[i].InsuranceFeePaid>0){%>
@@ -830,18 +830,18 @@
 								<td align="right" style="border-bottom-style: none;border-top-style: none;">
 									<div style="font-size:15px;display:inline;">
 										<%if(jsonTransaction[i].ReturnCount>0){%>
-											<a<%if(sorterDefault=='收款次數'){%> class="stronger"<%}%> href="/lender/lenderReturnRecord?oneid=&id=<%=jsonTransaction[i]._id%>&messenger=<%=encodeURIComponent('不分訊息種類')%>&classor=<%=encodeURIComponent("不分故事種類");%>&sorter=<%=encodeURIComponent("建立日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">該交易有<%=jsonTransaction[i].ReturnCount.toFixed(0)%>筆收款記錄</a>
+											<a<%if(sorterDefault==='收款次數'){%> class="stronger"<%}%> href="/lender/lenderReturnRecord?oneid=&id=<%=jsonTransaction[i]._id%>&messenger=<%=encodeURIComponent('不分訊息種類')%>&classor=<%=encodeURIComponent("不分故事種類");%>&sorter=<%=encodeURIComponent("建立日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">該交易有<%=jsonTransaction[i].ReturnCount.toFixed(0)%>筆收款記錄</a>
 										<%}else{%>
-											<div style="display:inline;"<%if(sorterDefault=='收款次數'){%> class="stronger"<%}%>>該交易有<%=jsonTransaction[i].ReturnCount%>筆收款記錄</div> 
+											<div style="display:inline;"<%if(sorterDefault==='收款次數'){%> class="stronger"<%}%>>該交易有<%=jsonTransaction[i].ReturnCount%>筆收款記錄</div> 
 										<%}%>
 									</div>
 									&nbsp;&nbsp;&nbsp;&nbsp;
 									<div style="font-size:15px;display:inline;">
-										<div style="display:inline;"<%if(sorterDefault=='更新日期'){%> class="stronger"<%}%>>Updated：</div><%=jsonTransaction[i].Updated.getFullYear()%>/<%=jsonTransaction[i].Updated.getMonth()+1%>/<%=jsonTransaction[i].Updated.getDate()%>
+										<div style="display:inline;"<%if(sorterDefault==='更新日期'){%> class="stronger"<%}%>>Updated：</div><%=jsonTransaction[i].Updated.getFullYear()%>/<%=jsonTransaction[i].Updated.getMonth()+1%>/<%=jsonTransaction[i].Updated.getDate()%>
 									</div>
 									&nbsp;&nbsp;&nbsp;&nbsp;
 									<div style="font-size:15px;display:inline;">
-										<div style="display:inline;"<%if(sorterDefault=='建立日期'){%> class="stronger"<%}%>>Created：</div><%=jsonTransaction[i].Created.getFullYear()%>/<%=jsonTransaction[i].Created.getMonth()+1%>/<%=jsonTransaction[i].Created.getDate()%>
+										<div style="display:inline;"<%if(sorterDefault==='建立日期'){%> class="stronger"<%}%>>Created：</div><%=jsonTransaction[i].Created.getFullYear()%>/<%=jsonTransaction[i].Created.getMonth()+1%>/<%=jsonTransaction[i].Created.getDate()%>
 									</div>
 									&nbsp;&nbsp;&nbsp;&nbsp;
 									<div style="font-size:15px;display:inline;">
@@ -853,7 +853,7 @@
 					</div>
 					<br>
 				<%}%>
-				<%if(filterDefault=='未保險'){%>
+				<%if(filterDefault==='未保險'){%>
 					<%if(pageNumber>1){%>
 						<form action="/Transactions/buyInsuranceAll" method="post" id="formID0">
 							<input type="hidden" name="oneid" id="oneidIpt" value="<%=oneidDefault%>">
@@ -876,11 +876,11 @@
 							<nav>
 							  <ul class="pagination">
 								<li 
-									<% if(targetPageNumber==1){%>
+									<% if(targetPageNumber===1){%>
 										class="disabled"
 									<%}%>
 								>
-								<% if(targetPageNumber!=1){%>
+								<% if(targetPageNumber!==1){%>
 									<a href="/lender/lenderTransactionRecord?oneid=<%=encodeURIComponent(oneidDefault)%>&filter=<%=encodeURIComponent(filterDefault)%>&messenger=<%=encodeURIComponent('messengerDefault')%>&classor=<%=encodeURIComponent(classorDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=targetPageNumber-1%>">
 								<%}else{%>
 									<a href="#" onclick="return false;">
@@ -889,7 +889,7 @@
 								<% if(pageNumber<=10){%>
 									<% for(var j=1; j<=pageNumber; j++) { %>
 										<li 
-											<% if(targetPageNumber==j){%>
+											<% if(targetPageNumber===j){%>
 												class="active"
 											<%}%>
 										><a href="/lender/lenderTransactionRecord?oneid=<%=encodeURIComponent(oneidDefault)%>&filter=<%=encodeURIComponent(filterDefault)%>&messenger=<%=encodeURIComponent('messengerDefault')%>&classor=<%=encodeURIComponent(classorDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=j%>"><%=j%></a></li>
@@ -898,7 +898,7 @@
 									<% if(targetPageNumber>=pageNumber-3){%>
 										<% for(var j=pageNumber-9; j<=pageNumber; j++) { %>
 										<li 
-											<% if(targetPageNumber==j){%>
+											<% if(targetPageNumber===j){%>
 												class="active"
 											<%}%>
 										><a href="/lender/lenderTransactionRecord?oneid=<%=encodeURIComponent(oneidDefault)%>&filter=<%=encodeURIComponent(filterDefault)%>&messenger=<%=encodeURIComponent('messengerDefault')%>&classor=<%=encodeURIComponent(classorDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=j%>"><%=j%></a></li>
@@ -906,7 +906,7 @@
 									<%}else if(targetPageNumber<=5){%>
 										<% for(var j=1; j<=10; j++) { %>
 										<li 
-											<% if(targetPageNumber==j){%>
+											<% if(targetPageNumber===j){%>
 												class="active"
 											<%}%>
 										><a href="/lender/lenderTransactionRecord?oneid=<%=encodeURIComponent(oneidDefault)%>&filter=<%=encodeURIComponent(filterDefault)%>&messenger=<%=encodeURIComponent('messengerDefault')%>&classor=<%=encodeURIComponent(classorDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=j%>"><%=j%></a></li>
@@ -922,11 +922,11 @@
 									<%}%>
 								<%}%>
 								<li 
-									<% if(targetPageNumber==pageNumber){%>
+									<% if(targetPageNumber===pageNumber){%>
 										class="disabled"
 									<%}%>
 								>	
-								<% if(targetPageNumber!=pageNumber){%>
+								<% if(targetPageNumber!==pageNumber){%>
 									<a href="/lender/lenderTransactionRecord?oneid=<%=encodeURIComponent(oneidDefault)%>&filter=<%=encodeURIComponent(filterDefault)%>&messenger=<%=encodeURIComponent('messengerDefault')%>&classor=<%=encodeURIComponent(classorDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=targetPageNumber+1%>">
 								<%}else{%>
 									<a href="#" onclick="return false;">
@@ -983,7 +983,7 @@ function filterSelector(index){
 function sorterSelector(index){
 	$('#lbound').val('');
 	$('#ubound').val('');
-	if(($('#sorter'+index).text()=='建立日期')||($('#sorter'+index).text()=='更新日期')||($('#sorter'+index).text()=='上次成功收款日期')||($('#sorter'+index).text()=='下次應收款日期')){
+	if(($('#sorter'+index).text()==='建立日期')||($('#sorter'+index).text()==='更新日期')||($('#sorter'+index).text()==='上次成功收款日期')||($('#sorter'+index).text()==='下次應收款日期')){
 		enableDater();
 	}else{
 		disableDater();
@@ -991,7 +991,7 @@ function sorterSelector(index){
 	
 	$('#sorterSelected').html('');
 	$('#sorterSelected').html($('#sorter'+index).text());
-	<% if((filterDefault=='未保險')&&(pageNumber>1)){%>
+	<% if((filterDefault==='未保險')&&(pageNumber>1)){%>
 		//$('#sorterIpt').val($('#sorterSelected').text());
 	<%}%>
 	$('#sorter0').html($('#sorterSelected').text());
@@ -1008,7 +1008,7 @@ function sorterSelector(index){
 function directorSelector(index){
 	$('#directorSelected').html('');
 	$('#directorSelected').html($('#director'+index).text());
-	<% if((filterDefault=='未保險')&&(pageNumber>1)){%>
+	<% if((filterDefault==='未保險')&&(pageNumber>1)){%>
 		//$('#directorIpt').val($('#directorSelected').text());
 	<%}%>
 	$('#director0').html($('#directorSelected').text());
@@ -1020,7 +1020,7 @@ function directorSelector(index){
 	linker();
 }
 
-<%if((sorterDefault=='建立日期')||(sorterDefault=='更新日期')||(sorterDefault=='上次成功收款日期')||(sorterDefault=='下次應收款日期')){%>
+<%if((sorterDefault==='建立日期')||(sorterDefault==='更新日期')||(sorterDefault==='上次成功收款日期')||(sorterDefault==='下次應收款日期')){%>
 	var ifDater=true;
 <%}else{%>
 	var ifDater=false;
@@ -1088,22 +1088,22 @@ function linker(){
 		}
 	}
 	function spanner(tgtString){
-		if((tgtString=='建立日期')||(tgtString=='更新日期')||(tgtString=='上次成功收款日期')||(tgtString=='下次應收款日期')){
+		if((tgtString==='建立日期')||(tgtString==='更新日期')||(tgtString==='上次成功收款日期')||(tgtString==='下次應收款日期')){
 			$('#lbd').html('');
 			$('#ubd').html('');
-		}else if((tgtString=='原始期數')||(tgtString=='額外期數')||(tgtString=='目前總期數')||(tgtString=='剩下期數')||(tgtString=='已過期數')){
+		}else if((tgtString==='原始期數')||(tgtString==='額外期數')||(tgtString==='目前總期數')||(tgtString==='剩下期數')||(tgtString==='已過期數')){
 			$('#lbd').html('個月');
 			$('#ubd').html('個月');
-		}else if((tgtString=='年利率')||(tgtString=='已得利本比')||(tgtString=='預計剩餘利本比')){
+		}else if((tgtString==='年利率')||(tgtString==='已得利本比')||(tgtString==='預計剩餘利本比')){
 			$('#lbd').html('%');
 			$('#ubd').html('%');
-		}else if(tgtString=='信用等級'){
+		}else if(tgtString==='信用等級'){
 			$('#lbd').html('級');
 			$('#ubd').html('級');
-		}else if(tgtString=='收款次數'){
+		}else if(tgtString==='收款次數'){
 			$('#lbd').html('次');
 			$('#ubd').html('次');
-		}else if((tgtString=='已得平均利息')||(tgtString=='已得平均本利和')||(tgtString=='預計剩餘平均利息')||(tgtString=='預計剩餘平均本利和')){
+		}else if((tgtString==='已得平均利息')||(tgtString==='已得平均本利和')||(tgtString==='預計剩餘平均利息')||(tgtString==='預計剩餘平均本利和')){
 			$('#lbd').html('元/月');
 			$('#ubd').html('元/月');
 		}else{
@@ -1134,7 +1134,7 @@ function linker(){
 	}
 	
 	$(document).ready(function(){
-		<% if((totalResultNum>0)&&(filterDefault=='未保險')){%>
+		<% if((totalResultNum>0)&&(filterDefault==='未保險')){%>
 			$("#selectAll").prop("checked", false);
 			$("input[name='selectCheckBox']").each(function() {
 				$(this).prop("checked", false);
@@ -1146,9 +1146,9 @@ function linker(){
 			stringPro=stringPro.replace(/\s\s+/g,' ');
 			stringArray=stringPro.split(' ');
 			for(j=stringArray.length-1;j>-1;j--){
-				if(stringArray[j].charAt(0)=='-'){
+				if(stringArray[j].charAt(0)==='-'){
 					stringArray.splice(j,1);
-				}else if((stringArray[j].charAt(0)=='"')&&(stringArray[j].charAt(stringArray[j].length-1)=='"')){
+				}else if((stringArray[j].charAt(0)==='"')&&(stringArray[j].charAt(stringArray[j].length-1)==='"')){
 					var tempCnt=stringArray[j].substring(1);
 					tempCnt=tempCnt.substring(0,tempCnt.length-1);
 					stringArray2.push(tempCnt);
@@ -1177,7 +1177,7 @@ function linker(){
 		}
 	});
 
-	<% if(filterDefault=='未保險'){%>
+	<% if(filterDefault==='未保險'){%>
 		function checkAndOpenModal(target){
 			var ctr=0;
 			$("input[name='selectCheckBox']").each(function() {
@@ -1186,7 +1186,7 @@ function linker(){
 					}
 			});
 			if(ctr>0){
-				if(target=='#chkModal2'){
+				if(target==='#chkModal2'){
 					$('#seCtr1').html(ctr);
 				}
 				$(target).modal('show');
@@ -1232,7 +1232,7 @@ function linker(){
 						ctr+=1;
 					}
 				});
-				if(ctr==$("input[name='selectCheckBox']").length){
+				if(ctr===$("input[name='selectCheckBox']").length){
 					$("#selectAll").prop("checked", true);
 				}
 			}else{
@@ -1306,7 +1306,7 @@ function linker(){
 						JSONarrayString+=',';
 					}
 			});
-			if(JSONarrayString!='{"array":['){
+			if(JSONarrayString!=='{"array":['){
 				JSONarrayString=JSONarrayString.substr(0,JSONarrayString.length-1);
 				JSONarrayString+=']}';
 				$("#hdnIpt").val(JSONarrayString);

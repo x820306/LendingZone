@@ -73,10 +73,6 @@ var Users = new Schema({
 	Gender: { type: String},
 	BirthDay: { type: Date},
 	IdCardNumber: { type: String},
-	IdCard: { type: Buffer},
-	IdCardType: { type: String},
-	SecondCard: { type: Buffer},
-	SecondCardType: { type: String},
 	Phone: { type: String},
 	Address: { type: String},
 	OrignalLevel: { type: Number, default: 1 },
@@ -259,58 +255,68 @@ Transactions.pre('remove', function (next) {
 	async.each(transactionFound.Return, function(id, callback) {
 		ReturnsModal.findById(id).exec(function (err, returnFound){
 			if(err){
+				console.log(err);
 				callback();
 			}else{
 				if(!returnFound){
 					callback();
 				}else{
 					returnFound.remove(function (err,removed) {
-						callback();
-					});
-				}
-			}
-		});
-	},function(err){
-		if(err) throw err;
-		BankAccountsModal.findOne({"OwnedBy": transactionFound.Lender}).exec(function (err, lenderBankaccount){
-			if (err) {
-				console.log(err);
-				next();
-			}else{
-				if(!lenderBankaccount){
-					next();
-				}else{
-					lenderBankaccount.MoneyInBankAccount+=transactionFound.Principal;
-					lenderBankaccount.save(function (err,updatedLenderBankaccount){
-						if (err){
+						if(err){
 							console.log(err);
-							next();
-						}else{	
-							BankAccountsModal.findOne({"OwnedBy": transactionFound.Borrower}).exec(function (err, borrowerBankaccount){
-								if (err) {
-									console.log(err);
-									next();
-								}else{
-									if(!borrowerBankaccount){
-										next();
-									}else{
-										borrowerBankaccount.MoneyInBankAccount-=transactionFound.Principal;
-										borrowerBankaccount.save(function (err,updatedBorrowerBankaccount){
-											if (err){
-												console.log(err);
-												next();
-											}else{	
-												next();
-											}
-										});
-									}
-								}
-							});
+							callback();
+						}else{
+							callback();
 						}
 					});
 				}
 			}
 		});
+	},function(err){
+		if(err){
+			console.log(err);
+			next();
+		}else{
+			BankAccountsModal.findOne({"OwnedBy": transactionFound.Lender}).exec(function (err, lenderBankaccount){
+				if (err) {
+					console.log(err);
+					next();
+				}else{
+					if(!lenderBankaccount){
+						next();
+					}else{
+						lenderBankaccount.MoneyInBankAccount+=transactionFound.Principal;
+						lenderBankaccount.save(function (err,updatedLenderBankaccount){
+							if (err){
+								console.log(err);
+								next();
+							}else{	
+								BankAccountsModal.findOne({"OwnedBy": transactionFound.Borrower}).exec(function (err, borrowerBankaccount){
+									if (err) {
+										console.log(err);
+										next();
+									}else{
+										if(!borrowerBankaccount){
+											next();
+										}else{
+											borrowerBankaccount.MoneyInBankAccount-=transactionFound.Principal;
+											borrowerBankaccount.save(function (err,updatedBorrowerBankaccount){
+												if (err){
+													console.log(err);
+													next();
+												}else{	
+													next();
+												}
+											});
+										}
+									}
+								});
+							}
+						});
+					}
+				}
+			});
+		}
 	});	
 });
 mongoose.model( 'Transactions', Transactions );
@@ -321,20 +327,30 @@ Messages.pre('remove', function (next) {
 	async.each(this.Transaction, function(id, callback) {
 		TransactionsModal.findById(id).exec(function (err, transaction){
 			if(err){
+				console.log(err);
 				callback();
 			}else{
 				if(!transaction){
 					callback();
 				}else{
 					transaction.remove(function (err,removed) {
-						callback();
+						if(err){
+							console.log(err);
+							callback();
+						}else{
+							callback();
+						}
 					});
 				}
 			}
 		});
 	},function(err){
-		if(err) throw err;
-		next();
+		if(err){
+			console.log(err);
+			next();
+		}else{
+			next();
+		}
 	});	
 });
 mongoose.model( 'Messages', Messages );
@@ -349,23 +365,37 @@ Borrows.pre('remove', function (next){
 	async.each(this.Message, function(id, callback) {
 		MessagesModal.findById(id).exec(function (err, message){
 			if(err){
+				console.log(err);
 				callback();
 			}else{
 				if(!message){
 					callback();
 				}else{
 					message.remove(function (err,removed) {
-						callback();
+						if(err){
+							console.log(err);
+							callback();
+						}else{
+							callback();
+						}
 					});
 				}
 			}
 		});
 	},function(err){
-		if(err) throw err;
-		DiscussionsModal.remove({BelongTo: borrow_id},function(err){
-			if(err) throw err;
+		if(err){
+			console.log(err);
 			next();
-		});
+		}else{
+			DiscussionsModal.remove({BelongTo: borrow_id},function(err){
+				if(err){
+					console.log(err);
+					next();
+				}else{
+					next();
+				}
+			});
+		}
 	});	
 });
 mongoose.model( 'Borrows', Borrows );
@@ -375,17 +405,23 @@ Users.pre('remove', function (next){
 	var user_id=this._id;
 	BorrowsModal.find({}).exec(function (err, borrows){
 		if(err){
-			throw err;
+			console.log(err);
+			next();
 		}else{
 			async.each(borrows, function(brw, callback) {
-				if(brw.CreatedBy.toString()===user_id.toString()){
+				if(brw.CreatedBy.equals(user_id)){
 					brw.remove(function (err,removed) {
-						callback();
+						if(err){
+							console.log(err);
+							callback();
+						}else{
+							callback();
+						}
 					});
 				}else{
 					var foundFlag=false;
 					for(j=brw.Likes.length-1;j>-1;j--){
-						if(brw.Likes[j].toString()===user_id.toString()){
+						if(brw.Likes[j].equals(user_id)){
 							brw.Likes.splice(j, 1);
 							foundFlag=true;
 						}
@@ -393,6 +429,7 @@ Users.pre('remove', function (next){
 					if(foundFlag){
 						brw.save(function (err,updatedBrw) {
 							if (err){
+								console.log(err);
 								callback();
 							}else{	
 								callback();
@@ -403,100 +440,128 @@ Users.pre('remove', function (next){
 					}
 				}
 			},function(err){
-				if(err) throw err;
-				MessagesModal.find({$or:[{"SendTo": user_id},{"CreatedBy": user_id}]}).exec(function (err, messages){
-					if(err){
-						throw err;
-					}else{
-						async.each(messages, function(msg, callback){	
-							BorrowsModal.findById(msg.FromBorrowRequest).exec(function (err, borrow){
-								if(err){
-									callback();
-								}else{
-									if(!borrow){
+				if(err){
+					console.log(err);
+					next();
+				}else{
+					MessagesModal.find({$or:[{"SendTo": user_id},{"CreatedBy": user_id}]}).exec(function (err, messages){
+						if(err){
+							console.log(err);
+							next();
+						}else{
+							async.each(messages, function(msg, callback){	
+								BorrowsModal.findById(msg.FromBorrowRequest).exec(function (err, borrow){
+									if(err){
+										console.log(err);
 										callback();
 									}else{
-										var ctr = -1;
-										for (i = 0; i < borrow.Message.length; i++) {
-											if (borrow.Message[i].toString() === msg._id.toString()) {
-												ctr=i;
-												break;
+										if(!borrow){
+											callback();
+										}else{
+											var ctr = -1;
+											for (i = 0; i < borrow.Message.length; i++) {
+												if (borrow.Message[i].equals(msg._id)) {
+													ctr=i;
+													break;
+												}
+											};
+											if(ctr>-1){
+												borrow.Message.splice(ctr, 1);
 											}
-										};
-										if(ctr>-1){
-											borrow.Message.splice(ctr, 1);
-										}
-										borrow.save(function (err,updatedBorrow) {
-											if (err){
-												callback();
-											}else{	
-												msg.remove(function (err,removedItem) {
-													if (err){
-														callback();
-													}else{
-														callback();
-													}
-												});
-											}
-										});
-									}
-								}
-							});
-						},function(err){
-							if(err) throw err;
-							DiscussionsModal.find({CreatedBy:user_id}).exec(function (err, discussions){
-								if(err){
-									throw err;
-								}else{
-									async.each(discussions, function(dcs, callback){	
-										BorrowsModal.findById(dcs.BelongTo).exec(function (err, borrow2){
-											if(err){
-												callback();
-											}else{
-												if(!borrow2){
+											borrow.save(function (err,updatedBorrow) {
+												if (err){
+													console.log(err);
 													callback();
-												}else{
-													var ctr2 = -1;
-													for (o = 0; o < borrow2.Discussion.length; o++) {
-														if (borrow2.Discussion[o].toString() === dcs._id.toString()) {
-															ctr2=o;
-															break;
-														}
-													};
-													if(ctr2>-1){
-														borrow2.Discussion.splice(ctr2, 1);
-													}
-													borrow2.save(function (err,updatedBorrow2) {
+												}else{	
+													msg.remove(function (err,removedItem) {
 														if (err){
+															console.log(err);
 															callback();
-														}else{	
-															dcs.remove(function (err,removedItem2) {
-																if (err){
-																	callback();
-																}else{
-																	callback();
-																}
-															});
+														}else{
+															callback();
 														}
 													});
 												}
-											}
-										});
-									},function(err){
-										if(err) throw err;
-										LendsModal.remove({CreatedBy: user_id},function(err){
-											if(err) throw err;
-											BankAccountsModal.remove({OwnedBy: user_id},function(err){
-												if(err) throw err;
-												next();
 											});
-										});	
+										}
+									}
+								});
+							},function(err){
+								if(err){
+									console.log(err);
+									next();
+								}else{
+									DiscussionsModal.find({CreatedBy:user_id}).exec(function (err, discussions){
+										if(err){
+											console.log(err);
+											next();
+										}else{
+											async.each(discussions, function(dcs, callback){	
+												BorrowsModal.findById(dcs.BelongTo).exec(function (err, borrow2){
+													if(err){
+														console.log(err);
+														callback();
+													}else{
+														if(!borrow2){
+															callback();
+														}else{
+															var ctr2 = -1;
+															for (o = 0; o < borrow2.Discussion.length; o++) {
+																if (borrow2.Discussion[o].equals(dcs._id)) {
+																	ctr2=o;
+																	break;
+																}
+															};
+															if(ctr2>-1){
+																borrow2.Discussion.splice(ctr2, 1);
+															}
+															borrow2.save(function (err,updatedBorrow2) {
+																if (err){
+																	console.log(err);
+																	callback();
+																}else{	
+																	dcs.remove(function (err,removedItem2) {
+																		if (err){
+																			console.log(err);
+																			callback();
+																		}else{
+																			callback();
+																		}
+																	});
+																}
+															});
+														}
+													}
+												});
+											},function(err){
+												if(err){
+													console.log(err);
+													next();
+												}else{
+													LendsModal.remove({CreatedBy: user_id},function(err){
+														if(err){
+															console.log(err);
+															next();
+														}else{
+															BankAccountsModal.remove({OwnedBy: user_id},function(err){
+																if(err){
+																	console.log(err);
+																	next();
+																}else{
+																	next();
+																}
+															});
+														}
+													});	
+												}
+											});
+										}
 									});
 								}
 							});
-						});
-					}
-				});
+						}
+					});
+				}
 			});	
 		}
 	});

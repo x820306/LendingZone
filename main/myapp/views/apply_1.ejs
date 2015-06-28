@@ -44,10 +44,8 @@
 		<input type="hidden" name="Phone" value="<%=Phone%>">
 		<input type="hidden" name="Address" value="<%=Address%>">
 		<input type="hidden" name="IdCardNumber" value="<%=IdCardNumber%>">
-		<input type="hidden" name="IdCard" value="<%=IdCard%>">
-		<input type="hidden" name="IdCardType" value="<%=IdCardType%>">
-		<input type="hidden" name="SecondCard" value="<%=SecondCard%>">
-		<input type="hidden" name="SecondCardType" value="<%=SecondCardType%>">
+		<input type="hidden" name="IdCardStr" value='<%-IdCardStr%>'>
+		<input type="hidden" name="SecondCardStr" value='<%-SecondCardStr%>'>
 		<input type="hidden" name="BankAccountNumber" value="<%=BankAccountNumber%>">
 		<input type="hidden" name="BankAccountPassword" value="<%=BankAccountPassword%>">
 		<input type="hidden" name="FormSession1" value="<%=formSession1%>">
@@ -114,8 +112,8 @@
 	function ifUsernameExist(asyncFlag)
 	{
 	    var username = $('#AccIpt').val().trim();
-		if(username!=''){
-			if(username.search(/[^\w]/ig)==-1){	
+		if(username!==''){
+			if(username.search(/[^\w]/ig)===-1){	
 				$('#confirmMessage1').html('正在比對中');
 				$('#confirmMessage1').css('color','');
 				$.ajax({ 
@@ -160,8 +158,8 @@
 	function checkLength()
 	{
 	    var pwd1 = $('#PwdIpt').val().trim();
-	    if(pwd1!=''){
-			if(pwd1.search(/[^\w]/ig)==-1){
+	    if(pwd1!==''){
+			if(pwd1.search(/[^\w]/ig)===-1){
 				if(pwd1.length<=6){
 					$('#confirmMessage2').html('密碼須大於六碼');
 					$('#confirmMessage2').css('color','red');
@@ -187,9 +185,9 @@
 	{
 	    var pwd1 = $('#PwdIpt').val().trim();
 	    var pwd2 = $('#2PwdIpt').val().trim();
-	    if(pwd2!=''){
-			if(pwd2.search(/[^\w]/ig)==-1){
-				if(pwd1 == pwd2){
+	    if(pwd2!==''){
+			if(pwd2.search(/[^\w]/ig)===-1){
+				if(pwd1 === pwd2){
 					$('#confirmMessage3').html('輸入密碼相同');
 					$('#confirmMessage3').css('color','');
 					valiFlag3=true;

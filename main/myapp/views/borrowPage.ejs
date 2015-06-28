@@ -32,7 +32,7 @@
 		<div>最低1個月</div>
 		<select id="f3" name="MonthPeriodAcceptedLowest" required>
             <%for(i=1;i<=36;i++){%>
-				<option value="<%=i%>"<%if(bfJSON){%><%if(bfJSON.FormContent.F3==i){%> selected<%}%><%}%>><%=i%></option>
+				<option value="<%=i%>"<%if(bfJSON){%><%if(bfJSON.FormContent.F3===i){%> selected<%}%><%}%>><%=i%></option>
 			<%}%>
 		</select>
     </div>
@@ -42,7 +42,7 @@
 		<div>最高36個月</div>
 		<select id="f4" name="MonthPeriodAccepted" required>
             <%for(i=1;i<=36;i++){%>
-				<option value="<%=i%>"<%if(bfJSON){%><%if(bfJSON.FormContent.F4==i){%> selected<%}%><%}%>><%=i%></option>
+				<option value="<%=i%>"<%if(bfJSON){%><%if(bfJSON.FormContent.F4===i){%> selected<%}%><%}%>><%=i%></option>
 			<%}%>
 		</select>
     </div>
@@ -56,10 +56,10 @@
     <div class="borrowBlock">
         <div class="borrowBlockTitle">類別</div>
         <select id="f6" name="Category" required>
-            <option value="general"<%if(bfJSON){%><%if(bfJSON.FormContent.F6=='general'){%> selected<%}%><%}%>>一般</option>
-            <option value="education"<%if(bfJSON){%><%if(bfJSON.FormContent.F6=='education'){%> selected<%}%><%}%>>教育</option>
-            <option value="family"<%if(bfJSON){%><%if(bfJSON.FormContent.F6=='family'){%> selected<%}%><%}%>>家庭</option>
-            <option value="tour"<%if(bfJSON){%><%if(bfJSON.FormContent.F6=='tour'){%> selected<%}%><%}%>>旅遊</option>
+            <option value="general"<%if(bfJSON){%><%if(bfJSON.FormContent.F6==='general'){%> selected<%}%><%}%>>一般</option>
+            <option value="education"<%if(bfJSON){%><%if(bfJSON.FormContent.F6==='education'){%> selected<%}%><%}%>>教育</option>
+            <option value="family"<%if(bfJSON){%><%if(bfJSON.FormContent.F6==='family'){%> selected<%}%><%}%>>家庭</option>
+            <option value="tour"<%if(bfJSON){%><%if(bfJSON.FormContent.F6==='tour'){%> selected<%}%><%}%>>旅遊</option>
         </select>
     </div>
 
@@ -70,7 +70,7 @@
     </div>
 
     <div class="borrowBlock">
-        <div class="borrowBlockTitle">媒合確定最晚期限</div>
+        <div class="borrowBlockTitle">媒合確定最晚期限</div><span id="s8" style="color:red;"><%if(bfJSON){%><%if(bfJSON.Target[7]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=bfJSON.Message[7]%><%}%><%}%></span>
         <div>系統預設為三天</div>
         <input id="f8" type="date" name="TimeLimit"<%if(bfJSON){%> value="<%=bfJSON.FormContent.F8%>"<%}%>>
     </div>
@@ -222,10 +222,34 @@
 		var aa=parseInt(a);
 		var bb=parseFloat(b);
 		
-		if((a!='')&&(b!='')&&(aa>=5000)&&(aa<=150000)&&(bb>=<%=(scr*100)+0.01%>)&&(bb<=99)){
+		if((a!=='')&&(b!=='')&&(aa>=5000)&&(aa<=150000)&&(bb>=<%=(scr*100)+0.01%>)&&(bb<=99)){
 			$("input[name='MoneyToBorrow']").val(aa);
 			$("input[name='MaxInterestRateAccepted']").val(bb);
-			$(target).modal('show');
+			
+			var tLimitFlag=true;
+			var tLimitValue=$("input[name='TimeLimit']").val().trim();
+			if(tLimitValue!==''){
+				var tester=Date.parse(tLimitValue);
+				if(isNaN(tester)){
+					tLimitFlag=false;
+				}else{
+					var tomorrow=new Date();
+					tomorrow.setHours(0);
+					tomorrow.setMinutes(0);
+					tomorrow.setSeconds(0);
+					tomorrow.setMilliseconds(0);
+					tomorrow.setTime(tomorrow.getTime()+86400000);
+					if(tester<tomorrow.getTime()){
+						tLimitFlag=false;
+					}
+				}
+			}
+			
+			if(tLimitFlag){
+				$(target).modal('show');
+			}else{
+				$('#msgModal').modal('show');
+			}
 		}else{
 			$('#msgModal').modal('show');
 		}

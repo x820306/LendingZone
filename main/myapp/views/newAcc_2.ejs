@@ -36,9 +36,9 @@
 						<span id="s2" style="color:red;"><%if(nafJSON){%><%if(nafJSON.Target[1]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=nafJSON.Message[1]%><%}%><%}%></span>
 					</td>
 					<td><label class="radio-inline">
-					<input type="radio" name="genderIpt" id="f2a" value="Male" required="required"<%if(nafJSON){%><%if(nafJSON.FormContent.F2=='Male'){%> checked="true"<%}%><%}%>> 男性</label>
+					<input type="radio" name="genderIpt" id="f2a" value="Male" required="required"<%if(nafJSON){%><%if(nafJSON.FormContent.F2==='Male'){%> checked="true"<%}%><%}%>> 男性</label>
 					<label class="radio-inline">
-					<input type="radio" name="genderIpt" id="f2b" value="Female" required="required"<%if(nafJSON){%><%if(nafJSON.FormContent.F2=='Female'){%> checked="true"<%}%><%}%>> 女性</label></td>
+					<input type="radio" name="genderIpt" id="f2b" value="Female" required="required"<%if(nafJSON){%><%if(nafJSON.FormContent.F2==='Female'){%> checked="true"<%}%><%}%>> 女性</label></td>
 				</tr>
 				<tr>
 					<td align = "right" style = "width:15%">
@@ -59,7 +59,7 @@
 						身分證圖檔<br>
 						<span id="s5" style="color:red;"><%if(nafJSON){%><%if(nafJSON.Target[4]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=nafJSON.Message[4]%><%}%><%}%></span>
 					</td>
-				    <td><input type="file" id="f5" name="ssnImg" accept="image/*" required="required">
+				    <td><input type="file" id="f5" name="ssnImg" accept="image/png,image/jpeg" required="required">
 				    <p class="help-block">請上傳身分證正面圖檔以利我們驗證您的身份</p></td>
 				</tr>
 				<tr>
@@ -67,7 +67,7 @@
 						第二證件圖檔<br>
 						<span id="s6" style="color:red;"><%if(nafJSON){%><%if(nafJSON.Target[5]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=nafJSON.Message[5]%><%}%><%}%></span>
 					</td>
-				    <td><input type="file" id="f6" name="cerImg" accept="image/*" required="required">
+				    <td><input type="file" id="f6" name="cerImg" accept="image/png,image/jpeg" required="required">
 				    <p class="help-block">請上傳另一張證件正面圖檔以利我們驗證您的身份</p></td>
 				</tr>
 				<tr>
@@ -129,7 +129,7 @@
 		$(document).ready(function (){
 			<%for(i=0;i<nafJSON.Target.length;i++){%>
 				<%if(nafJSON.Target[i]){%>
-					<%if(i!=1){%>
+					<%if(i!==1){%>
 						$('#f<%=i+1%>').focus();
 					<%}%>
 					<%break;%>

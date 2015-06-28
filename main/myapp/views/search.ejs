@@ -7,7 +7,7 @@
 				<div class="subTitle">&nbsp;<%=totalResultNum%> result</div>
 				<br>
 				<div class="input-group">
-					<input type="text" class="form-control pageBar" id="keywordIpt" placeholder="搜尋借入者的名稱或故事標題、內容" value="<%=keywordDefault%>" onkeypress="if(event.keyCode==13){linker();}" onkeyup="$('#keywordIptMain').val($('#keywordIpt').val());">
+					<input type="text" class="form-control pageBar" id="keywordIpt" placeholder="搜尋借入者的名稱或故事標題、內容" value="<%=keywordDefault%>" onkeypress="if(event.keyCode===13){linker();}" onkeyup="$('#keywordIptMain').val($('#keywordIpt').val());">
 					<span class="input-group-btn">
 						<div class="btn-group">
 							<button type="button" class="btn btn-default dropdown-toggle pageBar" data-toggle="dropdown" id="categorySelected">
@@ -15,11 +15,11 @@
 							</button>
 							<ul class="dropdown-menu">
 								<li style="display:none"><a href="#" id="category0"><%=categoryDefault%></a></li>
-								<li id="clis1"<%if(categoryDefault=='不分類'){%> class="active"<%}%>><a href="#" onclick="categoryMainSelector(1);categorySelector(1);return false;" id="category1">不分類</a></li>
-								<li id="clis2"<%if(categoryDefault=='一般'){%> class="active"<%}%>><a href="#" onclick="categoryMainSelector(2);categorySelector(2);return false;" id="category2">一般</a></li>
-								<li id="clis3"<%if(categoryDefault=='教育'){%> class="active"<%}%>><a href="#" onclick="categoryMainSelector(3);categorySelector(3);return false;" id="category3">教育</a></li>
-								<li id="clis4"<%if(categoryDefault=='家庭'){%> class="active"<%}%>><a href="#" onclick="categoryMainSelector(4);categorySelector(4);return false;" id="category4">家庭</a></li>
-								<li id="clis5"<%if(categoryDefault=='旅遊'){%> class="active"<%}%>><a href="#" onclick="categoryMainSelector(5);categorySelector(5);return false;" id="category5">旅遊</a></li>
+								<li id="clis1"<%if(categoryDefault==='不分類'){%> class="active"<%}%>><a href="#" onclick="categoryMainSelector(1);categorySelector(1);return false;" id="category1">不分類</a></li>
+								<li id="clis2"<%if(categoryDefault==='一般'){%> class="active"<%}%>><a href="#" onclick="categoryMainSelector(2);categorySelector(2);return false;" id="category2">一般</a></li>
+								<li id="clis3"<%if(categoryDefault==='教育'){%> class="active"<%}%>><a href="#" onclick="categoryMainSelector(3);categorySelector(3);return false;" id="category3">教育</a></li>
+								<li id="clis4"<%if(categoryDefault==='家庭'){%> class="active"<%}%>><a href="#" onclick="categoryMainSelector(4);categorySelector(4);return false;" id="category4">家庭</a></li>
+								<li id="clis5"<%if(categoryDefault==='旅遊'){%> class="active"<%}%>><a href="#" onclick="categoryMainSelector(5);categorySelector(5);return false;" id="category5">旅遊</a></li>
 							</ul>
 						</div>
 						<div class="btn-group">
@@ -28,44 +28,44 @@
 							</button>
 							<ul class="dropdown-menu">
 								<li style="display:none"><a href="#" id="messenger0"><%=messengerDefault%></a></li>
-								<li id="mlis1"<%if(messengerDefault=='不分訊息狀態'){%> class="active"<%}%>><a href="#" onclick="messengerMainSelector(1);messengerSelector(1);return false;" id="messenger1">不分訊息狀態</a></li>
-								<%if(userName!==null){%><li id="mlis2"<%if(messengerDefault=='無訊息'){%> class="active"<%}%>><a href="#" onclick="messengerMainSelector(2);messengerSelector(2);return false;" id="messenger2">無訊息</a></li><%}%>
-								<%if(userName!==null){%><li id="mlis3"<%if(messengerDefault=='有訊息'){%> class="active"<%}%>><a href="#" onclick="messengerMainSelector(3);messengerSelector(3);return false;" id="messenger3">有訊息</a></li><%}%>
-								<%if(userName!==null){%><li id="mlis4"<%if(messengerDefault=='訊息未確認或未被確認'){%> class="active"<%}%>><a href="#" onclick="messengerMainSelector(4);messengerSelector(4);return false;" id="messenger4">訊息未確認或未被確認</a></li><%}%>
-								<%if(userName!==null){%><li id="mlis5"<%if(messengerDefault=='訊息已同意或已被同意'){%> class="active"<%}%>><a href="#" onclick="messengerMainSelector(5);messengerSelector(5);return false;" id="messenger5">訊息已同意或已被同意</a></li><%}%>
-								<%if(userName!==null){%><li id="mlis6"<%if(messengerDefault=='訊息已婉拒或已被婉拒'){%> class="active"<%}%>><a href="#" onclick="messengerMainSelector(6);messengerSelector(6);return false;" id="messenger6">訊息已婉拒或已被婉拒</a></li><%}%>
-								<%if(userName!==null){%><li id="mlis7"<%if(messengerDefault=='收到訊息未確認'){%> class="active"<%}%>><a href="#" onclick="messengerMainSelector(7);messengerSelector(7);return false;" id="messenger7">收到訊息未確認</a></li><%}%>
-								<%if(userName!==null){%><li id="mlis8"<%if(messengerDefault=='收到訊息已同意'){%> class="active"<%}%>><a href="#" onclick="messengerMainSelector(8);messengerSelector(8);return false;" id="messenger8">收到訊息已同意</a></li><%}%>
-								<%if(userName!==null){%><li id="mlis9"<%if(messengerDefault=='收到訊息已婉拒'){%> class="active"<%}%>><a href="#" onclick="messengerMainSelector(9);messengerSelector(9);return false;" id="messenger9">收到訊息已婉拒</a></li><%}%>
-								<%if(userName!==null){%><li id="mlis10"<%if(messengerDefault=='送出訊息未被確認'){%> class="active"<%}%>><a href="#" onclick="messengerMainSelector(10);messengerSelector(10);return false;" id="messenger10">送出訊息未被確認</a></li><%}%>
-								<%if(userName!==null){%><li id="mlis11"<%if(messengerDefault=='送出訊息已被同意'){%> class="active"<%}%>><a href="#" onclick="messengerMainSelector(11);messengerSelector(11);return false;" id="messenger11">送出訊息已被同意</a></li><%}%>
-								<%if(userName!==null){%><li id="mlis12"<%if(messengerDefault=='送出訊息已被婉拒'){%> class="active"<%}%>><a href="#" onclick="messengerMainSelector(12);messengerSelector(12);return false;" id="messenger12">送出訊息已被婉拒</a></li><%}%>
-								<%if(userName!==null){%><li id="mlis13"<%if(messengerDefault=='屬於我'){%> class="active"<%}%>><a href="#" onclick="messengerMainSelector(13);messengerSelector(13);return false;" id="messenger13">屬於我</a></li><%}%>
+								<li id="mlis1"<%if(messengerDefault==='不分訊息狀態'){%> class="active"<%}%>><a href="#" onclick="messengerMainSelector(1);messengerSelector(1);return false;" id="messenger1">不分訊息狀態</a></li>
+								<%if(userName!==null){%><li id="mlis2"<%if(messengerDefault==='無訊息'){%> class="active"<%}%>><a href="#" onclick="messengerMainSelector(2);messengerSelector(2);return false;" id="messenger2">無訊息</a></li><%}%>
+								<%if(userName!==null){%><li id="mlis3"<%if(messengerDefault==='有訊息'){%> class="active"<%}%>><a href="#" onclick="messengerMainSelector(3);messengerSelector(3);return false;" id="messenger3">有訊息</a></li><%}%>
+								<%if(userName!==null){%><li id="mlis4"<%if(messengerDefault==='訊息未確認或未被確認'){%> class="active"<%}%>><a href="#" onclick="messengerMainSelector(4);messengerSelector(4);return false;" id="messenger4">訊息未確認或未被確認</a></li><%}%>
+								<%if(userName!==null){%><li id="mlis5"<%if(messengerDefault==='訊息已同意或已被同意'){%> class="active"<%}%>><a href="#" onclick="messengerMainSelector(5);messengerSelector(5);return false;" id="messenger5">訊息已同意或已被同意</a></li><%}%>
+								<%if(userName!==null){%><li id="mlis6"<%if(messengerDefault==='訊息已婉拒或已被婉拒'){%> class="active"<%}%>><a href="#" onclick="messengerMainSelector(6);messengerSelector(6);return false;" id="messenger6">訊息已婉拒或已被婉拒</a></li><%}%>
+								<%if(userName!==null){%><li id="mlis7"<%if(messengerDefault==='收到訊息未確認'){%> class="active"<%}%>><a href="#" onclick="messengerMainSelector(7);messengerSelector(7);return false;" id="messenger7">收到訊息未確認</a></li><%}%>
+								<%if(userName!==null){%><li id="mlis8"<%if(messengerDefault==='收到訊息已同意'){%> class="active"<%}%>><a href="#" onclick="messengerMainSelector(8);messengerSelector(8);return false;" id="messenger8">收到訊息已同意</a></li><%}%>
+								<%if(userName!==null){%><li id="mlis9"<%if(messengerDefault==='收到訊息已婉拒'){%> class="active"<%}%>><a href="#" onclick="messengerMainSelector(9);messengerSelector(9);return false;" id="messenger9">收到訊息已婉拒</a></li><%}%>
+								<%if(userName!==null){%><li id="mlis10"<%if(messengerDefault==='送出訊息未被確認'){%> class="active"<%}%>><a href="#" onclick="messengerMainSelector(10);messengerSelector(10);return false;" id="messenger10">送出訊息未被確認</a></li><%}%>
+								<%if(userName!==null){%><li id="mlis11"<%if(messengerDefault==='送出訊息已被同意'){%> class="active"<%}%>><a href="#" onclick="messengerMainSelector(11);messengerSelector(11);return false;" id="messenger11">送出訊息已被同意</a></li><%}%>
+								<%if(userName!==null){%><li id="mlis12"<%if(messengerDefault==='送出訊息已被婉拒'){%> class="active"<%}%>><a href="#" onclick="messengerMainSelector(12);messengerSelector(12);return false;" id="messenger12">送出訊息已被婉拒</a></li><%}%>
+								<%if(userName!==null){%><li id="mlis13"<%if(messengerDefault==='屬於我'){%> class="active"<%}%>><a href="#" onclick="messengerMainSelector(13);messengerSelector(13);return false;" id="messenger13">屬於我</a></li><%}%>
 							</ul>
 						</div>
 						<div class="btn-group">
 							<button type="button" class="btn btn-default pageBar" id="sorterSelected" data-toggle="dropdown" aria-expanded="false"><%=actionDefault%> <span class='caret'></span></button>
 							<ul class="dropdown-menu" role="menu">
 								<li style="display:none"><a href="#" id="sorter0"><%=actionDefault%></a></li>
-								<li id="alis1"<%if(actionDefault=='建立日期'){%> class="active"<%}%>><a href="#" onclick="searchActionSelector(1);sorterSelector(1);return false;" id="sorter1">建立日期</a></li>
-								<li id="alis2"<%if(actionDefault=='更新日期'){%> class="active"<%}%>><a href="#" onclick="searchActionSelector(2);sorterSelector(2);return false;" id="sorter2">更新日期</a></li>
-								<li id="alis3"<%if(actionDefault=='最晚媒合日期'){%> class="active"<%}%>><a href="#" onclick="searchActionSelector(3);sorterSelector(3);return false;" id="sorter3">最晚媒合日期</a></li>
-								<li id="alis4"<%if(actionDefault=='原始需要金額'){%> class="active"<%}%>><a href="#" onclick="searchActionSelector(4);sorterSelector(4);return false;" id="sorter4">原始需要金額</a></li>
-								<li id="alis5"<%if(actionDefault=='已經借到金額'){%> class="active"<%}%>><a href="#" onclick="searchActionSelector(5);sorterSelector(5);return false;" id="sorter5">已經借到金額</a></li>
-								<li id="alis6"<%if(actionDefault=='還需要金額'){%> class="active"<%}%>><a href="#" onclick="searchActionSelector(6);sorterSelector(6);return false;" id="sorter6">還需要金額</a></li>
-								<li id="alis7"<%if(actionDefault=='年利率'){%> class="active"<%}%>><a href="#" onclick="searchActionSelector(7);sorterSelector(7);return false;" id="sorter7">年利率</a></li>
-								<li id="alis8"<%if(actionDefault=='最低期數'){%> class="active"<%}%>><a href="#" onclick="searchActionSelector(8);sorterSelector(8);return false;" id="sorter8">最低期數</a></li>
-								<li id="alis9"<%if(actionDefault=='最高期數'){%> class="active"<%}%>><a href="#" onclick="searchActionSelector(9);sorterSelector(9);return false;" id="sorter9">最高期數</a></li>
-								<li id="alis10"<%if(actionDefault=='信用等級'){%> class="active"<%}%>><a href="#" onclick="searchActionSelector(10);sorterSelector(10);return false;" id="sorter10">信用等級</a></li>
-								<li id="alis11"<%if(actionDefault=='按讚次數'){%> class="active"<%}%>><a href="#" onclick="searchActionSelector(11);sorterSelector(11);return false;" id="sorter11">按讚次數</a></li>
+								<li id="alis1"<%if(actionDefault==='建立日期'){%> class="active"<%}%>><a href="#" onclick="searchActionSelector(1);sorterSelector(1);return false;" id="sorter1">建立日期</a></li>
+								<li id="alis2"<%if(actionDefault==='更新日期'){%> class="active"<%}%>><a href="#" onclick="searchActionSelector(2);sorterSelector(2);return false;" id="sorter2">更新日期</a></li>
+								<li id="alis3"<%if(actionDefault==='最晚媒合日期'){%> class="active"<%}%>><a href="#" onclick="searchActionSelector(3);sorterSelector(3);return false;" id="sorter3">最晚媒合日期</a></li>
+								<li id="alis4"<%if(actionDefault==='原始需要金額'){%> class="active"<%}%>><a href="#" onclick="searchActionSelector(4);sorterSelector(4);return false;" id="sorter4">原始需要金額</a></li>
+								<li id="alis5"<%if(actionDefault==='已經借到金額'){%> class="active"<%}%>><a href="#" onclick="searchActionSelector(5);sorterSelector(5);return false;" id="sorter5">已經借到金額</a></li>
+								<li id="alis6"<%if(actionDefault==='還需要金額'){%> class="active"<%}%>><a href="#" onclick="searchActionSelector(6);sorterSelector(6);return false;" id="sorter6">還需要金額</a></li>
+								<li id="alis7"<%if(actionDefault==='年利率'){%> class="active"<%}%>><a href="#" onclick="searchActionSelector(7);sorterSelector(7);return false;" id="sorter7">年利率</a></li>
+								<li id="alis8"<%if(actionDefault==='最低期數'){%> class="active"<%}%>><a href="#" onclick="searchActionSelector(8);sorterSelector(8);return false;" id="sorter8">最低期數</a></li>
+								<li id="alis9"<%if(actionDefault==='最高期數'){%> class="active"<%}%>><a href="#" onclick="searchActionSelector(9);sorterSelector(9);return false;" id="sorter9">最高期數</a></li>
+								<li id="alis10"<%if(actionDefault==='信用等級'){%> class="active"<%}%>><a href="#" onclick="searchActionSelector(10);sorterSelector(10);return false;" id="sorter10">信用等級</a></li>
+								<li id="alis11"<%if(actionDefault==='按讚次數'){%> class="active"<%}%>><a href="#" onclick="searchActionSelector(11);sorterSelector(11);return false;" id="sorter11">按讚次數</a></li>
 							</ul>
 						</div>
 						<div class="btn-group">
 							<button type="button" class="btn btn-default pageBar" id="directorSelected" data-toggle="dropdown" aria-expanded="false"><%=directorDefault%> <span class='caret'></span></button>
 							<ul class="dropdown-menu" role="menu">
 								<li style="display:none"><a href="#" id="director0"><%=directorDefault%></a></li>
-								<li id="dlis1"<%if(directorDefault=='大至小'){%> class="active"<%}%>><a href="#" onclick="directorMainSelector(1);directorSelector(1);return false;" id="director1">大至小</a></li>
-								<li id="dlis2"<%if(directorDefault=='小至大'){%> class="active"<%}%>><a href="#" onclick="directorMainSelector(2);directorSelector(2);return false;" id="director2">小至大</a></li>
+								<li id="dlis1"<%if(directorDefault==='大至小'){%> class="active"<%}%>><a href="#" onclick="directorMainSelector(1);directorSelector(1);return false;" id="director1">大至小</a></li>
+								<li id="dlis2"<%if(directorDefault==='小至大'){%> class="active"<%}%>><a href="#" onclick="directorMainSelector(2);directorSelector(2);return false;" id="director2">小至大</a></li>
 							</ul>
 						</div>
 						<button type="button" class="btn btn-default pageBar" onclick="linker();"><span class="glyphicon glyphicon-search"></span></button>
@@ -75,14 +75,14 @@
 				<table width='100%'>
 					<tr>
 						<td>
-							<%if((actionDefault=='建立日期')||(actionDefault=='更新日期')||(actionDefault=='最晚媒合日期')){%>
-								<input type="date" placeholder="下限(年/月/日)" class="form-control boundIpt" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode==13){ linker();}">&nbsp;&nbsp;<span style="display:inline;" id='lbd'></span>
+							<%if((actionDefault==='建立日期')||(actionDefault==='更新日期')||(actionDefault==='最晚媒合日期')){%>
+								<input type="date" placeholder="下限(年/月/日)" class="form-control boundIpt" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode===13){ linker();}">&nbsp;&nbsp;<span style="display:inline;" id='lbd'></span>
 								&nbsp;&nbsp;~&nbsp;&nbsp;
-								<input type="date" placeholder="上限(年/月/日)" class="form-control boundIpt" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode==13){ linker();}">&nbsp;&nbsp;<span style="display:inline;" id='ubd'></span>
+								<input type="date" placeholder="上限(年/月/日)" class="form-control boundIpt" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode===13){ linker();}">&nbsp;&nbsp;<span style="display:inline;" id='ubd'></span>
 							<%}else{%>
-								<input type="text" placeholder="下限" class="form-control boundIpt" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode==13){ linker();}">&nbsp;&nbsp;<span style="display:inline;" id='lbd'></span>
+								<input type="text" placeholder="下限" class="form-control boundIpt" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode===13){ linker();}">&nbsp;&nbsp;<span style="display:inline;" id='lbd'></span>
 								&nbsp;&nbsp;~&nbsp;&nbsp;
-								<input type="text" placeholder="上限" class="form-control boundIpt" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode==13){ linker();}">&nbsp;&nbsp;<span style="display:inline;" id='ubd'></span>
+								<input type="text" placeholder="上限" class="form-control boundIpt" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode===13){ linker();}">&nbsp;&nbsp;<span style="display:inline;" id='ubd'></span>
 							<%}%>
 						</td>
 						<%if((kpr!=='')&&(totalResultNum>0)&&(!oflg)&&(pflg)){%>
@@ -106,19 +106,19 @@
 							<tr>
 								<td style="border-bottom-style: none;border-top-style: none;">
 									<div style="font-size:15px;display:inline;">
-										<div style="display:inline;"<%if(actionDefault=='原始需要金額'){%> class="stronger"<%}%>>原始需要：</div><%=jsonArray[i].MoneyToBorrow.toFixed(0)%>元
+										<div style="display:inline;"<%if(actionDefault==='原始需要金額'){%> class="stronger"<%}%>>原始需要：</div><%=jsonArray[i].MoneyToBorrow.toFixed(0)%>元
 									</div>&nbsp;&nbsp;
 									<div style="font-size:15px;display:inline;">
-										<div style="display:inline;"<%if(actionDefault=='已經借到金額'){%> class="stronger"<%}%>>已經借到：</div><%=jsonArray[i].Got.toFixed(0)%>元
+										<div style="display:inline;"<%if(actionDefault==='已經借到金額'){%> class="stronger"<%}%>>已經借到：</div><%=jsonArray[i].Got.toFixed(0)%>元
 									</div>&nbsp;&nbsp;
 									<div style="font-size:15px;display:inline;">
-										<div style="display:inline;"<%if(actionDefault=='還需要金額'){%> class="stronger"<%}%>>還需要：</div><%=jsonArray[i].Need.toFixed(0)%>元
+										<div style="display:inline;"<%if(actionDefault==='還需要金額'){%> class="stronger"<%}%>>還需要：</div><%=jsonArray[i].Need.toFixed(0)%>元
 									</div>&nbsp;&nbsp;
 									<div style="font-size:15px;display:inline;">
-										<div style="display:inline;"<%if(actionDefault=='最低期數'){%> class="stronger"<%}%>>最低期數：</div><%=jsonArray[i].MonthPeriodAcceptedLowest.toFixed(0)%>個月
+										<div style="display:inline;"<%if(actionDefault==='最低期數'){%> class="stronger"<%}%>>最低期數：</div><%=jsonArray[i].MonthPeriodAcceptedLowest.toFixed(0)%>個月
 									</div>&nbsp;&nbsp;
 									<div style="font-size:15px;display:inline;">
-										<div style="display:inline;"<%if(actionDefault=='最高期數'){%> class="stronger"<%}%>>最高期數：</div><%=jsonArray[i].MonthPeriodAccepted.toFixed(0)%>個月
+										<div style="display:inline;"<%if(actionDefault==='最高期數'){%> class="stronger"<%}%>>最高期數：</div><%=jsonArray[i].MonthPeriodAccepted.toFixed(0)%>個月
 									</div>
 								</td>
 							</tr>
@@ -129,7 +129,7 @@
 							<table width="100%">
 								<tr>
 									<td style="width:90%;">
-										<a style="font-size:25px;"<%if(jsonArray[i].TitleColor=="color1"){%> class="color1"<%}else if(jsonArray[i].TitleColor=="color2"){%> class="color2"<%}else if(jsonArray[i].TitleColor=="color3"){%> class="color3"<%}else if(jsonArray[i].TitleColor=="color4"){%> class="color4"<%}else if(jsonArray[i].TitleColor=="color5"){%> class="color5"<%}else if(jsonArray[i].TitleColor=="color6"){%> class="color6"<%}else if(jsonArray[i].TitleColor=="color7"){%> class="color7"<%}%> href="/lender/story?id=<%=jsonArray[i]._id%>">[<%if(jsonArray[i].Category=='general'){%>一般<%}else if(jsonArray[i].Category=='education'){%>教育<%}else if(jsonArray[i].Category=='family'){%>家庭<%}else if(jsonArray[i].Category=='tour'){%>旅遊<%}%>]&nbsp;&nbsp;<%if(jsonArray[i].StoryTitle.StoryTitle!==''){%><div class="colorCnt"><%-jsonArray[i].StoryTitle.replace(new RegExp(' ','g'),'&nbsp;')%></div><%}else{%>無標題<%}%></a>
+										<a style="font-size:25px;"<%if(jsonArray[i].TitleColor==="color1"){%> class="color1"<%}else if(jsonArray[i].TitleColor==="color2"){%> class="color2"<%}else if(jsonArray[i].TitleColor==="color3"){%> class="color3"<%}else if(jsonArray[i].TitleColor==="color4"){%> class="color4"<%}else if(jsonArray[i].TitleColor==="color5"){%> class="color5"<%}else if(jsonArray[i].TitleColor==="color6"){%> class="color6"<%}else if(jsonArray[i].TitleColor==="color7"){%> class="color7"<%}%> href="/lender/story?id=<%=jsonArray[i]._id%>">[<%if(jsonArray[i].Category==='general'){%>一般<%}else if(jsonArray[i].Category==='education'){%>教育<%}else if(jsonArray[i].Category==='family'){%>家庭<%}else if(jsonArray[i].Category==='tour'){%>旅遊<%}%>]&nbsp;&nbsp;<%if(jsonArray[i].StoryTitle.StoryTitle!==''){%><div class="colorCnt"><%-jsonArray[i].StoryTitle.replace(new RegExp(' ','g'),'&nbsp;')%></div><%}else{%>無標題<%}%></a>
 										<div style="font-size:15px;" class="myTitle">by <div class="colorCnt"><%=jsonArray[i].CreatedBy.Username%></div></div>
 									</td>
 									<td align="right">
@@ -139,7 +139,7 @@
 													<span class="glyphicon glyphicon-thumbs-up myTitle2"></span>
 												</button>
 											<% }else{ %>
-												<%if(jsonArray[i].TitleColor!="color4"){ %>
+												<%if(jsonArray[i].TitleColor!=="color4"){ %>
 													<%if(!jsonArray[i].ifLiked){ %>
 														<button class="btn btn-default" onclick="like(<%=i%>);" id="btnID<%=i%>">
 															<span class="glyphicon glyphicon-thumbs-up myTitle2"></span>
@@ -173,23 +173,23 @@
 							<tr>
 								<td align="right" style="border-bottom-style: none;border-top-style: none;">
 									<div style="font-size:15px;display:inline;">
-										<div style="display:inline;"<%if(actionDefault=='年利率'){%> class="stronger"<%}%>>年利率：</div><%=(jsonArray[i].MaxInterestRateAccepted*100).toFixed(2)%>%
+										<div style="display:inline;"<%if(actionDefault==='年利率'){%> class="stronger"<%}%>>年利率：</div><%=(jsonArray[i].MaxInterestRateAccepted*100).toFixed(2)%>%
 									</div>
 									&nbsp;&nbsp;
 									<div style="font-size:15px;display:inline;">
-										<div style="display:inline;"<%if(actionDefault=='信用等級'){%> class="stronger"<%}%>>信用：</div><%=jsonArray[i].Level.toFixed(0)%>級
+										<div style="display:inline;"<%if(actionDefault==='信用等級'){%> class="stronger"<%}%>>信用：</div><%=jsonArray[i].Level.toFixed(0)%>級
 									</div>
 									&nbsp;&nbsp;
 									<div style="font-size:15px;display:inline;">
-										<div style="display:inline;"<%if(actionDefault=='最晚媒合日期'){%> class="stronger"<%}%>>Deadline：</div><%=jsonArray[i].TimeLimit.getFullYear()%>/<%=jsonArray[i].TimeLimit.getMonth()+1%>/<%=jsonArray[i].TimeLimit.getDate()%>
+										<div style="display:inline;"<%if(actionDefault==='最晚媒合日期'){%> class="stronger"<%}%>>Deadline：</div><%=jsonArray[i].TimeLimit.getFullYear()%>/<%=jsonArray[i].TimeLimit.getMonth()+1%>/<%=jsonArray[i].TimeLimit.getDate()%>
 									</div>
 									&nbsp;&nbsp;
 									<div style="font-size:15px;display:inline;">
-										<div style="display:inline;"<%if(actionDefault=='建立日期'){%> class="stronger"<%}%>>Created：</div><%=jsonArray[i].Created.getFullYear()%>/<%=jsonArray[i].Created.getMonth()+1%>/<%=jsonArray[i].Created.getDate()%>
+										<div style="display:inline;"<%if(actionDefault==='建立日期'){%> class="stronger"<%}%>>Created：</div><%=jsonArray[i].Created.getFullYear()%>/<%=jsonArray[i].Created.getMonth()+1%>/<%=jsonArray[i].Created.getDate()%>
 									</div>
 									&nbsp;&nbsp;
 									<div style="font-size:15px;display:inline;">
-										<div style="display:inline;"<%if(actionDefault=='更新日期'){%> class="stronger"<%}%>>Updated：</div><%=jsonArray[i].Updated.getFullYear()%>/<%=jsonArray[i].Updated.getMonth()+1%>/<%=jsonArray[i].Updated.getDate()%>
+										<div style="display:inline;"<%if(actionDefault==='更新日期'){%> class="stronger"<%}%>>Updated：</div><%=jsonArray[i].Updated.getFullYear()%>/<%=jsonArray[i].Updated.getMonth()+1%>/<%=jsonArray[i].Updated.getDate()%>
 									</div>
 									&nbsp;&nbsp;
 									<div style="font-size:15px;display:inline;">
@@ -210,11 +210,11 @@
 							<nav>
 							  <ul class="pagination">
 								<li 
-									<% if(targetPageNumber==1){%>
+									<% if(targetPageNumber===1){%>
 										class="disabled"
 									<%}%>
 								>
-								<% if(targetPageNumber!=1){%>
+								<% if(targetPageNumber!==1){%>
 									<a href="/lender/search?keyword=<%=encodeURIComponent(keywordDefault)%>&category=<%=encodeURIComponent(categoryDefault)%>&messenger=<%=encodeURIComponent(messengerDefault)%>&action=<%=encodeURIComponent(actionDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=targetPageNumber-1%>">
 								<%}else{%>
 									<a href="#" onclick="return false;">
@@ -223,7 +223,7 @@
 								<% if(pageNumber<=10){%>
 									<% for(var j=1; j<=pageNumber; j++) { %>
 										<li 
-											<% if(targetPageNumber==j){%>
+											<% if(targetPageNumber===j){%>
 												class="active"
 											<%}%>
 										><a href="/lender/search?keyword=<%=encodeURIComponent(keywordDefault)%>&category=<%=encodeURIComponent(categoryDefault)%>&messenger=<%=encodeURIComponent(messengerDefault)%>&action=<%=encodeURIComponent(actionDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=j%>"><%=j%></a></li>
@@ -232,7 +232,7 @@
 									<% if(targetPageNumber>=pageNumber-3){%>
 										<% for(var j=pageNumber-9; j<=pageNumber; j++) { %>
 										<li 
-											<% if(targetPageNumber==j){%>
+											<% if(targetPageNumber===j){%>
 												class="active"
 											<%}%>
 										><a href="/lender/search?keyword=<%=encodeURIComponent(keywordDefault)%>&category=<%=encodeURIComponent(categoryDefault)%>&messenger=<%=encodeURIComponent(messengerDefault)%>&action=<%=encodeURIComponent(actionDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=j%>"><%=j%></a></li>
@@ -240,7 +240,7 @@
 									<%}else if(targetPageNumber<=5){%>
 										<% for(var j=1; j<=10; j++) { %>
 										<li 
-											<% if(targetPageNumber==j){%>
+											<% if(targetPageNumber===j){%>
 												class="active"
 											<%}%>
 										><a href="/lender/search?keyword=<%=encodeURIComponent(keywordDefault)%>&category=<%=encodeURIComponent(categoryDefault)%>&messenger=<%=encodeURIComponent(messengerDefault)%>&action=<%=encodeURIComponent(actionDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=j%>"><%=j%></a></li>
@@ -256,11 +256,11 @@
 									<%}%>
 								<%}%>
 								<li 
-									<% if(targetPageNumber==pageNumber){%>
+									<% if(targetPageNumber===pageNumber){%>
 										class="disabled"
 									<%}%>
 								>
-								<% if(targetPageNumber!=pageNumber){%>
+								<% if(targetPageNumber!==pageNumber){%>
 									<a href="/lender/search?keyword=<%=encodeURIComponent(keywordDefault)%>&category=<%=encodeURIComponent(categoryDefault)%>&messenger=<%=encodeURIComponent(messengerDefault)%>&action=<%=encodeURIComponent(actionDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=targetPageNumber+1%>">
 								<%}else{%>
 									<a href="#" onclick="return false;">
@@ -309,7 +309,7 @@
 	function sorterSelector(index){
 		$('#lbound').val('');
 		$('#ubound').val('');
-		if(($('#sorter'+index).text()=='建立日期')||($('#sorter'+index).text()=='更新日期')||($('#sorter'+index).text()=='最晚媒合日期')){
+		if(($('#sorter'+index).text()==='建立日期')||($('#sorter'+index).text()==='更新日期')||($('#sorter'+index).text()==='最晚媒合日期')){
 			enableDater();
 		}else{
 			disableDater();
@@ -338,7 +338,7 @@
 		linker();
 	}
 
-	<%if((actionDefault=='建立日期')||(actionDefault=='更新日期')||(actionDefault=='最晚媒合日期')){%>
+	<%if((actionDefault==='建立日期')||(actionDefault==='更新日期')||(actionDefault==='最晚媒合日期')){%>
 		var ifDater=true;
 	<%}else{%>
 		var ifDater=false;
@@ -403,19 +403,19 @@
 		}
 		
 		function spanner(tgtString){
-			if((tgtString=='建立日期')||(tgtString=='更新日期')||(tgtString=='最晚媒合日期')){
+			if((tgtString==='建立日期')||(tgtString==='更新日期')||(tgtString==='最晚媒合日期')){
 				$('#lbd').html('');
 				$('#ubd').html('');
-			}else if((tgtString=='最低期數')||(tgtString=='最高期數')){
+			}else if((tgtString==='最低期數')||(tgtString==='最高期數')){
 				$('#lbd').html('個月');
 				$('#ubd').html('個月');
-			}else if(tgtString=='年利率'){
+			}else if(tgtString==='年利率'){
 				$('#lbd').html('%');
 				$('#ubd').html('%');
-			}else if(tgtString=='信用等級'){
+			}else if(tgtString==='信用等級'){
 				$('#lbd').html('級');
 				$('#ubd').html('級');
-			}else if(tgtString=='按讚次數'){
+			}else if(tgtString==='按讚次數'){
 				$('#lbd').html('次');
 				$('#ubd').html('次');
 			}else{
@@ -458,9 +458,9 @@
 				stringPro=stringPro.replace(/\s\s+/g,' ');
 				stringArray=stringPro.split(' ');
 				for(j=stringArray.length-1;j>-1;j--){
-					if(stringArray[j].charAt(0)=='-'){
+					if(stringArray[j].charAt(0)==='-'){
 						stringArray.splice(j,1);
-					}else if((stringArray[j].charAt(0)=='"')&&(stringArray[j].charAt(stringArray[j].length-1)=='"')){
+					}else if((stringArray[j].charAt(0)==='"')&&(stringArray[j].charAt(stringArray[j].length-1)==='"')){
 						var tempCnt=stringArray[j].substring(1);
 						tempCnt=tempCnt.substring(0,tempCnt.length-1);
 						stringArray2.push(tempCnt);
@@ -498,13 +498,13 @@
 					dataType: 'json',
 					success: function(Jdata) {
 						if(Jdata.success){
-							if(Jdata.status==-1){
+							if(Jdata.status===-1){
 								$('#likeBtn'+ctr).html('<button class="btn btn-default" data-toggle="modal" data-target="#myModal" id="btnID'+ctr+'"><span class="glyphicon glyphicon-thumbs-up myTitle2"></span></button>');	
-							}else if(Jdata.status==0){
+							}else if(Jdata.status===0){
 								$('#likeBtn'+ctr).html('<button class="btn btn-default" onclick="like('+ctr+');" id="btnID'+ctr+'"><span class="glyphicon glyphicon-thumbs-up myTitle2"></span></button>');	
-							}else if(Jdata.status==1){
+							}else if(Jdata.status===1){
 								$('#likeBtn'+ctr).html('<button class="btn btn-default" onclick="unlike('+ctr+');" id="btnID'+ctr+'"><span class="glyphicon glyphicon-remove myTitle2"></span></button>');	
-							}else if(Jdata.status==2){
+							}else if(Jdata.status===2){
 								$('#likeBtn'+ctr).html('<button class="btn btn-default disabled" id="btnID'+ctr+'"><span class="glyphicon glyphicon-thumbs-up myTitle2"></span></button>');	
 							}
 							$('#likeNum'+ctr).html('&nbsp;'+Jdata.result);

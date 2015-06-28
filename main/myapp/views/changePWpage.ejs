@@ -78,8 +78,8 @@
 	function ifOldPWRight(asyncFlag)
 	{
 	    var oldPW = $('#oldPwdIpt').val().trim();
-		if(oldPW!=''){
-			if(oldPW.search(/[^\w]/ig)==-1){
+		if(oldPW!==''){
+			if(oldPW.search(/[^\w]/ig)===-1){
 				$('#confirmMessage1').html('正在比對中');
 				$('#confirmMessage1').css('color','');
 				$.ajax({ 
@@ -124,8 +124,8 @@
 	function checkLength()
 	{
 	    var pwd1 = $('#PwdIpt').val().trim();
-	    if(pwd1!=''){
-			if(pwd1.search(/[^\w]/ig)==-1){
+	    if(pwd1!==''){
+			if(pwd1.search(/[^\w]/ig)===-1){
 				if(pwd1.length<=6){
 					$('#confirmMessage2').html('密碼須大於六碼');
 					$('#confirmMessage2').css('color','red');
@@ -151,9 +151,9 @@
 	{
 	    var pwd1 = $('#PwdIpt').val().trim();
 	    var pwd2 = $('#2PwdIpt').val().trim();
-	    if(pwd2!=''){
-			if(pwd2.search(/[^\w]/ig)==-1){
-				if(pwd1 == pwd2){
+	    if(pwd2!==''){
+			if(pwd2.search(/[^\w]/ig)===-1){
+				if(pwd1 === pwd2){
 					$('#confirmMessage3').html('輸入密碼相同');
 					$('#confirmMessage3').css('color','');
 					valiFlag3=true;
