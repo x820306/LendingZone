@@ -4,7 +4,7 @@
         <p>Copyright © Lending Zone 2015</p>
       </div>
     </footer>
-	<% if((userName===null)&&((nav_cur!='signup'))){ %>
+	<% if((userName===null)&&((nav_cur!=='signup'))){ %>
 		<!--modal-->
 		<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 			<div class="modal-dialog modal-sm">
@@ -18,17 +18,17 @@
 							
 							<div style="margin:0px auto;" class="input-group">
 								<div style="text-align:left;">
-									<h4>帳號：<span id="s1" style="color:red;"><%if(lgfJSON){%><%if(lgfJSON.Target==1){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=lgfJSON.Message%><%}%><%}%></span></h4>
+									<h4>帳號：<span id="s1" style="color:red;"><%if(lgfJSON){%><%if(lgfJSON.Target===1){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=lgfJSON.Message%><%}%><%}%></span></h4>
 								</div>
 								<input type="text" class="form-control" name="Username" id="usernameID" placeholder="帳號" required="required"<%if(lgfJSON){%> value="<%=lgfJSON.FormContent.F1%>"<%}%>>
 							</div>
 							<div style="margin:0px auto;" class="input-group">
 								<div style="text-align:left;">
-									<h4>密碼：<span id="s2" style="color:red;"><%if(lgfJSON){%><%if(lgfJSON.Target==2){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=lgfJSON.Message%><%}%><%}%></span></h4>
+									<h4>密碼：<span id="s2" style="color:red;"><%if(lgfJSON){%><%if(lgfJSON.Target===2){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=lgfJSON.Message%><%}%><%}%></span></h4>
 								</div>
 								<input type="password" class="form-control" name="Password" id="passwordID" placeholder="密碼" required="required"<%if(lgfJSON){%> value="<%=lgfJSON.FormContent.F2%>"<%}%>>
 								<div style="text-align:left;margin-top:50px;">
-									<h4>驗證碼：<span id="s3" style="color:red;"><%if(lgfJSON){%><%if(lgfJSON.Target==3){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=lgfJSON.Message%><%}%><%}%></span></h4>
+									<h4>驗證碼：<span id="s3" style="color:red;"><%if(lgfJSON){%><%if(lgfJSON.Target===3){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=lgfJSON.Message%><%}%><%}%></span></h4>
 								</div>
 							</div>
 							<input type="hidden" name="CaptchaIdfr" id="captchaIdfr" value="0">
@@ -79,8 +79,8 @@
 	
 	$(document).ready(function () {
 		var id;
-		<% if((userName===null)&&(nav_cur!='signup')){ %>
-			if ($.cookie("rmbUser") == "true") {
+		<% if((userName===null)&&(nav_cur!=='signup')){ %>
+			if ($.cookie("rmbUser") === "true") {
 				$("#rememberID").prop("checked", true);
 				$("#usernameID").val($.cookie("username"));
 				$("#passwordID").val($.cookie("password"));
@@ -89,11 +89,11 @@
 			<% if(lgfJSON){ %>
 				$('#myModal').on('shown.bs.modal.myevent', function () {
 					setTimeout(function() {
-						<%if(lgfJSON.Target==1){%>
+						<%if(lgfJSON.Target===1){%>
 							$('#usernameID').focus();
-						<%}else if(lgfJSON.Target==2){%>
+						<%}else if(lgfJSON.Target===2){%>
 							$('#passwordID').focus();
-						<%}else if(lgfJSON.Target==3){%>
+						<%}else if(lgfJSON.Target===3){%>
 							$('#captchaText').focus();
 						<%}%>
 						$('#myModal').off('shown.bs.modal.myevent');
@@ -127,7 +127,7 @@
 	}
 	
 	function doneResizing(){
-		if(ifLoadedCount==0){
+		if(ifLoadedCount===0){
 			var x=$('body').width();
 			var y1=$('body').height();
 			var y2=$(window).height();
@@ -152,7 +152,7 @@
 		}
 	}
 	
-	<% if((userName===null)&&(nav_cur!='signup')){ %>
+	<% if((userName===null)&&(nav_cur!=='signup')){ %>
 		var captchaFlag=false;
 		function ajaxCaptcha(){
 			if(captchaFlag){
@@ -182,7 +182,7 @@
 			if(forgettingFlag){
 				alert('正在處理中，請稍候');
 			}else{
-				if($("#usernameID").val()==''){
+				if($("#usernameID").val()===''){
 					alert('請輸入帳號供查詢');
 				}else{
 					forgettingFlag=true;

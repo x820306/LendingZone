@@ -27,19 +27,24 @@ var transporter = nodemailer.createTransport({
     }
 });
 
-var autoConfirmArray=[]
+var fs = require('fs');
+var Grid = require('gridfs-stream');
+Grid.mongo = mongoose.mongo;
+
+var autoConfirmArray=[];
+var autoNotReadableArray=[];
 var insuranceRate=0.001;
 var serviceChargeRate=0.01;
 var ifMail=false;
 var captchaIdfrCtr=0;
 var captchaTextArray=[];
-var captchaTimer=null;
 var formIdfrCtr=0;
 var formIdfrArray=[];
-var formTimer=null;
+var tmpFilePathArray=[];
 var adminID=mongoose.Types.ObjectId('5555251bb08002f0068fd00f');//管理員ID
 
 exports.autoConfirmArray=autoConfirmArray;
+exports.autoNotReadableArray=autoNotReadableArray;
 exports.adminID=adminID;
 exports.insuranceRate=insuranceRate;
 exports.serviceChargeRate=serviceChargeRate;
@@ -48,7 +53,165 @@ exports.captchaIdfrCtr=captchaIdfrCtr;
 exports.captchaTextArray=captchaTextArray;
 exports.formIdfrCtr=formIdfrCtr;
 exports.formIdfrArray=formIdfrArray;
+exports.tmpFilePathArray=tmpFilePathArray;
 
+setInterval( function(){
+	for(j=exports.captchaTextArray.length-1;j>-1;j--){
+		var NowT=Date.now();
+		if((NowT-exports.captchaTextArray[j].SaveT)>=600000){
+			exports.captchaTextArray.splice(j, 1);
+		}
+	}
+},600000);
+
+setInterval( function(){
+	for(j=exports.formIdfrArray.length-1;j>-1;j--){
+		var NowT=Date.now();
+		if((NowT-exports.formIdfrArray[j].SaveT)>=600000){
+			exports.formIdfrArray.splice(j, 1);
+		}
+	}
+},600000);
+
+setInterval( function(){
+	var findPath = __dirname+'/../';
+	for(j=exports.tmpFilePathArray.length-1;j>-1;j--){
+		var NowT=Date.now();
+		var localPath=require('path').join(findPath,tmpFilePathArray[j].Path);
+		if((NowT-exports.tmpFilePathArray[j].SaveT)>=600000){
+			if(fs.existsSync(localPath)){
+				fs.unlinkSync(localPath);
+			}
+			exports.tmpFilePathArray.splice(j, 1);
+		}
+	}
+},600000);
+
+exports.gridCreator=function(uid,filesArray,successCallback,failCallback){
+	async.each(filesArray, function(file, callback) {
+		if(file.flag){
+			var readPath = require('path').join(__dirname+'/../',file.path);
+			file.readPath=readPath;
+			var conn = mongoose.connection;
+			var gfs = Grid(conn.db);
+			
+			var read_stream =  fs.createReadStream(readPath);
+			var writestream = gfs.createWriteStream({
+				filename: uid.toString()+'_'+file.category+'.'+file.extension,
+				mode: 'w',
+				content_type: file.mimetype,
+				root: 'images',
+				metadata: {
+					ownedBy:uid,
+					category:file.category,
+					extension:file.extension,
+					originalname:file.originalname
+				}
+			});
+			
+			read_stream.on('error', function(){
+				callback('error');
+			});
+			writestream.on('error', function(){
+				callback('error');
+			});
+			writestream.on('finish', function(){
+				callback();
+			});
+			
+			read_stream.pipe(writestream);
+		}else{
+			callback();
+		}
+	}, function(err){
+		for(k=0;k<filesArray.length;k++){
+			if(filesArray[k].flag){
+				if((require('path').basename(filesArray[k].readPath)!=='brick.jpg')&&(require('path').basename(filesArray[k].readPath)!=='camera.png')){
+					var delPath = require('path').join(__dirname+'/../',filesArray[k].path);
+					if(fs.existsSync(delPath)){
+						fs.unlinkSync(delPath);
+					}
+					var ctr=-1;
+					for(i=0;i<exports.tmpFilePathArray.length;i++){
+						if(filesArray[k].path===exports.tmpFilePathArray[i].Path){
+							ctr=i;
+							break;
+						}
+					}
+					if(ctr>-1){
+						exports.tmpFilePathArray.splice(ctr, 1);
+					}
+				}
+			}
+		}
+		
+		if(err){
+			failCallback();
+		}else{
+			successCallback();
+		}
+	});
+}
+
+exports.gridDeletor=function(uid,filesArray,successCallback,failCallback){
+	async.each(filesArray, function(file, callback) {
+		if(file.flag){			
+			var conn = mongoose.connection;
+			var gfs = Grid(conn.db);
+			
+			gfs.findOne({'metadata.ownedBy':uid,'metadata.category':file.category, root: 'images'}, function (err, file) {
+				if (err){
+					console.log(err);
+					callback('error');
+				}else{
+					if(file){
+						gfs.remove({_id: file._id, root: 'images'}, function (err) {
+							if(err){
+								callback('error');
+							}else{
+								callback();
+							}
+						});
+					}else{
+						callback();
+					}
+				}
+			});
+		}else{
+			callback();
+		}
+	}, function(err){
+		if(err){
+			failCallback();
+		}else{
+			successCallback();
+		}
+	});
+}
+
+exports.gridResponser=function(uid,category,req,res){
+	var conn = mongoose.connection;
+	var gfs = Grid(conn.db);
+	gfs.findOne({'metadata.ownedBy':uid,'metadata.category':category, root: 'images'}, function (err, file) {
+		if (err){
+			console.log(err);
+			res.redirect('/images/icon.png');
+		}else{
+			if(file){
+				if((exports.adminID.equals(req.user._id))||(uid.equals(req.user._id))){
+					res.setHeader('Content-type', file.contentType);
+					res.setHeader('Content-disposition', 'inline; filename='+file.filename);
+					var read_stream = gfs.createReadStream({_id: file._id, root: 'images'});
+					read_stream.pipe(res);
+				}else{
+					res.redirect('/images/icon.png');
+				}
+			}else{
+				res.redirect('/images/icon.png');
+			}
+		}
+	});
+}
 
 exports.replacer=function(input,flag){
 	if(!flag){
@@ -92,7 +255,7 @@ exports.keywordFilter=function(orFlag,orFlagM,testString,testID,keywordArray,key
 			}
 		}
 		if(!orFlag){
-			if(ctr==keywordArray.length){
+			if(ctr===keywordArray.length){
 				rtnObjson.localFlag1=true;
 			}
 		}else{
@@ -119,7 +282,7 @@ exports.keywordFilter=function(orFlag,orFlagM,testString,testID,keywordArray,key
 			}
 		}
 		if(!orFlagM){
-			if(ctr==0){
+			if(ctr===0){
 				rtnObjson.localFlag2=true;
 			}
 		}else{
@@ -136,11 +299,11 @@ exports.keywordFilter=function(orFlag,orFlagM,testString,testID,keywordArray,key
 
 exports.arrayPro=function(stringArray,keywordArray,keywordArrayM,IDarray){
 	for(i=0;i<stringArray.length;i++){
-		if(stringArray[i].charAt(0)=='-'){
+		if(stringArray[i].charAt(0)==='-'){
 			var temper1=stringArray[i].substring(1);
 			temper1=temper1.trim();
 			if(temper1!==''){
-				if((temper1.charAt(0)=='"')&&(temper1.charAt(temper1.length-1)=='"')){
+				if((temper1.charAt(0)==='"')&&(temper1.charAt(temper1.length-1)==='"')){
 					var tempCnt=temper1.substring(1);
 					tempCnt=tempCnt.substring(0,tempCnt.length-1);
 					tempCnt=tempCnt.trim();
@@ -159,7 +322,7 @@ exports.arrayPro=function(stringArray,keywordArray,keywordArrayM,IDarray){
 					keywordArrayM.push(pusher);
 				}
 			}
-		}else if((stringArray[i].charAt(0)=='"')&&(stringArray[i].charAt(stringArray[i].length-1)=='"')){
+		}else if((stringArray[i].charAt(0)==='"')&&(stringArray[i].charAt(stringArray[i].length-1)==='"')){
 			var tempCnt=stringArray[i].substring(1);
 			tempCnt=tempCnt.substring(0,tempCnt.length-1);
 			tempCnt=tempCnt.trim();
@@ -213,28 +376,28 @@ exports.replacerInner=function(finder,befounder,ifReserveFlag){
 	var search2=obj.rtn.search(new RegExp('^'+finder+' '));
 	var search3=obj.rtn.search(new RegExp(' '+finder+'$'));
 	var search4=obj.rtn.search(new RegExp('^'+finder+'$'));
-	if(search1==-1){
+	if(search1===-1){
 		search1=Number.MAX_VALUE;
 	}
-	if(search2==-1){
+	if(search2===-1){
 		search2=Number.MAX_VALUE;
 	}
-	if(search3==-1){
+	if(search3===-1){
 		search3=Number.MAX_VALUE;
 	}
-	if(search4==-1){
+	if(search4===-1){
 		search4=Number.MAX_VALUE;
 	}
 	var min=Math.min(search1, search2, search3, search4);
 	var flagX=null;
-	if(min!=Number.MAX_VALUE){
-		if(min==search1){
+	if(min!==Number.MAX_VALUE){
+		if(min===search1){
 			flagX=1;
-		}else if(min==search2){
+		}else if(min===search2){
 			flagX=2;
-		}else if(min==search3){
+		}else if(min===search3){
 			flagX=3;
-		}else if(min==search4){
+		}else if(min===search4){
 			flagX=4;
 		}
 	}
@@ -270,13 +433,13 @@ exports.replacerInner=function(finder,befounder,ifReserveFlag){
 		if(ifReserveFlag){
 			var tempStr=obj.rtn.substring(0,min);
 			var tempStr2=obj.rtn.substring(min,obj.rtn.length);
-			if(flagX==1){
+			if(flagX===1){
 				obj.rtn2=tempStr+' '+finder+' '+tempStr2;
-			}else if(flagX==2){
+			}else if(flagX===2){
 				obj.rtn2=tempStr+finder+' '+tempStr2;
-			}else if(flagX==3){
+			}else if(flagX===3){
 				obj.rtn2=tempStr+' '+finder+tempStr2;
-			}else if(flagX==4){
+			}else if(flagX===4){
 				obj.rtn2=tempStr+finder+tempStr2;
 			}
 			obj.rtn2=obj.rtn2.replace(/\s\s+/g,' ').trim();
@@ -308,7 +471,7 @@ exports.orReplacer=function(input){
 		for(gm=0;gm<wordArray.length;gm++){
 			testFlag=true;
 			for(gk=0;gk<testArray.length;gk++){
-				if(wordArray[gm]==testArray[gk]){
+				if(wordArray[gm]===testArray[gk]){
 					testFlag=false;
 					break;
 				}
@@ -355,7 +518,7 @@ exports.spaceParser=function(input){
 	if(starter!==null){
 		var ctr1;
 		var header1;
-		if(starter[0].charAt(0)!='-'){
+		if(starter[0].charAt(0)!=='-'){
 			ctr1=1;
 			header1='&';
 		}else{
@@ -373,10 +536,10 @@ exports.spaceParser=function(input){
 	
 	var inner=input.match(/ ("|-")([\s\S]*?)" /i);
 	//console.log(inner[0]);
-	while(inner!=null){
+	while(inner!==null){
 		var ctr2;
 		var header2;
-		if(inner[0].charAt(1)!='-'){
+		if(inner[0].charAt(1)!=='-'){
 			ctr2=2;
 			header2=' &';
 		}else{
@@ -398,7 +561,7 @@ exports.spaceParser=function(input){
 	if(ender!==null){
 		var ctr3;
 		var header3;
-		if(ender[0].charAt(1)!='-'){
+		if(ender[0].charAt(1)!=='-'){
 			ctr3=2;
 			header3=' &';
 		}else{
@@ -417,7 +580,7 @@ exports.spaceParser=function(input){
 	if(aller!==null){
 		var ctr4;
 		var header4;
-		if(aller[0].charAt(0)!='-'){
+		if(aller[0].charAt(0)!=='-'){
 			ctr4=1;
 			header4='&';
 		}else{
@@ -434,22 +597,6 @@ exports.spaceParser=function(input){
 	}
 	input=input.replace(/&/g,'"');
 	return input;
-}
-
-exports.setCaptchaTimer = function(){
-	if(captchaTimer){
-		clearInterval(captchaTimer);
-		captchaTimer=null;
-	}
-	captchaTimer=setInterval( function(){exports.captchaTextArray=[];},600000);
-}
-
-exports.setFormTimer = function(){
-	if(formTimer){
-		clearInterval(formTimer);
-		formTimer=null;
-	}
-	formTimer=setInterval( function(){exports.formIdfrArray=[];},600000);
 }
 
 function redirector(req,res,target,message){
@@ -474,23 +621,23 @@ function redirector(req,res,target,message){
 
 exports.directorDivider = function(dtr,input,type){
 	if(type){
-		if(dtr=='大至小'){
+		if(dtr==='大至小'){
 			if(input.search(/-/)>-1){
 				output=input.replace(/-/g,'');
 			}else{
 				output="-"+input;
 			}
-		}else if(dtr=='小至大'){
+		}else if(dtr==='小至大'){
 			output=input;
 		}
 	}else{
-		if(dtr=='minus'){
+		if(dtr==='minus'){
 			if(input.search(/-/)>-1){
 				output=input.replace(/-/g,'');
 			}else{
 				output="-"+input;
 			}
-		}else if(dtr=='plus'){
+		}else if(dtr==='plus'){
 			output=input;
 		}
 	}
@@ -520,7 +667,7 @@ exports.arrayFilter=function(array,tgt,lb,ub){
 	}
 }
 
-exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,req,res,ifAuto,resAddress,ifLenderSide,infoJson){
+exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,req,res,ifAuto,resAddress,ifLenderSide,infoJson,callback){
 	var FBR;
 	if(!ifRecursive){
 		FBR=req.body.FromBorrowRequest;
@@ -533,10 +680,12 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 			if(ifRecursive){
 				ctr++;
 				if(ctr<ctrTarget){
-					exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide,infoJson);
+					exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide,infoJson,callback);
 				}else{
 					if(!ifAuto){
 						confirmRedirector(req,res,'有些訊息因錯誤無法被同意!',infoJson,resAddress);
+					}else{
+						callback();
 					}
 				}
 			}else{
@@ -549,10 +698,12 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 				if(ifRecursive){
 					ctr++;
 					if(ctr<ctrTarget){
-						exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide,infoJson);
+						exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide,infoJson,callback);
 					}else{
 						if(!ifAuto){
 							confirmRedirector(req,res,'有些訊息因錯誤無法被同意!',infoJson,resAddress);
+						}else{
+							callback();
 						}
 					}
 				}else{
@@ -572,10 +723,12 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 						if(ifRecursive){
 							ctr++;
 							if(ctr<ctrTarget){
-								exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide,infoJson);
+								exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide,infoJson,callback);
 							}else{
 								if(!ifAuto){
 									confirmRedirector(req,res,'有些訊息因錯誤無法被同意!',infoJson,resAddress);
+								}else{
+									callback();
 								}
 							}
 						}else{
@@ -596,10 +749,12 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 								if(ifRecursive){
 									ctr++;
 									if(ctr<ctrTarget){
-										exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide,infoJson);
+										exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide,infoJson,callback);
 									}else{
 										if(!ifAuto){
 											confirmRedirector(req,res,'有些訊息因錯誤無法被同意!',infoJson,resAddress);
+										}else{
+											callback();
 										}
 									}
 								}else{
@@ -612,10 +767,12 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 									if(ifRecursive){
 										ctr++;
 										if(ctr<ctrTarget){
-											exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide,infoJson);
+											exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide,infoJson,callback);
 										}else{
 											if(!ifAuto){
-											confirmRedirector(req,res,'有些訊息因錯誤無法被同意!',infoJson,resAddress);
+												confirmRedirector(req,res,'有些訊息因錯誤無法被同意!',infoJson,resAddress);
+											}else{
+												callback();
 											}
 										}
 									}else{
@@ -628,10 +785,12 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 										if(ifRecursive){
 											ctr++;
 											if(ctr<ctrTarget){
-												exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide,infoJson);
+												exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide,infoJson,callback);
 											}else{
 												if(!ifAuto){
 													confirmRedirector(req,res,'有些訊息因錯誤無法被同意!',infoJson,resAddress);
+												}else{
+													callback();
 												}
 											}
 										}else{
@@ -643,14 +802,14 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 										var authResult=true;
 										
 										if(ifLenderSide){
-											if(req.user._id!=message.SendTo._id){
+											if(!message.SendTo._id.equals(req.user._id)){
 												if(!ifAuto){
 													authResult=false;
 													res.redirect('/message?content='+encodeURIComponent('認證錯誤!'));
 												}
 											}
 										}else{
-											if(req.user._id!=message.CreatedBy._id){
+											if(!message.CreatedBy._id.equals(req.user._id)){
 												if(!ifAuto){
 													authResult=false;
 													res.redirect('/message?content='+encodeURIComponent('認證錯誤!'));
@@ -665,10 +824,12 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 													if(ifRecursive){
 														ctr++;
 														if(ctr<ctrTarget){
-															exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide,infoJson);
+															exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide,infoJson,callback);
 														}else{
 															if(!ifAuto){
 																confirmRedirector(req,res,'有些訊息因錯誤無法被同意!',infoJson,resAddress);
+															}else{
+																callback();
 															}
 														}
 													}else{
@@ -681,10 +842,12 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 														if(ifRecursive){
 															ctr++;
 															if(ctr<ctrTarget){
-																exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide,infoJson);
+																exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide,infoJson,callback);
 															}else{
 																if(!ifAuto){
 																	confirmRedirector(req,res,'有些訊息因錯誤無法被同意!',infoJson,resAddress);
+																}else{
+																	callback();
 																}
 															}
 														}else{
@@ -699,10 +862,12 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																if(ifRecursive){
 																	ctr++;
 																	if(ctr<ctrTarget){
-																		exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide,infoJson);
+																		exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide,infoJson,callback);
 																	}else{
 																		if(!ifAuto){
 																			confirmRedirector(req,res,'有些訊息因錯誤無法被同意!',infoJson,resAddress);
+																		}else{
+																			callback();
 																		}
 																	}
 																}else{
@@ -715,10 +880,12 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																	if(ifRecursive){
 																		ctr++;
 																		if(ctr<ctrTarget){
-																			exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'找不到自動出借設定，待其重新設定後再嘗試',req,res,ifAuto,resAddress,ifLenderSide,infoJson);
+																			exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'找不到自動出借設定，待其重新設定後再嘗試',req,res,ifAuto,resAddress,ifLenderSide,infoJson,callback);
 																		}else{
 																			if(!ifAuto){
 																				confirmRedirector(req,res,'找不到自動出借設定，待其重新設定後再嘗試',infoJson,resAddress);
+																			}else{
+																				callback();
 																			}
 																		}
 																	}else{
@@ -737,7 +904,7 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																		}else{
 																			if(transactions.length>0){
 																				for(as=0;as<transactions.length;as++){
-																					if(transactions[as].CreatedFrom.Type=='toBorrow'){
+																					if(transactions[as].CreatedFrom.Type==='toBorrow'){
 																						exports.transactionProcessor(transactions[as],false);
 																						moneyLendedJson.autoLendCumulated+=transactions[as].PrincipalNotReturn;
 																					}
@@ -753,7 +920,7 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																			var maxMoney=parseInt(lenderBankaccount.MoneyInBankAccount);
 																			borrow.Got=0;
 																			for(r=0;r<borrow.Message.length;r++){
-																				if(borrow.Message[r].Status=='Confirmed'){
+																				if(borrow.Message[r].Status==='Confirmed'){
 																					if(borrow.Message[r].Transaction.length>=1){
 																						borrow.Got+=(borrow.Message[r].Transaction[0].Principal);
 																					}
@@ -785,7 +952,7 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																				var rate=(parseFloat(sanitizer.sanitize(req.body.InterestRate.trim()))/100)+exports.serviceChargeRate;//scr
 																				var month=parseInt(sanitizer.sanitize(req.body.MonthPeriod.trim()));
 																				
-																				if(sanitizer.sanitize(req.body.MoneyToLend.trim())==''){
+																				if(sanitizer.sanitize(req.body.MoneyToLend.trim())===''){
 																					errorTarget[0]=true;
 																					errorMessage[0]='必要參數未填!';
 																				}else if(isNaN(nowMoney)){
@@ -808,7 +975,7 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																					errorMessage[0]='金額少於對方期望：'+minMoney.toFixed(0)+'元!';
 																				}
 																				
-																				if(sanitizer.sanitize(req.body.InterestRate.trim())==''){
+																				if(sanitizer.sanitize(req.body.InterestRate.trim())===''){
 																					errorTarget[1]=true;
 																					errorMessage[1]='必要參數未填!';
 																				}else if(isNaN(rate)){
@@ -822,7 +989,7 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																					errorMessage[1]='超過該訊息希望利率：'+((maxRate-exports.serviceChargeRate)*100).toFixed(2)+'%!';
 																				}
 																				
-																				if(sanitizer.sanitize(req.body.MonthPeriod.trim())==''){
+																				if(sanitizer.sanitize(req.body.MonthPeriod.trim())===''){
 																					errorTarget[2]=true;
 																					errorMessage[2]='必要參數未填!';
 																				}else if(isNaN(month)){
@@ -911,12 +1078,12 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																					returnSringNow='有些訊息因借入方已不需要借款或其條件不合您現在的自動出借設定而無法被同意，它們已被自動婉拒';
 																					returnSring=returnSringNow;
 																				}else if(nowMoney2>maxMoney2){
-																					if(maxMoney2==0){
+																					if(maxMoney2===0){
 																						returnSringNow='有些訊息因借入方已不需要借款或其條件不合您現在的自動出借設定而無法被同意，它們已被自動婉拒';
 																						returnSring=returnSringNow;
 																					}else{
 																						 if(nowMoney2>maxMoney3){
-																							if(maxMoney3==0){
+																							if(maxMoney3===0){
 																								returnSringNow='有些訊息因借出方所設定之自動借款額度已用盡而無法被同意';
 																								returnSring=returnSringNow;
 																							}else{
@@ -931,7 +1098,7 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																						}
 																					}
 																				}else if(nowMoney2>maxMoney3){
-																					if(maxMoney3==0){
+																					if(maxMoney3===0){
 																						returnSringNow='有些訊息因借出方所設定之自動借款額度已用盡而無法被同意';
 																						returnSring=returnSringNow;
 																					}else{
@@ -946,14 +1113,16 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																				}
 																			}
 																			if((returnSringNow)||(!finalMoneyToLend)||(!finalInterestRate)||(!finalMonthPeriod)){
-																				if((returnSringNow!='有些訊息因借入方已不需要借款或其條件不合您現在的自動出借設定而無法被同意，它們已被自動婉拒')&&(returnSringNow!='此訊息因借入方已不需要借款而無法被同意，它已被自動婉拒')){
+																				if((returnSringNow!=='有些訊息因借入方已不需要借款或其條件不合您現在的自動出借設定而無法被同意，它們已被自動婉拒')&&(returnSringNow!=='此訊息因借入方已不需要借款而無法被同意，它已被自動婉拒')){
 																					if(ifRecursive){
 																						ctr++;
 																						if(ctr<ctrTarget){
-																							exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,returnSring,req,res,ifAuto,resAddress,ifLenderSide,infoJson);
+																							exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,returnSring,req,res,ifAuto,resAddress,ifLenderSide,infoJson,callback);
 																						}else{
 																							if(!ifAuto){
 																								confirmRedirector(req,res,returnSring,infoJson,resAddress);
+																							}else{
+																								callback();
 																							}
 																						}
 																					}else{
@@ -970,10 +1139,12 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																							if(ifRecursive){
 																								ctr++;
 																								if(ctr<ctrTarget){
-																									exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide,infoJson);
+																									exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide,infoJson,callback);
 																								}else{
 																									if(!ifAuto){
 																										confirmRedirector(req,res,'有些訊息因錯誤無法被同意!',infoJson,resAddress);
+																									}else{
+																										callback();
 																									}
 																								}
 																							}else{
@@ -986,11 +1157,13 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																								ctr++;
 																								if(ctr<ctrTarget){
 																									mailReject(message,newUpdate,req);
-																									exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,returnSring,req,res,ifAuto,resAddress,ifLenderSide,infoJson);
+																									exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,returnSring,req,res,ifAuto,resAddress,ifLenderSide,infoJson,callback);
 																								}else{
 																									mailReject(message,newUpdate,req);
 																									if(!ifAuto){
 																										confirmRedirector(req,res,returnSring,infoJson,resAddress);
+																									}else{
+																										callback();
 																									}
 																								}
 																							}else{
@@ -1018,10 +1191,12 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																						if(ifRecursive){
 																							ctr++;
 																							if(ctr<ctrTarget){
-																								exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide,infoJson);
+																								exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide,infoJson,callback);
 																							}else{
 																								if(!ifAuto){
 																									confirmRedirector(req,res,'有些訊息因錯誤無法被同意!',infoJson,resAddress);
+																								}else{
+																									callback();
 																								}
 																							}
 																						}else{
@@ -1036,10 +1211,12 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																								if(ifRecursive){
 																									ctr++;
 																									if(ctr<ctrTarget){
-																										exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide,infoJson);
+																										exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide,infoJson,callback);
 																									}else{
 																										if(!ifAuto){
 																											confirmRedirector(req,res,'有些訊息因錯誤無法被同意!',infoJson,resAddress);
+																										}else{
+																											callback();
 																										}
 																									}
 																								}else{
@@ -1052,10 +1229,12 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																									if(ifRecursive){
 																										ctr++;
 																										if(ctr<ctrTarget){
-																											exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide,infoJson);
+																											exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide,infoJson,callback);
 																										}else{
 																											if(!ifAuto){
 																												confirmRedirector(req,res,'有些訊息因錯誤無法被同意!',infoJson,resAddress);
+																											}else{
+																												callback();
 																											}
 																										}
 																									}else{
@@ -1072,10 +1251,12 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																											if(ifRecursive){
 																												ctr++;
 																												if(ctr<ctrTarget){
-																													exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide,infoJson);
+																													exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide,infoJson,callback);
 																												}else{
 																													if(!ifAuto){
 																														confirmRedirector(req,res,'有些訊息因錯誤無法被同意!',infoJson,resAddress);
+																													}else{
+																														callback();
 																													}
 																												}
 																											}else{
@@ -1092,10 +1273,12 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																													if(ifRecursive){
 																														ctr++;
 																														if(ctr<ctrTarget){
-																															exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide,infoJson);
+																															exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide,infoJson,callback);
 																														}else{
 																															if(!ifAuto){
 																																confirmRedirector(req,res,'有些訊息因錯誤無法被同意!',infoJson,resAddress);
+																															}else{
+																																callback();
 																															}
 																														}
 																													}else{
@@ -1117,10 +1300,13 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																															if(ifRecursive){
 																																ctr++;
 																																if(ctr<ctrTarget){
-																																	exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide,infoJson);
+																																	exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide,infoJson,callback);
 																																}else{
 																																	if(!ifAuto){
-																																		confirmRedirector(req,res,'有些訊息因錯誤無法被同意!',infoJson,resAddress);																													}
+																																		confirmRedirector(req,res,'有些訊息因錯誤無法被同意!',infoJson,resAddress);
+																																	}else{
+																																		callback();
+																																	}
 																																}
 																															}else{
 																																if(!ifAuto){
@@ -1129,21 +1315,30 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																															}
 																														}else{
 																															if(!updatedBorrow.IfReadable){
-																																var brwObjID=mongoose.Types.ObjectId(updatedBorrow._id.toString());
-																																exports.rejectMessageWhenNotReadable(res,true,'/',brwObjID,req);
+																																exports.rejectMessageWhenNotReadable(res,true,'/',updatedBorrow._id,req,function(){});
 																															}
 																															
-																															lend.Updated=Date.now();
-																															lend.save(function (err,updatedLend) {
+																															message.OldMoneyToLend=message.MoneyToLend;
+																															message.OldInterestRate=message.InterestRate;
+																															message.OldMonthPeriod=message.MonthPeriod;
+																															message.MoneyToLend=newCreateTransaction.Principal;
+																															message.InterestRate=newCreateTransaction.InterestRate;
+																															message.MonthPeriod=newCreateTransaction.MonthPeriod;
+																															message.Status='Confirmed';
+																															message.Updated=Date.now();
+																															message.Transaction.push(newCreateTransaction._id);
+																															message.save(function (err,newCreateUpdated) {
 																																if (err){
 																																	console.log(err);
 																																	if(ifRecursive){
 																																		ctr++;
 																																		if(ctr<ctrTarget){
-																																			exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide,infoJson);
+																																			exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide,infoJson,callback);
 																																		}else{
 																																			if(!ifAuto){
 																																				confirmRedirector(req,res,'有些訊息因錯誤無法被同意!',infoJson,resAddress);
+																																			}else{
+																																				callback();
 																																			}
 																																		}
 																																	}else{
@@ -1151,78 +1346,51 @@ exports.confirmToBorrowMessage = function(ifRecursive,ctr,ctrTarget,returnSring,
 																																			res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 																																		}
 																																	}
-																																}else{		
-																																	message.OldMoneyToLend=message.MoneyToLend;
-																																	message.OldInterestRate=message.InterestRate;
-																																	message.OldMonthPeriod=message.MonthPeriod;
-																																	message.MoneyToLend=newCreateTransaction.Principal;
-																																	message.InterestRate=newCreateTransaction.InterestRate;
-																																	message.MonthPeriod=newCreateTransaction.MonthPeriod;
-																																	message.Status='Confirmed';
-																																	message.Updated=Date.now();
-																																	message.Transaction.push(newCreateTransaction._id);
-																																	message.save(function (err,newCreateUpdated) {
-																																		if (err){
-																																			console.log(err);
-																																			if(ifRecursive){
-																																				ctr++;
-																																				if(ctr<ctrTarget){
-																																					exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,'有些訊息因錯誤無法被同意!',req,res,ifAuto,resAddress,ifLenderSide,infoJson);
-																																				}else{
-																																					if(!ifAuto){
-																																						confirmRedirector(req,res,'有些訊息因錯誤無法被同意!',infoJson,resAddress);
-																																					}
-																																				}
-																																			}else{
-																																				if(!ifAuto){
-																																					res.redirect('/message?content='+encodeURIComponent('錯誤!'));
-																																				}
-																																			}
+																																}else{
+																																	infoJson.counter2+=1;
+																																	infoJson.info1+=newCreateUpdated.MoneyToLend;
+																																	var tempRate=newCreateUpdated.InterestRate-exports.serviceChargeRate;//scr
+																																	var temp1=exports.interestInFutureCalculator(newCreateUpdated.MoneyToLend,tempRate,newCreateUpdated.MonthPeriod);
+																																	var temp2=temp1+newCreateUpdated.MoneyToLend;
+																																	var temp3;
+																																	if(newCreateUpdated.MonthPeriod>0){
+																																		temp3=temp1/newCreateUpdated.MonthPeriod;
+																																	}else{
+																																		temp3=0;
+																																	}
+																																	var temp4;
+																																	if(newCreateUpdated.MonthPeriod>0){
+																																		temp4=(temp1+newCreateUpdated.MoneyToLend)/newCreateUpdated.MonthPeriod;
+																																	}else{
+																																		temp4=0;
+																																	}
+																																	infoJson.info2+=temp1;
+																																	infoJson.info3+=temp2;
+																																	infoJson.info4+=temp3;
+																																	infoJson.info5+=temp4;
+																																	if(ifRecursive){
+																																		ctr++;
+																																		if(ctr<ctrTarget){
+																																			mailAgree(message,newCreateUpdated,req);
+																																			exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,returnSring,req,res,ifAuto,resAddress,ifLenderSide,infoJson,callback);
 																																		}else{
-																																			infoJson.counter2+=1;
-																																			infoJson.info1+=newCreateUpdated.MoneyToLend;
-																																			var tempRate=newCreateUpdated.InterestRate-exports.serviceChargeRate;//scr
-																																			var temp1=exports.interestInFutureCalculator(newCreateUpdated.MoneyToLend,tempRate,newCreateUpdated.MonthPeriod);
-																																			var temp2=temp1+newCreateUpdated.MoneyToLend;
-																																			var temp3;
-																																			if(newCreateUpdated.MonthPeriod>0){
-																																				temp3=temp1/newCreateUpdated.MonthPeriod;
-																																			}else{
-																																				temp3=0;
-																																			}
-																																			var temp4;
-																																			if(newCreateUpdated.MonthPeriod>0){
-																																				temp4=(temp1+newCreateUpdated.MoneyToLend)/newCreateUpdated.MonthPeriod;
-																																			}else{
-																																				temp4=0;
-																																			}
-																																			infoJson.info2+=temp1;
-																																			infoJson.info3+=temp2;
-																																			infoJson.info4+=temp3;
-																																			infoJson.info5+=temp4;
-																																			if(ifRecursive){
-																																				ctr++;
-																																				if(ctr<ctrTarget){
-																																					mailAgree(message,newCreateUpdated,req);
-																																					exports.confirmToBorrowMessage(ifRecursive,ctr,ctrTarget,returnSring,req,res,ifAuto,resAddress,ifLenderSide,infoJson);
+																																			mailAgree(message,newCreateUpdated,req);
+																																			if(!ifAuto){
+																																				if(returnSring){	
+																																					confirmRedirector(req,res,returnSring,infoJson,resAddress);
 																																				}else{
-																																					mailAgree(message,newCreateUpdated,req);
-																																					if(!ifAuto){
-																																						if(returnSring){	
-																																							confirmRedirector(req,res,returnSring,infoJson,resAddress);
-																																						}else{
-																																							confirmRedirector(req,res,'',infoJson,resAddress);
-																																						}
-																																					}
+																																					confirmRedirector(req,res,'',infoJson,resAddress);
 																																				}
 																																			}else{
-																																				mailAgree(message,newCreateUpdated,req);
-																																				if(!ifAuto){
-																																					res.redirect(resAddress);
-																																				}
+																																				callback();
 																																			}
 																																		}
-																																	});
+																																	}else{
+																																		mailAgree(message,newCreateUpdated,req);
+																																		if(!ifAuto){
+																																			res.redirect(resAddress);
+																																		}
+																																	}
 																																}
 																															});
 																														}
@@ -1315,7 +1483,7 @@ exports.rejectMessage=function (ifRecursive,ctr,ctrTarget,returnSring,req,res,if
 						}
 					}
 				}else{
-					if(req.user._id!=message.SendTo._id){
+					if(!message.SendTo._id.equals(req.user._id)){
 						if(!ifAuto){
 							res.redirect('/message?content='+encodeURIComponent('認證錯誤!'));
 						}
@@ -1374,65 +1542,77 @@ exports.rejectMessage=function (ifRecursive,ctr,ctrTarget,returnSring,req,res,if
 	});
 }
 
-exports.rejectMessageWhenNotReadable=function (res,ifAuto,resAddress,borrowID,req){
+exports.rejectMessageWhenNotReadable=function (res,ifAuto,resAddress,borrowID,req,callback){
 	Borrows.findById(borrowID).populate('Message', 'Status').exec(function (err, borrow){
 		if (err){
 			if(!ifAuto){
 				res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+			}else{
+				callback();
 			}	
 		}else{
 			if (!borrow){
 				if(!ifAuto){
 					res.redirect('/message?content='+encodeURIComponent('錯誤!'));
-				}	
+				}else{
+					callback();
+				}		
 			}else{
 				var jsonArray=[];
 				for(i=0;i<borrow.Message.length;i++){
-					if(borrow.Message[i].Status=='NotConfirmed'){
+					if(borrow.Message[i].Status==='NotConfirmed'){
 						jsonArray.push({MsgID:borrow.Message[i]._id});
 					}
 				}
 				if(jsonArray.length>0){
-					rejectMessageWhenNotReadableRecursivePart(0,jsonArray.length,res,ifAuto,resAddress,jsonArray,null,req);
+					rejectMessageWhenNotReadableRecursivePart(0,jsonArray.length,res,ifAuto,resAddress,jsonArray,null,req,callback);
 				}else{
 					if(!ifAuto){
 						res.redirect(resAddress);
-					}	
+					}else{
+						callback();
+					}
 				}
 			}
 		}
 	});
 }
 
-function rejectMessageWhenNotReadableRecursivePart(ctr,ctrTarget,res,ifAuto,resAddress,array,returnSring,req){
+function rejectMessageWhenNotReadableRecursivePart(ctr,ctrTarget,res,ifAuto,resAddress,array,returnSring,req,callback){
 	Messages.findById(array[ctr].MsgID).populate('CreatedBy', 'Username Email ifMailValid').populate('SendTo', 'Username Email ifMailValid').populate('FromBorrowRequest', 'StoryTitle').exec(function (err, message){
 		if (err) {
 			ctr++;
 			if(ctr<ctrTarget){
-				rejectMessageWhenNotReadableRecursivePart(ctr,ctrTarget,res,ifAuto,resAddress,array,'有些訊息因錯誤而無法婉拒或被婉拒!',req)
+				rejectMessageWhenNotReadableRecursivePart(ctr,ctrTarget,res,ifAuto,resAddress,array,'有些訊息因錯誤而無法婉拒或被婉拒!',req,callback)
 			}else{
 				if(!ifAuto){
 					res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+				}else{
+					callback();
 				}
 			}			
 		}else{
 			if(!message){
 				ctr++;
 				if(ctr<ctrTarget){
-					rejectMessageWhenNotReadableRecursivePart(ctr,ctrTarget,res,ifAuto,resAddress,array,'有些訊息因錯誤而無法婉拒或被婉拒!',req)
+					rejectMessageWhenNotReadableRecursivePart(ctr,ctrTarget,res,ifAuto,resAddress,array,'有些訊息因錯誤而無法婉拒或被婉拒!',req,callback)
 				}else{
 					if(!ifAuto){
 						res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+					}else{
+						callback();
 					}
 				}		
 			}else{
 				if(message.Status!=="NotConfirmed"){
 					ctr++;
 					if(ctr<ctrTarget){
-						rejectMessageWhenNotReadableRecursivePart(ctr,ctrTarget,res,ifAuto,resAddress,array,'有些訊息因錯誤而無法婉拒或被婉拒!',req)
+						rejectMessageWhenNotReadableRecursivePart(ctr,ctrTarget,res,ifAuto,resAddress,array,'有些訊息因錯誤而無法婉拒或被婉拒!',req,callback)
 					}else{
 						if(!ifAuto){
 							res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+						}else{
+							callback();
 						}
 					}		
 				}else{
@@ -1442,10 +1622,12 @@ function rejectMessageWhenNotReadableRecursivePart(ctr,ctrTarget,res,ifAuto,resA
 						if(err){
 							ctr++;
 							if(ctr<ctrTarget){
-								rejectMessageWhenNotReadableRecursivePart(ctr,ctrTarget,res,ifAuto,resAddress,array,'有些訊息因錯誤而無法婉拒或被婉拒!',req)
+								rejectMessageWhenNotReadableRecursivePart(ctr,ctrTarget,res,ifAuto,resAddress,array,'有些訊息因錯誤而無法婉拒或被婉拒!',req,callback)
 							}else{
 								if(!ifAuto){
 									res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+								}else{
+									callback();
 								}
 							}		
 						}else{
@@ -1456,7 +1638,7 @@ function rejectMessageWhenNotReadableRecursivePart(ctr,ctrTarget,res,ifAuto,resA
 								}else if(newUpdate.Type==='toLend'){
 									mailRejectLend(message,newUpdate,req);
 								}
-								rejectMessageWhenNotReadableRecursivePart(ctr,ctrTarget,res,ifAuto,resAddress,array,returnSring,req)
+								rejectMessageWhenNotReadableRecursivePart(ctr,ctrTarget,res,ifAuto,resAddress,array,returnSring,req,callback)
 							}else{
 								if(newUpdate.Type==='toBorrow'){
 									mailReject(message,newUpdate,req);
@@ -1469,6 +1651,8 @@ function rejectMessageWhenNotReadableRecursivePart(ctr,ctrTarget,res,ifAuto,resA
 									}else{
 										res.redirect(resAddress);
 									}
+								}else{
+									callback();
 								}
 							}		
 						}
@@ -1549,7 +1733,7 @@ exports.ensureAuthenticated=function (req, res, next) {
 
 //add after ensureAuthenticated to confirm ifAdmin
 exports.ensureAdmin=function (req, res, next) {
-  if(req.user._id==exports.adminID){ return next(); }
+  if(exports.adminID.equals(req.user._id)){ return next(); }
 	res.render('message',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,content:'請以管理員身分登入'});
 }
 
@@ -1571,9 +1755,9 @@ exports.checkSsnID=function(id) {
 		A2 = new Array (0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5 );
 		Mx = new Array (9,8,7,6,5,4,3,2,1,1);
 
-		if ( id.length != 10 ) return false;
+		if ( id.length !== 10 ) return false;
 		i = tab.indexOf( id.charAt(0) );
-		if ( i == -1 ) return false;
+		if ( i === -1 ) return false;
 		sum = A1[i] + A2[i]*9;
 
 		for ( i=1; i<10; i++ ) {
@@ -1581,7 +1765,7 @@ exports.checkSsnID=function(id) {
 			if ( isNaN(v) ) return false;
 			sum = sum + v * Mx[i];
 		}
-		if ( sum % 10 != 0 ) return false;
+		if ( sum % 10 !== 0 ) return false;
 		return true;
 	}else{
 		return true;
@@ -1723,24 +1907,36 @@ exports.userDeleter=function (resRef,uid,successCallback,failCallback,flag){
 								console.log(err);
 								failCallback();
 							}else{
-								if(users.length>0){
-									async.each(users, function(userFound, callback) {
-										exports.userLevelAdderReturn(userFound._id,callback,callback);
-									},function(err){
-										if(err) throw err;
+								async.each(users, function(userFound, callback) {
+									exports.userLevelAdderReturn(userFound._id,callback,callback);
+								},function(err){
+									if(err){
+										console.log(err);
+										failCallback();
+									}else{
+										var filesArray=[];
+										var IdCard={
+											flag:true,
+											category:'IdCard'
+										};
+										var SecondCard={
+											flag:true,
+											category:'SecondCard'
+										};
+										filesArray.push(IdCard);
+										filesArray.push(SecondCard);
+										
+										exports.gridDeletor(removedItem._id,filesArray,function(){
 											if(!flag){
 												resRef.json(removedItem);
 											}else{
 												successCallback();
 											}
-									});	
-								}else{
-									if(!flag){
-										resRef.json(removedItem);
-									}else{
-										successCallback();
+										},function(){
+											failCallback();
+										});
 									}
-								}
+								});	
 							}
 						});
 					}
@@ -1860,35 +2056,78 @@ function rejectRedirector(req,res,content,info,address){
 	res.redirect(address);
 }
 
+exports.autoNotReadableWorker=function (req,res){
+	Borrows.find({}).exec(function (err,borrows){
+		if (err) {
+			console.log(err);
+		}else{
+			var prosArray=[];
+			for(i=0;i<borrows.length;i++){
+				var nowT=Date.now();
+				var tester=borrows[i].TimeLimit.getTime()+86400000;
+				if(nowT>=tester){
+					prosArray.push(borrows[i]);
+				}
+			}
+			if(prosArray.length>0){
+				autoNotReadableWorkerRecursive(0,prosArray.length,prosArray,req,res);
+			}
+		}
+	});
+}
+
+function autoNotReadableWorkerRecursive(counter,counterTarget,prosArray,req,res){
+	var localCtr=counter;
+	
+	prosArray[localCtr].IfReadable=false;
+	prosArray[localCtr].Updated=Date.now();
+	prosArray[localCtr].save(function (err,updatedBorrow) {
+		if(err){
+			counter++;
+			if(counter<counterTarget){
+				autoNotReadableWorkerRecursive(counter,counterTarget,prosArray,req,res);
+			}else{
+				console.log('end');
+			}
+		}else{
+			exports.rejectMessageWhenNotReadable(res,true,'/',updatedBorrow._id,req,function(){
+				counter++;
+				if(counter<counterTarget){
+					autoNotReadableWorkerRecursive(counter,counterTarget,prosArray,req,res);
+				}else{
+					console.log('end');
+				}
+			});
+		}
+	});
+}
+
 exports.autoWorker=function (day,req,res){
 	Lends.find({AutoComfirmToBorrowMsgPeriod:day}).exec(function (err,lends){
 		if (err) {
 			console.log(err);
 		}else{
 			if(lends.length>0){
-				autoWorkerRecursive(0,lends.length,lends,req,res,0);
+				autoWorkerRecursive(0,lends.length,lends,req,res);
 			}
 		}
 	});
 }
 
-function autoWorkerRecursive(counter,counterTarget,lends,req,res,timer){
+function autoWorkerRecursive(counter,counterTarget,lends,req,res){
 	var localCtr=counter;
 
-	setTimeout(function(){
-		autoConfirm(req,res,lends[localCtr]);
-	}, timer);
-	
-	timer+=600000;
-	counter++;
-	if(counter<counterTarget){
-		autoWorkerRecursive(counter,counterTarget,lends,req,res,timer);
-	}else{
-		console.log('end');
-	}
+	autoConfirm(req,res,lends[localCtr],function(){
+		counter++;
+		if(counter<counterTarget){
+			autoWorkerRecursive(counter,counterTarget,lends,req,res);
+		}else{
+			console.log('end');
+		}
+	});
 }
 
-function autoConfirm(req,res,lend){
+function autoConfirm(req,res,lend,callback){
 	var director=lend.AutoComfirmToBorrowMsgDirector;
 	var sorter=lend.AutoComfirmToBorrowMsgSorter;
 	var classor=lend.AutoComfirmToBorrowMsgClassor;
@@ -1896,16 +2135,16 @@ function autoConfirm(req,res,lend){
 	var uboundSave=lend.AutoComfirmToBorrowMsgUbound;
 	var msgKeyword=lend.AutoComfirmToBorrowMsgKeyWord;
 	
-	if((director!='minus')&&(director!='plus')){
+	if((director!=='minus')&&(director!=='plus')){
 		director='minus';
 	}
 	
 	var sorterRec=null;
 	
-	if((sorter=='InterestInFuture')||(sorter=='MoneyFuture')||(sorter=='InterestInFutureMonth')||(sorter=='InterestInFutureMoneyMonth')||(sorter=='InterestInFutureDivMoney')||(sorter=='Level')){
+	if((sorter==='InterestInFuture')||(sorter==='MoneyFuture')||(sorter==='InterestInFutureMonth')||(sorter==='InterestInFutureMoneyMonth')||(sorter==='InterestInFutureDivMoney')||(sorter==='Level')){
 		sorterRec=exports.directorDivider(director,'Updated',false);
 	}else{
-		if((sorter!='InterestRate')&&(sorter!='MoneyToLend')&&(sorter!='MonthPeriod')&&(sorter!='Updated')&&(sorter!='Created')){
+		if((sorter!=='InterestRate')&&(sorter!=='MoneyToLend')&&(sorter!=='MonthPeriod')&&(sorter!=='Updated')&&(sorter!=='Created')){
 			sorter='InterestRate';
 		}
 		sorterRec=exports.directorDivider(director,sorter,false);
@@ -1915,18 +2154,18 @@ function autoConfirm(req,res,lend){
 	var uboundRec=null;
 	
 	if(lboundSave!==-1){
-		if((sorter=='Updated')||(sorter=='Created')){
+		if((sorter==='Updated')||(sorter==='Created')){
 			lboundRec=new Date(lboundSave);
-		}else if((sorter=='InterestRate')||(sorter=='InterestInFutureDivMoney')){
+		}else if((sorter==='InterestRate')||(sorter==='InterestInFutureDivMoney')){
 			lboundRec=parseFloat(lboundSave);
 		}else{
 			lboundRec=parseInt(lboundSave);
 		}
 	}
 	if(uboundSave!==-1){
-		if((sorter=='Updated')||(sorter=='Created')){
+		if((sorter==='Updated')||(sorter==='Created')){
 			uboundRec=new Date(uboundSave);
-		}else if((sorter=='InterestRate')||(sorter=='InterestInFutureDivMoney')){
+		}else if((sorter==='InterestRate')||(sorter==='InterestInFutureDivMoney')){
 			uboundRec=parseFloat(uboundSave);
 		}else{
 			uboundRec=parseInt(uboundSave);
@@ -1939,7 +2178,7 @@ function autoConfirm(req,res,lend){
 	andFindCmdAry.push({"Type": "toBorrow"});
 	andFindCmdAry.push({"Status": "NotConfirmed"});
 	
-	if((sorter!='InterestInFuture')&&(sorter!='MoneyFuture')&&(sorter!='InterestInFutureMonth')&&(sorter!='InterestInFutureMoneyMonth')&&(sorter!='InterestInFutureDivMoney')&&(sorter!='Level')){
+	if((sorter!=='InterestInFuture')&&(sorter!=='MoneyFuture')&&(sorter!=='InterestInFutureMonth')&&(sorter!=='InterestInFutureMoneyMonth')&&(sorter!=='InterestInFutureDivMoney')&&(sorter!=='Level')){
 		var jsonTemp={};
 		if((lboundRec!==null)&&(uboundRec!==null)){
 			jsonTemp[sorter]={"$gte": lboundRec, "$lte": uboundRec};
@@ -1979,7 +2218,7 @@ function autoConfirm(req,res,lend){
 		}else{
 			if(transactions.length>0){
 				for(i=0;i<transactions.length;i++){
-					if(transactions[i].CreatedFrom.Type=='toBorrow'){
+					if(transactions[i].CreatedFrom.Type==='toBorrow'){
 						exports.transactionProcessor(transactions[i],false);
 						moneyLendedJson.autoLendCumulated+=transactions[i].PrincipalNotReturn;
 					}
@@ -1997,66 +2236,66 @@ function autoConfirm(req,res,lend){
 						if(messages.length>0){
 							for(j=messages.length-1;j>-1;j--){
 								var testString=messages[j].Message+'\r\n'+messages[j].FromBorrowRequest.StoryTitle+'\r\n'+messages[j].CreatedBy.Username;
-								var filterResponse=exports.keywordFilter(orFlag,orFlagM,testString,Message[j]._id,keywordArray,keywordArrayM,msgObjIDarray);
+								var filterResponse=exports.keywordFilter(orFlag,orFlagM,testString,messages[j]._id,keywordArray,keywordArrayM,msgObjIDarray);
 																	
 								if((!filterResponse.localFlag0)&&((!filterResponse.localFlag1)||(!filterResponse.localFlag2))){
 									messages.splice(j, 1);
 								}
 							}
 							
-							if((classor=='general')||(classor=='education')||(classor=='family')||(classor=='tour')){
+							if((classor==='general')||(classor==='education')||(classor==='family')||(classor==='tour')){
 								for(j=messages.length-1;j>-1;j--){
-									if(messages[j].FromBorrowRequest.Category!=classor){
+									if(messages[j].FromBorrowRequest.Category!==classor){
 										messages.splice(j, 1);
 									}
 								}
 							}
 							
-							if((sorter=='InterestInFuture')||(sorter=='MoneyFuture')||(sorter=='InterestInFutureMonth')||(sorter=='InterestInFutureMoneyMonth')||(sorter=='InterestInFutureDivMoney')||(sorter=='Level')){
+							if((sorter==='InterestInFuture')||(sorter==='MoneyFuture')||(sorter==='InterestInFutureMonth')||(sorter==='InterestInFutureMoneyMonth')||(sorter==='InterestInFutureDivMoney')||(sorter==='Level')){
 								for(i=0;i<messages.length;i++){
 									messages[i].Level=messages[i].CreatedBy.Level;
 									exports.messageProcessor(messages[i]);
 								}
 								
-								if(sorter=='InterestInFuture'){
-									if(director=='minus'){
+								if(sorter==='InterestInFuture'){
+									if(director==='minus'){
 										messages.sort(function(a,b) { return parseInt(b.InterestInFuture) - parseInt(a.InterestInFuture)} );
-									}else if(director=='plus'){
+									}else if(director==='plus'){
 										messages.sort(function(a,b) { return parseInt(a.InterestInFuture) - parseInt(b.InterestInFuture)} );
 									}
 									exports.arrayFilter(messages,'InterestInFuture',lboundRec,uboundRec);
-								}else if(sorter=='MoneyFuture'){
-									if(director=='minus'){
+								}else if(sorter==='MoneyFuture'){
+									if(director==='minus'){
 										messages.sort(function(a,b) { return parseInt(b.MoneyFuture) - parseInt(a.MoneyFuture)} );
-									}else if(director=='plus'){
+									}else if(director==='plus'){
 										messages.sort(function(a,b) { return parseInt(a.MoneyFuture) - parseInt(b.MoneyFuture)} );
 									}
 									exports.arrayFilter(messages,'MoneyFuture',lboundRec,uboundRec);
-								}else if(sorter=='InterestInFutureMonth'){
-									if(director=='minus'){
+								}else if(sorter==='InterestInFutureMonth'){
+									if(director==='minus'){
 										messages.sort(function(a,b) { return parseInt(b.InterestInFutureMonth) - parseInt(a.InterestInFutureMonth)} );
-									}else if(director=='plus'){
+									}else if(director==='plus'){
 										messages.sort(function(a,b) { return parseInt(a.InterestInFutureMonth) - parseInt(b.InterestInFutureMonth)} );
 									}
 									exports.arrayFilter(messages,'InterestInFutureMonth',lboundRec,uboundRec);
-								}else if(sorter=='InterestInFutureMoneyMonth'){
-									if(director=='minus'){
+								}else if(sorter==='InterestInFutureMoneyMonth'){
+									if(director==='minus'){
 										messages.sort(function(a,b) { return parseInt(b.InterestInFutureMoneyMonth) - parseInt(a.InterestInFutureMoneyMonth)} );
-									}else if(director=='plus'){
+									}else if(director==='plus'){
 										messages.sort(function(a,b) { return parseInt(a.InterestInFutureMoneyMonth) - parseInt(b.InterestInFutureMoneyMonth)} );
 									}
 									exports.arrayFilter(messages,'InterestInFutureMoneyMonth',lboundRec,uboundRec);
-								}else if(sorter=='InterestInFutureDivMoney'){
-									if(director=='minus'){
+								}else if(sorter==='InterestInFutureDivMoney'){
+									if(director==='minus'){
 										messages.sort(function(a,b) { return parseFloat(b.InterestInFutureDivMoney) - parseFloat(a.InterestInFutureDivMoney)} );
-									}else if(director=='plus'){
+									}else if(director==='plus'){
 										messages.sort(function(a,b) { return parseFloat(a.InterestInFutureDivMoney) - parseFloat(b.InterestInFutureDivMoney)} );
 									}
 									exports.arrayFilter(messages,'InterestInFutureDivMoney',lboundRec,uboundRec);
-								}else if(sorter=='Level'){
-									if(director=='minus'){
+								}else if(sorter==='Level'){
+									if(director==='minus'){
 										messages.sort(function(a,b) { return parseFloat(b.Level) - parseFloat(a.Level)} );
-									}else if(director=='plus'){
+									}else if(director==='plus'){
 										messages.sort(function(a,b) { return parseFloat(a.Level) - parseFloat(b.Level)} );
 									}
 									exports.arrayFilter(messages,'Level',lboundRec,uboundRec);
@@ -2074,12 +2313,12 @@ function autoConfirm(req,res,lend){
 								newReq['user']={};
 								newReq['headers']={};
 								newReq.body.array=arrayOp;
-								newReq.user._id=lend.CreatedBy.toString();
+								newReq.user._id=lend.CreatedBy;
 								newReq.headers.host=req.headers.host;
 								newReq.protocol=req.protocol;
 								
 								var infoJson={counter1:newReq.body.array.length,counter2:0,info1:0,info2:0,info3:0,info4:0,info5:0};
-								exports.confirmToBorrowMessage(true,0,newReq.body.array.length,null,newReq,res,true,'/',true,infoJson);
+								exports.confirmToBorrowMessage(true,0,newReq.body.array.length,null,newReq,res,true,'/',true,infoJson,callback);
 							}
 						}
 					}

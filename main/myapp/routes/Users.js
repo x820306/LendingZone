@@ -49,11 +49,6 @@ router.post('/createTest', function(req, res, next) {
 				toCreate.Phone=sanitizer.sanitize(req.body.Phone.trim());
 				toCreate.Address=sanitizer.sanitize(req.body.Address.trim());
 				
-				toCreate.IdCardType=req.files.IdCard.mimetype;
-				toCreate.SecondCardType=req.files.SecondCard.mimetype;
-				toCreate.IdCard=req.files.IdCard.buffer;
-				toCreate.SecondCard=req.files.SecondCard.buffer;
-				
 				toCreate.save(function (err,newCreate) {
 					if (err){
 						console.log(err);
@@ -70,7 +65,21 @@ router.post('/createTest', function(req, res, next) {
 								console.log(err);
 								res.redirect('/message?content='+encodeURIComponent('錯誤'));
 							}else{
-								res.redirect('/message?content='+encodeURIComponent('帳號建立成功'));
+								var filesArray=[];
+								
+								req.files.IdCard.flag=true;
+								req.files.IdCard.category='IdCard';
+								filesArray.push(req.files.IdCard);
+							
+								req.files.SecondCard.flag=true;
+								req.files.SecondCard.category='SecondCard';
+								filesArray.push(req.files.SecondCard);
+								
+								library.gridCreator(newCreate._id,filesArray,function(){
+									res.redirect('/message?content='+encodeURIComponent('帳號建立成功'));
+								},function(){
+									res.redirect('/message?content='+encodeURIComponent('檔案新建失敗'));
+								});
 							}
 						});
 					}
@@ -81,30 +90,39 @@ router.post('/createTest', function(req, res, next) {
 });
 
 router.post('/destroyTest', function(req, res, next) {
-	var uid=sanitizer.sanitize(req.body.UserID.trim());
+	var uid=mongoose.Types.ObjectId(sanitizer.sanitize(req.body.UserID.trim()));
 	library.userDeleter(res,uid,function(){},function(){res.end('error');},false);
+});
+
+router.post('/destoryImages', function(req, res, next) {
+	var ImagesOwnerID=mongoose.Types.ObjectId(sanitizer.sanitize(req.body.ImagesOwnerID.trim()));
+	var filesArray=[];
+	var IdCard={
+		flag:true,
+		category:'IdCard'
+	};
+	var SecondCard={
+		flag:true,
+		category:'SecondCard'
+	};
+	filesArray.push(IdCard);
+	filesArray.push(SecondCard);
+	
+	library.gridDeletor(ImagesOwnerID,filesArray,function(){
+		res.end('success');
+	},function(){
+		res.end('fail');
+	});
 });
 
 router.get('/IdCard/:id?',library.loginFormChecker,library.ensureAuthenticated,library.newMsgChecker, function(req, res, next) {
 	if(typeof(req.query.id) !== "undefined"){
-		var uid=req.query.id;
-		Users.findById(uid).select('IdCard IdCardType').exec(function (err, user){
-			if (err) {
-				console.log(err);
-				res.redirect('/images/icon.png');
-			}else{
-				if(user){
-					if((req.user._id==library.adminID)||(req.user._id==uid)){
-						res.setHeader('content-type', user.IdCardType);
-						res.end(user.IdCard, "binary");
-					}else{
-						res.redirect('/images/icon.png');
-					}
-				}else{
-					res.redirect('/images/icon.png');
-				}
-			}
-		});
+		if(mongoose.Types.ObjectId.isValid(req.query.id)){
+			var uid=mongoose.Types.ObjectId(req.query.id);
+			library.gridResponser(uid,'IdCard',req,res);
+		}else{
+			res.redirect('/images/icon.png');
+		}
 	}else{
 		res.redirect('/images/icon.png');
 	}
@@ -112,32 +130,20 @@ router.get('/IdCard/:id?',library.loginFormChecker,library.ensureAuthenticated,l
 
 router.get('/SecondCard/:id?',library.loginFormChecker,library.ensureAuthenticated,library.newMsgChecker, function(req, res, next) {
 	if(typeof(req.query.id) !== "undefined"){
-		var uid=req.query.id;
-		Users.findById(uid).select('SecondCard SecondCardType').exec(function (err, user){
-			if (err) {
-				console.log(err);
-				res.redirect('/images/icon.png');
-			}else{
-				if(user){
-					if((req.user._id==library.adminID)||(req.user._id==uid)){
-						res.setHeader('content-type', user.SecondCardType);
-						res.end(user.SecondCard, "binary");
-					}else{
-						res.redirect('/images/icon.png');
-					}
-				}else{
-					res.redirect('/images/icon.png');
-				}
-			}
-		});
+		if(mongoose.Types.ObjectId.isValid(req.query.id)){
+			var uid=mongoose.Types.ObjectId(req.query.id);
+			library.gridResponser(uid,'SecondCard',req,res);
+		}else{
+			res.redirect('/images/icon.png');
+		}
 	}else{
 		res.redirect('/images/icon.png');
 	}
 });
 
 router.post('/originalLevelSetter', function(req, res, next) {
-	Uid=sanitizer.sanitize(req.body.Uid.trim());
-	OriginalLevel=sanitizer.sanitize(req.body.OriginalLevel.trim());
+	var Uid=mongoose.Types.ObjectId(sanitizer.sanitize(req.body.Uid.trim()));
+	var OriginalLevel=sanitizer.sanitize(req.body.OriginalLevel.trim());
 	
 	library.userOriginalLevelSetter(Uid,OriginalLevel,function(){
 		res.end('success!');
@@ -151,7 +157,7 @@ router.post('/originalLevelSetter', function(req, res, next) {
 		res.end('end');
 	});*/
 	
-	/*Users.update({},{$unset: {MaxTotalMoneyCanBorrow: 1 }},{multi:true}, function(err, numberAffected){  
+	/*Users.update({},{$unset: {SecondCardType: 1 }},{multi:true}, function(err, numberAffected){  
 		console.log(numberAffected);
 		res.end('end');
 	});*/
@@ -159,8 +165,8 @@ router.post('/originalLevelSetter', function(req, res, next) {
 });
 
 router.post('/changePassword', function(req, res, next) {
-	Username=sanitizer.sanitize(req.body.Username.trim());
-	Password=sanitizer.sanitize(req.body.Password.trim());
+	var Username=sanitizer.sanitize(req.body.Username.trim());
+	var Password=sanitizer.sanitize(req.body.Password.trim());
 	
 	Users.findOne({"Username": Username}).exec(function (err, user){
 			if (err) {
@@ -186,7 +192,7 @@ router.post('/changePassword', function(req, res, next) {
 
 router.post('/forgetPW', function(req, res, next) {
 	var temp=sanitizer.sanitize(req.body.Username.trim());
-	if(temp==''){
+	if(temp===''){
 		res.json({response:'請輸入帳號供查詢'});
 	}else{
 		crypto.randomBytes(20, function(err, buf) {
@@ -271,9 +277,9 @@ router.post('/resetPW', function(req, res, next) {
 			if (!user) {
 				res.redirect('/message?content='+encodeURIComponent('token過期或無效!'));
 			}else{
-				if((sanitizer.sanitize(req.body.Password.trim())!='')&&(sanitizer.sanitize(req.body.Password2nd.trim())!='')){
-					if(sanitizer.sanitize(req.body.Password.trim())==sanitizer.sanitize(req.body.Password2nd.trim())){
-						if((sanitizer.sanitize(req.body.Password.trim()).search(/[^\w]/ig)==-1)&&(sanitizer.sanitize(req.body.Password.trim()).length>6)){
+				if((sanitizer.sanitize(req.body.Password.trim())!=='')&&(sanitizer.sanitize(req.body.Password2nd.trim())!=='')){
+					if(sanitizer.sanitize(req.body.Password.trim())===sanitizer.sanitize(req.body.Password2nd.trim())){
+						if((sanitizer.sanitize(req.body.Password.trim()).search(/[^\w]/ig)===-1)&&(sanitizer.sanitize(req.body.Password.trim()).length>6)){
 							user.Password = sanitizer.sanitize(req.body.Password.trim());
 							user.Updated=Date.now();
 							user.resetPasswordToken = undefined;
@@ -313,7 +319,7 @@ router.post('/changePW',library.loginFormChecker,library.ensureAuthenticated,fun
 			if (!user) {
 				res.redirect('/message?content='+encodeURIComponent('認證錯誤'));
 			}else{
-				if((sanitizer.sanitize(req.body.Password.trim())!='')&&(sanitizer.sanitize(req.body.Password2nd.trim())!='')&&(sanitizer.sanitize(req.body.OldPassword.trim())!='')){
+				if((sanitizer.sanitize(req.body.Password.trim())!=='')&&(sanitizer.sanitize(req.body.Password2nd.trim())!=='')&&(sanitizer.sanitize(req.body.OldPassword.trim())!=='')){
 					user.comparePassword(sanitizer.sanitize(req.body.OldPassword.trim()), function(err, isMatch) {
 						if(err){
 							res.redirect('/message?content='+encodeURIComponent('錯誤!'));
@@ -322,8 +328,8 @@ router.post('/changePW',library.loginFormChecker,library.ensureAuthenticated,fun
 								//res.redirect('/message?content='+encodeURIComponent('舊密碼輸入錯誤!'));
 								backerChange(req,res);
 							}else{
-								if(sanitizer.sanitize(req.body.Password.trim())==sanitizer.sanitize(req.body.Password2nd.trim())){
-									if((sanitizer.sanitize(req.body.Password.trim()).search(/[^\w]/ig)==-1)&&(sanitizer.sanitize(req.body.Password.trim()).length>6)){
+								if(sanitizer.sanitize(req.body.Password.trim())===sanitizer.sanitize(req.body.Password2nd.trim())){
+									if((sanitizer.sanitize(req.body.Password.trim()).search(/[^\w]/ig)===-1)&&(sanitizer.sanitize(req.body.Password.trim()).length>6)){
 										user.Password = sanitizer.sanitize(req.body.Password.trim());
 										user.Updated=Date.now();
 										user.save(function (err,newUpdated){
@@ -404,7 +410,7 @@ router.get('/confirmMail/:token?',library.loginFormChecker,library.ensureAuthent
 				if (!user) {
 					res.redirect('/message?content='+encodeURIComponent('token過期或無效!'));
 				}else{
-					if(user._id!=req.user._id){
+					if(!user._id.equals(req.user._id)){
 						res.redirect('/message?content='+encodeURIComponent('身分驗證錯誤!'));
 					}else{
 						user.Updated=Date.now();

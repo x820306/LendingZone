@@ -25,10 +25,10 @@ router.post('/createTest', function(req, res, next) {
 				toCreate.MonthPeriodAccepted=sanitizer.sanitize(req.body.MonthPeriodAccepted.trim());
 				toCreate.TimeLimit=sanitizer.sanitize(req.body.TimeLimit.trim());
 				toCreate.Category=sanitizer.sanitize(req.body.Category.trim());
-				if(sanitizer.sanitize(req.body.StoryTitle.trim())!=''){
+				if(sanitizer.sanitize(req.body.StoryTitle.trim())!==''){
 					toCreate.StoryTitle=sanitizer.sanitize(req.body.StoryTitle.trim());
 				}
-				if(sanitizer.sanitize(req.body.Story.trim())!=''){
+				if(sanitizer.sanitize(req.body.Story.trim())!==''){
 					toCreate.Story=sanitizer.sanitize(req.body.Story.trim());
 				}
 				toCreate.CreatedBy=sanitizer.sanitize(req.body.CreatedBy.trim());
@@ -84,7 +84,7 @@ router.post('/readable',library.loginFormChecker, library.ensureAuthenticated, f
 			if(!borrow){
 				res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 			}else{
-				if(borrow.CreatedBy!=req.user._id){
+				if(!borrow.CreatedBy.equals(req.user._id)){
 					res.redirect('/message?content='+encodeURIComponent('認證錯誤!'));
 				}else{
 					borrow.IfReadable=false;
@@ -93,8 +93,7 @@ router.post('/readable',library.loginFormChecker, library.ensureAuthenticated, f
 						if (err){
 							res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 						}else{
-							var objID=mongoose.Types.ObjectId(updatedBorrow._id.toString());
-							library.rejectMessageWhenNotReadable(res,false,'/lender/story?id='+sanitizer.sanitize(req.body.borrowID.trim()),objID,req);
+							library.rejectMessageWhenNotReadable(res,false,'/lender/story?id='+sanitizer.sanitize(req.body.borrowID.trim()),updatedBorrow._id,req,function(){});
 						}
 					});
 				}
@@ -115,7 +114,7 @@ router.post('/like',library.loginFormChecker, library.ensureAuthenticated, funct
 				var i = 0;
 				var flag = 0;
 				for (i = 0; i < borrow.Likes.length; i++) {
-					if (borrow.Likes[i].toString() === req.user._id.toString()) {
+					if (borrow.Likes[i].equals(req.user._id)) {
 						flag = 1;
 						break;
 					}
@@ -150,7 +149,7 @@ router.post('/unlike',library.loginFormChecker, library.ensureAuthenticated, fun
 				var i = 0;
 				var flag = 0;
 				for (i = 0; i < borrow.Likes.length; i++) {
-					if (borrow.Likes[i].toString() === req.user._id.toString()) {
+					if (borrow.Likes[i].equals(req.user._id)) {
 						flag = 1;
 						break;
 					}
@@ -188,12 +187,12 @@ router.post('/iflike', function(req, res, next) {
 					var i = 0;
 					var flag = 0;
 					for (i = 0; i < borrow.Likes.length; i++) {
-						if (borrow.Likes[i].toString() === req.user._id.toString()) {
+						if (borrow.Likes[i].equals(req.user._id)) {
 							flag = 1;
 							break;
 						}
 					}
-					if(borrow.CreatedBy==req.user._id){
+					if(borrow.CreatedBy.equals(req.user._id)){
 						flag = 2;
 					}
 					res.json({success:true,result:borrow.Likes.length,status:flag,date:borrow.Updated});

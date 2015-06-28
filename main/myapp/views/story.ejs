@@ -5,7 +5,7 @@
 			<table width="100%">
 				<tr>
 					<td style="width:90%;">
-						<div style="font-size:30pt;"<%if(json.TitleColor=="default"){%> class="default"<%}else if(json.TitleColor=="color1"){%> class="color1"<%}else if(json.TitleColor=="color2"){%> class="color2"<%}else if(json.TitleColor=="color3"){%> class="color3"<%}else if(json.TitleColor=="color4"){%> class="color4"<%}else if(json.TitleColor=="color5"){%> class="color5"<%}else if(json.TitleColor=="color6"){%> class="color6"<%}else if(json.TitleColor=="color7"){%> class="color7"<%}%>>[<%if(json.Category=='general'){%>一般<%}else if(json.Category=='education'){%>教育<%}else if(json.Category=='family'){%>家庭<%}else if(json.Category=='tour'){%>旅遊<%}%>]&nbsp;&nbsp;<%if(json.StoryTitle!==''){%><%-json.StoryTitle.replace(new RegExp(' ','g'),'&nbsp;')%><%}else{%>無標題<%}%></div>
+						<div style="font-size:30pt;"<%if(json.TitleColor==="default"){%> class="default"<%}else if(json.TitleColor==="color1"){%> class="color1"<%}else if(json.TitleColor==="color2"){%> class="color2"<%}else if(json.TitleColor==="color3"){%> class="color3"<%}else if(json.TitleColor==="color4"){%> class="color4"<%}else if(json.TitleColor==="color5"){%> class="color5"<%}else if(json.TitleColor==="color6"){%> class="color6"<%}else if(json.TitleColor==="color7"){%> class="color7"<%}%>>[<%if(json.Category==='general'){%>一般<%}else if(json.Category==='education'){%>教育<%}else if(json.Category==='family'){%>家庭<%}else if(json.Category==='tour'){%>旅遊<%}%>]&nbsp;&nbsp;<%if(json.StoryTitle!==''){%><%-json.StoryTitle.replace(new RegExp(' ','g'),'&nbsp;')%><%}else{%>無標題<%}%></div>
 						<div class="subTitle"> by <div id="aiteName" style="display:inline;"><%=json.CreatedBy.Username%></div></div>
 					</td>
 					<td align="right">
@@ -176,14 +176,14 @@
 					</div>
 					<div class="input-group my_discussion_ipt">
 						<%if(userName===null){ %>
-							<textarea style="height:35px;" placeholder="留言...Enter送出，Shift+Enter換行" class="form-control" onkeypress="if(event.keyCode==13){if(!event.shiftKey){$('#myModal').modal('show');return false;}}"></textarea>
+							<textarea style="height:35px;" placeholder="留言...Enter送出，Shift+Enter換行" class="form-control" onkeypress="if(event.keyCode===13){if(!event.shiftKey){$('#myModal').modal('show');return false;}}"></textarea>
 							<span class="input-group-btn">
 								<button style="height:35px;" class="btn btn-default" type="button" id="sendButton" data-toggle="modal" data-target="#myModal">
 									<span class="glyphicon glyphicon-comment myTitle2"></span>
 								</button>
 							</span>
 						<% }else{ %>
-							<textarea id="iptCtr" style="height:35px;" placeholder="留言...Enter送出，Shift+Enter換行" class="form-control" onkeypress="if(event.keyCode==13){if(!event.shiftKey){sendComment();return false;}}"></textarea>
+							<textarea id="iptCtr" style="height:35px;" placeholder="留言...Enter送出，Shift+Enter換行" class="form-control" onkeypress="if(event.keyCode===13){if(!event.shiftKey){sendComment();return false;}}"></textarea>
 							<span class="input-group-btn">
 								<button style="height:35px;" onclick="sendComment();" class="btn btn-default" type="button" id="sendButton">
 									<span class="glyphicon glyphicon-comment myTitle2"></span>
@@ -220,15 +220,15 @@
 												<span class="myTitle2">該故事已封存，但您仍可查看訊息</span>
 											</button>
 										<%}else{%>
-											<%if(jsonMessage.Status=='Confirmed'){ %>
+											<%if(jsonMessage.Status==='Confirmed'){ %>
 												<button type="button" class="btn btn-default" onclick="openForm('#hendLendModal');">
 													<span class="myTitle2">您的出借訊息已被同意</span>
 												</button>
-											<% }else if(jsonMessage.Status=='Rejected'){ %>
+											<% }else if(jsonMessage.Status==='Rejected'){ %>
 												<button type="button" class="btn btn-default" onclick="openForm('#hendLendModal');">
 													<span class="myTitle2">您的出借訊息已被婉拒</span>
 												</button>
-											<% }else if(jsonMessage.Status=='NotConfirmed'){ %>
+											<% }else if(jsonMessage.Status==='NotConfirmed'){ %>
 												<button type="button" class="btn btn-default" onclick="openForm('#hendLendModal');">
 													<span class="myTitle2">我想更新出借訊息</span>
 												</button>
@@ -241,15 +241,15 @@
 											<span class="myTitle2">該故事已封存，但您仍可查看訊息</span>
 										</button>
 									<%}else{%>
-										<%if(jsonBorrowMessage.Status=='Confirmed'){ %>
+										<%if(jsonBorrowMessage.Status==='Confirmed'){ %>
 											<button type="button" class="btn btn-default" onclick="openForm('#confirmModal');">
 												<span class="myTitle2">您已同意來自此人的借款請求</span>
 											</button>
-										<% }else if(jsonBorrowMessage.Status=='Rejected'){ %>
+										<% }else if(jsonBorrowMessage.Status==='Rejected'){ %>
 											<button type="button" class="btn btn-default" onclick="openForm('#confirmModal');">
 												<span class="myTitle2">您已婉拒來自此人的借款請求</span>
 											</button>
-										<% }else if(jsonBorrowMessage.Status=='NotConfirmed'){ %>
+										<% }else if(jsonBorrowMessage.Status==='NotConfirmed'){ %>
 											<button type="button" class="btn btn-default" onclick="openForm('#confirmModal');">
 												<span class="myTitle2">查看來自此人的訊息</span>
 											</button>
@@ -336,7 +336,7 @@
 									<h4>最大可自動借出金額：<%if(jsonLend){%><span id="s0" style="color:red;"></span><%}%></h4>
 									<div class="input-group">
 										<%if(jsonLend){%>
-											<input id="lendChangerIpt" type="text" class="form-control" value="<%=jsonLend.MaxMoneyToLend.toFixed(0)%>" onkeypress="if(event.keyCode==13){lendChanger();}">
+											<input id="lendChangerIpt" type="text" class="form-control" value="<%=jsonLend.MaxMoneyToLend.toFixed(0)%>" onkeypress="if(event.keyCode===13){lendChanger();}">
 											<span class="input-group-addon">元</span>
 										<%}else{%>
 											<input type="text" class="form-control" readonly="readonly" value="未找到自動出借設定！">
@@ -470,13 +470,13 @@
 					</form>
 				<%}%>
 			<%}else{%>
-				<%if((!json.IfReadable)||(jsonMessage.Status=='Confirmed')||(jsonMessage.Status=='Rejected')){ %>
+				<%if((!json.IfReadable)||(jsonMessage.Status==='Confirmed')||(jsonMessage.Status==='Rejected')){ %>
 					<div class="modal fade" id="hendLendModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 						<div class="modal-dialog modal-md">
 							<div class="modal-content">
 								<div class="modal-header">
 									<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-									<h4 class="modal-title" id="myModalLabel">欲借出訊息 - <%if(jsonMessage.Status=='Confirmed'){ %>已被同意<%}else if(jsonMessage.Status=='NotConfirmed'){%>未被確認<%}else if(jsonMessage.Status=='Rejected'){%>已被婉拒<%}%></h4>
+									<h4 class="modal-title" id="myModalLabel">欲借出訊息 - <%if(jsonMessage.Status==='Confirmed'){ %>已被同意<%}else if(jsonMessage.Status==='NotConfirmed'){%>未被確認<%}else if(jsonMessage.Status==='Rejected'){%>已被婉拒<%}%></h4>
 								</div>
 								<div class="modal-body">
 									<h4>本次欲借出金額：</h4>
@@ -533,19 +533,19 @@
 									<textarea class="form-control" name="Message" rows="3" readonly="readonly"><%if(jsonMessage.Message!==''){%><%=jsonMessage.Message.replace(/&gt;/g,'>').replace(/&lt;/g,'<').replace(/&amp;/g,'&')%><%}else{%>無內容<%}%></textarea>
 									<br>
 								</div>
-								<%if(jsonMessage.Status=='NotConfirmed'){%>
+								<%if(jsonMessage.Status==='NotConfirmed'){%>
 									<form action="/Messages/destroy" method="post" onsubmit="return disableButton();">
 									<input type="hidden" name="FromBorrowRequest" value="<%=json._id%>">
 									<input type="hidden" name="_id" value="<%=jsonMessage._id%>">
 								<%}%>
 								<div class="modal-footer" style="text-align: left;">
-									<%if(jsonMessage.Status=='NotConfirmed'){%>
+									<%if(jsonMessage.Status==='NotConfirmed'){%>
 										<button type="button" class="btn btn-danger" onclick="checkAndOpenModal(chkModal7,mdlCnt7,'您確定要刪除欲借出訊息嗎?',false);">
 											刪除
 										</button>
 										&nbsp;
 									<%}%>
-									<a href="/lender/lenderSendMessages?msgKeyword=<%=jsonMessage._id%>&filter=<%if(jsonMessage.Status=="NotConfirmed"){%><%=encodeURIComponent('未被確認')%><%}else if(jsonMessage.Status=="Confirmed"){%><%=encodeURIComponent('已被同意')%><%}else if(jsonMessage.Status=="Rejected"){%><%=encodeURIComponent('已被婉拒')%><%}%>&classor=<%=encodeURIComponent("不分故事種類");%>&sorter=<%=encodeURIComponent("更新日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">
+									<a href="/lender/lenderSendMessages?msgKeyword=<%=jsonMessage._id%>&filter=<%if(jsonMessage.Status==="NotConfirmed"){%><%=encodeURIComponent('未被確認')%><%}else if(jsonMessage.Status==="Confirmed"){%><%=encodeURIComponent('已被同意')%><%}else if(jsonMessage.Status==="Rejected"){%><%=encodeURIComponent('已被婉拒')%><%}%>&classor=<%=encodeURIComponent("不分故事種類");%>&sorter=<%=encodeURIComponent("更新日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">
 										<button type="button" class="btn btn-default">於列表查看</button>
 									</a>
 									&nbsp;
@@ -554,7 +554,7 @@
 							</div>
 						</div>
 					</div>
-					<%if(jsonMessage.Status=='NotConfirmed'){%>
+					<%if(jsonMessage.Status==='NotConfirmed'){%>
 					<div class="modal fade" id="chkModal7">
 						<div class="modal-dialog modal-sm">
 							<div class="modal-content">
@@ -597,7 +597,7 @@
 									<h4>最大可自動借出金額：<%if(jsonLend){%><span id="s0" style="color:red;"></span><%}%></h4>
 									<div class="input-group">
 										<%if(jsonLend){%>
-											<input id="lendChangerIpt" type="text" class="form-control" value="<%=jsonLend.MaxMoneyToLend.toFixed(0)%>" onkeypress="if(event.keyCode==13){lendChanger();}">
+											<input id="lendChangerIpt" type="text" class="form-control" value="<%=jsonLend.MaxMoneyToLend.toFixed(0)%>" onkeypress="if(event.keyCode===13){lendChanger();}">
 											<span class="input-group-addon">元</span>
 										<%}else{%>
 											<input type="text" class="form-control" readonly="readonly" value="未找到自動出借設定！">
@@ -712,7 +712,7 @@
 										</div>
 									</div>
 									<div style="float:right;">
-										<a href="/lender/lenderSendMessages?msgKeyword=<%=jsonMessage._id%>&filter=<%if(jsonMessage.Status=="NotConfirmed"){%><%=encodeURIComponent('未被確認')%><%}else if(jsonMessage.Status=="Confirmed"){%><%=encodeURIComponent('已被同意')%><%}else if(jsonMessage.Status=="Rejected"){%><%=encodeURIComponent('已被婉拒')%><%}%>&classor=<%=encodeURIComponent("不分故事種類");%>&sorter=<%=encodeURIComponent("更新日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">
+										<a href="/lender/lenderSendMessages?msgKeyword=<%=jsonMessage._id%>&filter=<%if(jsonMessage.Status==="NotConfirmed"){%><%=encodeURIComponent('未被確認')%><%}else if(jsonMessage.Status==="Confirmed"){%><%=encodeURIComponent('已被同意')%><%}else if(jsonMessage.Status==="Rejected"){%><%=encodeURIComponent('已被婉拒')%><%}%>&classor=<%=encodeURIComponent("不分故事種類");%>&sorter=<%=encodeURIComponent("更新日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">
 											<button type="button" class="btn btn-default">於列表查看</button>
 										</a>
 										<button type="button" class="btn btn-default" data-dismiss="modal">關閉</button>
@@ -757,13 +757,13 @@
 				<%}%>
 			<%}%>
 		<%}else{%>
-			<%if((!json.IfReadable)||(jsonBorrowMessage.Status=='Confirmed')||(jsonBorrowMessage.Status=='Rejected')){ %>
+			<%if((!json.IfReadable)||(jsonBorrowMessage.Status==='Confirmed')||(jsonBorrowMessage.Status==='Rejected')){ %>
 				<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 					<div class="modal-dialog modal-md">
 						<div class="modal-content">
 							<div class="modal-header">
 								<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-								<h4 class="modal-title" id="myModalLabel">借款請求 - <%if(jsonBorrowMessage.Status=='Confirmed'){ %>已同意<%}else if(jsonBorrowMessage.Status=='NotConfirmed'){%>未確認<%}else if(jsonBorrowMessage.Status=='Rejected'){%>已婉拒<%}%></h4>
+								<h4 class="modal-title" id="myModalLabel">借款請求 - <%if(jsonBorrowMessage.Status==='Confirmed'){ %>已同意<%}else if(jsonBorrowMessage.Status==='NotConfirmed'){%>未確認<%}else if(jsonBorrowMessage.Status==='Rejected'){%>已婉拒<%}%></h4>
 							</div>
 							<div class="modal-body">
 								<h4>金額：</h4>
@@ -820,19 +820,19 @@
 								<textarea class="form-control" name="Message" rows="3" readonly="readonly"><%if(jsonBorrowMessage.Message!==''){%><%=jsonBorrowMessage.Message.replace(/&gt;/g,'>').replace(/&lt;/g,'<').replace(/&amp;/g,'&')%><%}else{%>無內容<%}%></textarea>
 								<br>
 							</div>
-							<%if(jsonBorrowMessage.Status=='NotConfirmed'){%>
+							<%if(jsonBorrowMessage.Status==='NotConfirmed'){%>
 							<form action="/Messages/rejectToBorrowMessageInStory" method="post" onsubmit="return disableButton();">
 							<input type="hidden" name="FromBorrowRequest" value="<%=json._id%>">
 							<input type="hidden" name="MessageID" value="<%=jsonBorrowMessage._id%>">
 							<%}%>
 							<div class="modal-footer" style="text-align: left;">
-								<%if(jsonBorrowMessage.Status=='NotConfirmed'){%>
+								<%if(jsonBorrowMessage.Status==='NotConfirmed'){%>
 									<button type="button" class="btn btn-danger" onclick="checkAndOpenModal(chkModal6,mdlCnt6,'您確定要婉拒此借款請求嗎?',false);">
 										婉拒
 									</button>
 									&nbsp;
 								<%}%>
-								<a href="/lender/lenderReceiveMessages?msgKeyword=<%=jsonBorrowMessage._id%>&filter=<%if(jsonBorrowMessage.Status=="NotConfirmed"){%><%=encodeURIComponent('未確認')%><%}else if(jsonBorrowMessage.Status=="Confirmed"){%><%=encodeURIComponent('已同意')%><%}else if(jsonBorrowMessage.Status=="Rejected"){%><%=encodeURIComponent('已婉拒')%><%}%>&classor=<%=encodeURIComponent("不分故事種類");%>&sorter=<%=encodeURIComponent("更新日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">
+								<a href="/lender/lenderReceiveMessages?msgKeyword=<%=jsonBorrowMessage._id%>&filter=<%if(jsonBorrowMessage.Status==="NotConfirmed"){%><%=encodeURIComponent('未確認')%><%}else if(jsonBorrowMessage.Status==="Confirmed"){%><%=encodeURIComponent('已同意')%><%}else if(jsonBorrowMessage.Status==="Rejected"){%><%=encodeURIComponent('已婉拒')%><%}%>&classor=<%=encodeURIComponent("不分故事種類");%>&sorter=<%=encodeURIComponent("更新日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">
 									<button type="button" class="btn btn-default">於列表查看</button>
 								</a>
 								&nbsp;
@@ -841,7 +841,7 @@
 						</div>
 					</div>
 				</div>
-				<%if(jsonBorrowMessage.Status=='NotConfirmed'){%>
+				<%if(jsonBorrowMessage.Status==='NotConfirmed'){%>
 				<div class="modal fade" id="chkModal6">
 					<div class="modal-dialog modal-sm">
 						<div class="modal-content">
@@ -884,7 +884,7 @@
 								<h4>最大可自動借出金額：<%if(jsonLend){%><span id="s0" style="color:red;"></span><%}%></h4>
 								<div class="input-group">
 									<%if(jsonLend){%>
-										<input id="lendChangerIpt" type="text" class="form-control" value="<%=jsonLend.MaxMoneyToLend.toFixed(0)%>" onkeypress="if(event.keyCode==13){lendChanger();}">
+										<input id="lendChangerIpt" type="text" class="form-control" value="<%=jsonLend.MaxMoneyToLend.toFixed(0)%>" onkeypress="if(event.keyCode===13){lendChanger();}">
 										<span class="input-group-addon">元</span>
 									<%}else{%>
 										<input type="text" class="form-control" readonly="readonly" value="未找到自動出借設定！">
@@ -1001,7 +1001,7 @@
 									</div>
 								</div>
 								<div style="float:right;">
-									<a href="/lender/lenderReceiveMessages?msgKeyword=<%=jsonBorrowMessage._id%>&filter=<%if(jsonBorrowMessage.Status=="NotConfirmed"){%><%=encodeURIComponent('未確認')%><%}else if(jsonBorrowMessage.Status=="Confirmed"){%><%=encodeURIComponent('已同意')%><%}else if(jsonBorrowMessage.Status=="Rejected"){%><%=encodeURIComponent('已婉拒')%><%}%>&classor=<%=encodeURIComponent("不分故事種類");%>&sorter=<%=encodeURIComponent("更新日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">
+									<a href="/lender/lenderReceiveMessages?msgKeyword=<%=jsonBorrowMessage._id%>&filter=<%if(jsonBorrowMessage.Status==="NotConfirmed"){%><%=encodeURIComponent('未確認')%><%}else if(jsonBorrowMessage.Status==="Confirmed"){%><%=encodeURIComponent('已同意')%><%}else if(jsonBorrowMessage.Status==="Rejected"){%><%=encodeURIComponent('已婉拒')%><%}%>&classor=<%=encodeURIComponent("不分故事種類");%>&sorter=<%=encodeURIComponent("更新日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">
 										<button type="button" class="btn btn-default">於列表查看</button>
 									</a>
 									<button type="button" class="btn btn-default" data-dismiss="modal">關閉</button>
@@ -1160,13 +1160,13 @@
 						if(Jdata.success){
 							var dateObj=new Date(Jdata.date);
 							$('#updatedDate').html(dateObj.getFullYear()+'/'+(dateObj.getMonth()+1)+'/'+dateObj.getDate());
-							if(Jdata.status==-1){
+							if(Jdata.status===-1){
 								$('#likeBtn').html('<button class="btn btn-default" data-toggle="modal" data-target="#myModal" id="btnID"><span class="glyphicon glyphicon-thumbs-up myTitle2"></span></button>');	
-							}else if(Jdata.status==0){
+							}else if(Jdata.status===0){
 								$('#likeBtn').html('<button class="btn btn-default" onclick="like();" id="btnID"><span class="glyphicon glyphicon-thumbs-up myTitle2"></span></button>');	
-							}else if(Jdata.status==1){
+							}else if(Jdata.status===1){
 								$('#likeBtn').html('<button class="btn btn-default" onclick="unlike();" id="btnID"><span class="glyphicon glyphicon-remove myTitle2"></span></button>');	
-							}else if(Jdata.status==2){
+							}else if(Jdata.status===2){
 								$('#likeBtn').html('<button class="btn btn-default disabled" id="btnID"><span class="glyphicon glyphicon-thumbs-up myTitle2"></span></button>');	
 							}
 							$('#likeNum').html('&nbsp;'+Jdata.result);
@@ -1239,7 +1239,7 @@
 		}
 		
 		function endRenderComments(){
-			$('#iptCtr').attr('onkeypress','if(event.keyCode==13){if(!event.shiftKey){sendComment();return false;}}');
+			$('#iptCtr').attr('onkeypress','if(event.keyCode===13){if(!event.shiftKey){sendComment();return false;}}');
 			$('#iptCtr').removeAttr("readonly");
 			$('#sendButton').removeClass('disabled');
 			$(".actionTa").each(function() {
@@ -1263,7 +1263,7 @@
 			var trueCnt;
 			
 			if(flag){
-				if((a!='')&&(b!='')&&(c!='')&&(aa>=1)&&(bb>=0.01)&&(bb<=99)&&(cc>=1)&&(cc<=36)){
+				if((a!=='')&&(b!=='')&&(c!=='')&&(aa>=1)&&(bb>=0.01)&&(bb<=99)&&(cc>=1)&&(cc<=36)){
 					$("input[name='MoneyToLend']").val(aa);
 					$("input[name='InterestRate']").val(bb);
 					$("input[name='MonthPeriod']").val(cc);
@@ -1306,7 +1306,7 @@
 		}
 		
 		function startEdit(index){
-			$('#cntIptDiv'+index).html('<textarea id="actionTa'+index+'" class="actionTa form-control" style="display:inline;width:70%;height:35px;" placeholder="ESC鍵可取消編輯" onkeypress="if(event.keyCode==13){if(!event.shiftKey){editComment('+index+');return false;}}" onkeyup="if(event.keyCode==27){endEdit('+index+');}">'+$('#hdIpt2'+index).val().replace(/&quot;/g,'"').replace(/&gt;/g,'>').replace(/&lt;/g,'<').replace(/&amp;/g,'&')+'</textarea>');
+			$('#cntIptDiv'+index).html('<textarea id="actionTa'+index+'" class="actionTa form-control" style="display:inline;width:70%;height:35px;" placeholder="ESC鍵可取消編輯" onkeypress="if(event.keyCode===13){if(!event.shiftKey){editComment('+index+');return false;}}" onkeyup="if(event.keyCode===27){endEdit('+index+');}">'+$('#hdIpt2'+index).val().replace(/&quot;/g,'"').replace(/&gt;/g,'>').replace(/&lt;/g,'<').replace(/&amp;/g,'&')+'</textarea>');
 		}
 		
 		function endEdit(index){
@@ -1316,7 +1316,7 @@
 		var ecFlag=false;
 		function editComment(index){
 			if(!ecFlag){
-				if($('#actionTa'+index).val().trim()!=''){
+				if($('#actionTa'+index).val().trim()!==''){
 					startRenderComments();
 					$.ajax({ 
 						url: '/Discussions/edit',
@@ -1343,7 +1343,7 @@
 		var scFlag=false;
 		function sendComment(){
 			if(!scFlag){
-				if($('#iptCtr').val().trim()!=''){
+				if($('#iptCtr').val().trim()!==''){
 					startRenderComments();
 					$.ajax({ 
 							url: '/Discussions/create',
@@ -1423,7 +1423,7 @@
 			}
 			
 			function interestInFutureCalculator(){
-				if(($("input[name='MoneyToLend']").val().trim()!='')&&($("input[name='InterestRate']").val().trim()!='')&&($("input[name='MonthPeriod']").val().trim()!='')){
+				if(($("input[name='MoneyToLend']").val().trim()!=='')&&($("input[name='InterestRate']").val().trim()!=='')&&($("input[name='MonthPeriod']").val().trim()!=='')){
 					var money=parseInt($("input[name='MoneyToLend']").val().trim());
 					var rate=parseFloat($("input[name='InterestRate']").val().trim());
 					var month=parseInt($("input[name='MonthPeriod']").val().trim());
@@ -1553,7 +1553,7 @@
 				
 				function ender(){
 					lendChangerFlag=false;
-					$('#lendChangerIpt').attr('onkeypress','if(event.keyCode==13){lendChanger();}');
+					$('#lendChangerIpt').attr('onkeypress','if(event.keyCode===13){lendChanger();}');
 					$('#lendChangerIpt').removeAttr("readonly");
 					$('#lendChangerBtn').removeClass('disabled');
 					
@@ -1588,7 +1588,7 @@
 						}
 					<%}%>
 				<%}else{%>
-					<%if((json.IfReadable)&&(jsonMessage.Status=='NotConfirmed')){ %>
+					<%if((json.IfReadable)&&(jsonMessage.Status==='NotConfirmed')){ %>
 						function destroy(){
 							$('#chkModal3').modal('hide');
 							disableButton();
@@ -1621,7 +1621,7 @@
 							$('#destroyBtnID').removeClass('disabled');
 							$('#updateBtnID').removeClass('disabled');
 						}
-					<%}else if((!json.IfReadable)&&(jsonMessage.Status=='NotConfirmed')){%>
+					<%}else if((!json.IfReadable)&&(jsonMessage.Status==='NotConfirmed')){%>
 						function destroy(){
 							$('#chkModal7').modal('hide');
 						}
@@ -1646,7 +1646,7 @@
 					<%}%>
 				<%}%>
 			<%}else{%>
-				<%if((json.IfReadable)&&(jsonBorrowMessage.Status=='NotConfirmed')){ %>
+				<%if((json.IfReadable)&&(jsonBorrowMessage.Status==='NotConfirmed')){ %>
 					<%if(jsonLend){%>
 						function agree(){
 							$('#chkModal4').modal('hide');
@@ -1675,10 +1675,10 @@
 								submitFlag=true;
 								return true;
 							}else{
-								if(side==1){
+								if(side===1){
 									$('#chkModal4').modal('show');
 									return false;
-								}else if(side==2){
+								}else if(side===2){
 									disableButtonInner();
 									submitFlag=true;
 									return true;
@@ -1704,7 +1704,7 @@
 							$('#argBtnID').removeClass('disabled');
 						}
 					}
-				<%}else if((!json.IfReadable)&&(jsonBorrowMessage.Status=='NotConfirmed')){%>
+				<%}else if((!json.IfReadable)&&(jsonBorrowMessage.Status==='NotConfirmed')){%>
 					function refuse(){
 						$('#chkModal6').modal('hide');
 					}

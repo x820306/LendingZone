@@ -6,6 +6,7 @@ var sanitizer = require('sanitizer');
 
 var express = require('express');
 var router = express.Router();
+var fs = require('fs');
 
 router.get('/profile',library.loginFormChecker,library.ensureAuthenticated,library.newMsgChecker, function (req, res) {
 	var stringArrayFlash=req.flash('dataCDForm');
@@ -20,7 +21,7 @@ router.get('/profile',library.loginFormChecker,library.ensureAuthenticated,libra
 		mailValidString=stringArrayFlash2[0];
 	}
 	
-	Users.findById(req.user._id).select('-IdCard -IdCardType -SecondCard -SecondCardType').exec(function (err, foundUser){
+	Users.findById(req.user._id).exec(function (err, foundUser){
 		if (err) {
 			console.log(err);
 			res.redirect('/message?content='+encodeURIComponent('錯誤'));
@@ -28,7 +29,6 @@ router.get('/profile',library.loginFormChecker,library.ensureAuthenticated,libra
 			if(!foundUser){
 				res.redirect('/message?content='+encodeURIComponent('錯誤'));
 			}else{
-				console.log(foundUser);
 				BankAccounts.findOne({OwnedBy:req.user._id}).exec(function (err, foundAccount){
 					if (err) {
 						console.log(err);
@@ -90,7 +90,7 @@ router.post('/changeData',library.loginFormChecker, library.ensureAuthenticated,
 		errorMessage.push('');
 	}
 	
-	if(sanitizer.sanitize(req.body.Name.trim())==''){
+	if(sanitizer.sanitize(req.body.Name.trim())===''){
 		errorTarget[0]=true;
 		errorMessage[0]='必要參數未填!';
 	}
@@ -100,7 +100,7 @@ router.post('/changeData',library.loginFormChecker, library.ensureAuthenticated,
 		errorMessage[1]='必要參數未填!';
 	}
 	
-	if(sanitizer.sanitize(req.body.BirthDay.trim())==''){
+	if(sanitizer.sanitize(req.body.BirthDay.trim())===''){
 		errorTarget[2]=true;
 		errorMessage[2]='必要參數未填!';
 	}else{
@@ -108,10 +108,21 @@ router.post('/changeData',library.loginFormChecker, library.ensureAuthenticated,
 		if(isNaN(tester)){
 			errorTarget[2]=true;
 			errorMessage[2]='日期格式錯誤!';
+		}else{
+			var tomorrow=new Date();
+			tomorrow.setHours(0);
+			tomorrow.setMinutes(0);
+			tomorrow.setSeconds(0);
+			tomorrow.setMilliseconds(0);
+			tomorrow.setTime(tomorrow.getTime()+86400000);
+			if(tester>=tomorrow.getTime()){
+				errorTarget[2]=true;
+				errorMessage[2]='日期不合理!';
+			}
 		}
 	}
 	
-	if(sanitizer.sanitize(req.body.IdCardNumber.trim())==''){
+	if(sanitizer.sanitize(req.body.IdCardNumber.trim())===''){
 		errorTarget[3]=true;
 		errorMessage[3]='必要參數未填!';
 	}else if(!library.checkSsnID(sanitizer.sanitize(req.body.IdCardNumber.trim()))){
@@ -123,6 +134,11 @@ router.post('/changeData',library.loginFormChecker, library.ensureAuthenticated,
 		if(req.files.IdCard.truncated){
 			errorTarget[4]=true;
 			errorMessage[4]='檔案不得超過4MB!';
+		}else{
+			if((req.files.IdCard.mimetype !== 'image/png')&&(req.files.IdCard.mimetype !== 'image/jpeg')){
+				errorTarget[4]=true;
+				errorMessage[4]='檔案類型錯誤';
+			}
 		}
 	}
 	
@@ -130,33 +146,38 @@ router.post('/changeData',library.loginFormChecker, library.ensureAuthenticated,
 		if(req.files.SecondCard.truncated){
 			errorTarget[5]=true;
 			errorMessage[5]='檔案不得超過4MB!';
+		}else{
+			if((req.files.SecondCard.mimetype !== 'image/png')&&(req.files.SecondCard.mimetype !== 'image/jpeg')){
+				errorTarget[5]=true;
+				errorMessage[5]='檔案類型錯誤';
+			}
 		}
 	}
 	
-	if(sanitizer.sanitize(req.body.Phone.trim())==''){
+	if(sanitizer.sanitize(req.body.Phone.trim())===''){
 		errorTarget[6]=true;
 		errorMessage[6]='必要參數未填!';
 	}
 	
-	if(sanitizer.sanitize(req.body.Email.trim())==''){
+	if(sanitizer.sanitize(req.body.Email.trim())===''){
 		errorTarget[7]=true;
 		errorMessage[7]='必要參數未填!';
-	}else if(sanitizer.sanitize(req.body.Email.trim()).search(/@/)==-1){
+	}else if(sanitizer.sanitize(req.body.Email.trim()).search(/@/)===-1){
 		errorTarget[7]=true;
 		errorMessage[7]='Email格式錯誤!';
 	}
 	
-	if(sanitizer.sanitize(req.body.Address.trim())==''){
+	if(sanitizer.sanitize(req.body.Address.trim())===''){
 		errorTarget[8]=true;
 		errorMessage[8]='必要參數未填!';
 	}
 	
-	if(sanitizer.sanitize(req.body.BankAccountNumber.trim())==''){
+	if(sanitizer.sanitize(req.body.BankAccountNumber.trim())===''){
 		errorTarget[9]=true;
 		errorMessage[9]='必要參數未填!';
 	}
 	
-	if(sanitizer.sanitize(req.body.BankAccountPassword.trim())==''){
+	if(sanitizer.sanitize(req.body.BankAccountPassword.trim())===''){
 		errorTarget[10]=true;
 		errorMessage[10]='必要參數未填!';
 	}
@@ -179,7 +200,7 @@ router.post('/changeData',library.loginFormChecker, library.ensureAuthenticated,
 					res.redirect('/message?content='+encodeURIComponent('錯誤'));
 				}else{
 					var ifEmailChange=false;
-					if(user.Email!=sanitizer.sanitize(req.body.Email.trim())){
+					if(user.Email!==sanitizer.sanitize(req.body.Email.trim())){
 						ifEmailChange=true;
 						user.ifMailValid=false;
 					}
@@ -191,15 +212,6 @@ router.post('/changeData',library.loginFormChecker, library.ensureAuthenticated,
 					user.Phone=sanitizer.sanitize(req.body.Phone.trim());
 					user.Address=sanitizer.sanitize(req.body.Address.trim());
 					user.Updated=Date.now();
-					
-					if(req.files.IdCard){
-						user.IdCardType=req.files.IdCard.mimetype;
-						user.IdCard=req.files.IdCard.buffer;
-					}
-					if(req.files.SecondCard){
-						user.SecondCardType=req.files.SecondCard.mimetype;
-						user.SecondCard=req.files.SecondCard.buffer;
-					}
 					
 					user.save(function (err,newUpdated) {
 						if (err){
@@ -221,17 +233,45 @@ router.post('/changeData',library.loginFormChecker, library.ensureAuthenticated,
 												console.log(err);
 												res.redirect('/message?content='+encodeURIComponent('錯誤'));
 											}else{
-												if(!ifEmailChange){
-													res.redirect('/signup/profile');
+												var filesArray=[];
+												if(req.files.IdCard){
+													req.files.IdCard.flag=true;
+													req.files.IdCard.category='IdCard';
+													filesArray.push(req.files.IdCard);
 												}else{
-													library.mailValid(newUpdated._id,req,function(){
-														req.flash('sendValidMail','E-mail認證信已寄往您所填寫的地址：<br><span style="color:red;">'+newUpdated.Email+'</span><br>您可於一小時內前往您的信箱點擊連結進行認證或於本頁面重發認證信');
-														res.redirect('/signup/profile');
-													},function(){
-														req.flash('sendValidMail','E-mail認證信已寄往您所填寫的地址：<br><span style="color:red;">'+newUpdated.Email+'</span><br>您可於一小時內前往您的信箱點擊連結進行認證或於本頁面重發認證信');
-														res.redirect('/signup/profile');
-													});
+													var ipt={};
+													ipt.flag=false;
+													filesArray.push(ipt);
 												}
+												if(req.files.SecondCard){
+													req.files.SecondCard.flag=true;
+													req.files.SecondCard.category='SecondCard';
+													filesArray.push(req.files.SecondCard);
+												}else{
+													var ipt2={};
+													ipt2.flag=false;
+													filesArray.push(ipt2);
+												}
+												
+												library.gridDeletor(newUpdated._id,filesArray,function(){
+													library.gridCreator(newUpdated._id,filesArray,function(){
+														if(!ifEmailChange){
+															res.redirect('/signup/profile');
+														}else{
+															library.mailValid(newUpdated._id,req,function(){
+																req.flash('sendValidMail','E-mail認證信已寄往您所填寫的地址：<br><span style="color:red;">'+newUpdated.Email+'</span><br>您可於一小時內前往您的信箱點擊連結進行認證或於本頁面重發認證信');
+																res.redirect('/signup/profile');
+															},function(){
+																req.flash('sendValidMail','E-mail認證信已寄往您所填寫的地址：<br><span style="color:red;">'+newUpdated.Email+'</span><br>您可於一小時內前往您的信箱點擊連結進行認證或於本頁面重發認證信');
+																res.redirect('/signup/profile');
+															});
+														}
+													},function(){
+														res.redirect('/message?content='+encodeURIComponent('檔案更新錯誤'));
+													});
+												},function(){
+													res.redirect('/message?content='+encodeURIComponent('檔案刪除錯誤'));
+												});
 											}
 										});
 									}
@@ -243,16 +283,47 @@ router.post('/changeData',library.loginFormChecker, library.ensureAuthenticated,
 			}
 		});
 	}else{
-		if(req.files.IdCard){
-			if(!errorTarget[4]){
-				errorTarget[4]=true;
-				errorMessage[4]='重新上傳檔案';
+		if((req.files.IdCard)||(req.files.SecondCard)){
+			var findPath = __dirname+'/../';
+			if(req.files.IdCard){
+				if(!errorTarget[4]){
+					errorTarget[4]=true;
+					errorMessage[4]='重新上傳檔案';
+				}
+				var delPathA=require('path').join(findPath,req.files.IdCard.path);
+				if(fs.existsSync(delPathA)){
+					fs.unlinkSync(delPathA);
+				}
+				var ctrA=-1;
+				for(i=0;i<library.tmpFilePathArray.length;i++){
+					if(req.files.IdCard.path===library.tmpFilePathArray[i].Path){
+						ctrA=i;
+						break;
+					}
+				}
+				if(ctrA>-1){
+					library.tmpFilePathArray.splice(ctrA, 1);
+				}
 			}
-		}
-		if(req.files.SecondCard){
-			if(!errorTarget[5]){
-				errorTarget[5]=true;
-				errorMessage[5]='重新上傳檔案';
+			if(req.files.SecondCard){
+				if(!errorTarget[5]){
+					errorTarget[5]=true;
+					errorMessage[5]='重新上傳檔案';
+				}
+				var delPathB=require('path').join(findPath,req.files.SecondCard.path);
+				if(fs.existsSync(delPathB)){
+					fs.unlinkSync(delPathB);
+				}
+				var ctrB=-1;
+				for(i=0;i<library.tmpFilePathArray.length;i++){
+					if(req.files.SecondCard.path===library.tmpFilePathArray[i].Path){
+						ctrB=i;
+						break;
+					}
+				}
+				if(ctrB>-1){
+					library.tmpFilePathArray.splice(ctrB, 1);
+				}
 			}
 		}
 		redirectorCD(req,res,errorTarget,errorMessage);
@@ -327,8 +398,7 @@ router.get('/cardData',library.loginFormChecker,library.newMsgChecker, function 
 	
 	library.formIdfrCtr+=1;
 	var tempIdfr=library.formIdfrCtr;
-	library.formIdfrArray.push(tempIdfr);
-	library.setFormTimer();
+	library.formIdfrArray.push({Idfr:tempIdfr,SaveT:Date.now()});
 	
 	//get data from database and process them here
 	
@@ -342,7 +412,7 @@ router.post('/checkPro',library.loginFormChecker,library.newMsgChecker, function
 	var passFlag=false;
 	if(Idfr>0){
 		for(i=0;i<library.formIdfrArray.length;i++){
-			if(Idfr==library.formIdfrArray[i]){
+			if(Idfr===library.formIdfrArray[i].Idfr){
 				passFlag=true;
 				break;
 			}
@@ -357,12 +427,12 @@ router.post('/checkPro',library.loginFormChecker,library.newMsgChecker, function
 			errorMessage.push('');
 		}
 		
-		if(sanitizer.sanitize(req.body.cardIpt.trim())==''){
+		if(sanitizer.sanitize(req.body.cardIpt.trim())===''){
 			errorTarget[0]=true;
 			errorMessage[0]='必要參數未填!';
 		}
 		
-		if(sanitizer.sanitize(req.body.cardPwdIpt.trim())==''){
+		if(sanitizer.sanitize(req.body.cardPwdIpt.trim())===''){
 			errorTarget[1]=true;
 			errorMessage[1]='必要參數未填!';
 		}
@@ -383,8 +453,7 @@ router.post('/checkPro',library.loginFormChecker,library.newMsgChecker, function
 			
 			library.formIdfrCtr+=1;
 			var tempIdfr=library.formIdfrCtr;
-			library.formIdfrArray.push(tempIdfr);
-			library.setFormTimer();
+			library.formIdfrArray.push({Idfr:tempIdfr,SaveT:Date.now()});
 			
 			res.render('checkPro_1',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,BankAccountNumber:req.body.cardIpt,BankAccountPassword:req.body.cardPwdIpt,formSession1:req.body.FormSession1,formSession2:tempIdfr});
 		}else{
@@ -410,8 +479,7 @@ router.get('/newAcc',library.loginFormChecker,library.newMsgChecker, function (r
 	
 	library.formIdfrCtr+=1;
 	var tempIdfr=library.formIdfrCtr;
-	library.formIdfrArray.push(tempIdfr);
-	library.setFormTimer();
+	library.formIdfrArray.push({Idfr:tempIdfr,SaveT:Date.now()});
 	
 	//get data from database and process them here
 	
@@ -425,7 +493,7 @@ router.post('/apply',library.loginFormChecker,library.newMsgChecker, function (r
 	var passFlag=false;
 	if(Idfr>0){
 		for(i=0;i<library.formIdfrArray.length;i++){
-			if(Idfr==library.formIdfrArray[i]){
+			if(Idfr===library.formIdfrArray[i].Idfr){
 				passFlag=true;
 				break;
 			}
@@ -433,7 +501,7 @@ router.post('/apply',library.loginFormChecker,library.newMsgChecker, function (r
 	}
 	
 	if(passFlag){
-		if((sanitizer.sanitize(req.body.nameIpt.trim())!='')&&(sanitizer.sanitize(req.body.genderIpt.trim())!='')&&(sanitizer.sanitize(req.body.birthIpt.trim())!='')&&(sanitizer.sanitize(req.body.ssnIpt.trim())!='')&&(sanitizer.sanitize(req.body.telIpt.trim())!='')&&(sanitizer.sanitize(req.body.emailIpt.trim())!='')&&(sanitizer.sanitize(req.body.addrIpt.trim())!='')&&(sanitizer.sanitize(req.body.BankAccountNumber.trim())!='')&&(sanitizer.sanitize(req.body.BankAccountPassword.trim())!='')&&(req.body.IdCard!='')&&(req.body.IdCardType!='')&&(sanitizer.sanitize(req.body.SecondCard.trim())!='')&&(sanitizer.sanitize(req.body.SecondCardType.trim())!='')){
+		if((sanitizer.sanitize(req.body.nameIpt.trim())!=='')&&(sanitizer.sanitize(req.body.genderIpt.trim())!=='')&&(sanitizer.sanitize(req.body.birthIpt.trim())!=='')&&(sanitizer.sanitize(req.body.ssnIpt.trim())!=='')&&(sanitizer.sanitize(req.body.telIpt.trim())!=='')&&(sanitizer.sanitize(req.body.emailIpt.trim())!=='')&&(sanitizer.sanitize(req.body.addrIpt.trim())!=='')&&(sanitizer.sanitize(req.body.BankAccountNumber.trim())!=='')&&(sanitizer.sanitize(req.body.BankAccountPassword.trim())!=='')&&(sanitizer.sanitize(req.body.IdCardStr.trim())!=='')&&(sanitizer.sanitize(req.body.SecondCardStr.trim())!=='')){
 			var tester=Date.parse(sanitizer.sanitize(req.body.birthIpt.trim()));
 			var emailFlag=false;
 			if(sanitizer.sanitize(req.body.emailIpt.trim()).search(/@/)>-1){
@@ -448,11 +516,10 @@ router.post('/apply',library.loginFormChecker,library.newMsgChecker, function (r
 
 				library.formIdfrCtr+=1;
 				var tempIdfr=library.formIdfrCtr;
-				library.formIdfrArray.push(tempIdfr);
-				library.setFormTimer();
+				library.formIdfrArray.push({Idfr:tempIdfr,SaveT:Date.now()});
 				
 				res.render('apply_1',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst, Name:req.body.nameIpt, Email:req.body.emailIpt, Gender:req.body.genderIpt,
-					BirthDay:req.body.birthIpt, Phone:req.body.telIpt, Address:req.body.addrIpt,IdCardNumber:req.body.ssnIpt,IdCard:req.body.IdCard,IdCardType:req.body.IdCardType,SecondCard:req.body.SecondCard,SecondCardType:req.body.SecondCardType,
+					BirthDay:req.body.birthIpt, Phone:req.body.telIpt, Address:req.body.addrIpt,IdCardNumber:req.body.ssnIpt,IdCardStr:req.body.IdCardStr,SecondCardStr:req.body.SecondCardStr,
 					BankAccountNumber:req.body.BankAccountNumber,BankAccountPassword:req.body.BankAccountPassword,formSession1:req.body.FormSession1,formSession2:req.body.FormSession2,formSession3:tempIdfr});
 			}else{
 				res.redirect('/message?content='+encodeURIComponent('資料填寫不全或錯誤！'));
@@ -470,7 +537,7 @@ router.post('/_apply',library.loginFormChecker,library.newMsgChecker, function (
 	var passFlag=false;
 	if(Idfr>0){
 		for(i=0;i<library.formIdfrArray.length;i++){
-			if(Idfr==library.formIdfrArray[i]){
+			if(Idfr===library.formIdfrArray[i].Idfr){
 				passFlag=true;
 				break;
 			}
@@ -485,7 +552,7 @@ router.post('/_apply',library.loginFormChecker,library.newMsgChecker, function (
 			errorMessage.push('');
 		}
 		
-		if(sanitizer.sanitize(req.body.nameIpt.trim())==''){
+		if(sanitizer.sanitize(req.body.nameIpt.trim())===''){
 			errorTarget[0]=true;
 			errorMessage[0]='必要參數未填!';
 		}
@@ -495,7 +562,7 @@ router.post('/_apply',library.loginFormChecker,library.newMsgChecker, function (
 			errorMessage[1]='必要參數未填!';
 		}
 		
-		if(sanitizer.sanitize(req.body.birthIpt.trim())==''){
+		if(sanitizer.sanitize(req.body.birthIpt.trim())===''){
 			errorTarget[2]=true;
 			errorMessage[2]='必要參數未填!';
 		}else{
@@ -503,10 +570,21 @@ router.post('/_apply',library.loginFormChecker,library.newMsgChecker, function (
 			if(isNaN(tester)){
 				errorTarget[2]=true;
 				errorMessage[2]='日期格式錯誤!';
+			}else{
+				var tomorrow=new Date();
+				tomorrow.setHours(0);
+				tomorrow.setMinutes(0);
+				tomorrow.setSeconds(0);
+				tomorrow.setMilliseconds(0);
+				tomorrow.setTime(tomorrow.getTime()+86400000);
+				if(tester>=tomorrow.getTime()){
+					errorTarget[2]=true;
+					errorMessage[2]='日期不合理!';
+				}
 			}
 		}
 		
-		if(sanitizer.sanitize(req.body.ssnIpt.trim())==''){
+		if(sanitizer.sanitize(req.body.ssnIpt.trim())===''){
 			errorTarget[3]=true;
 			errorMessage[3]='必要參數未填!';
 		}else if(!library.checkSsnID(sanitizer.sanitize(req.body.ssnIpt.trim()))){
@@ -521,6 +599,11 @@ router.post('/_apply',library.loginFormChecker,library.newMsgChecker, function (
 			if(req.files.ssnImg.truncated){
 				errorTarget[4]=true;
 				errorMessage[4]='檔案不得超過4MB!';
+			}else{
+				if((req.files.ssnImg.mimetype !== 'image/png')&&(req.files.ssnImg.mimetype !== 'image/jpeg')){
+					errorTarget[4]=true;
+					errorMessage[4]='檔案類型錯誤';
+				}
 			}
 		}
 		
@@ -531,33 +614,38 @@ router.post('/_apply',library.loginFormChecker,library.newMsgChecker, function (
 			if(req.files.cerImg.truncated){
 				errorTarget[5]=true;
 				errorMessage[5]='檔案不得超過4MB!';
+			}else{
+				if((req.files.cerImg.mimetype !== 'image/png')&&(req.files.cerImg.mimetype !== 'image/jpeg')){
+					errorTarget[5]=true;
+					errorMessage[5]='檔案類型錯誤';
+				}
 			}
 		}
 		
-		if(sanitizer.sanitize(req.body.telIpt.trim())==''){
+		if(sanitizer.sanitize(req.body.telIpt.trim())===''){
 			errorTarget[6]=true;
 			errorMessage[6]='必要參數未填!';
 		}
 		
-		if(sanitizer.sanitize(req.body.emailIpt.trim())==''){
+		if(sanitizer.sanitize(req.body.emailIpt.trim())===''){
 			errorTarget[7]=true;
 			errorMessage[7]='必要參數未填!';
-		}else if(sanitizer.sanitize(req.body.emailIpt.trim()).search(/@/)==-1){
+		}else if(sanitizer.sanitize(req.body.emailIpt.trim()).search(/@/)===-1){
 			errorTarget[7]=true;
 			errorMessage[7]='Email格式錯誤!';
 		}
 		
-		if(sanitizer.sanitize(req.body.addrIpt.trim())==''){
+		if(sanitizer.sanitize(req.body.addrIpt.trim())===''){
 			errorTarget[8]=true;
 			errorMessage[8]='必要參數未填!';
 		}
 		
-		if(sanitizer.sanitize(req.body.cardIpt.trim())==''){
+		if(sanitizer.sanitize(req.body.cardIpt.trim())===''){
 			errorTarget[9]=true;
 			errorMessage[9]='必要參數未填!';
 		}
 		
-		if(sanitizer.sanitize(req.body.cardPwdIpt.trim())==''){
+		if(sanitizer.sanitize(req.body.cardPwdIpt.trim())===''){
 			errorTarget[10]=true;
 			errorMessage[10]='必要參數未填!';
 		}
@@ -575,41 +663,74 @@ router.post('/_apply',library.loginFormChecker,library.newMsgChecker, function (
 			if(req.isAuthenticated()){
 				auRst=req.user.Username;
 			}
-			var varIdCardType='';
+			
+			var idCardJson={};
 			if(req.files.ssnImg){
-				varIdCardType=req.files.ssnImg.mimetype;
+				idCardJson.originalname=req.files.ssnImg.originalname;
+				idCardJson.mimetype=req.files.ssnImg.mimetype;
+				idCardJson.extension=req.files.ssnImg.extension;
+				idCardJson.path=req.files.ssnImg.path;
 			}
-			var varSecondCardType='';
+			var idCardString=JSON.stringify(idCardJson);
+			
+			var secondCardJson={};
 			if(req.files.cerImg){
-				varSecondCardType=req.files.cerImg.mimetype;
+				secondCardJson.originalname=req.files.cerImg.originalname;
+				secondCardJson.mimetype=req.files.cerImg.mimetype;
+				secondCardJson.extension=req.files.cerImg.extension;
+				secondCardJson.path=req.files.cerImg.path;
 			}
-			var IdCardBase64='';
-			if(req.files.ssnImg){
-				IdCardBase64=req.files.ssnImg.buffer.toString('base64');
-			}
-			var SecondCardBase64='';
-			if(req.files.cerImg){
-				SecondCardBase64=req.files.cerImg.buffer.toString('base64');
-			}
+			var secondCardString=JSON.stringify(secondCardJson);
 			
 			library.formIdfrCtr+=1;
 			var tempIdfr=library.formIdfrCtr;
-			library.formIdfrArray.push(tempIdfr);
-			library.setFormTimer();
+			library.formIdfrArray.push({Idfr:tempIdfr,SaveT:Date.now()});
 			
 			//pass what u get from database and send them into ejs in this line
 			res.render('apply_2',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst, Name:req.body.nameIpt, Email:req.body.emailIpt, Gender:req.body.genderIpt,
-				BirthDay:req.body.birthIpt, Phone:req.body.telIpt, Address:req.body.addrIpt,IdCardNumber:req.body.ssnIpt,IdCard:IdCardBase64,IdCardType:varIdCardType,SecondCard:SecondCardBase64,SecondCardType:varSecondCardType,
+				BirthDay:req.body.birthIpt, Phone:req.body.telIpt, Address:req.body.addrIpt,IdCardNumber:req.body.ssnIpt,IdCardStr:idCardString,SecondCardStr:secondCardString,
 				BankAccountNumber:req.body.cardIpt,BankAccountPassword:req.body.cardPwdIpt,formSession1:req.body.FormSession1,formSession2:tempIdfr});
 		}else{
+			var findPath = __dirname+'/../';
+			
 			if(!errorTarget[4]){
 				errorTarget[4]=true;
 				errorMessage[4]='重新上傳檔案';
 			}
+			var delPathA=require('path').join(findPath,req.files.ssnImg.path);
+			if(fs.existsSync(delPathA)){
+				fs.unlinkSync(delPathA);
+			}
+			var ctrA=-1;
+			for(i=0;i<library.tmpFilePathArray.length;i++){
+				if(req.files.ssnImg.path===library.tmpFilePathArray[i].Path){
+					ctrA=i;
+					break;
+				}
+			}
+			if(ctrA>-1){
+				library.tmpFilePathArray.splice(ctrA, 1);
+			}
+
 			if(!errorTarget[5]){
 				errorTarget[5]=true;
 				errorMessage[5]='重新上傳檔案';
 			}
+			var delPathB=require('path').join(findPath,req.files.cerImg.path);
+			if(fs.existsSync(delPathB)){
+				fs.unlinkSync(delPathB);
+			}
+			var ctrB=-1;
+			for(i=0;i<library.tmpFilePathArray.length;i++){
+				if(req.files.cerImg.path===library.tmpFilePathArray[i].Path){
+					ctrB=i;
+					break;
+				}
+			}
+			if(ctrB>-1){
+				library.tmpFilePathArray.splice(ctrB, 1);
+			}
+			
 			redirectorNewACC(req,res,errorTarget,errorMessage);
 		}
 	}else{
@@ -625,7 +746,7 @@ router.post('/community',library.loginFormChecker,library.newMsgChecker, functio
 	var passFlag=false;
 	if(Idfr3>0){
 		for(i=0;i<library.formIdfrArray.length;i++){
-			if(Idfr3==library.formIdfrArray[i]){
+			if(Idfr3===library.formIdfrArray[i].Idfr){
 				passFlag=true;
 				break;
 			}
@@ -641,7 +762,7 @@ router.post('/community',library.loginFormChecker,library.newMsgChecker, functio
 			var ctr1=-1;
 			if(Idfr1>0){
 				for(i=0;i<library.formIdfrArray.length;i++){
-					if(Idfr1==library.formIdfrArray[i]){
+					if(Idfr1===library.formIdfrArray[i].Idfr){
 						ctr1=i;
 						break;
 					}
@@ -653,7 +774,7 @@ router.post('/community',library.loginFormChecker,library.newMsgChecker, functio
 			var ctr2=-1;
 			if(Idfr2>0){
 				for(i=0;i<library.formIdfrArray.length;i++){
-					if(Idfr2==library.formIdfrArray[i]){
+					if(Idfr2===library.formIdfrArray[i].Idfr){
 						ctr2=i;
 						break;
 					}
@@ -665,7 +786,7 @@ router.post('/community',library.loginFormChecker,library.newMsgChecker, functio
 			var ctr3=-1;
 			if(Idfr3>0){
 				for(i=0;i<library.formIdfrArray.length;i++){
-					if(Idfr3==library.formIdfrArray[i]){
+					if(Idfr3===library.formIdfrArray[i].Idfr){
 						ctr3=i;
 						break;
 					}
@@ -688,7 +809,7 @@ router.post('/_community',library.loginFormChecker,library.newMsgChecker, functi
 	var passFlag=false;
 	if(Idfr2>0){
 		for(i=0;i<library.formIdfrArray.length;i++){
-			if(Idfr2==library.formIdfrArray[i]){
+			if(Idfr2===library.formIdfrArray[i].Idfr){
 				passFlag=true;
 				break;
 			}
@@ -704,7 +825,7 @@ router.post('/_community',library.loginFormChecker,library.newMsgChecker, functi
 			var ctr1=-1;
 			if(Idfr1>0){
 				for(i=0;i<library.formIdfrArray.length;i++){
-					if(Idfr1==library.formIdfrArray[i]){
+					if(Idfr1===library.formIdfrArray[i].Idfr){
 						ctr1=i;
 						break;
 					}
@@ -716,7 +837,7 @@ router.post('/_community',library.loginFormChecker,library.newMsgChecker, functi
 			var ctr2=-1;
 			if(Idfr2>0){
 				for(i=0;i<library.formIdfrArray.length;i++){
-					if(Idfr2==library.formIdfrArray[i]){
+					if(Idfr2===library.formIdfrArray[i].Idfr){
 						ctr2=i;
 						break;
 					}
@@ -759,14 +880,80 @@ router.get('/_success',library.loginFormChecker,library.newMsgChecker, function 
 });
 
 function userCreator(req,res,callback){
-	if((sanitizer.sanitize(req.body.Username.trim())!='')&&(sanitizer.sanitize(req.body.Password.trim())!='')&&(sanitizer.sanitize(req.body.Password2nd.trim())!='')&&(sanitizer.sanitize(req.body.Name.trim())!='')&&(sanitizer.sanitize(req.body.Email.trim())!='')&&(sanitizer.sanitize(req.body.Gender.trim())!='')&&(sanitizer.sanitize(req.body.BirthDay.trim())!='')&&(sanitizer.sanitize(req.body.IdCardNumber.trim())!='')&&(sanitizer.sanitize(req.body.Phone.trim())!='')&&(sanitizer.sanitize(req.body.Address.trim())!='')&&(sanitizer.sanitize(req.body.IdCardType.trim())!='')&&(sanitizer.sanitize(req.body.SecondCardType.trim())!='')&&(req.body.IdCard!='')&&(req.body.SecondCard!='')&&(sanitizer.sanitize(req.body.BankAccountNumber.trim())!='')&&(sanitizer.sanitize(req.body.BankAccountPassword.trim())!='')){
+	if((sanitizer.sanitize(req.body.Username.trim())!=='')&&(sanitizer.sanitize(req.body.Password.trim())!=='')&&(sanitizer.sanitize(req.body.Password2nd.trim())!=='')&&(sanitizer.sanitize(req.body.Name.trim())!=='')&&(sanitizer.sanitize(req.body.Email.trim())!=='')&&(sanitizer.sanitize(req.body.Gender.trim())!=='')&&(sanitizer.sanitize(req.body.BirthDay.trim())!=='')&&(sanitizer.sanitize(req.body.IdCardNumber.trim())!=='')&&(sanitizer.sanitize(req.body.Phone.trim())!=='')&&(sanitizer.sanitize(req.body.Address.trim())!=='')&&(sanitizer.sanitize(req.body.IdCardStr.trim())!=='')&&(sanitizer.sanitize(req.body.SecondCardStr.trim())!=='')&&(sanitizer.sanitize(req.body.BankAccountNumber.trim())!=='')&&(sanitizer.sanitize(req.body.BankAccountPassword.trim())!=='')){
+		var fileFlag1=true;
+		var fileFlag2=true;
+		
+		var idCardJson=JSON.parse(sanitizer.sanitize(req.body.IdCardStr.trim()));
+		if((!idCardJson.originalname)||(!idCardJson.mimetype)||(!idCardJson.extension)||(!idCardJson.path)){
+			fileFlag1=false;
+		}else{
+			var tempArray1=idCardJson.originalname.split('.');
+			var fileTemper1=tempArray1[tempArray1.length-1].toUpperCase();
+			if((fileTemper1!=='PNG')&&(fileTemper1!=='JPG')&&(fileTemper1!=='JPEG')&&(fileTemper1!=='JPE')&&(fileTemper1!=='JFIF')){
+				fileFlag1=false;
+			}else{
+				fileTemper1=idCardJson.extension.toUpperCase();
+				if((fileTemper1!=='PNG')&&(fileTemper1!=='JPG')&&(fileTemper1!=='JPEG')&&(fileTemper1!=='JPE')&&(fileTemper1!=='JFIF')){
+					fileFlag1=false;
+				}else{
+					if((idCardJson.mimetype !== 'image/png')&&(idCardJson.mimetype !== 'image/jpeg')){
+						fileFlag1=false;
+					}else{
+						if(!fs.existsSync(idCardJson.path)){
+							fileFlag1=false;
+						}
+					}
+				}
+			}
+		}
+		
+		var secondCardJson=JSON.parse(sanitizer.sanitize(req.body.SecondCardStr.trim()));
+		if((!secondCardJson.originalname)||(!secondCardJson.mimetype)||(!secondCardJson.extension)||(!secondCardJson.path)){
+			fileFlag2=false;
+		}else{
+			var tempArray2=secondCardJson.originalname.split('.');
+			var fileTemper2=tempArray2[tempArray2.length-1].toUpperCase();
+			if((fileTemper2!=='PNG')&&(fileTemper2!=='JPG')&&(fileTemper2!=='JPEG')&&(fileTemper2!=='JPE')&&(fileTemper2!=='JFIF')){
+				fileFlag2=false;
+			}else{
+				fileTemper2=secondCardJson.extension.toUpperCase();
+				if((fileTemper2!=='PNG')&&(fileTemper2!=='JPG')&&(fileTemper2!=='JPEG')&&(fileTemper2!=='JPE')&&(fileTemper2!=='JFIF')){
+					fileFlag2=false;
+				}else{
+					if((secondCardJson.mimetype !== 'image/png')&&(secondCardJson.mimetype !== 'image/jpeg')){
+						fileFlag2=false;
+					}else{
+						if(!fs.existsSync(secondCardJson.path)){
+							fileFlag2=false;
+						}
+					}
+				}
+			}
+		}
+		
 		var tester=Date.parse(sanitizer.sanitize(req.body.BirthDay.trim()));
+		var tLimitFlag=true;
+		if(isNaN(tester)){
+			tLimitFlag=false;
+		}else{
+			var tomorrow=new Date();
+			tomorrow.setHours(0);
+			tomorrow.setMinutes(0);
+			tomorrow.setSeconds(0);
+			tomorrow.setMilliseconds(0);
+			tomorrow.setTime(tomorrow.getTime()+86400000);
+			if(tester>=tomorrow.getTime()){
+				tLimitFlag=false;
+			}
+		}
+		
 		var emailFlag=false;
 		if(sanitizer.sanitize(req.body.Email.trim()).search(/@/)>-1){
 			emailFlag=true;
 		}
 		var tester2=sanitizer.sanitize(req.body.IdCardNumber.trim());
-		if((!isNaN(tester))&&(emailFlag)&&(library.checkSsnID(tester2))){
+		if((tLimitFlag)&&(emailFlag)&&(library.checkSsnID(tester2))&&(fileFlag1)&&(fileFlag2)){
 			var temp=sanitizer.sanitize(req.body.Username.trim());
 			Users.findOne({Username:temp}).exec(function (err, user){
 				if (err) {
@@ -776,8 +963,8 @@ function userCreator(req,res,callback){
 					if(user){
 						res.redirect('/message?content='+encodeURIComponent('此帳號已存在!'));
 					}else{
-						if(sanitizer.sanitize(req.body.Password.trim())==sanitizer.sanitize(req.body.Password2nd.trim())){
-							if((sanitizer.sanitize(req.body.Username.trim()).search(/[^\w]/ig)==-1)&&(sanitizer.sanitize(req.body.Password.trim()).search(/[^\w]/ig)==-1)&&(sanitizer.sanitize(req.body.Password.trim()).length>6)){
+						if(sanitizer.sanitize(req.body.Password.trim())===sanitizer.sanitize(req.body.Password2nd.trim())){
+							if((sanitizer.sanitize(req.body.Username.trim()).search(/[^\w]/ig)===-1)&&(sanitizer.sanitize(req.body.Password.trim()).search(/[^\w]/ig)===-1)&&(sanitizer.sanitize(req.body.Password.trim()).length>6)){
 								var toCreate = new Users();
 								toCreate.Username=sanitizer.sanitize(req.body.Username.trim());
 								toCreate.Password=sanitizer.sanitize(req.body.Password.trim());
@@ -788,11 +975,6 @@ function userCreator(req,res,callback){
 								toCreate.IdCardNumber=sanitizer.sanitize(req.body.IdCardNumber.trim());
 								toCreate.Phone=sanitizer.sanitize(req.body.Phone.trim());
 								toCreate.Address=sanitizer.sanitize(req.body.Address.trim());
-								
-								toCreate.IdCardType=sanitizer.sanitize(req.body.IdCardType.trim());
-								toCreate.SecondCardType=sanitizer.sanitize(req.body.SecondCardType.trim());
-								toCreate.IdCard=new Buffer(req.body.IdCard, 'base64');
-								toCreate.SecondCard=new Buffer(req.body.SecondCard, 'base64');
 								
 								toCreate.save(function (err,newCreate) {
 									if (err){
@@ -810,7 +992,21 @@ function userCreator(req,res,callback){
 												console.log(err);
 												res.redirect('/message?content='+encodeURIComponent('錯誤'));
 											}else{
-												library.mailValid(newCreate._id,req,callback,callback);
+												var filesArray=[];
+													
+												idCardJson.flag=true;
+												idCardJson.category='IdCard';
+												filesArray.push(idCardJson);
+												
+												secondCardJson.flag=true;
+												secondCardJson.category='SecondCard';
+												filesArray.push(secondCardJson);
+												
+												library.gridCreator(newCreate._id,filesArray,function(){
+													library.mailValid(newCreate._id,req,callback,callback);
+												},function(){
+													res.redirect('/message?content='+encodeURIComponent('檔案新建失敗'));
+												});
 											}
 										});
 									}
@@ -825,7 +1021,11 @@ function userCreator(req,res,callback){
 				}
 			});
 		}else{
-			res.redirect('/message?content='+encodeURIComponent('資料填寫不全或錯誤！'));
+			if((!fileFlag1)||(!fileFlag2)){
+				res.redirect('/message?content='+encodeURIComponent('上傳檔案資料錯誤或過期！'));
+			}else{
+				res.redirect('/message?content='+encodeURIComponent('資料填寫不全或錯誤！'));
+			}
 		}
 	}else{
 		res.redirect('/message?content='+encodeURIComponent('資料填寫不全或錯誤！'));

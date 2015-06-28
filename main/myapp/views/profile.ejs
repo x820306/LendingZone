@@ -25,9 +25,9 @@
 						<span id="s2" style="color:red;"><%if(dcdJSON){%><%if(dcdJSON.Target[1]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=dcdJSON.Message[1]%><%}%><%}%></span>
 					</td>
 					<td><label class="radio-inline">
-					<input type="radio" name="Gender" id="f2a" value="Male" required="required"<%if(dcdJSON){%><%if(dcdJSON.FormContent.F2=='Male'){%> checked="true"<%}%><%}else{%><%if(user.Gender=='Male'){%> checked="true"<%}%><%}%>> 男性</label>
+					<input type="radio" name="Gender" id="f2a" value="Male" required="required"<%if(dcdJSON){%><%if(dcdJSON.FormContent.F2==='Male'){%> checked="true"<%}%><%}else{%><%if(user.Gender==='Male'){%> checked="true"<%}%><%}%>> 男性</label>
 					<label class="radio-inline">
-					<input type="radio" name="Gender" id="f2b" value="Female" required="required"<%if(dcdJSON){%><%if(dcdJSON.FormContent.F2=='Female'){%> checked="true"<%}%><%}else{%><%if(user.Gender=='Female'){%> checked="true"<%}%><%}%>> 女性</label></td>
+					<input type="radio" name="Gender" id="f2b" value="Female" required="required"<%if(dcdJSON){%><%if(dcdJSON.FormContent.F2==='Female'){%> checked="true"<%}%><%}else{%><%if(user.Gender==='Female'){%> checked="true"<%}%><%}%>> 女性</label></td>
 				</tr>
 				<tr>
 					<td align = "right" style = "width:15%">
@@ -58,7 +58,7 @@
 							<tr>
 								<td>
 									<br>
-									<input type="file" id="f5" name="IdCard" accept="image/*">
+									<input type="file" id="f5" name="IdCard" accept="image/png,image/jpeg">
 									<p class="help-block">如您需要修改請重新選擇檔案</p>
 								</td>
 							</tr>
@@ -80,7 +80,7 @@
 							<tr>
 								<td>
 									<br>
-									<input type="file" id="f6" name="SecondCard" accept="image/*">
+									<input type="file" id="f6" name="SecondCard" accept="image/png,image/jpeg">
 									<p class="help-block">如您需要修改請重新選擇檔案</p>
 								</td>
 							</tr>
@@ -277,13 +277,48 @@
 		var i=$("input[name='BankAccountPassword']").val().trim();
 		
 		
-		if((a!='')&&(b!==null)&&(c!='')&&(d!='')&&(e!='')&&(f!='')&&(g!='')&&(h!='')&&(i!='')){
+		if((a!=='')&&(b!==null)&&(c!=='')&&(d!=='')&&(e!=='')&&(f!=='')&&(g!=='')&&(h!=='')&&(i!=='')){
 			var tester=Date.parse(c);
+			var tLimitFlag=true;
+			if(isNaN(tester)){
+				tLimitFlag=false;
+			}else{
+				var tomorrow=new Date();
+				tomorrow.setHours(0);
+				tomorrow.setMinutes(0);
+				tomorrow.setSeconds(0);
+				tomorrow.setMilliseconds(0);
+				tomorrow.setTime(tomorrow.getTime()+86400000);
+				if(tester>=tomorrow.getTime()){
+					tLimitFlag=false;
+				}
+			}
+			
 			var emailFlag=false;
 			if(f.search(/@/)>-1){
 				emailFlag=true;
 			}
-			if((!isNaN(tester))&&(emailFlag)){
+			var fileFlag1=true;
+			var fileFlag2=true;
+			var filePath1=$("input[name='IdCard']").val().trim();
+			var filePath2=$("input[name='SecondCard']").val().trim();
+			
+			if(filePath1!==''){
+				var tempArray1=filePath1.split('.');
+				var fileTemper1=tempArray1[tempArray1.length-1].toUpperCase();
+				if((fileTemper1!=='PNG')&&(fileTemper1!=='JPG')&&(fileTemper1!=='JPEG')&&(fileTemper1!=='JPE')&&(fileTemper1!=='JFIF')){
+					fileFlag1=false;
+				}
+			}
+			if(filePath2!==''){
+				var tempArray2=filePath2.split('.');
+				var fileTemper2=tempArray2[tempArray2.length-1].toUpperCase();
+				if((fileTemper2!=='PNG')&&(fileTemper2!=='JPG')&&(fileTemper2!=='JPEG')&&(fileTemper2!=='JPE')&&(fileTemper2!=='JFIF')){
+					fileFlag2=false;
+				}
+			}
+			
+			if((tLimitFlag)&&(emailFlag)&&(checkSsnID(d))&&(fileFlag1)&&(fileFlag2)){
 				$(target).modal('show');
 			}else{
 				$('#msgModal').modal('show');
@@ -293,11 +328,36 @@
 		}
 	}
 	
+	function checkSsnID(id){
+		var ifDoThis=true;
+		if(ifDoThis){
+			tab = "ABCDEFGHJKLMNPQRSTUVXYWZIO"                     
+			A1 = new Array (1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,3,3,3,3,3,3 );
+			A2 = new Array (0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5 );
+			Mx = new Array (9,8,7,6,5,4,3,2,1,1);
+
+			if ( id.length !== 10 ) return false;
+			i = tab.indexOf( id.charAt(0) );
+			if ( i === -1 ) return false;
+			sum = A1[i] + A2[i]*9;
+
+			for ( i=1; i<10; i++ ) {
+				v = parseInt( id.charAt(i) );
+				if ( isNaN(v) ) return false;
+				sum = sum + v * Mx[i];
+			}
+			if ( sum % 10 !== 0 ) return false;
+			return true;
+		}else{
+			return true;
+		}
+	}
+	
 	<%if(dcdJSON){%>
 		$(document).ready(function (){
 			<%for(i=0;i<dcdJSON.Target.length;i++){%>
 				<%if(dcdJSON.Target[i]){%>
-					<%if(i!=1){%>
+					<%if(i!==1){%>
 						$('#f<%=i+1%>').focus();
 					<%}%>
 					<%break;%>

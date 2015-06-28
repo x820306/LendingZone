@@ -46,7 +46,7 @@ router.post('/destroyTest', function(req, res, next) {
 						}else{			
 							var ctr = -1;
 							for (i = 0; i < transaction.Return.length; i++) {
-								if (transaction.Return[i].toString() === foundReturn._id.toString()) {
+								if (transaction.Return[i].equals(foundReturn._id)) {
 									ctr=i;
 									break;
 								}
@@ -284,28 +284,8 @@ router.post('/pay', function(req, res, next) {
 																																	console.log(err);
 																																	res.end("error");
 																																}else{
-																																	Lends.findOne({"CreatedBy": newUpdate.Lender}).exec(function (err, lend){
-																																		if (err) {
-																																			console.log(err);
-																																			res.end("error");
-																																		}else{
-																																			if(!lend){
-																																				mail(transaction,newUpdate,newCreate2,req);
-																																				res.end('success');
-																																			}else{
-																																				lend.Updated = Date.now();
-																																				lend.save(function (err,newUpdate5) {
-																																					if (err){
-																																						console.log(err);
-																																						res.end("error");
-																																					}else{
-																																						mail(transaction,newUpdate,newCreate2,req);
-																																						res.end('success');
-																																					}
-																																				});	
-																																			}
-																																		}
-																																	});
+																																	mail(transaction,newUpdate,newCreate2,req);
+																																	res.end('success');
 																																}
 																															});
 																														}
@@ -386,7 +366,7 @@ function mail(transaction,newUpdate,newCreate2,req){
 			});
 		}
 		
-		if((newUpdate.PrincipalNotReturn==0)&&(newUpdate.MonthPeriodLeft==0)){
+		if((newUpdate.PrincipalNotReturn===0)&&(newUpdate.MonthPeriodLeft===0)){
 			if(transaction.Lender.ifMailValid){
 				var mailOptions3 = {
 					from: 'LendingZone <lendingzonesystem@gmail.com>', // sender address

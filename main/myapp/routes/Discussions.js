@@ -43,7 +43,7 @@ router.post('/destroyTest',function(req, res, next) {
 						}else{
 							var ctr = -1;
 							for (i = 0; i < borrow.Discussion.length; i++) {
-								if (borrow.Discussion[i].toString() === discussion._id.toString()) {
+								if (borrow.Discussion[i].equals(discussion._id)) {
 									ctr=i;
 									break;
 								}
@@ -121,7 +121,7 @@ router.post('/create',library.loginFormChecker,library.ensureAuthenticated, func
 											}else{
 												var createdByViewerArray=[];
 												for(i=0;i<borrowUpdated.Discussion.length;i++){
-													if(req.user._id.toString()=== borrowUpdated.Discussion[i].CreatedBy._id.toString()){
+													if(borrowUpdated.Discussion[i].CreatedBy._id.equals(req.user._id)){
 														createdByViewerArray.push(true);
 													}else{
 														createdByViewerArray.push(false);
@@ -150,7 +150,7 @@ router.post('/destroy',library.loginFormChecker,library.ensureAuthenticated, fun
 			if(!discussion){
 				res.json({error: "Target discussion not found.",success:false}, 500);
 			}else{
-				if(discussion.CreatedBy!=req.user._id){
+				if(!discussion.CreatedBy.equals(req.user._id)){
 					res.json({error: "Auth failed.",success:false}, 500);
 				}else{
 					Borrows.findById(discussion.BelongTo).exec(function (err, borrow){
@@ -163,7 +163,7 @@ router.post('/destroy',library.loginFormChecker,library.ensureAuthenticated, fun
 							}else{
 								var ctr = -1;
 								for (i = 0; i < borrow.Discussion.length; i++) {
-									if (borrow.Discussion[i].toString() === discussion._id.toString()) {
+									if (borrow.Discussion[i].equals(discussion._id)) {
 										ctr=i;
 										break;
 									}
@@ -203,7 +203,7 @@ router.post('/destroy',library.loginFormChecker,library.ensureAuthenticated, fun
 															}else{
 																var createdByViewerArray=[];
 																for(i=0;i<borrowUpdated.Discussion.length;i++){
-																	if(req.user._id.toString()=== borrowUpdated.Discussion[i].CreatedBy._id.toString()){
+																	if(borrowUpdated.Discussion[i].CreatedBy._id.equals(req.user._id)){
 																		createdByViewerArray.push(true);
 																	}else{
 																		createdByViewerArray.push(false);
@@ -237,7 +237,7 @@ router.post('/edit',library.loginFormChecker,library.ensureAuthenticated, functi
 			if(!discussion){
 				res.json({error: "Target discussion not found.",success:false}, 500);
 			}else{
-				if(discussion.CreatedBy!=req.user._id){
+				if(!discussion.CreatedBy.equals(req.user._id)){
 					res.json({error: "Auth failed.",success:false}, 500);
 				}else{
 					discussion.Content=sanitizer.sanitize(req.body.Content.trim());
@@ -282,7 +282,7 @@ router.post('/edit',library.loginFormChecker,library.ensureAuthenticated, functi
 															}else{
 																var createdByViewerArray=[];
 																for(i=0;i<borrowUpdated.Discussion.length;i++){
-																	if(req.user._id.toString()=== borrowUpdated.Discussion[i].CreatedBy._id.toString()){
+																	if(borrowUpdated.Discussion[i].CreatedBy._id.equals(req.user._id)){
 																		createdByViewerArray.push(true);
 																	}else{
 																		createdByViewerArray.push(false);
@@ -329,7 +329,7 @@ router.post('/findDiscussions', function(req, res, next) {
 						var createdByViewerArray=[];
 						if(req.isAuthenticated()){
 							for(i=0;i<borrow.Discussion.length;i++){
-								if(req.user._id.toString()=== borrow.Discussion[i].CreatedBy._id.toString()){
+								if(borrow.Discussion[i].CreatedBy._id.equals(req.user._id)){
 									createdByViewerArray.push(true);
 								}else{
 									createdByViewerArray.push(false);

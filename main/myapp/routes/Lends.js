@@ -67,7 +67,7 @@ function samePart(res,req,differentPart,outterPara){
 					}else{
 						if(transactions.length>0){
 							for(i=0;i<transactions.length;i++){
-								if(transactions[i].CreatedFrom.Type=='toBorrow'){
+								if(transactions[i].CreatedFrom.Type==='toBorrow'){
 									library.transactionProcessor(transactions[i],false);
 									autoLendCumulated+=transactions[i].PrincipalNotReturn;
 								}
@@ -79,37 +79,37 @@ function samePart(res,req,differentPart,outterPara){
 						var rate=(parseFloat(sanitizer.sanitize(req.body.InterestRate.trim()))/100)+library.serviceChargeRate;//scr;
 						var month=parseInt(sanitizer.sanitize(req.body.MonthPeriod.trim()));
 						var level;
-						if(sanitizer.sanitize(req.body.MinLevelAccepted.trim())==''){
+						if(sanitizer.sanitize(req.body.MinLevelAccepted.trim())===''){
 							level=1;
 						}else{
 							level=parseInt(sanitizer.sanitize(req.body.MinLevelAccepted.trim()));
 						}
 						var MinInterestInFuture;
-						if(sanitizer.sanitize(req.body.MinInterestInFuture.trim())==''){
+						if(sanitizer.sanitize(req.body.MinInterestInFuture.trim())===''){
 							MinInterestInFuture=1;
 						}else{
 							MinInterestInFuture=parseInt(sanitizer.sanitize(req.body.MinInterestInFuture.trim()));
 						}
 						var MinMoneyFuture;
-						if(sanitizer.sanitize(req.body.MinMoneyFuture.trim())==''){
+						if(sanitizer.sanitize(req.body.MinMoneyFuture.trim())===''){
 							MinMoneyFuture=1;
 						}else{
 							MinMoneyFuture=parseInt(sanitizer.sanitize(req.body.MinMoneyFuture.trim()));
 						}
 						var MinInterestInFutureMonth;
-						if(sanitizer.sanitize(req.body.MinInterestInFutureMonth.trim())==''){
+						if(sanitizer.sanitize(req.body.MinInterestInFutureMonth.trim())===''){
 							MinInterestInFutureMonth=1;
 						}else{
 							MinInterestInFutureMonth=parseInt(sanitizer.sanitize(req.body.MinInterestInFutureMonth.trim()));
 						}
 						var MinInterestInFutureMoneyMonth;
-						if(sanitizer.sanitize(req.body.MinInterestInFutureMoneyMonth.trim())==''){
+						if(sanitizer.sanitize(req.body.MinInterestInFutureMoneyMonth.trim())===''){
 							MinInterestInFutureMoneyMonth=1;
 						}else{
 							MinInterestInFutureMoneyMonth=parseInt(sanitizer.sanitize(req.body.MinInterestInFutureMoneyMonth.trim()));
 						}
 						var MinInterestInFutureDivMoney;
-						if(sanitizer.sanitize(req.body.MinInterestInFutureDivMoney.trim())==''){
+						if(sanitizer.sanitize(req.body.MinInterestInFutureDivMoney.trim())===''){
 							MinInterestInFutureDivMoney=0.05;
 						}else{
 							MinInterestInFutureDivMoney=parseFloat(sanitizer.sanitize(req.body.MinInterestInFutureDivMoney.trim()))/100;
@@ -122,7 +122,7 @@ function samePart(res,req,differentPart,outterPara){
 							errorMessage.push('');
 						}
 						
-						if(sanitizer.sanitize(req.body.MaxMoneyToLend.trim())==''){
+						if(sanitizer.sanitize(req.body.MaxMoneyToLend.trim())===''){
 							errorTarget[0]=true;
 							errorMessage[0]='必要參數未填!';
 						}else if(isNaN(nowMoney)){
@@ -136,7 +136,7 @@ function samePart(res,req,differentPart,outterPara){
 							errorMessage[0]='超過金額上限：'+maxMoney.toFixed(0)+'元!';
 						}
 						
-						if(sanitizer.sanitize(req.body.InterestRate.trim())==''){
+						if(sanitizer.sanitize(req.body.InterestRate.trim())===''){
 							errorTarget[1]=true;
 							errorMessage[1]='必要參數未填!';
 						}else if(isNaN(rate)){
@@ -147,7 +147,7 @@ function samePart(res,req,differentPart,outterPara){
 							errorMessage[1]='錯誤參數!';
 						}
 						
-						if(sanitizer.sanitize(req.body.MonthPeriod.trim())==''){
+						if(sanitizer.sanitize(req.body.MonthPeriod.trim())===''){
 							errorTarget[2]=true;
 							errorMessage[2]='必要參數未填!';
 						}else if(isNaN(month)){
@@ -213,13 +213,13 @@ function samePart(res,req,differentPart,outterPara){
 							var ubound=sanitizer.sanitize(req.body.AutoComfirmToBorrowMsgUbound.trim());
 							
 							if(lbound!==''){
-								if((sorter=='Updated')||(sorter=='Created')){
+								if((sorter==='Updated')||(sorter==='Created')){
 									var tester=Date.parse(lbound);
 									if(isNaN(tester)){
 										errorTarget[13]=true;
 										errorMessage[13]='日期格式錯誤!';
 									}
-								}else if((sorter=='InterestRate')||(sorter=='InterestInFutureDivMoney')){
+								}else if((sorter==='InterestRate')||(sorter==='InterestInFutureDivMoney')){
 									var tester=parseFloat(lbound);
 									if((tester<0)||(tester>99)){
 										errorTarget[13]=true;
@@ -235,13 +235,13 @@ function samePart(res,req,differentPart,outterPara){
 							}
 							
 							if(ubound!==''){
-								if((sorter=='Updated')||(sorter=='Created')){
+								if((sorter==='Updated')||(sorter==='Created')){
 									var tester=Date.parse(ubound);
 									if(isNaN(tester)){
 										errorTarget[14]=true;
 										errorMessage[14]='日期格式錯誤!';
 									}
-								}else if((sorter=='InterestRate')||(sorter=='InterestInFutureDivMoney')){
+								}else if((sorter==='InterestRate')||(sorter==='InterestInFutureDivMoney')){
 									var tester=parseFloat(ubound);
 									if((tester<0)||(tester>99)){
 										errorTarget[14]=true;
@@ -309,22 +309,22 @@ function createPart(res,req,outterPara){
 	toCreate.MaxMoneyToLend=parseInt(sanitizer.sanitize(req.body.MaxMoneyToLend.trim()));
 	toCreate.InterestRate=(parseFloat(sanitizer.sanitize(req.body.InterestRate.trim()))/100)+library.serviceChargeRate;//scr
 	toCreate.MonthPeriod=parseInt(sanitizer.sanitize(req.body.MonthPeriod.trim()));
-	if(sanitizer.sanitize(req.body.MinLevelAccepted.trim())!=''){
+	if(sanitizer.sanitize(req.body.MinLevelAccepted.trim())!==''){
 		toCreate.MinLevelAccepted=parseInt(sanitizer.sanitize(req.body.MinLevelAccepted.trim()));
 	}
-	if(sanitizer.sanitize(req.body.MinInterestInFuture.trim())!=''){
+	if(sanitizer.sanitize(req.body.MinInterestInFuture.trim())!==''){
 		toCreate.MinInterestInFuture=parseInt(sanitizer.sanitize(req.body.MinInterestInFuture.trim()));
 	}
-	if(sanitizer.sanitize(req.body.MinMoneyFuture.trim())!=''){
+	if(sanitizer.sanitize(req.body.MinMoneyFuture.trim())!==''){
 		toCreate.MinMoneyFuture=parseInt(sanitizer.sanitize(req.body.MinMoneyFuture.trim()));
 	}
-	if(sanitizer.sanitize(req.body.MinInterestInFutureMonth.trim())!=''){
+	if(sanitizer.sanitize(req.body.MinInterestInFutureMonth.trim())!==''){
 		toCreate.MinInterestInFutureMonth=parseInt(sanitizer.sanitize(req.body.MinInterestInFutureMonth.trim()));
 	}
-	if(sanitizer.sanitize(req.body.MinInterestInFutureMoneyMonth.trim())!=''){
+	if(sanitizer.sanitize(req.body.MinInterestInFutureMoneyMonth.trim())!==''){
 		toCreate.MinInterestInFutureMoneyMonth=parseInt(sanitizer.sanitize(req.body.MinInterestInFutureMoneyMonth.trim()));
 	}
-	if(sanitizer.sanitize(req.body.MinInterestInFutureDivMoney.trim())!=''){
+	if(sanitizer.sanitize(req.body.MinInterestInFutureDivMoney.trim())!==''){
 		toCreate.MinInterestInFutureDivMoney=parseFloat(sanitizer.sanitize(req.body.MinInterestInFutureDivMoney.trim()))/100;
 	}
 	
@@ -368,22 +368,22 @@ function luMaker(sorter,lbound,ubound){
 		uboundSave:-1
 	}
 	if(lbound!==''){
-		if((sorter=='Updated')||(sorter=='Created')){
+		if((sorter==='Updated')||(sorter==='Created')){
 			rtnJSON.lboundSave=Date.parse(lbound);
-		}else if(sorter=='InterestRate'){
+		}else if(sorter==='InterestRate'){
 			rtnJSON.lboundSave=(parseFloat(lbound)/100)+library.serviceChargeRate;//scr
-		}else if(sorter=='InterestInFutureDivMoney'){
+		}else if(sorter==='InterestInFutureDivMoney'){
 			rtnJSON.lboundSave=(parseFloat(lbound)/100);
 		}else{
 			rtnJSON.lboundSave=parseInt(lbound);
 		}
 	}
 	if(ubound!==''){
-		if((sorter=='Updated')||(sorter=='Created')){
+		if((sorter==='Updated')||(sorter==='Created')){
 			rtnJSON.uboundSave=Date.parse(ubound);
-		}else if(sorter=='InterestRate'){
+		}else if(sorter==='InterestRate'){
 			rtnJSON.uboundSave=(parseFloat(ubound)/100)+library.serviceChargeRate;//scr
-		}else if(sorter=='InterestInFutureDivMoney'){
+		}else if(sorter==='InterestInFutureDivMoney'){
 			rtnJSON.uboundSave=(parseFloat(ubound)/100);
 		}else{
 			rtnJSON.uboundSave=parseInt(ubound);
@@ -404,32 +404,32 @@ function updatePart(res,req,lend){
 	lend.MaxMoneyToLend=parseInt(sanitizer.sanitize(req.body.MaxMoneyToLend.trim()));
 	lend.InterestRate=(parseFloat(sanitizer.sanitize(req.body.InterestRate.trim()))/100)+library.serviceChargeRate;//scr
 	lend.MonthPeriod=parseInt(sanitizer.sanitize(req.body.MonthPeriod.trim()));
-	if(sanitizer.sanitize(req.body.MinLevelAccepted.trim())!=''){
+	if(sanitizer.sanitize(req.body.MinLevelAccepted.trim())!==''){
 		lend.MinLevelAccepted=parseInt(sanitizer.sanitize(req.body.MinLevelAccepted.trim()));
 	}else{
 		lend.MinLevelAccepted=-1;
 	}
-	if(sanitizer.sanitize(req.body.MinInterestInFuture.trim())!=''){
+	if(sanitizer.sanitize(req.body.MinInterestInFuture.trim())!==''){
 		lend.MinInterestInFuture=parseInt(sanitizer.sanitize(req.body.MinInterestInFuture.trim()));
 	}else{
 		lend.MinInterestInFuture=-1;
 	}
-	if(sanitizer.sanitize(req.body.MinMoneyFuture.trim())!=''){
+	if(sanitizer.sanitize(req.body.MinMoneyFuture.trim())!==''){
 		lend.MinMoneyFuture=parseInt(sanitizer.sanitize(req.body.MinMoneyFuture.trim()));
 	}else{
 		lend.MinMoneyFuture=-1;
 	}
-	if(sanitizer.sanitize(req.body.MinInterestInFutureMonth.trim())!=''){
+	if(sanitizer.sanitize(req.body.MinInterestInFutureMonth.trim())!==''){
 		lend.MinInterestInFutureMonth=parseInt(sanitizer.sanitize(req.body.MinInterestInFutureMonth.trim()));
 	}else{
 		lend.MinInterestInFutureMonth=-1;
 	}
-	if(sanitizer.sanitize(req.body.MinInterestInFutureMoneyMonth.trim())!=''){
+	if(sanitizer.sanitize(req.body.MinInterestInFutureMoneyMonth.trim())!==''){
 		lend.MinInterestInFutureMoneyMonth=parseInt(sanitizer.sanitize(req.body.MinInterestInFutureMoneyMonth.trim()));
 	}else{
 		lend.MinInterestInFutureMoneyMonth=-1;
 	}
-	if(sanitizer.sanitize(req.body.MinInterestInFutureDivMoney.trim())!=''){
+	if(sanitizer.sanitize(req.body.MinInterestInFutureDivMoney.trim())!==''){
 		lend.MinInterestInFutureDivMoney=parseFloat(sanitizer.sanitize(req.body.MinInterestInFutureDivMoney.trim()))/100;
 	}else{
 		lend.MinInterestInFutureDivMoney=-1;
@@ -494,7 +494,7 @@ router.post('/update',library.loginFormChecker, library.ensureAuthenticated, fun
 			if(!lend){
 				res.redirect('/message?content='+encodeURIComponent('未找到更新目標!'));
 			}else{
-				if(lend.CreatedBy!=req.user._id){
+				if(!lend.CreatedBy.equals(req.user._id)){
 					res.redirect('/message?content='+encodeURIComponent('認證錯誤!'));
 				}else{
 					samePart(res,req,updatePart,lend);	
@@ -513,7 +513,7 @@ router.post('/destroy',library.loginFormChecker, library.ensureAuthenticated, fu
 			if(!lend){
 				res.redirect('/message?content='+encodeURIComponent('未找到刪除目標!'));
 			}else{
-				if(lend.CreatedBy!=req.user._id){
+				if(!lend.CreatedBy.equals(req.user._id)){
 					res.redirect('/message?content='+encodeURIComponent('認證錯誤!'));
 				}else{
 					lend.remove(function (err,removedItem) {
@@ -539,7 +539,7 @@ router.post('/changer',library.loginFormChecker, library.ensureAuthenticated, fu
 			if(!lend){
 				res.json({origValue:'未找到自動出借設定!',error: '找不到自動出借設定!',success:false});
 			}else{
-				if(lend.CreatedBy!=req.user._id){
+				if(!lend.CreatedBy.equals(req.user._id)){
 					res.json({origValue:lend.MaxMoneyToLend,error: '認證錯誤',success:false});
 				}else{
 					BankAccounts.findOne({"OwnedBy": req.user._id}).exec(function (err, bankaccount){
@@ -567,9 +567,9 @@ router.post('/changer',library.loginFormChecker, library.ensureAuthenticated, fu
 										if(transactions.length>0){
 											for(i=0;i<transactions.length;i++){
 												library.transactionProcessor(transactions[i],false);
-												if(transactions[i].CreatedFrom.Type=='toBorrow'){
+												if(transactions[i].CreatedFrom.Type==='toBorrow'){
 													moneyLendedJson.autoLendCumulated+=transactions[i].PrincipalNotReturn;
-												}else if(transactions[i].CreatedFrom.Type=='toLend'){
+												}else if(transactions[i].CreatedFrom.Type==='toLend'){
 													moneyLendedJson.hendLendCumulated+=transactions[i].PrincipalNotReturn;
 												}
 											}
@@ -579,7 +579,7 @@ router.post('/changer',library.loginFormChecker, library.ensureAuthenticated, fu
 										var maxMoney=parseInt(bankaccount.MoneyInBankAccount)+parseInt(moneyLendedJson.autoLendCumulated);
 										var nowMoney=parseInt(sanitizer.sanitize(req.body.Value.trim()));
 										
-										if(sanitizer.sanitize(req.body.Value.trim())==''){
+										if(sanitizer.sanitize(req.body.Value.trim())===''){
 											res.json({result0:bankaccount.MoneyInBankAccount,origValue:lend.MaxMoneyToLend,error: '必要參數未填!',success:false});
 										}else if(isNaN(nowMoney)){
 											res.json({result0:bankaccount.MoneyInBankAccount,origValue:lend.MaxMoneyToLend,error: '非數字參數!',success:false});

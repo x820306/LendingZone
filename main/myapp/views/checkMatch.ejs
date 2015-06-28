@@ -127,7 +127,7 @@
           var temp1  = (parseInt(eachChecked.innerHTML)*1000+parseInt(val)).toString();
           var temp2 =  (100000 - parseInt(eachChecked.innerHTML)*1000-parseInt(val) ).toString();
           eachChecked.innerHTML = temp1.substr(0, temp1.length-3)+','+temp1.substr(temp1.length-3, temp1.length);
-          if(temp2!='0')
+          if(temp2!=='0')
           {
             eachLack.innerHTML = temp2.substr(0, temp2.length-3)+','+temp2.substr(temp2.length-3, temp2.length);
           }else{
