@@ -126,9 +126,9 @@
 				<tr>
 					<td>
 						<%if((sorterDefault==='建立日期')||(sorterDefault==='更新日期')||(sorterDefault==='收款前上次成功收款日期')||(sorterDefault==='收款前下次應收款日期')||(sorterDefault==='收款後上次成功收款日期')||(sorterDefault==='收款後下次應收款日期')){%>
-							<input type="date" placeholder="下限(年/月/日)" class="form-control boundIpt" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode===13){linker();}">&nbsp;&nbsp;<span style="display:inline;" id='lbd'></span>
+							<input type="text" placeholder="下限(年/月/日)" class="form-control boundIpt" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode===13){linker();}">&nbsp;&nbsp;<span style="display:inline;" id='lbd'></span>
 							&nbsp;&nbsp;~&nbsp;&nbsp;
-							<input type="date" placeholder="上限(年/月/日)" class="form-control boundIpt" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode===13){linker();}">&nbsp;&nbsp;<span style="display:inline;" id='ubd'></span>
+							<input type="text" placeholder="上限(年/月/日)" class="form-control boundIpt" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode===13){linker();}">&nbsp;&nbsp;<span style="display:inline;" id='ubd'></span>
 						<%}else{%>
 							<input type="text" placeholder="下限" class="form-control boundIpt" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode===13){linker();}">&nbsp;&nbsp;<span style="display:inline;" id='lbd'></span>
 							&nbsp;&nbsp;~&nbsp;&nbsp;
@@ -316,7 +316,7 @@
 										<tr>
 											<td>
 												<div>
-													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].Created.getFullYear()%>/<%=jsonReturns[i].Created.getMonth()+1%>/<%=jsonReturns[i].Created.getDate()%>
+													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].Created.getFullYear()%>/<%if(jsonReturns[i].Created.getMonth()<9){%>0<%}%><%=jsonReturns[i].Created.getMonth()+1%>/<%if(jsonReturns[i].Created.getDate()<10){%>0<%}%><%=jsonReturns[i].Created.getDate()%>
 												</div>	
 											</td>
 										</tr>
@@ -639,7 +639,7 @@
 									<tr>
 										<td>
 											<div>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%if(jsonReturns[i].previousPayDateBeforePaid){%><%=jsonReturns[i].previousPayDateBeforePaid.getFullYear()%>/<%=jsonReturns[i].previousPayDateBeforePaid.getMonth()+1%>/<%=jsonReturns[i].previousPayDateBeforePaid.getDate()%><%}else{%>無收款記錄<%}%>
+												&nbsp;&nbsp;&nbsp;&nbsp;<%if(jsonReturns[i].previousPayDateBeforePaid){%><%=jsonReturns[i].previousPayDateBeforePaid.getFullYear()%>/<%if(jsonReturns[i].previousPayDateBeforePaid.getMonth()<9){%>0<%}%><%=jsonReturns[i].previousPayDateBeforePaid.getMonth()+1%>/<%if(jsonReturns[i].previousPayDateBeforePaid.getDate()<10){%>0<%}%><%=jsonReturns[i].previousPayDateBeforePaid.getDate()%><%}else{%>無收款記錄<%}%>
 											</div>	
 										</td>
 									</tr>
@@ -653,7 +653,7 @@
 									<tr>
 										<td>
 											<div>
-												&nbsp;&nbsp;&nbsp;<%if(jsonReturns[i].nextPayDateBeforePaid){%><%=jsonReturns[i].nextPayDateBeforePaid.getFullYear()%>/<%=jsonReturns[i].nextPayDateBeforePaid.getMonth()+1%>/<%=jsonReturns[i].nextPayDateBeforePaid.getDate()%><%}else{%>已還清<%}%>
+												&nbsp;&nbsp;&nbsp;<%if(jsonReturns[i].nextPayDateBeforePaid){%><%=jsonReturns[i].nextPayDateBeforePaid.getFullYear()%>/<%if(jsonReturns[i].nextPayDateBeforePaid.getMonth()<9){%>0<%}%><%=jsonReturns[i].nextPayDateBeforePaid.getMonth()+1%>/<%if(jsonReturns[i].nextPayDateBeforePaid.getDate()<10){%>0<%}%><%=jsonReturns[i].nextPayDateBeforePaid.getDate()%><%}else{%>已還清<%}%>
 											</div>	
 										</td>
 									</tr>
@@ -961,7 +961,7 @@
 									<tr>
 										<td>
 											<div>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%if(jsonReturns[i].previousPayDateAfterPaid){%><%=jsonReturns[i].previousPayDateAfterPaid.getFullYear()%>/<%=jsonReturns[i].previousPayDateAfterPaid.getMonth()+1%>/<%=jsonReturns[i].previousPayDateAfterPaid.getDate()%><%}else{%>無收款記錄<%}%>
+												&nbsp;&nbsp;&nbsp;&nbsp;<%if(jsonReturns[i].previousPayDateAfterPaid){%><%=jsonReturns[i].previousPayDateAfterPaid.getFullYear()%>/<%if(jsonReturns[i].previousPayDateAfterPaid.getMonth()<9){%>0<%}%><%=jsonReturns[i].previousPayDateAfterPaid.getMonth()+1%>/<%if(jsonReturns[i].previousPayDateAfterPaid.getDate()<10){%>0<%}%><%=jsonReturns[i].previousPayDateAfterPaid.getDate()%><%}else{%>無收款記錄<%}%>
 											</div>	
 										</td>
 									</tr>
@@ -975,7 +975,7 @@
 									<tr>
 										<td>
 											<div>
-												&nbsp;&nbsp;&nbsp;<%if(jsonReturns[i].nextPayDateAfterPaid){%><%=jsonReturns[i].nextPayDateAfterPaid.getFullYear()%>/<%=jsonReturns[i].nextPayDateAfterPaid.getMonth()+1%>/<%=jsonReturns[i].nextPayDateAfterPaid.getDate()%><%}else{%>已還清<%}%>
+												&nbsp;&nbsp;&nbsp;<%if(jsonReturns[i].nextPayDateAfterPaid){%><%=jsonReturns[i].nextPayDateAfterPaid.getFullYear()%>/<%if(jsonReturns[i].nextPayDateAfterPaid.getMonth()<9){%>0<%}%><%=jsonReturns[i].nextPayDateAfterPaid.getMonth()+1%>/<%if(jsonReturns[i].nextPayDateAfterPaid.getDate()<10){%>0<%}%><%=jsonReturns[i].nextPayDateAfterPaid.getDate()%><%}else{%>已還清<%}%>
 											</div>	
 										</td>
 									</tr>
@@ -1011,11 +1011,11 @@
 							</td>
 							<td align="right" style="border-bottom-style: none;border-top-style: none;">
 								<div style="font-size:15px;display:inline;">
-									<div style="display:inline;"<%if(sorterDefault==='更新日期'){%> class="stronger"<%}%>>Updated：</div><%=jsonReturns[i].Updated.getFullYear()%>/<%=jsonReturns[i].Updated.getMonth()+1%>/<%=jsonReturns[i].Updated.getDate()%>
+									<div style="display:inline;"<%if(sorterDefault==='更新日期'){%> class="stronger"<%}%>>Updated：</div><%=jsonReturns[i].Updated.getFullYear()%>/<%if(jsonReturns[i].Updated.getMonth()<9){%>0<%}%><%=jsonReturns[i].Updated.getMonth()+1%>/<%if(jsonReturns[i].Updated.getDate()<10){%>0<%}%><%=jsonReturns[i].Updated.getDate()%>
 								</div>
 								&nbsp;&nbsp;&nbsp;&nbsp;
 								<div style="font-size:15px;display:inline;">
-									<div style="display:inline;"<%if(sorterDefault==='建立日期'){%> class="stronger"<%}%>>Created：</div><%=jsonReturns[i].Created.getFullYear()%>/<%=jsonReturns[i].Created.getMonth()+1%>/<%=jsonReturns[i].Created.getDate()%>
+									<div style="display:inline;"<%if(sorterDefault==='建立日期'){%> class="stronger"<%}%>>Created：</div><%=jsonReturns[i].Created.getFullYear()%>/<%if(jsonReturns[i].Created.getMonth()<9){%>0<%}%><%=jsonReturns[i].Created.getMonth()+1%>/<%if(jsonReturns[i].Created.getDate()<10){%>0<%}%><%=jsonReturns[i].Created.getDate()%>
 								</div>
 								&nbsp;&nbsp;&nbsp;&nbsp;
 								<div style="font-size:15px;display:inline;">
@@ -1168,20 +1168,22 @@
 	<%}%>
 	function enableDater(){
 		if(!ifDater){
-			$('#lbound').attr('type','date');
-			$('#ubound').attr('type','date');
 			$('#lbound').attr('placeholder','下限(年/月/日)');
 			$('#ubound').attr('placeholder','上限(年/月/日)');
+			$("#lbound").datepicker();
+			$("#ubound").datepicker();
 			ifDater=true;
 		}
 	}
 	
 	function disableDater(){
 		if(ifDater){
-			$('#lbound').attr('type','text');
-			$('#ubound').attr('type','text');
 			$('#lbound').attr('placeholder','下限');
 			$('#ubound').attr('placeholder','上限');
+			$('#lbound').datepicker( "destroy" );
+			$('#lbound').removeClass("hasDatepicker");
+			$('#ubound').datepicker( "destroy" );
+			$('#ubound').removeClass("hasDatepicker");
 			ifDater=false;
 		}
 	}
@@ -1292,6 +1294,11 @@
 				$("#pli3").addClass("active");
 			<%}%>
 			
+			if(ifDater){
+				$("#lbound").datepicker();
+				$("#ubound").datepicker();
+			}
+			
 			myCtr1MaxPoint=$('.myCtr1').length;
 			myCtr2MaxPoint=$('.myCtr2').length;
 			myCtr3MaxPoint=$('.myCtr3').length;
@@ -1299,7 +1306,7 @@
 			$('.myCtr2').click(function(){setTimeout(checkPoint,250);});
 			$('.myCtr3').click(function(){setTimeout(checkPoint,250);});
 			
-			spanner('<%=sorterDefault%>');
+			spanner($('#sorter0').text());
 			if(stringPro!==''){
 				stringPro=stringPro.replace(/\s\s+/g,' ');
 				stringArray=stringPro.split(' ');

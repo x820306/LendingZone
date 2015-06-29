@@ -97,9 +97,9 @@
 					<tr>
 						<td>
 							<%if((sorterDefault==='建立日期')||(sorterDefault==='更新日期')||(sorterDefault==='上次成功收款日期')||(sorterDefault==='下次應收款日期')){%>
-								<input type="date" placeholder="下限(年/月/日)" class="form-control boundIpt" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode===13){linker();}">&nbsp;&nbsp;<span style="display:inline;" id='lbd'></span>
+								<input type="text" placeholder="下限(年/月/日)" class="form-control boundIpt" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode===13){linker();}">&nbsp;&nbsp;<span style="display:inline;" id='lbd'></span>
 								&nbsp;&nbsp;~&nbsp;&nbsp;
-								<input type="date" placeholder="上限(年/月/日)" class="form-control boundIpt" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode===13){linker();}">&nbsp;&nbsp;<span style="display:inline;" id='ubd'></span>
+								<input type="text" placeholder="上限(年/月/日)" class="form-control boundIpt" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode===13){linker();}">&nbsp;&nbsp;<span style="display:inline;" id='ubd'></span>
 							<%}else{%>
 								<input type="text" placeholder="下限" class="form-control boundIpt" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode===13){linker();}">&nbsp;&nbsp;<span style="display:inline;" id='lbd'></span>
 								&nbsp;&nbsp;~&nbsp;&nbsp;
@@ -666,7 +666,7 @@
 										<tr>
 											<td>
 												<div>
-													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonTransaction[i].Created.getFullYear()%>/<%=jsonTransaction[i].Created.getMonth()+1%>/<%=jsonTransaction[i].Created.getDate()%>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonTransaction[i].Created.getFullYear()%>/<%if(jsonTransaction[i].Created.getMonth()<9){%>0<%}%><%=jsonTransaction[i].Created.getMonth()+1%>/<%if(jsonTransaction[i].Created.getDate()<10){%>0<%}%><%=jsonTransaction[i].Created.getDate()%>
 												</div>	
 											</td>
 										</tr>
@@ -754,7 +754,7 @@
 										<tr>
 											<td>
 												<div>
-													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%if(jsonTransaction[i].previousPayDate){%><%=jsonTransaction[i].previousPayDate.getFullYear()%>/<%=jsonTransaction[i].previousPayDate.getMonth()+1%>/<%=jsonTransaction[i].previousPayDate.getDate()%><%}else{%>無收款記錄<%}%>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%if(jsonTransaction[i].previousPayDate){%><%=jsonTransaction[i].previousPayDate.getFullYear()%>/<%if(jsonTransaction[i].previousPayDate.getMonth()<9){%>0<%}%><%=jsonTransaction[i].previousPayDate.getMonth()+1%>/<%if(jsonTransaction[i].previousPayDate.getDate()<10){%>0<%}%><%=jsonTransaction[i].previousPayDate.getDate()%><%}else{%>無收款記錄<%}%>
 																									
 												</div>	
 											</td>
@@ -769,7 +769,7 @@
 										<tr>
 											<td>
 												<div>
-													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%if(jsonTransaction[i].nextPayDate){%><%=jsonTransaction[i].nextPayDate.getFullYear()%>/<%=jsonTransaction[i].nextPayDate.getMonth()+1%>/<%=jsonTransaction[i].nextPayDate.getDate()%><%}else{%>已還清<%}%>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%if(jsonTransaction[i].nextPayDate){%><%=jsonTransaction[i].nextPayDate.getFullYear()%>/<%if(jsonTransaction[i].nextPayDate.getMonth()<9){%>0<%}%><%=jsonTransaction[i].nextPayDate.getMonth()+1%>/<%if(jsonTransaction[i].nextPayDate.getDate()<10){%>0<%}%><%=jsonTransaction[i].nextPayDate.getDate()%><%}else{%>已還清<%}%>
 												</div>	
 											</td>
 										</tr>
@@ -837,11 +837,11 @@
 									</div>
 									&nbsp;&nbsp;&nbsp;&nbsp;
 									<div style="font-size:15px;display:inline;">
-										<div style="display:inline;"<%if(sorterDefault==='更新日期'){%> class="stronger"<%}%>>Updated：</div><%=jsonTransaction[i].Updated.getFullYear()%>/<%=jsonTransaction[i].Updated.getMonth()+1%>/<%=jsonTransaction[i].Updated.getDate()%>
+										<div style="display:inline;"<%if(sorterDefault==='更新日期'){%> class="stronger"<%}%>>Updated：</div><%=jsonTransaction[i].Updated.getFullYear()%>/<%if(jsonTransaction[i].Updated.getMonth()<9){%>0<%}%><%=jsonTransaction[i].Updated.getMonth()+1%>/<%if(jsonTransaction[i].Updated.getDate()<10){%>0<%}%><%=jsonTransaction[i].Updated.getDate()%>
 									</div>
 									&nbsp;&nbsp;&nbsp;&nbsp;
 									<div style="font-size:15px;display:inline;">
-										<div style="display:inline;"<%if(sorterDefault==='建立日期'){%> class="stronger"<%}%>>Created：</div><%=jsonTransaction[i].Created.getFullYear()%>/<%=jsonTransaction[i].Created.getMonth()+1%>/<%=jsonTransaction[i].Created.getDate()%>
+										<div style="display:inline;"<%if(sorterDefault==='建立日期'){%> class="stronger"<%}%>>Created：</div><%=jsonTransaction[i].Created.getFullYear()%>/<%if(jsonTransaction[i].Created.getMonth()<9){%>0<%}%><%=jsonTransaction[i].Created.getMonth()+1%>/<%if(jsonTransaction[i].Created.getDate()<10){%>0<%}%><%=jsonTransaction[i].Created.getDate()%>
 									</div>
 									&nbsp;&nbsp;&nbsp;&nbsp;
 									<div style="font-size:15px;display:inline;">
@@ -1025,22 +1025,25 @@ function directorSelector(index){
 <%}else{%>
 	var ifDater=false;
 <%}%>
+
 function enableDater(){
 	if(!ifDater){
-		$('#lbound').attr('type','date');
-		$('#ubound').attr('type','date');
 		$('#lbound').attr('placeholder','下限(年/月/日)');
 		$('#ubound').attr('placeholder','上限(年/月/日)');
+		$("#lbound").datepicker();
+		$("#ubound").datepicker();
 		ifDater=true;
 	}
 }
 
 function disableDater(){
 	if(ifDater){
-		$('#lbound').attr('type','text');
-		$('#ubound').attr('type','text');
 		$('#lbound').attr('placeholder','下限');
 		$('#ubound').attr('placeholder','上限');
+		$('#lbound').datepicker( "destroy" );
+		$('#lbound').removeClass("hasDatepicker");
+		$('#ubound').datepicker( "destroy" );
+		$('#ubound').removeClass("hasDatepicker");
 		ifDater=false;
 	}
 }
@@ -1141,7 +1144,12 @@ function linker(){
 			});
 		<%}%>
 		
-		spanner('<%=sorterDefault%>');
+		if(ifDater){
+			$("#lbound").datepicker();
+			$("#ubound").datepicker();
+		}
+		
+		spanner($('#sorter0').text());
 		if(stringPro!==''){
 			stringPro=stringPro.replace(/\s\s+/g,' ');
 			stringArray=stringPro.split(' ');

@@ -3,25 +3,27 @@
 	<div class="row">
 		<center>
 			<form method = "post" action= "/Users/resetPW" onsubmit="return disableButton();">
-				<h3>重設密碼<br></h3>
+				<h3>重設密碼</h3>
+				<br>
 				<div class="input-group" style="text-align:center;">
-					<label for="nPwdIpt">新密碼</label>
+					<label for="PwdIpt">新密碼</label>
 					<input type="password" class="form-control" id="PwdIpt" name="Password" placeholder="新密碼" required="required" onkeyup="value=value.replace(/[^\w]/ig,'');checkLength();checkPwd(); return false;"<%if(fJSON){%> value="<%=fJSON.FormContent.F1%>"<%}%>><br><span id="confirmMessage1" class="confirmMessage1" style="color:red;"></span>
 				</div>
 				<br>
 				<div class="input-group" style="text-align:center;">
-					<label for="n2PwdIpt">新密碼確認</label>
+					<label for="2PwdIpt">新密碼確認</label>
 					<input type="password" class="form-control" id="2PwdIpt" name="Password2nd" placeholder="新密碼確認" required="required" onkeyup="value=value.replace(/[^\w]/ig,'');checkPwd(); return false;"<%if(fJSON){%> value="<%=fJSON.FormContent.F2%>"<%}%>> <br><span id="confirmMessage2" class="confirmMessage2" style="color:red;"></span>
 				</div>
 				<br>
 				<input type="hidden" name="Token" value="<%=tk%>">
 				<div class="btn-toolbar" role="toolbar" style = "margin-top: 10px;">
-				<button id="subBtnID" type="submit" class="btn btn-default btn-lg">
-					  <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> 確認
-				</button>
-				<button id="cancelBtnID" type="button" class="btn btn-default btn-lg" onClick = "javascript:location.href='/'" >
-					  <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> 關閉
-				</button></div>
+					<button id="subBtnID" type="submit" class="btn btn-default btn-lg">
+						  <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> 確認
+					</button>
+					<button id="cancelBtnID" type="button" class="btn btn-default btn-lg" onClick = "javascript:location.href='/'" >
+						  <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> 關閉
+					</button>
+				</div>
 			</form>
 		</center>
 	</div>

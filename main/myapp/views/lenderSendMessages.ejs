@@ -66,9 +66,9 @@
 					<tr>
 						<td>
 							<%if((sorterDefault==='建立日期')||(sorterDefault==='更新日期')){%>
-								<input type="date" placeholder="下限(年/月/日)" class="form-control boundIpt" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode===13){linker();}">&nbsp;&nbsp;<span style="display:inline;" id='lbd'></span>
+								<input type="text" placeholder="下限(年/月/日)" class="form-control boundIpt" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode===13){linker();}">&nbsp;&nbsp;<span style="display:inline;" id='lbd'></span>
 								&nbsp;&nbsp;~&nbsp;&nbsp;
-								<input type="date" placeholder="上限(年/月/日)" class="form-control boundIpt" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode===13){linker();}">&nbsp;&nbsp;<span style="display:inline;" id='ubd'></span>
+								<input type="text" placeholder="上限(年/月/日)" class="form-control boundIpt" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode===13){linker();}">&nbsp;&nbsp;<span style="display:inline;" id='ubd'></span>
 							<%}else{%>
 								<input type="text" placeholder="下限" class="form-control boundIpt" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode===13){linker();}">&nbsp;&nbsp;<span style="display:inline;" id='lbd'></span>
 								&nbsp;&nbsp;~&nbsp;&nbsp;
@@ -582,7 +582,7 @@
 										<tr>
 											<td>
 												<div>
-													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].Created.getFullYear()%>/<%=jsonMessage[i].Transaction[0].Created.getMonth()+1%>/<%=jsonMessage[i].Transaction[0].Created.getDate()%>
+													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].Created.getFullYear()%>/<%if(jsonMessage[i].Transaction[0].Created.getMonth()<9){%>0<%}%><%=jsonMessage[i].Transaction[0].Created.getMonth()+1%>/<%if(jsonMessage[i].Transaction[0].Created.getDate()<10){%>0<%}%><%=jsonMessage[i].Transaction[0].Created.getDate()%>
 												</div>	
 											</td>
 										</tr>
@@ -702,7 +702,7 @@
 										<tr>
 											<td>
 												<div>
-													&nbsp;&nbsp;&nbsp;&nbsp;<%if(jsonMessage[i].Transaction[0].previousPayDate){%><%=jsonMessage[i].Transaction[0].previousPayDate.getFullYear()%>/<%=jsonMessage[i].Transaction[0].previousPayDate.getMonth()+1%>/<%=jsonMessage[i].Transaction[0].previousPayDate.getDate()%><%}else{%>無收款記錄<%}%>
+													&nbsp;&nbsp;&nbsp;&nbsp;<%if(jsonMessage[i].Transaction[0].previousPayDate){%><%=jsonMessage[i].Transaction[0].previousPayDate.getFullYear()%>/<%if(jsonMessage[i].Transaction[0].previousPayDate.getMonth()<9){%>0<%}%><%=jsonMessage[i].Transaction[0].previousPayDate.getMonth()+1%>/<%if(jsonMessage[i].Transaction[0].previousPayDate.getDate()<10){%>0<%}%><%=jsonMessage[i].Transaction[0].previousPayDate.getDate()%><%}else{%>無收款記錄<%}%>
 												</div>	
 											</td>
 										</tr>
@@ -716,7 +716,7 @@
 										<tr>
 											<td>
 												<div>
-													&nbsp;&nbsp;&nbsp;&nbsp;<%if(jsonMessage[i].Transaction[0].nextPayDate){%><%=jsonMessage[i].Transaction[0].nextPayDate.getFullYear()%>/<%=jsonMessage[i].Transaction[0].nextPayDate.getMonth()+1%>/<%=jsonMessage[i].Transaction[0].nextPayDate.getDate()%><%}else{%>已還清<%}%>
+													&nbsp;&nbsp;&nbsp;&nbsp;<%if(jsonMessage[i].Transaction[0].nextPayDate){%><%=jsonMessage[i].Transaction[0].nextPayDate.getFullYear()%>/<%if(jsonMessage[i].Transaction[0].nextPayDate.getMonth()<9){%>0<%}%><%=jsonMessage[i].Transaction[0].nextPayDate.getMonth()+1%>/<%if(jsonMessage[i].Transaction[0].nextPayDate.getDate()<10){%>0<%}%><%=jsonMessage[i].Transaction[0].nextPayDate.getDate()%><%}else{%>已還清<%}%>
 												</div>	
 											</td>
 										</tr>
@@ -779,11 +779,11 @@
 									&nbsp;&nbsp;&nbsp;&nbsp;
 								<%}%>
 								<div style="font-size:15px;display:inline;">
-									<div style="display:inline;"<%if(sorterDefault==='更新日期'){%> class="stronger"<%}%>>Updated：</div><%=jsonMessage[i].Updated.getFullYear()%>/<%=jsonMessage[i].Updated.getMonth()+1%>/<%=jsonMessage[i].Updated.getDate()%>
+									<div style="display:inline;"<%if(sorterDefault==='更新日期'){%> class="stronger"<%}%>>Updated：</div><%=jsonMessage[i].Updated.getFullYear()%>/<%if(jsonMessage[i].Updated.getMonth()<9){%>0<%}%><%=jsonMessage[i].Updated.getMonth()+1%>/<%if(jsonMessage[i].Updated.getDate()<10){%>0<%}%><%=jsonMessage[i].Updated.getDate()%>
 								</div>
 								&nbsp;&nbsp;&nbsp;&nbsp;
 								<div style="font-size:15px;display:inline;">
-									<div style="display:inline;"<%if(sorterDefault==='建立日期'){%> class="stronger"<%}%>>Created：</div><%=jsonMessage[i].Created.getFullYear()%>/<%=jsonMessage[i].Created.getMonth()+1%>/<%=jsonMessage[i].Created.getDate()%>
+									<div style="display:inline;"<%if(sorterDefault==='建立日期'){%> class="stronger"<%}%>>Created：</div><%=jsonMessage[i].Created.getFullYear()%>/<%if(jsonMessage[i].Created.getMonth()<9){%>0<%}%><%=jsonMessage[i].Created.getMonth()+1%>/<%if(jsonMessage[i].Created.getDate()<10){%>0<%}%><%=jsonMessage[i].Created.getDate()%>
 								</div>
 								&nbsp;&nbsp;&nbsp;&nbsp;
 								<div style="font-size:15px;display:inline;">
@@ -954,22 +954,25 @@ function directorSelector(index){
 <%}else{%>
 	var ifDater=false;
 <%}%>
+
 function enableDater(){
 	if(!ifDater){
-		$('#lbound').attr('type','date');
-		$('#ubound').attr('type','date');
 		$('#lbound').attr('placeholder','下限(年/月/日)');
 		$('#ubound').attr('placeholder','上限(年/月/日)');
+		$("#lbound").datepicker();
+		$("#ubound").datepicker();
 		ifDater=true;
 	}
 }
 
 function disableDater(){
 	if(ifDater){
-		$('#lbound').attr('type','text');
-		$('#ubound').attr('type','text');
 		$('#lbound').attr('placeholder','下限');
 		$('#ubound').attr('placeholder','上限');
+		$('#lbound').datepicker( "destroy" );
+		$('#lbound').removeClass("hasDatepicker");
+		$('#ubound').datepicker( "destroy" );
+		$('#ubound').removeClass("hasDatepicker");
 		ifDater=false;
 	}
 }
@@ -1071,6 +1074,11 @@ function linker(){
 			});
 		<%}%>
 		
+		if(ifDater){
+			$("#lbound").datepicker();
+			$("#ubound").datepicker();
+		}
+		
 		<%if((sorterDefault==='欲借出年利率')||(sorterDefault==='欲借出金額')||(sorterDefault==='欲借出期數')||(sorterDefault==='信用等級')||(sorterDefault==='預計總利息')||(sorterDefault==='預計本利和')||(sorterDefault==='預計平均利息')||(sorterDefault==='預計平均本利和')||(sorterDefault==='預計利本比')){%>
 			piller(2);
 			$("#pli1").removeClass("active");
@@ -1083,7 +1091,7 @@ function linker(){
 		$('.myCtr2').click(function(){setTimeout(checkPoint,250);});
 		$('.myCtr3').click(function(){setTimeout(checkPoint,250);});
 		
-		spanner('<%=sorterDefault%>');
+		spanner($('#sorter0').text());
 		if(stringPro!==''){
 			stringPro=stringPro.replace(/\s\s+/g,' ');
 			stringArray=stringPro.split(' ');

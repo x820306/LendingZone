@@ -69,7 +69,7 @@ passport.use('local', new LocalStrategy({
 		passwordField: 'Password'
 	},
     function (Username, Password, done){
-		UsersModel.findOne({"Username": Username}).select('Username Password').exec(function (err, user){
+		UsersModel.findOne({Username: Username.toLowerCase()}).select('Username Password').exec(function (err, user){
 			if (err) {
 				console.log(err);
 				return done(null, false, { errorTarget:1, errorMessage: '資料庫錯誤！' });
@@ -206,6 +206,15 @@ app.get('/signupTest',library.loginFormChecker,library.newMsgChecker, function (
 	}
 	
 	res.render('signupTest',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst});
+});
+
+app.get('/forgetActOrPW',library.loginFormChecker,library.newMsgChecker, function (req, res) {
+	var auRst=null;
+	if(req.isAuthenticated()){
+		auRst=req.user.Username;
+	}
+	
+	res.render('forgetActOrPW',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst});
 });
 
 
@@ -408,7 +417,7 @@ function routeChecker(req){
 	var subString=stringArray[stringArray.length-1];
 	var subStringArray=subString.split('?');
 	var target=subStringArray[0];
-	if((target==='message')||(target==='borrowCreate')||(target==='readable')||(target==='buyInsurance')||(target==='buyInsuranceAll')||(target==='rejectToBorrowMessageInStory')||(target==='confirmToBorrowMessageInStory')||(target==='rejectToBorrowMessageInLRM')||(target==='confirmToBorrowMessageInLRM')||(target==='rejectToBorrowMessageInLRMall')||(target==='confirmToBorrowMessageInLRMall')||(target==='toLendCreate')||(target==='toLendUpdate')||(target==='destroy')||(target==='create')||(target==='update')||(target==='changeData')||(target==='changePW')||(target==='deleteToLendMessageInLRMall')||(target==='buyInsuranceAll')||(target==='rejectToBorrowMessageInLRMall')||(target==='confirmToBorrowMessageInLRMall')||(target==='autoConfirmPost')||(target==='disableAutoConfirmPost')||(target==='autoNotReadablePost')||(target==='disableAutoNotReadablePost')){
+	if((target==='message')||(target==='forgetActOrPW')||(target==='borrowCreate')||(target==='readable')||(target==='buyInsurance')||(target==='buyInsuranceAll')||(target==='rejectToBorrowMessageInStory')||(target==='confirmToBorrowMessageInStory')||(target==='rejectToBorrowMessageInLRM')||(target==='confirmToBorrowMessageInLRM')||(target==='rejectToBorrowMessageInLRMall')||(target==='confirmToBorrowMessageInLRMall')||(target==='toLendCreate')||(target==='toLendUpdate')||(target==='destroy')||(target==='create')||(target==='update')||(target==='changeData')||(target==='changePW')||(target==='deleteToLendMessageInLRMall')||(target==='buyInsuranceAll')||(target==='rejectToBorrowMessageInLRMall')||(target==='confirmToBorrowMessageInLRMall')||(target==='autoConfirmPost')||(target==='disableAutoConfirmPost')||(target==='autoNotReadablePost')||(target==='disableAutoNotReadablePost')){
 		return false;
 	}else{
 		return true;

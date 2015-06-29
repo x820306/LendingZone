@@ -71,9 +71,9 @@
 					<tr>
 						<td>
 							<%if((sorterDefault==='建立日期')||(sorterDefault==='更新日期')){%>
-								<input type="date" placeholder="下限(年/月/日)" class="form-control boundIpt" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode===13){linker();}">&nbsp;&nbsp;<span style="display:inline;" id='lbd'></span>
+								<input type="text" placeholder="下限(年/月/日)" class="form-control boundIpt" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode===13){linker();}">&nbsp;&nbsp;<span style="display:inline;" id='lbd'></span>
 								&nbsp;&nbsp;~&nbsp;&nbsp;
-								<input type="date" placeholder="上限(年/月/日)" class="form-control boundIpt" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode===13){linker();}">&nbsp;&nbsp;<span style="display:inline;" id='ubd'></span>
+								<input type="text" placeholder="上限(年/月/日)" class="form-control boundIpt" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode===13){linker();}">&nbsp;&nbsp;<span style="display:inline;" id='ubd'></span>
 							<%}else{%>
 								<input type="text" placeholder="下限" class="form-control boundIpt" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode===13){linker();}">&nbsp;&nbsp;<span style="display:inline;" id='lbd'></span>
 								&nbsp;&nbsp;~&nbsp;&nbsp;
@@ -365,7 +365,7 @@
 														<%}else if(jsonLends[i].AutoComfirmToBorrowMsgSorter==='Level'){%>
 															&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonLends[i].AutoComfirmToBorrowMsgLbound.toFixed(0)%>級
 														<%}else if((jsonLends[i].AutoComfirmToBorrowMsgSorter==='Updated')||(jsonLends[i].AutoComfirmToBorrowMsgSorter==='Created')){%>
-															&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=new Date(parseInt(jsonLends[i].AutoComfirmToBorrowMsgLbound)).getFullYear()%>/<%=new Date(parseInt(jsonLends[i].AutoComfirmToBorrowMsgLbound)).getMonth()+1%>/<%=new Date(parseInt(jsonLends[i].AutoComfirmToBorrowMsgLbound)).getDate()%>
+															&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=new Date(parseInt(jsonLends[i].AutoComfirmToBorrowMsgLbound)).getFullYear()%>/<%if(new Date(parseInt(jsonLends[i].AutoComfirmToBorrowMsgLbound)).getMonth()<9){%>0<%}%><%=new Date(parseInt(jsonLends[i].AutoComfirmToBorrowMsgLbound)).getMonth()+1%>/<%if(new Date(parseInt(jsonLends[i].AutoComfirmToBorrowMsgLbound)).getDate()<10){%>0<%}%><%=new Date(parseInt(jsonLends[i].AutoComfirmToBorrowMsgLbound)).getDate()%>
 														<%}else{%>
 															&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonLends[i].AutoComfirmToBorrowMsgLbound.toFixed(0)%>元
 														<%}%>
@@ -393,7 +393,7 @@
 														<%}else if(jsonLends[i].AutoComfirmToBorrowMsgSorter==='Level'){%>
 															&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonLends[i].AutoComfirmToBorrowMsgUbound.toFixed(0)%>級
 														<%}else if((jsonLends[i].AutoComfirmToBorrowMsgSorter==='Updated')||(jsonLends[i].AutoComfirmToBorrowMsgSorter==='Created')){%>
-															&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=new Date(parseInt(jsonLends[i].AutoComfirmToBorrowMsgUbound)).getFullYear()%>/<%=new Date(parseInt(jsonLends[i].AutoComfirmToBorrowMsgUbound)).getMonth()+1%>/<%=new Date(parseInt(jsonLends[i].AutoComfirmToBorrowMsgUbound)).getDate()%>
+															&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=new Date(parseInt(jsonLends[i].AutoComfirmToBorrowMsgUbound)).getFullYear()%>/<%if(new Date(parseInt(jsonLends[i].AutoComfirmToBorrowMsgUbound)).getMonth()<9){%>0<%}%><%=new Date(parseInt(jsonLends[i].AutoComfirmToBorrowMsgUbound)).getMonth()+1%>/<%if(new Date(parseInt(jsonLends[i].AutoComfirmToBorrowMsgUbound)).getDate()<10){%>0<%}%><%=new Date(parseInt(jsonLends[i].AutoComfirmToBorrowMsgUbound)).getDate()%>
 														<%}else{%>
 															&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonLends[i].AutoComfirmToBorrowMsgUbound.toFixed(0)%>元
 														<%}%>
@@ -428,11 +428,11 @@
 								<tr>
 									<td align="right" style="border-bottom-style: none;border-top-style: none;">
 										<div style="font-size:15px;display:inline;">
-											<div style="display:inline;<%if(sorterDefault==='更新日期'){%>color:red;<%}%>">Updated：</div><%=jsonLends[i].Updated.getFullYear()%>/<%=jsonLends[i].Updated.getMonth()+1%>/<%=jsonLends[i].Updated.getDate()%>
+											<div style="display:inline;<%if(sorterDefault==='更新日期'){%>color:red;<%}%>">Updated：</div><%=jsonLends[i].Updated.getFullYear()%>/<%if(jsonLends[i].Updated.getMonth()<9){%>0<%}%><%=jsonLends[i].Updated.getMonth()+1%>/<%if(jsonLends[i].Updated.getDate()<10){%>0<%}%><%=jsonLends[i].Updated.getDate()%>
 										</div>
 										&nbsp;&nbsp;&nbsp;&nbsp;
 										<div style="font-size:15px;display:inline;">
-											<div style="display:inline;<%if(sorterDefault==='建立日期'){%>color:red;<%}%>">Creadted：</div><%=jsonLends[i].Created.getFullYear()%>/<%=jsonLends[i].Created.getMonth()+1%>/<%=jsonLends[i].Created.getDate()%>
+											<div style="display:inline;<%if(sorterDefault==='建立日期'){%>color:red;<%}%>">Creadted：</div><%=jsonLends[i].Created.getFullYear()%>/<%if(jsonLends[i].Created.getMonth()<9){%>0<%}%><%=jsonLends[i].Created.getMonth()+1%>/<%if(jsonLends[i].Created.getDate()<10){%>0<%}%><%=jsonLends[i].Created.getDate()%>
 										</div>
 										&nbsp;&nbsp;&nbsp;&nbsp;
 										<div style="font-size:15px;display:inline;">
@@ -581,22 +581,25 @@
 	<%}else{%>
 		var ifDater=false;
 	<%}%>
+	
 	function enableDater(){
 		if(!ifDater){
-			$('#lbound').attr('type','date');
-			$('#ubound').attr('type','date');
 			$('#lbound').attr('placeholder','下限(年/月/日)');
 			$('#ubound').attr('placeholder','上限(年/月/日)');
+			$("#lbound").datepicker();
+			$("#ubound").datepicker();
 			ifDater=true;
 		}
 	}
 	
 	function disableDater(){
 		if(ifDater){
-			$('#lbound').attr('type','text');
-			$('#ubound').attr('type','text');
 			$('#lbound').attr('placeholder','下限');
 			$('#ubound').attr('placeholder','上限');
+			$('#lbound').datepicker( "destroy" );
+			$('#lbound').removeClass("hasDatepicker");
+			$('#ubound').datepicker( "destroy" );
+			$('#ubound').removeClass("hasDatepicker");
 			ifDater=false;
 		}
 	}
@@ -686,7 +689,12 @@
 		}
 		
 		$(document).ready(function(){
-			spanner('<%=sorterDefault%>');
+			if(ifDater){
+				$("#lbound").datepicker();
+				$("#ubound").datepicker();
+			}
+			
+			spanner($('#sorter0').text());
 			if(stringPro!==''){
 				stringPro=stringPro.replace(/\s\s+/g,' ');
 				stringArray=stringPro.split(' ');

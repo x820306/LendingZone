@@ -55,7 +55,7 @@
 								<label>
 									<input type="checkbox" name="remember" id="rememberID"> 記住我
 									&nbsp;&nbsp;
-									<a href="#" onclick="forget();return false;">忘記密碼</a>
+									<a href="/forgetActOrPW">忘記帳號或密碼</a>
 								</label>
 							</div>
 							<div class="btn-group" role="group">
@@ -156,9 +156,11 @@
 		var captchaFlag=false;
 		function ajaxCaptcha(){
 			if(captchaFlag){
-				alert('正在處理中，請稍候');
+				$('#s3').html('&nbsp;&nbsp;&nbsp;&nbsp;處理中......');
 			}else{
 				captchaFlag=true;
+				submitFlag=true;
+				$('#lgBtn').addClass('disabled');
 				$.ajax({ 
 					url: '/captcha?captchaIdfr='+$('#captchaIdfr').val(),
 					type: 'GET',
@@ -169,48 +171,24 @@
 							$('#captchaPic').attr('src',Jdata.CaptchaPic);
 						}
 						captchaFlag=false;
+						submitFlag=false;
+						$('#lgBtn').removeClass('disabled');
 					},
 					error: function() {
 						captchaFlag=false;
+						submitFlag=false;
+						$('#lgBtn').removeClass('disabled');
 					}
 				});
-			}
-		}
-		
-		var forgettingFlag=false;
-		function forget(){
-			if(forgettingFlag){
-				alert('正在處理中，請稍候');
-			}else{
-				if($("#usernameID").val()===''){
-					alert('請輸入帳號供查詢');
-				}else{
-					forgettingFlag=true;
-					$.ajax({ 
-							url: '/Users/forgetPW',
-							type: 'POST',
-							data:{Username:$('#usernameID').val()},
-							dataType: 'json',
-							success: function(Jdata) {
-								forgettingFlag=false;
-								alert(Jdata.response);
-							},
-							error: function() {
-								forgettingFlag=false;
-								alert('發生錯誤');
-							}
-					});	
-				}
 			}
 		}
 		
 		var submitFlag=false;
 		function disableButtonFooter(){
 			if(!submitFlag){
-				$('#lgBtn').addClass('disabled');
-				forgettingFlag=true;
 				captchaFlag=true;
 				submitFlag=true;
+				$('#lgBtn').addClass('disabled');
 				return true;
 			}else{
 				return false;
