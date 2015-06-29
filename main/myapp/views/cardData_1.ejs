@@ -25,14 +25,14 @@
 			<label for="f1">卡號&nbsp;</label>
 			<input type="text" class="form-control" id="f1" name="cardIpt" placeholder="卡號" required="required"<%if(cdfJSON){%> value="<%=cdfJSON.FormContent.F1%>"<%}%>>
 			<br>
-			<span id="s1" style="color:red;"><%if(cdfJSON){%><%if(cdfJSON.Target[0]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=cdfJSON.Message[0]%><%}%><%}%></span>
+			<span id="s1" class="red"><%if(cdfJSON){%><%if(cdfJSON.Target[0]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=cdfJSON.Message[0]%><%}%><%}%></span>
 		</div>
 		<br>
 		<div class="input-group" style = "margin:5px">
 			<label for="f2">密碼&nbsp;</label>
 			<input type="password" class="form-control" id="f2" name="cardPwdIpt" placeholder="密碼" required="required"<%if(cdfJSON){%> value="<%=cdfJSON.FormContent.F2%>"<%}%>>
 			<br>
-			<span id="s2" style="color:red;"><%if(cdfJSON){%><%if(cdfJSON.Target[1]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=cdfJSON.Message[1]%><%}%><%}%></span>
+			<span id="s2" class="red"><%if(cdfJSON){%><%if(cdfJSON.Target[1]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=cdfJSON.Message[1]%><%}%><%}%></span>
 		</div>
 		<br>
 		<input type="hidden" name="FormSession1" value="<%=formSession1%>">
@@ -47,7 +47,7 @@
 	</form>
 </center>
 <div class = "hint">
-	&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"><img width="65px" height="65px" src="/images/icon.png" class="hastip" title="選擇最常使用的卡片喔~"/></div>
+	&nbsp;&nbsp;&nbsp;&nbsp;<span><img width="65px" height="65px" src="/images/icon.png" class="hastip" title="選擇最常使用的卡片喔~"/></span>
 	</div>
 	
 <%if(cdfJSON){%>

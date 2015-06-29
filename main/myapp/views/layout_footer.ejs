@@ -18,17 +18,17 @@
 							
 							<div style="margin:0px auto;" class="input-group">
 								<div style="text-align:left;">
-									<h4>帳號：<span id="s1" style="color:red;"><%if(lgfJSON){%><%if(lgfJSON.Target===1){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=lgfJSON.Message%><%}%><%}%></span></h4>
+									<h4>帳號：<span id="s1" class="red"><%if(lgfJSON){%><%if(lgfJSON.Target===1){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=lgfJSON.Message%><%}%><%}%></span></h4>
 								</div>
 								<input type="text" class="form-control" name="Username" id="usernameID" placeholder="帳號" required="required"<%if(lgfJSON){%> value="<%=lgfJSON.FormContent.F1%>"<%}%>>
 							</div>
 							<div style="margin:0px auto;" class="input-group">
 								<div style="text-align:left;">
-									<h4>密碼：<span id="s2" style="color:red;"><%if(lgfJSON){%><%if(lgfJSON.Target===2){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=lgfJSON.Message%><%}%><%}%></span></h4>
+									<h4>密碼：<span id="s2" class="red"><%if(lgfJSON){%><%if(lgfJSON.Target===2){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=lgfJSON.Message%><%}%><%}%></span></h4>
 								</div>
 								<input type="password" class="form-control" name="Password" id="passwordID" placeholder="密碼" required="required"<%if(lgfJSON){%> value="<%=lgfJSON.FormContent.F2%>"<%}%>>
 								<div style="text-align:left;margin-top:50px;">
-									<h4>驗證碼：<span id="s3" style="color:red;"><%if(lgfJSON){%><%if(lgfJSON.Target===3){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=lgfJSON.Message%><%}%><%}%></span></h4>
+									<h4>驗證碼：<span id="s3" class="red"><%if(lgfJSON){%><%if(lgfJSON.Target===3){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=lgfJSON.Message%><%}%><%}%></span></h4>
 								</div>
 							</div>
 							<input type="hidden" name="CaptchaIdfr" id="captchaIdfr" value="0">

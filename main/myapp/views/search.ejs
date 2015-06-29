@@ -77,13 +77,13 @@
 					<tr>
 						<td>
 							<%if((actionDefault==='建立日期')||(actionDefault==='更新日期')||(actionDefault==='最晚媒合日期')){%>
-								<input type="text" placeholder="下限(年/月/日)" class="form-control boundIpt" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode===13){ linker();}">&nbsp;&nbsp;<span style="display:inline;" id='lbd'></span>
+								<input type="text" placeholder="下限(年/月/日)" class="form-control boundIpt" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode===13){ linker();}">&nbsp;&nbsp;<span id='lbd'></span>
 								&nbsp;&nbsp;~&nbsp;&nbsp;
-								<input type="text" placeholder="上限(年/月/日)" class="form-control boundIpt" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode===13){ linker();}">&nbsp;&nbsp;<span style="display:inline;" id='ubd'></span>
+								<input type="text" placeholder="上限(年/月/日)" class="form-control boundIpt" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode===13){ linker();}">&nbsp;&nbsp;<span id='ubd'></span>
 							<%}else{%>
-								<input type="text" placeholder="下限" class="form-control boundIpt" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode===13){ linker();}">&nbsp;&nbsp;<span style="display:inline;" id='lbd'></span>
+								<input type="text" placeholder="下限" class="form-control boundIpt" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode===13){ linker();}">&nbsp;&nbsp;<span id='lbd'></span>
 								&nbsp;&nbsp;~&nbsp;&nbsp;
-								<input type="text" placeholder="上限" class="form-control boundIpt" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode===13){ linker();}">&nbsp;&nbsp;<span style="display:inline;" id='ubd'></span>
+								<input type="text" placeholder="上限" class="form-control boundIpt" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode===13){ linker();}">&nbsp;&nbsp;<span id='ubd'></span>
 							<%}%>
 						</td>
 						<%if((kpr!=='')&&(totalResultNum>0)&&(!oflg)&&(pflg)){%>
@@ -106,20 +106,16 @@
 						<table style="margin-bottom: 0px;margin-top: 0px;" class="table" width="100%">
 							<tr>
 								<td style="border-bottom-style: none;border-top-style: none;">
-									<div style="font-size:15px;display:inline;">
-										<div style="display:inline;"<%if(actionDefault==='原始需要金額'){%> class="stronger"<%}%>>原始需要：</div><%=jsonArray[i].MoneyToBorrow.toFixed(0)%>元
-									</div>&nbsp;&nbsp;
-									<div style="font-size:15px;display:inline;">
-										<div style="display:inline;"<%if(actionDefault==='已經借到金額'){%> class="stronger"<%}%>>已經借到：</div><%=jsonArray[i].Got.toFixed(0)%>元
-									</div>&nbsp;&nbsp;
-									<div style="font-size:15px;display:inline;">
-										<div style="display:inline;"<%if(actionDefault==='還需要金額'){%> class="stronger"<%}%>>還需要：</div><%=jsonArray[i].Need.toFixed(0)%>元
-									</div>&nbsp;&nbsp;
-									<div style="font-size:15px;display:inline;">
-										<div style="display:inline;"<%if(actionDefault==='最低期數'){%> class="stronger"<%}%>>最低期數：</div><%=jsonArray[i].MonthPeriodAcceptedLowest.toFixed(0)%>個月
-									</div>&nbsp;&nbsp;
-									<div style="font-size:15px;display:inline;">
-										<div style="display:inline;"<%if(actionDefault==='最高期數'){%> class="stronger"<%}%>>最高期數：</div><%=jsonArray[i].MonthPeriodAccepted.toFixed(0)%>個月
+									<div class="m2">
+										<span<%if(actionDefault==='原始需要金額'){%> class="stronger"<%}%>>原始需要：</span><%=jsonArray[i].MoneyToBorrow.toFixed(0)%>元
+									&nbsp;&nbsp;
+										<span<%if(actionDefault==='已經借到金額'){%> class="stronger"<%}%>>已經借到：</span><%=jsonArray[i].Got.toFixed(0)%>元
+									&nbsp;&nbsp;
+										<span<%if(actionDefault==='還需要金額'){%> class="stronger"<%}%>>還需要：</span><%=jsonArray[i].Need.toFixed(0)%>元
+									&nbsp;&nbsp;
+										<span<%if(actionDefault==='最低期數'){%> class="stronger"<%}%>>最低期數：</span><%=jsonArray[i].MonthPeriodAcceptedLowest.toFixed(0)%>個月
+									&nbsp;&nbsp;
+										<span<%if(actionDefault==='最高期數'){%> class="stronger"<%}%>>最高期數：</span><%=jsonArray[i].MonthPeriodAccepted.toFixed(0)%>個月
 									</div>
 								</td>
 							</tr>
@@ -130,11 +126,13 @@
 							<table width="100%">
 								<tr>
 									<td style="width:90%;">
-										<a style="font-size:25px;"<%if(jsonArray[i].TitleColor==="color1"){%> class="color1"<%}else if(jsonArray[i].TitleColor==="color2"){%> class="color2"<%}else if(jsonArray[i].TitleColor==="color3"){%> class="color3"<%}else if(jsonArray[i].TitleColor==="color4"){%> class="color4"<%}else if(jsonArray[i].TitleColor==="color5"){%> class="color5"<%}else if(jsonArray[i].TitleColor==="color6"){%> class="color6"<%}else if(jsonArray[i].TitleColor==="color7"){%> class="color7"<%}%> href="/lender/story?id=<%=jsonArray[i]._id%>">[<%if(jsonArray[i].Category==='general'){%>一般<%}else if(jsonArray[i].Category==='education'){%>教育<%}else if(jsonArray[i].Category==='family'){%>家庭<%}else if(jsonArray[i].Category==='tour'){%>旅遊<%}%>]&nbsp;&nbsp;<%if(jsonArray[i].StoryTitle.StoryTitle!==''){%><div class="colorCnt"><%-jsonArray[i].StoryTitle.replace(new RegExp(' ','g'),'&nbsp;')%></div><%}else{%>無標題<%}%></a>
-										<div style="font-size:15px;" class="myTitle">by <div class="colorCnt"><%=jsonArray[i].CreatedBy.Username%></div></div>
+										<a class="m1<%if(jsonArray[i].TitleColor==="color1"){%> color1<%}else if(jsonArray[i].TitleColor==="color2"){%> color2<%}else if(jsonArray[i].TitleColor==="color3"){%> color3<%}else if(jsonArray[i].TitleColor==="color4"){%> color4<%}else if(jsonArray[i].TitleColor==="color5"){%> color5<%}else if(jsonArray[i].TitleColor==="color6"){%> color6<%}else if(jsonArray[i].TitleColor==="color7"){%> color7<%}%>" href="/lender/story?id=<%=jsonArray[i]._id%>">[<%if(jsonArray[i].Category==='general'){%>一般<%}else if(jsonArray[i].Category==='education'){%>教育<%}else if(jsonArray[i].Category==='family'){%>家庭<%}else if(jsonArray[i].Category==='tour'){%>旅遊<%}%>]&nbsp;&nbsp;<%if(jsonArray[i].StoryTitle.StoryTitle!==''){%><div class="colorCnt"><%-jsonArray[i].StoryTitle.replace(new RegExp(' ','g'),'&nbsp;')%></div><%}else{%>無標題<%}%></a>
+										<br>
+										<span class="m2">by&nbsp;</span>
+										<div class="m2 myTitle colorCnt"><%=jsonArray[i].CreatedBy.Username%></div>
 									</td>
 									<td align="right">
-										<div style="font-size:20px;display:inline;" class="myTitle2" id="likeBtn<%=i%>">
+										<div style="display:inline;" class="m3 myTitle2" id="likeBtn<%=i%>">
 											<%if(userName===null){ %>
 												<button class="btn btn-default" data-toggle="modal" data-target="#myModal" id="btnID<%=i%>">
 													<span class="glyphicon glyphicon-thumbs-up myTitle2"></span>
@@ -157,9 +155,9 @@
 												<%}%>
 											<%}%>
 										</div>
-										<div style="font-size:20px;color: red;display:inline;" id="likeNum<%=i%>">
+										<span class="m3 red" id="likeNum<%=i%>">
 											&nbsp;<%=jsonArray[i].LikeNumber%>
-										</div>
+										</span>
 									</td>
 								<tr>
 							</table>
@@ -173,31 +171,19 @@
 						<table style="margin-bottom: 0px;margin-top: 0px;" class="table" width="100%">
 							<tr>
 								<td align="right" style="border-bottom-style: none;border-top-style: none;">
-									<div style="font-size:15px;display:inline;">
-										<div style="display:inline;"<%if(actionDefault==='年利率'){%> class="stronger"<%}%>>年利率：</div><%=(jsonArray[i].MaxInterestRateAccepted*100).toFixed(2)%>%
-									</div>
+									<div class="m2">
+										<span<%if(actionDefault==='年利率'){%> class="stronger"<%}%>>年利率：</span><%=(jsonArray[i].MaxInterestRateAccepted*100).toFixed(2)%>%
 									&nbsp;&nbsp;
-									<div style="font-size:15px;display:inline;">
-										<div style="display:inline;"<%if(actionDefault==='信用等級'){%> class="stronger"<%}%>>信用：</div><%=jsonArray[i].Level.toFixed(0)%>級
-									</div>
+										<span<%if(actionDefault==='信用等級'){%> class="stronger"<%}%>>信用：</span><%=jsonArray[i].Level.toFixed(0)%>級
 									&nbsp;&nbsp;
-									<div style="font-size:15px;display:inline;">
-										<div style="display:inline;"<%if(actionDefault==='留言次數'){%> class="stronger"<%}%>>留言：</div><%=jsonArray[i].DiscussionNumber.toFixed(0)%>次
-									</div>
+										<span<%if(actionDefault==='留言次數'){%> class="stronger"<%}%>>留言：</span><%=jsonArray[i].DiscussionNumber.toFixed(0)%>次
 									&nbsp;&nbsp;
-									<div style="font-size:15px;display:inline;">
-										<div style="display:inline;"<%if(actionDefault==='最晚媒合日期'){%> class="stronger"<%}%>>Deadline：</div><%=jsonArray[i].TimeLimit.getFullYear()%>/<%if(jsonArray[i].TimeLimit.getMonth()<9){%>0<%}%><%=jsonArray[i].TimeLimit.getMonth()+1%>/<%if(jsonArray[i].TimeLimit.getDate()<10){%>0<%}%><%=jsonArray[i].TimeLimit.getDate()%>
-									</div>
+										<span<%if(actionDefault==='最晚媒合日期'){%> class="stronger"<%}%>>Deadline：</span><%=jsonArray[i].TimeLimit.getFullYear()%>/<%if(jsonArray[i].TimeLimit.getMonth()<9){%>0<%}%><%=jsonArray[i].TimeLimit.getMonth()+1%>/<%if(jsonArray[i].TimeLimit.getDate()<10){%>0<%}%><%=jsonArray[i].TimeLimit.getDate()%>
 									&nbsp;&nbsp;
-									<div style="font-size:15px;display:inline;">
-										<div style="display:inline;"<%if(actionDefault==='建立日期'){%> class="stronger"<%}%>>Created：</div><%=jsonArray[i].Created.getFullYear()%>/<%if(jsonArray[i].Created.getMonth()<9){%>0<%}%><%=jsonArray[i].Created.getMonth()+1%>/<%if(jsonArray[i].Created.getDate()<10){%>0<%}%><%=jsonArray[i].Created.getDate()%>
-									</div>
+										<span<%if(actionDefault==='建立日期'){%> class="stronger"<%}%>>Created：</span><%=jsonArray[i].Created.getFullYear()%>/<%if(jsonArray[i].Created.getMonth()<9){%>0<%}%><%=jsonArray[i].Created.getMonth()+1%>/<%if(jsonArray[i].Created.getDate()<10){%>0<%}%><%=jsonArray[i].Created.getDate()%>
 									&nbsp;&nbsp;
-									<div style="font-size:15px;display:inline;">
-										<div style="display:inline;"<%if(actionDefault==='更新日期'){%> class="stronger"<%}%>>Updated：</div><%=jsonArray[i].Updated.getFullYear()%>/<%if(jsonArray[i].Updated.getMonth()<9){%>0<%}%><%=jsonArray[i].Updated.getMonth()+1%>/<%if(jsonArray[i].Updated.getDate()<10){%>0<%}%><%=jsonArray[i].Updated.getDate()%>
-									</div>
+										<span<%if(actionDefault==='更新日期'){%> class="stronger"<%}%>>Updated：</span><span id="updatedDate<%=i%>"><%=jsonArray[i].Updated.getFullYear()%>/<%if(jsonArray[i].Updated.getMonth()<9){%>0<%}%><%=jsonArray[i].Updated.getMonth()+1%>/<%if(jsonArray[i].Updated.getDate()<10){%>0<%}%><%=jsonArray[i].Updated.getDate()%></span>
 									&nbsp;&nbsp;
-									<div style="font-size:15px;display:inline;">
 										No.<%=i+1%>
 									</div>
 								</td>
@@ -510,6 +496,17 @@
 					dataType: 'json',
 					success: function(Jdata) {
 						if(Jdata.success){
+							var dateObj=new Date(Jdata.date);
+							var zeroMonth='';
+							if(dateObj.getMonth()<9){
+								zeroMonth='0';
+							}
+							var zeroDate='';
+							if(dateObj.getDate()<10){
+								zeroDate='0';
+							}
+							$('#updatedDate'+ctr).html(dateObj.getFullYear()+'/'+zeroMonth+(dateObj.getMonth()+1)+'/'+zeroDate+dateObj.getDate());
+							
 							if(Jdata.status===-1){
 								$('#likeBtn'+ctr).html('<button class="btn btn-default" data-toggle="modal" data-target="#myModal" id="btnID'+ctr+'"><span class="glyphicon glyphicon-thumbs-up myTitle2"></span></button>');	
 							}else if(Jdata.status===0){
@@ -549,6 +546,17 @@
 						dataType: 'json',
 						success: function(Jdata) {
 							if(Jdata.success){
+								var dateObj=new Date(Jdata.date);
+								var zeroMonth='';
+								if(dateObj.getMonth()<9){
+									zeroMonth='0';
+								}
+								var zeroDate='';
+								if(dateObj.getDate()<10){
+									zeroDate='0';
+								}
+								$('#updatedDate'+index).html(dateObj.getFullYear()+'/'+zeroMonth+(dateObj.getMonth()+1)+'/'+zeroDate+dateObj.getDate());
+								
 								$('#likeBtn'+index).html('<button class="btn btn-default" onclick="unlike('+index+');" id="btnID'+index+'"><span class="glyphicon glyphicon-remove myTitle2"></span></button>');
 								$('#likeNum'+index).html('&nbsp;'+Jdata.result);
 							}else{
@@ -572,6 +580,17 @@
 						dataType: 'json',
 						success: function(Jdata) {
 							if(Jdata.success){
+								var dateObj=new Date(Jdata.date);
+								var zeroMonth='';
+								if(dateObj.getMonth()<9){
+									zeroMonth='0';
+								}
+								var zeroDate='';
+								if(dateObj.getDate()<10){
+									zeroDate='0';
+								}
+								$('#updatedDate'+index).html(dateObj.getFullYear()+'/'+zeroMonth+(dateObj.getMonth()+1)+'/'+zeroDate+dateObj.getDate());
+								
 								$('#likeBtn'+index).html('<button class="btn btn-default" onclick="like('+index+');" id="btnID'+index+'"><span class="glyphicon glyphicon-thumbs-up myTitle2"></span></button>');
 								$('#likeNum'+index).html('&nbsp;'+Jdata.result);
 							}else{
