@@ -5,11 +5,11 @@
 			<table width="100%">
 				<tr>
 					<td style="width:90%;">
-						<div style="font-size:30pt;"<%if(json.TitleColor==="default"){%> class="default"<%}else if(json.TitleColor==="color1"){%> class="color1"<%}else if(json.TitleColor==="color2"){%> class="color2"<%}else if(json.TitleColor==="color3"){%> class="color3"<%}else if(json.TitleColor==="color4"){%> class="color4"<%}else if(json.TitleColor==="color5"){%> class="color5"<%}else if(json.TitleColor==="color6"){%> class="color6"<%}else if(json.TitleColor==="color7"){%> class="color7"<%}%>>[<%if(json.Category==='general'){%>一般<%}else if(json.Category==='education'){%>教育<%}else if(json.Category==='family'){%>家庭<%}else if(json.Category==='tour'){%>旅遊<%}%>]&nbsp;&nbsp;<%if(json.StoryTitle!==''){%><%-json.StoryTitle.replace(new RegExp(' ','g'),'&nbsp;')%><%}else{%>無標題<%}%></div>
-						<div class="subTitle"> by <div id="aiteName" style="display:inline;"><%=json.CreatedBy.Username%></div></div>
+						<div class="bigTitle<%if(json.TitleColor==="default"){%> class="default"<%}else if(json.TitleColor==="color1"){%> color1<%}else if(json.TitleColor==="color2"){%> color2<%}else if(json.TitleColor==="color3"){%> color3<%}else if(json.TitleColor==="color4"){%> color4<%}else if(json.TitleColor==="color5"){%> color5<%}else if(json.TitleColor==="color6"){%> color6<%}else if(json.TitleColor==="color7"){%> color7<%}%>">[<%if(json.Category==='general'){%>一般<%}else if(json.Category==='education'){%>教育<%}else if(json.Category==='family'){%>家庭<%}else if(json.Category==='tour'){%>旅遊<%}%>]&nbsp;&nbsp;<%if(json.StoryTitle!==''){%><%-json.StoryTitle.replace(new RegExp(' ','g'),'&nbsp;')%><%}else{%>無標題<%}%></div>
+						<div class="subTitle"> by <span id="aiteName"><%=json.CreatedBy.Username%></span></div>
 					</td>
 					<td align="right">
-						<div style="font-size:20px;display:inline;" class="myTitle2" id="likeBtn">
+						<div style="display:inline;" class="myTitle2 m3" id="likeBtn">
 							<%if(userName===null){ %>
 								<button class="btn btn-default" data-toggle="modal" data-target="#myModal" id="btnID">
 									<span class="glyphicon glyphicon-thumbs-up myTitle2"></span>
@@ -32,7 +32,7 @@
 								<%}%>
 							<%}%>
 						</div>
-						<div style="font-size:20px;color:red;display:inline;" id="likeNum">&nbsp;<%=json.LikeNumber%></div>
+						<span class="m3 red" id="likeNum">&nbsp;<%=json.LikeNumber%></span>
 					</td>
 				<tr>
 			</table>
@@ -165,11 +165,11 @@
 				<div class="tab-pane" id="tab3">
 					<div class="my_discussion" id="discussionDiv">
 						<%for(i=0;i<json.Discussion.length;i++){%>
-							<div style="display:inline;" class="myTitle"><%=json.Discussion[i].CreatedBy.Username%>：</div>
+							<span class="myTitle"><%=json.Discussion[i].CreatedBy.Username%>：</span>
 							<br>
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%-json.Discussion[i].Content.replace(new RegExp('\n','g'),'<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;').replace(new RegExp(' ','g'),'&nbsp;')%>
 							<br>
-							<div style="display:inline;" class="myTitle">No.<%=i+1%>&nbsp;&nbsp;&nbsp;<%=json.Discussion[i].Updated.getFullYear()%>/<%if(json.Discussion[i].Updated.getMonth()<9){%>0<%}%><%=json.Discussion[i].Updated.getMonth()+1%>/<%if(json.Discussion[i].Updated.getDate()<10){%>0<%}%><%=json.Discussion[i].Updated.getDate()%></div>
+							<span class="myTitle">No.<%=i+1%>&nbsp;&nbsp;&nbsp;<%=json.Discussion[i].Updated.getFullYear()%>/<%if(json.Discussion[i].Updated.getMonth()<9){%>0<%}%><%=json.Discussion[i].Updated.getMonth()+1%>/<%if(json.Discussion[i].Updated.getDate()<10){%>0<%}%><%=json.Discussion[i].Updated.getDate()%></span>
 							<br>
 							<br>
 						<%}%>
@@ -271,7 +271,7 @@
 					</td>
 					<td align="right">
 						<div>
-							Updated：<div style="display:inline;" id="updatedDate"><%=json.Updated.getFullYear()%>/<%if(json.Updated.getMonth()<9){%>0<%}%><%=json.Updated.getMonth()+1%>/<%if(json.Updated.getDate()<10){%>0<%}%><%=json.Updated.getDate()%></div>
+							Updated：<span id="updatedDate"><%=json.Updated.getFullYear()%>/<%if(json.Updated.getMonth()<9){%>0<%}%><%=json.Updated.getMonth()+1%>/<%if(json.Updated.getDate()<10){%>0<%}%><%=json.Updated.getDate()%></span>
 						</div>
 						<div>
 							Created：<%=json.Created.getFullYear()%>/<%if(json.Created.getMonth()<9){%>0<%}%><%=json.Created.getMonth()+1%>/<%if(json.Created.getDate()<10){%>0<%}%><%=json.Created.getDate()%>
@@ -280,7 +280,7 @@
 				</tr>
 				<tr>
 					<td align="center">
-						&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;"><img width="65px" height="65px" src="/images/icon.png" class="hastip" title="喜歡這個故事的話可以<br>主動借款給他喔！"/></div>
+						&nbsp;&nbsp;&nbsp;&nbsp;<span><img width="65px" height="65px" src="/images/icon.png" class="hastip" title="喜歡這個故事的話可以<br>主動借款給他喔！"/></span>
 					</td>
 				</tr>
 			</table>
@@ -333,7 +333,7 @@
 										<span class="input-group-addon">元</span>
 									</div>
 									<br>
-									<h4>最大可自動借出金額：<%if(jsonLend){%><span id="s0" style="color:red;"></span><%}%></h4>
+									<h4>最大可自動借出金額：<%if(jsonLend){%><span id="s0" class="red"></span><%}%></h4>
 									<div class="input-group">
 										<%if(jsonLend){%>
 											<input id="lendChangerIpt" type="text" class="form-control" value="<%=jsonLend.MaxMoneyToLend.toFixed(0)%>" onkeypress="if(event.keyCode===13){lendChanger();}">
@@ -380,19 +380,19 @@
 									<br>
 									<div class="my-divider"></div>
 								<form action="/Messages/toLendCreate" method="post" onsubmit="return disableButton();">
-									<h4>本次欲借出金額：<i style="color:red;">*</i><span id="s1" style="color:red;"><%if(hlfJSON){%><%if(hlfJSON.Target[0]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=hlfJSON.Message[0]%><%}%><%}%></span></h4>
+									<h4>本次欲借出金額：<i class="red">*</i><span id="s1" class="red"><%if(hlfJSON){%><%if(hlfJSON.Target[0]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=hlfJSON.Message[0]%><%}%><%}%></span></h4>
 									<div class="input-group">
 										<input id="f1" type="number" class="form-control" name="MoneyToLend" required="required"<%if(hlfJSON){%> value="<%=hlfJSON.FormContent.F1%>"<%}%>>
 										<span class="input-group-addon">元</span>
 									</div>
 									<br>
-									<h4>本次欲借出年利率：<i style="color:red;">*</i><span id="s2" style="color:red;"><%if(hlfJSON){%><%if(hlfJSON.Target[1]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=hlfJSON.Message[1]%><%}%><%}%></span></h4>
+									<h4>本次欲借出年利率：<i class="red">*</i><span id="s2" class="red"><%if(hlfJSON){%><%if(hlfJSON.Target[1]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=hlfJSON.Message[1]%><%}%><%}%></span></h4>
 									<div class="input-group">	
 										<input id="f2" type="text" class="form-control" name="InterestRate" required="required"<%if(hlfJSON){%> value="<%=hlfJSON.FormContent.F2%>"<%}%>>
 										<span class="input-group-addon">%</span>
 									</div>
 									<br>
-									<h4>本次欲借出期數（單位/月，最大36個月）：<i style="color:red;">*</i><br><span id="s3" style="color:red;"><%if(hlfJSON){%><%if(hlfJSON.Target[2]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=hlfJSON.Message[2]%><%}%><%}%></span></h4>
+									<h4>本次欲借出期數（單位/月，最大36個月）：<i class="red">*</i><br><span id="s3" class="red"><%if(hlfJSON){%><%if(hlfJSON.Target[2]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=hlfJSON.Message[2]%><%}%><%}%></span></h4>
 									<div class="input-group">
 										<input id="f3" type="number" class="form-control" name="MonthPeriod" required="required"<%if(hlfJSON){%> value="<%=hlfJSON.FormContent.F3%>"<%}%>>
 										<span class="input-group-addon">個月</span>
@@ -432,7 +432,7 @@
 									</div>
 									<br>
 									<div class="my-divider"></div>
-									<h4>訊息（選填）：<span id="s4" style="color:red;"><%if(hlfJSON){%><%if(hlfJSON.Target[3]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=hlfJSON.Message[3]%><%}%><%}%></span></h4>
+									<h4>訊息（選填）：<span id="s4" class="red"><%if(hlfJSON){%><%if(hlfJSON.Target[3]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=hlfJSON.Message[3]%><%}%><%}%></span></h4>
 									<textarea class="form-control" name="Message" rows="3"><%if(hlfJSON){%><%=hlfJSON.FormContent.F4%><%}%></textarea>
 								</div>
 									<input type="hidden" name="FromBorrowRequest" value="<%=json._id%>">
@@ -594,7 +594,7 @@
 										<span class="input-group-addon">元</span>
 									</div>
 									<br>
-									<h4>最大可自動借出金額：<%if(jsonLend){%><span id="s0" style="color:red;"></span><%}%></h4>
+									<h4>最大可自動借出金額：<%if(jsonLend){%><span id="s0" class="red"></span><%}%></h4>
 									<div class="input-group">
 										<%if(jsonLend){%>
 											<input id="lendChangerIpt" type="text" class="form-control" value="<%=jsonLend.MaxMoneyToLend.toFixed(0)%>" onkeypress="if(event.keyCode===13){lendChanger();}">
@@ -641,19 +641,19 @@
 									<br>
 									<div class="my-divider"></div>
 								<form action="/Messages/toLendUpdate" method="post" id="formID" onsubmit="return disableButton();">
-									<h4>本次欲借出金額：<i style="color:red;">*</i><span id="s1" style="color:red;"><%if(hlfJSON){%><%if(hlfJSON.Target[0]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=hlfJSON.Message[0]%><%}%><%}%></span></h4>
+									<h4>本次欲借出金額：<i class="red">*</i><span id="s1" class="red"><%if(hlfJSON){%><%if(hlfJSON.Target[0]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=hlfJSON.Message[0]%><%}%><%}%></span></h4>
 									<div class="input-group">
 										<input id="f1" type="number" class="form-control" name="MoneyToLend" value="<%if(hlfJSON){%><%=hlfJSON.FormContent.F1%><%}else{%><%=jsonMessage.MoneyToLend.toFixed(0)%><%}%>" required="required">
 										<span class="input-group-addon">元</span>
 									</div>
 									<br>
-									<h4>本次欲借出年利率：<i style="color:red;">*</i><span id="s2" style="color:red;"><%if(hlfJSON){%><%if(hlfJSON.Target[1]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=hlfJSON.Message[1]%><%}%><%}%></span></h4>
+									<h4>本次欲借出年利率：<i class="red">*</i><span id="s2" class="red"><%if(hlfJSON){%><%if(hlfJSON.Target[1]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=hlfJSON.Message[1]%><%}%><%}%></span></h4>
 									<div class="input-group">
 										<input id="f2" type="text" class="form-control" name="InterestRate" value="<%if(hlfJSON){%><%=hlfJSON.FormContent.F2%><%}else{%><%=(jsonMessage.InterestRate*100).toFixed(2)%><%}%>" required="required">
 										<span class="input-group-addon">%</span>
 									</div>
 									<br>
-									<h4>本次欲借出期數（單位/月，最大36個月）：<i style="color:red;">*</i><br><span id="s3" style="color:red;"><%if(hlfJSON){%><%if(hlfJSON.Target[2]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=hlfJSON.Message[2]%><%}%><%}%></span></h4>
+									<h4>本次欲借出期數（單位/月，最大36個月）：<i class="red">*</i><br><span id="s3" class="red"><%if(hlfJSON){%><%if(hlfJSON.Target[2]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=hlfJSON.Message[2]%><%}%><%}%></span></h4>
 									<div class="input-group">
 										<input id="f3" type="number" class="form-control" name="MonthPeriod" value="<%if(hlfJSON){%><%=hlfJSON.FormContent.F3%><%}else{%><%=jsonMessage.MonthPeriod.toFixed(0)%><%}%>" required="required">
 										<span class="input-group-addon">個月</span>
@@ -693,7 +693,7 @@
 									</div>
 									<br>
 									<div class="my-divider"></div>
-									<h4>訊息（選填）：<span id="s4" style="color:red;"><%if(hlfJSON){%><%if(hlfJSON.Target[3]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=hlfJSON.Message[3]%><%}%><%}%></span></h4>
+									<h4>訊息（選填）：<span id="s4" class="red"><%if(hlfJSON){%><%if(hlfJSON.Target[3]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=hlfJSON.Message[3]%><%}%><%}%></span></h4>
 									<textarea class="form-control" name="Message" rows="3"><%if(hlfJSON){%><%=hlfJSON.FormContent.F4%><%}else{%><%=jsonMessage.Message.replace(/&gt;/g,'>').replace(/&lt;/g,'<').replace(/&amp;/g,'&')%><%}%></textarea>
 								</div>
 								<input type="hidden" name="FromBorrowRequest" value="<%=json._id%>">
@@ -881,7 +881,7 @@
 									<span class="input-group-addon">元</span>
 								</div>
 								<br>
-								<h4>最大可自動借出金額：<%if(jsonLend){%><span id="s0" style="color:red;"></span><%}%></h4>
+								<h4>最大可自動借出金額：<%if(jsonLend){%><span id="s0" class="red"></span><%}%></h4>
 								<div class="input-group">
 									<%if(jsonLend){%>
 										<input id="lendChangerIpt" type="text" class="form-control" value="<%=jsonLend.MaxMoneyToLend.toFixed(0)%>" onkeypress="if(event.keyCode===13){lendChanger();}">
@@ -928,19 +928,19 @@
 								<br>
 								<div class="my-divider"></div>
 							<form action="/Messages/confirmToBorrowMessageInStory" method="post" id="confirmFormID" onsubmit="return disableButton(1);">
-								<h4>金額：<i style="color:red;">*</i><span id="s1" style="color:red;"><%if(cfJSON){%><%if(cfJSON.Target[0]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=cfJSON.Message[0]%><%}%><%}%></span></h4>
+								<h4>金額：<i class="red">*</i><span id="s1" class="red"><%if(cfJSON){%><%if(cfJSON.Target[0]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=cfJSON.Message[0]%><%}%><%}%></span></h4>
 								<div class="input-group">
 									<input id="f1" type="number" class="form-control" name="MoneyToLend" value="<%if(cfJSON){%><%=cfJSON.FormContent.F1%><%}else{%><%=jsonBorrowMessage.MoneyToLend.toFixed(0)%><%}%>" required="required">
 									<span class="input-group-addon">元</span>
 								</div>
 								<br>
-								<h4>年利率：<i style="color:red;">*</i><span id="s2" style="color:red;"><%if(cfJSON){%><%if(cfJSON.Target[1]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=cfJSON.Message[1]%><%}%><%}%></span></h4>
+								<h4>年利率：<i class="red">*</i><span id="s2" class="red"><%if(cfJSON){%><%if(cfJSON.Target[1]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=cfJSON.Message[1]%><%}%><%}%></span></h4>
 								<div class="input-group">
 									<input id="f2" type="text" class="form-control" name="InterestRate" value="<%if(cfJSON){%><%=cfJSON.FormContent.F2%><%}else{%><%=(jsonBorrowMessage.InterestRate*100).toFixed(2)%><%}%>" required="required">
 									<span class="input-group-addon">%</span>
 								</div>
 								<br>
-								<h4>期數（單位/月，最大36個月）：<i style="color:red;">*</i><br><span id="s3" style="color:red;"><%if(cfJSON){%><%if(cfJSON.Target[2]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=cfJSON.Message[2]%><%}%><%}%></span></h4>
+								<h4>期數（單位/月，最大36個月）：<i class="red">*</i><br><span id="s3" class="red"><%if(cfJSON){%><%if(cfJSON.Target[2]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=cfJSON.Message[2]%><%}%><%}%></span></h4>
 								<div class="input-group">
 									<input id="f3" type="number" class="form-control" name="MonthPeriod" value="<%if(cfJSON){%><%=cfJSON.FormContent.F3%><%}else{%><%=jsonBorrowMessage.MonthPeriod.toFixed(0)%><%}%>" required="required">
 									<span class="input-group-addon">個月</span>
@@ -1255,7 +1255,7 @@
 				var month=dateObj2.getMonth()+1;
 				var date=dateObj2.getDate();
 				if(!Jdata.CreatedByViewer[i]){
-					$('#discussionDiv').append('<div style="display:inline;" class="myTitle">'+Jdata.result[i].CreatedBy.Username+'：</div><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+Jdata.result[i].Content+'<br><div style="display:inline;" class="myTitle">No.'+(i+1)+'&nbsp;&nbsp;&nbsp;'+year+'/'+zeroMonth2+month+'/'+zeroDate2+date+'</div><br><br>');
+					$('#discussionDiv').append('<span class="myTitle">'+Jdata.result[i].CreatedBy.Username+'：</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+Jdata.result[i].Content+'<br><span class="myTitle">No.'+(i+1)+'&nbsp;&nbsp;&nbsp;'+year+'/'+zeroMonth2+month+'/'+zeroDate2+date+'</span><br><br>');
 				}else{
 					$('#discussionDiv').append('<table width="95%"><tr><td><div style="display:inline;" class="myTitle">'+Jdata.result[i].CreatedBy.Username+'：</div><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;" id="cntIptDiv'+i+'">'+Jdata.result[i].Content.replace(/"/g,'&quot;').replace(new RegExp('\n','g'),'<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;').replace(new RegExp(' ','g'),'&nbsp;')+'</div><br><div style="display:inline;" class="myTitle">No.'+(i+1)+'&nbsp;&nbsp;&nbsp;'+year+'/'+zeroMonth2+month+'/'+zeroDate2+date+'</div></td><td align="right"><div class="btn-group"><button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-pencil myTitle2"></span> <span class="caret myTitle2"></span></button><ul style="width:75px;min-width:75px;" class="dropdown-menu" role="menu"><li class="actionLi"><a href="#" onclick="startEdit('+i+');return false;">編輯</a></li><li class="actionLi"><a href="#" onclick="deleteComment('+i+');return false;">刪除</a></li></ul></div></td></tr></table><input type="hidden" id="hdIpt'+i+'" value="'+Jdata.result[i]._id+'"><input type="hidden" id="hdIpt2'+i+'" value="'+Jdata.result[i].Content.replace(/"/g,'&quot;')+'"><input type="hidden" id="hdIpt3'+i+'" value="'+Jdata.result[i].Content.replace(/"/g,'&quot;').replace(new RegExp('\n','g'),'<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;').replace(new RegExp(' ','g'),'&nbsp;')+'"><br>');
 				}	
@@ -1291,7 +1291,7 @@
 					$("input[name='MoneyToLend']").val(aa);
 					$("input[name='InterestRate']").val(bb);
 					$("input[name='MonthPeriod']").val(cc);
-					trueCnt='您確定要以金額 <div style="display:inline;color:red;">'+$("input[name='MoneyToLend']").val()+'元</div> 、年利率 <div style="display:inline;color:red;">'+$("input[name='InterestRate']").val()+'%</div> 、期數 <div style="display:inline;color:red;">'+$("input[name='MonthPeriod']").val()+'個月</div> 為條件向 <div style="display:inline;color:red;">'+$("#aiteName").text()+'</div> '+cntTail;
+					trueCnt='您確定要以金額 <span class="red">'+$("input[name='MoneyToLend']").val()+'元</span> 、年利率 <span class="red">'+$("input[name='InterestRate']").val()+'%</span> 、期數 <span class="red">'+$("input[name='MonthPeriod']").val()+'個月</span> 為條件向 <span class="red">'+$("#aiteName").text()+'</span> '+cntTail;
 					$(cntNumber).html('<br>'+trueCnt+'<br><br>');
 					$(target).modal('show');
 				}else{

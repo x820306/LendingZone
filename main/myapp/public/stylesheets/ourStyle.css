@@ -156,6 +156,10 @@ select{
 	color:#00FF00;
 }
 
+.red{
+	color:red;
+}
+
 .stronger{
 	color:red;
 	font-weight: bold;
@@ -166,11 +170,23 @@ select{
 }
 
 .bigTitle{
-	font-size:30pt;
+	font-size:40px;
 }
 
 .subTitle{
-	font-size:20pt;
+	font-size:27px;
+}
+
+.m1{
+	font-size:25px;
+}
+
+.m2{
+	font-size:15px;
+}
+
+.m3{
+	font-size:20px;
 }
 
 .headerBar{

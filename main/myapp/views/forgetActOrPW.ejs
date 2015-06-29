@@ -6,7 +6,7 @@
 			<br>
 			<div class="input-group" style="text-align:center;">
 				<label for="findByActIpt">忘記密碼</label>
-				<input type="text" class="form-control" id="findByActIpt" name="findByAct" placeholder="請輸入帳號" onkeypress="if(event.keyCode===13){forgetPW();}"><br><span id="confirmMessage1" class="confirmMessage1" style="color:red;"></span>
+				<input type="text" class="form-control" id="findByActIpt" name="findByAct" placeholder="請輸入帳號" onkeypress="if(event.keyCode===13){forgetPW();}"><br><span id="confirmMessage1" class="confirmMessage1 red"></span>
 			</div>
 			<br>
 			<button id="findByActBtnID" type="button" class="btn btn-default" onclick="forgetPW();">
@@ -16,7 +16,7 @@
 			<br>
 			<div class="input-group" style="text-align:center;">
 				<label for="findByIdCardNumIpt">忘記帳號</label>
-				<input type="text" class="form-control" id="findByIdCardNumIpt" name="findByIdCardNum" placeholder="請輸入身份證字號" onkeypress="if(event.keyCode===13){forgetAct();}"> <br><span id="confirmMessage2" class="confirmMessage2" style="color:red;"></span>
+				<input type="text" class="form-control" id="findByIdCardNumIpt" name="findByIdCardNum" placeholder="請輸入身份證字號" onkeypress="if(event.keyCode===13){forgetAct();}"> <br><span id="confirmMessage2" class="confirmMessage2 red"></span>
 			</div>
 			<br>
 			<button id="findByIdCardNumBtnID" type="button" class="btn btn-default" onclick="forgetAct();">
@@ -36,11 +36,11 @@
 	function forgetPW(){
 		if((forgetPWflag)||(forgetActFlag)){
 			$('#confirmMessage1').html('正在處理中，請稍候');
-			$('#confirmMessage1').css('color','red');
+			$('#confirmMessage1').removeClass('red');
 		}else{
 			if($('#findByActIpt').val().trim()===''){
 				$('#confirmMessage1').html('請輸入帳號供查詢');
-				$('#confirmMessage1').css('color','red');
+				$('#confirmMessage1').addClass('red');
 			}else{
 				console.log('aaa');
 				disableThings();
@@ -52,12 +52,12 @@
 						success: function(Jdata) {
 							enableThings();
 							$('#confirmMessage1').html(Jdata.response);
-							$('#confirmMessage1').css('color','red');
+							$('#confirmMessage1').addClass('red');
 						},
 						error: function() {
 							enableThings();
 							$('#confirmMessage1').html('發生錯誤');
-							$('#confirmMessage1').css('color','red');
+							$('#confirmMessage1').addClass('red');
 						}
 				});	
 			}
@@ -68,11 +68,11 @@
 	function forgetAct(){
 		if((forgetActFlag)||(forgetPWflag)){
 			$('#confirmMessage2').html('正在處理中，請稍候');
-			$('#confirmMessage2').css('color','red');
+			$('#confirmMessage2').removeClass('red');
 		}else{
 			if($('#findByIdCardNumIpt').val().trim()===''){
 				$('#confirmMessage2').html('請輸入身分證字號供查詢');
-				$('#confirmMessage2').css('color','red');
+				$('#confirmMessage2').addClass('red');
 			}else{
 				disableThings();
 				$.ajax({ 
@@ -83,12 +83,12 @@
 						success: function(Jdata) {
 							enableThings();
 							$('#confirmMessage2').html(Jdata.response);
-							$('#confirmMessage2').css('color','red');
+							$('#confirmMessage2').addClass('red');
 						},
 						error: function() {
 							enableThings();
 							$('#confirmMessage2').html('發生錯誤');
-							$('#confirmMessage2').css('color','red');
+							$('#confirmMessage2').addClass('red');
 						}
 				});	
 			}
