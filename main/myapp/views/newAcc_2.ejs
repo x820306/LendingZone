@@ -45,7 +45,7 @@
 						生日<br>
 						<span id="s3" style="color:red;"><%if(nafJSON){%><%if(nafJSON.Target[2]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=nafJSON.Message[2]%><%}%><%}%></span>
 					</td>
-					<td><input type="date" class="form-control" id="f3" name="birthIpt" placeholder="生日(yyyy/mm/dd)" required="required"<%if(nafJSON){%> value="<%=nafJSON.FormContent.F3%>"<%}%>></td>
+					<td><input type="text" class="form-control" id="f3" name="birthIpt" placeholder="生日(年/月/日)" required="required"<%if(nafJSON){%> value="<%=nafJSON.FormContent.F3%>"<%}%>></td>
 				</tr>
 				<tr>
 					<td align = "right" style = "width:15%">
@@ -124,9 +124,10 @@
 	</div>
 
 	
-<%if(nafJSON){%>
-	<script>
-		$(document).ready(function (){
+
+<script>
+	$(document).ready(function (){
+		<%if(nafJSON){%>
 			<%for(i=0;i<nafJSON.Target.length;i++){%>
 				<%if(nafJSON.Target[i]){%>
 					<%if(i!==1){%>
@@ -135,7 +136,10 @@
 					<%break;%>
 				<%}%>
 			<%}%>
-		});
-	</script>
-<%}%>
+		<%}%>
+		
+		$("#f3").datepicker({yearRange: '-100:+0',minDate: '-100Y', maxDate: +0});
+	});
+</script>
+
 <%- include('layout_footer',{imgSettingCode:"var ifLoadedCount=0;",imgDrawingCode:"",nav_cur:'signup'}); -%>

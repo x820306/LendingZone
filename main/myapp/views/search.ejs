@@ -58,6 +58,7 @@
 								<li id="alis9"<%if(actionDefault==='最高期數'){%> class="active"<%}%>><a href="#" onclick="searchActionSelector(9);sorterSelector(9);return false;" id="sorter9">最高期數</a></li>
 								<li id="alis10"<%if(actionDefault==='信用等級'){%> class="active"<%}%>><a href="#" onclick="searchActionSelector(10);sorterSelector(10);return false;" id="sorter10">信用等級</a></li>
 								<li id="alis11"<%if(actionDefault==='按讚次數'){%> class="active"<%}%>><a href="#" onclick="searchActionSelector(11);sorterSelector(11);return false;" id="sorter11">按讚次數</a></li>
+								<li id="alis12"<%if(actionDefault==='留言次數'){%> class="active"<%}%>><a href="#" onclick="searchActionSelector(12);sorterSelector(12);return false;" id="sorter12">留言次數</a></li>
 							</ul>
 						</div>
 						<div class="btn-group">
@@ -76,9 +77,9 @@
 					<tr>
 						<td>
 							<%if((actionDefault==='建立日期')||(actionDefault==='更新日期')||(actionDefault==='最晚媒合日期')){%>
-								<input type="date" placeholder="下限(年/月/日)" class="form-control boundIpt" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode===13){ linker();}">&nbsp;&nbsp;<span style="display:inline;" id='lbd'></span>
+								<input type="text" placeholder="下限(年/月/日)" class="form-control boundIpt" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode===13){ linker();}">&nbsp;&nbsp;<span style="display:inline;" id='lbd'></span>
 								&nbsp;&nbsp;~&nbsp;&nbsp;
-								<input type="date" placeholder="上限(年/月/日)" class="form-control boundIpt" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode===13){ linker();}">&nbsp;&nbsp;<span style="display:inline;" id='ubd'></span>
+								<input type="text" placeholder="上限(年/月/日)" class="form-control boundIpt" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode===13){ linker();}">&nbsp;&nbsp;<span style="display:inline;" id='ubd'></span>
 							<%}else{%>
 								<input type="text" placeholder="下限" class="form-control boundIpt" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode===13){ linker();}">&nbsp;&nbsp;<span style="display:inline;" id='lbd'></span>
 								&nbsp;&nbsp;~&nbsp;&nbsp;
@@ -181,15 +182,19 @@
 									</div>
 									&nbsp;&nbsp;
 									<div style="font-size:15px;display:inline;">
-										<div style="display:inline;"<%if(actionDefault==='最晚媒合日期'){%> class="stronger"<%}%>>Deadline：</div><%=jsonArray[i].TimeLimit.getFullYear()%>/<%=jsonArray[i].TimeLimit.getMonth()+1%>/<%=jsonArray[i].TimeLimit.getDate()%>
+										<div style="display:inline;"<%if(actionDefault==='留言次數'){%> class="stronger"<%}%>>留言：</div><%=jsonArray[i].DiscussionNumber.toFixed(0)%>次
 									</div>
 									&nbsp;&nbsp;
 									<div style="font-size:15px;display:inline;">
-										<div style="display:inline;"<%if(actionDefault==='建立日期'){%> class="stronger"<%}%>>Created：</div><%=jsonArray[i].Created.getFullYear()%>/<%=jsonArray[i].Created.getMonth()+1%>/<%=jsonArray[i].Created.getDate()%>
+										<div style="display:inline;"<%if(actionDefault==='最晚媒合日期'){%> class="stronger"<%}%>>Deadline：</div><%=jsonArray[i].TimeLimit.getFullYear()%>/<%if(jsonArray[i].TimeLimit.getMonth()<9){%>0<%}%><%=jsonArray[i].TimeLimit.getMonth()+1%>/<%if(jsonArray[i].TimeLimit.getDate()<10){%>0<%}%><%=jsonArray[i].TimeLimit.getDate()%>
 									</div>
 									&nbsp;&nbsp;
 									<div style="font-size:15px;display:inline;">
-										<div style="display:inline;"<%if(actionDefault==='更新日期'){%> class="stronger"<%}%>>Updated：</div><%=jsonArray[i].Updated.getFullYear()%>/<%=jsonArray[i].Updated.getMonth()+1%>/<%=jsonArray[i].Updated.getDate()%>
+										<div style="display:inline;"<%if(actionDefault==='建立日期'){%> class="stronger"<%}%>>Created：</div><%=jsonArray[i].Created.getFullYear()%>/<%if(jsonArray[i].Created.getMonth()<9){%>0<%}%><%=jsonArray[i].Created.getMonth()+1%>/<%if(jsonArray[i].Created.getDate()<10){%>0<%}%><%=jsonArray[i].Created.getDate()%>
+									</div>
+									&nbsp;&nbsp;
+									<div style="font-size:15px;display:inline;">
+										<div style="display:inline;"<%if(actionDefault==='更新日期'){%> class="stronger"<%}%>>Updated：</div><%=jsonArray[i].Updated.getFullYear()%>/<%if(jsonArray[i].Updated.getMonth()<9){%>0<%}%><%=jsonArray[i].Updated.getMonth()+1%>/<%if(jsonArray[i].Updated.getDate()<10){%>0<%}%><%=jsonArray[i].Updated.getDate()%>
 									</div>
 									&nbsp;&nbsp;
 									<div style="font-size:15px;display:inline;">
@@ -318,7 +323,7 @@
 		$('#sorterSelected').html($('#sorter'+index).text());
 		$('#sorter0').html($('#sorterSelected').text());
 		$('#sorterSelected').append(' <span class=\'caret\'><\/span>');
-		for(i=1;i<=11;i++){
+		for(i=1;i<=12;i++){
 			$('#alis'+i).attr('class','');
 		}
 		$('#alis'+index).attr('class','active');
@@ -345,20 +350,22 @@
 	<%}%>
 	function enableDater(){
 		if(!ifDater){
-			$('#lbound').attr('type','date');
-			$('#ubound').attr('type','date');
 			$('#lbound').attr('placeholder','下限(年/月/日)');
 			$('#ubound').attr('placeholder','上限(年/月/日)');
+			$("#lbound").datepicker();
+			$("#ubound").datepicker();
 			ifDater=true;
 		}
 	}
 	
 	function disableDater(){
 		if(ifDater){
-			$('#lbound').attr('type','text');
-			$('#ubound').attr('type','text');
 			$('#lbound').attr('placeholder','下限');
 			$('#ubound').attr('placeholder','上限');
+			$('#lbound').datepicker( "destroy" );
+			$('#lbound').removeClass("hasDatepicker");
+			$('#ubound').datepicker( "destroy" );
+			$('#ubound').removeClass("hasDatepicker");
 			ifDater=false;
 		}
 	}
@@ -415,7 +422,7 @@
 			}else if(tgtString==='信用等級'){
 				$('#lbd').html('級');
 				$('#ubd').html('級');
-			}else if(tgtString==='按讚次數'){
+			}else if((tgtString==='按讚次數')||(tgtString==='留言次數')){
 				$('#lbd').html('次');
 				$('#ubd').html('次');
 			}else{
@@ -453,7 +460,12 @@
 				recursiveAjax(0,<%=jsonArray.length%>);	
 			<%}%>
 			
-			spanner('<%=actionDefault%>');
+			if(ifDater){
+				$("#lbound").datepicker();
+				$("#ubound").datepicker();
+			}
+			
+			spanner($('#sorter0').text());
 			if(stringPro!==''){
 				stringPro=stringPro.replace(/\s\s+/g,' ');
 				stringArray=stringPro.split(' ');

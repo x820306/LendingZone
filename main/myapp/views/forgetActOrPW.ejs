@@ -1,0 +1,122 @@
+<%- include('layout_header',{searchTitle:null,nav_cur:'forgetActOrPW',messengerDefault:'不分訊息狀態',actionDefault:'建立日期',directorDefault:'大至小',keywordDefault:'',categoryDefault:'不分類'}); -%>
+<div class="container">
+	<div class="row">
+		<center>
+			<h3>忘記帳號或密碼</h3>
+			<br>
+			<div class="input-group" style="text-align:center;">
+				<label for="findByActIpt">忘記密碼</label>
+				<input type="text" class="form-control" id="findByActIpt" name="findByAct" placeholder="請輸入帳號" onkeypress="if(event.keyCode===13){forgetPW();}"><br><span id="confirmMessage1" class="confirmMessage1" style="color:red;"></span>
+			</div>
+			<br>
+			<button id="findByActBtnID" type="button" class="btn btn-default" onclick="forgetPW();">
+				確認
+			</button>
+			<br>
+			<br>
+			<div class="input-group" style="text-align:center;">
+				<label for="findByIdCardNumIpt">忘記帳號</label>
+				<input type="text" class="form-control" id="findByIdCardNumIpt" name="findByIdCardNum" placeholder="請輸入身份證字號" onkeypress="if(event.keyCode===13){forgetAct();}"> <br><span id="confirmMessage2" class="confirmMessage2" style="color:red;"></span>
+			</div>
+			<br>
+			<button id="findByIdCardNumBtnID" type="button" class="btn btn-default" onclick="forgetAct();">
+				確認
+			</button>
+			<br>
+			<br>
+			<br>
+			<button id="cancelBtnID" type="button" class="btn btn-default btn-lg" onClick = "javascript:location.href='/'" >
+				  <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> 回首頁
+			</button>
+		</center>
+	</div>
+</div>
+<script>
+	var forgetPWflag=false;
+	function forgetPW(){
+		if((forgetPWflag)||(forgetActFlag)){
+			$('#confirmMessage1').html('正在處理中，請稍候');
+			$('#confirmMessage1').css('color','red');
+		}else{
+			if($('#findByActIpt').val().trim()===''){
+				$('#confirmMessage1').html('請輸入帳號供查詢');
+				$('#confirmMessage1').css('color','red');
+			}else{
+				console.log('aaa');
+				disableThings();
+				$.ajax({ 
+						url: '/Users/forgetPW',
+						type: 'POST',
+						data:{Username:$('#findByActIpt').val().trim()},
+						dataType: 'json',
+						success: function(Jdata) {
+							enableThings();
+							$('#confirmMessage1').html(Jdata.response);
+							$('#confirmMessage1').css('color','red');
+						},
+						error: function() {
+							enableThings();
+							$('#confirmMessage1').html('發生錯誤');
+							$('#confirmMessage1').css('color','red');
+						}
+				});	
+			}
+		}
+	}
+	
+	var forgetActFlag=false;
+	function forgetAct(){
+		if((forgetActFlag)||(forgetPWflag)){
+			$('#confirmMessage2').html('正在處理中，請稍候');
+			$('#confirmMessage2').css('color','red');
+		}else{
+			if($('#findByIdCardNumIpt').val().trim()===''){
+				$('#confirmMessage2').html('請輸入身分證字號供查詢');
+				$('#confirmMessage2').css('color','red');
+			}else{
+				disableThings();
+				$.ajax({ 
+						url: '/Users/forgetAct',
+						type: 'POST',
+						data:{IdCardNumber:$('#findByIdCardNumIpt').val().trim()},
+						dataType: 'json',
+						success: function(Jdata) {
+							enableThings();
+							$('#confirmMessage2').html(Jdata.response);
+							$('#confirmMessage2').css('color','red');
+						},
+						error: function() {
+							enableThings();
+							$('#confirmMessage2').html('發生錯誤');
+							$('#confirmMessage2').css('color','red');
+						}
+				});	
+			}
+		}
+	}
+	
+	function disableThings(){
+		forgetPWflag=true;
+		$('#findByActBtnID').addClass('disabled');
+		$('#findByActIpt').attr('onkeypress','');
+		$('#findByActIpt').attr('readonly','readonly');
+		forgetActFlag=true;
+		$('#findByIdCardNumBtnID').addClass('disabled');
+		$('#findByIdCardNumIpt').attr('onkeypress','');
+		$('#findByIdCardNumIpt').attr('readonly','readonly');
+		$('#cancelBtnID').addClass('disabled');
+	}
+	
+	function enableThings(){
+		forgetPWflag=false;
+		$('#findByActBtnID').removeClass('disabled');
+		$('#findByActIpt').attr('onkeypress','if(event.keyCode===13){forgetPW();}');
+		$('#findByActIpt').removeAttr("readonly");
+		forgetActFlag=false;
+		$('#findByIdCardNumBtnID').removeClass('disabled');
+		$('#findByIdCardNumIpt').attr('onkeypress','if(event.keyCode===13){forgetAct();}');
+		$('#findByIdCardNumIpt').removeAttr("readonly");
+		$('#cancelBtnID').removeClass('disabled');
+	}
+</script>
+<%- include('layout_footer',{imgSettingCode:"var ifLoadedCount=0;",imgDrawingCode:"",nav_cur:'message'}); -%>

@@ -1748,7 +1748,7 @@ exports.loginFormChecker=function(req, res, next) {
 }
 
 exports.checkSsnID=function(id) {
-	var ifDoThis=true;
+	var ifDoThis=false;
 	if(ifDoThis){
 		tab = "ABCDEFGHJKLMNPQRSTUVXYWZIO"                     
 		A1 = new Array (1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,3,3,3,3,3,3 );
@@ -1756,7 +1756,7 @@ exports.checkSsnID=function(id) {
 		Mx = new Array (9,8,7,6,5,4,3,2,1,1);
 
 		if ( id.length !== 10 ) return false;
-		i = tab.indexOf( id.charAt(0) );
+		i = tab.search(new RegExp(id.charAt(0),'i'));
 		if ( i === -1 ) return false;
 		sum = A1[i] + A2[i]*9;
 

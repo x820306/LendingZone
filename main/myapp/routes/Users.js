@@ -30,7 +30,7 @@ var router = express.Router();
 
 router.post('/createTest', function(req, res, next) {
 	var temp=sanitizer.sanitize(req.body.Username.trim());
-	Users.findOne({Username:temp}).exec(function (err, user){
+	Users.findOne({Username:temp.toLowerCase()}).exec(function (err, user){
 		if (err) {
 			console.log(err);
 			res.redirect('/message?content='+encodeURIComponent('錯誤'));
@@ -168,7 +168,7 @@ router.post('/changePassword', function(req, res, next) {
 	var Username=sanitizer.sanitize(req.body.Username.trim());
 	var Password=sanitizer.sanitize(req.body.Password.trim());
 	
-	Users.findOne({"Username": Username}).exec(function (err, user){
+	Users.findOne({Username: Username.toLowerCase()}).exec(function (err, user){
 			if (err) {
 				console.log(err);
 				res.end('error!');
@@ -201,7 +201,7 @@ router.post('/forgetPW', function(req, res, next) {
 				res.json({response:'錯誤'});
 			}else{
 				var token = buf.toString('hex');
-				Users.findOne({Username:temp}).exec(function (err, user){
+				Users.findOne({Username:temp.toLowerCase()}).exec(function (err, user){
 					if (err) {
 						console.log(err);
 						res.json({response:'錯誤'});
@@ -228,7 +228,7 @@ router.post('/forgetPW', function(req, res, next) {
 											console.log(error);
 											res.json({response:'電子郵件發送失敗'});
 										}else{
-											res.json({response:'您的密碼已發送至您的信箱，請前往確認，謝謝!'});
+											res.json({response:'您的重設密碼連結已發送至您的信箱<br>請前往確認，謝謝!'});
 										}
 									});
 								}
@@ -236,6 +236,41 @@ router.post('/forgetPW', function(req, res, next) {
 						}
 					}
 				});
+			}
+		});
+	}
+});
+
+router.post('/forgetAct', function(req, res, next) {
+	var temp=sanitizer.sanitize(req.body.IdCardNumber.trim());
+	if(temp===''){
+		res.json({response:'請輸入身分證字號供查詢'});
+	}else{
+		Users.findOne({IdCardNumber: temp.toUpperCase()}).exec(function (err, user){
+			if (err) {
+				console.log(err);
+				res.json({response:'錯誤'});
+			}else{
+				if(!user){
+					res.json({response:'無法找到對應身分證字號'});
+				}else{
+					var mailOptions = {
+						from: 'LendingZone <lendingzonesystem@gmail.com>', // sender address
+						to: user.Username+' <'+user.Email+'>', // list of receivers
+						subject: '您於Lending Zone忘記的帳號', // Subject line
+						text: '您於Lending Zone忘記的帳號為：'+String.fromCharCode(10)+String.fromCharCode(10)+user.Username+String.fromCharCode(10)+String.fromCharCode(10)+'前往Lending Zone("'+req.protocol+'://'+req.headers.host+'")', // plaintext body
+						html: '您於Lending Zone忘記的帳號為：<br><br><span style="color:red;">'+user.Username+'</span><br><br><table cellspacing="0" cellpadding="0"><tr><td align="center" width="300" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;"><a href="'+req.protocol+'://'+req.headers.host+'" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">前往Lending Zone</span></a></td></tr></table>'
+					};
+					
+					transporter.sendMail(mailOptions, function(error, info){
+						if(error){
+							console.log(error);
+							res.json({response:'電子郵件發送失敗'});
+						}else{
+							res.json({response:'您的帳號已發送至您的信箱<br>請前往確認，謝謝!'});
+						}
+					});
+				}
 			}
 		});
 	}
@@ -362,7 +397,7 @@ router.post('/changePW',library.loginFormChecker,library.ensureAuthenticated,fun
 });
 
 router.post('/ifUsernameExist',function(req, res, next) {
-	Users.findOne({Username:sanitizer.sanitize(req.body.Urname.trim())}).exec(function (err, user){
+	Users.findOne({Username:sanitizer.sanitize(req.body.Urname.trim()).toLowerCase()}).exec(function (err, user){
 		if(err){
 			console.log(err);
 			res.json({error: "錯誤",success:false}, 500);

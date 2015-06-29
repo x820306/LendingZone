@@ -375,7 +375,7 @@
 								<input id="lboundSel" style="width:90%;" type="text" placeholder="" class="textForm" name="AutoComfirmToBorrowMsgLbound" disabled="disabled">
 							<%}else{%>
 								<%if((jsonLend.AutoComfirmToBorrowMsgSorter==="Updated")||(jsonLend.AutoComfirmToBorrowMsgSorter==="Created")){%>
-									<input id="lboundSel" style="width:90%;" type="date" placeholder="年/月/日" class="textForm" name="AutoComfirmToBorrowMsgLbound"<%if(jsonLend.AutoComfirmToBorrowMsgLbound!==-1){%> value="<%=new Date(parseInt(jsonLend.AutoComfirmToBorrowMsgLbound)).getFullYear()%>-<%if(new Date(parseInt(jsonLend.AutoComfirmToBorrowMsgLbound)).getMonth()<9){%>0<%}%><%=new Date(parseInt(jsonLend.AutoComfirmToBorrowMsgLbound)).getMonth()+1%>-<%if(new Date(parseInt(jsonLend.AutoComfirmToBorrowMsgLbound)).getDate()<10){%>0<%}%><%=new Date(parseInt(jsonLend.AutoComfirmToBorrowMsgLbound)).getDate()%>"<%}%><% if(jsonLend.AutoComfirmToBorrowMsgPeriod<=0){ %> disabled="disabled"<%}%>>
+									<input id="lboundSel" style="width:90%;" type="text" placeholder="年/月/日" class="textForm" name="AutoComfirmToBorrowMsgLbound"<%if(jsonLend.AutoComfirmToBorrowMsgLbound!==-1){%> value="<%=new Date(parseInt(jsonLend.AutoComfirmToBorrowMsgLbound)).getFullYear()%>/<%if(new Date(parseInt(jsonLend.AutoComfirmToBorrowMsgLbound)).getMonth()<9){%>0<%}%><%=new Date(parseInt(jsonLend.AutoComfirmToBorrowMsgLbound)).getMonth()+1%>/<%if(new Date(parseInt(jsonLend.AutoComfirmToBorrowMsgLbound)).getDate()<10){%>0<%}%><%=new Date(parseInt(jsonLend.AutoComfirmToBorrowMsgLbound)).getDate()%>"<%}%><% if(jsonLend.AutoComfirmToBorrowMsgPeriod<=0){ %> disabled="disabled"<%}%>>
 								<%}else if(jsonLend.AutoComfirmToBorrowMsgSorter==="InterestRate"){%>
 									<input id="lboundSel" style="width:90%;" type="text" placeholder="" class="textForm" name="AutoComfirmToBorrowMsgLbound"<%if(jsonLend.AutoComfirmToBorrowMsgLbound!==-1){%> value="<%=((jsonLend.AutoComfirmToBorrowMsgLbound-scr)*100).toFixed(2)%>"<%}%><% if(jsonLend.AutoComfirmToBorrowMsgPeriod<=0){ %> disabled="disabled"<%}%>>
 								<%}else if(jsonLend.AutoComfirmToBorrowMsgSorter==="InterestInFutureDivMoney"){%>
@@ -394,7 +394,7 @@
 						</div>
 						<div class="panel-body">
 							<%if((lfJSON.FormContent.F12==="Updated")||(lfJSON.FormContent.F12==="Created")){%>
-								<input id="lboundSel" style="width:90%;" type="date" placeholder="年/月/日" class="textForm" name="AutoComfirmToBorrowMsgLbound" value="<%=lfJSON.FormContent.F14%>"<% if(lfJSON.FormContent.F10<=0){ %> disabled="disabled"<%}%>>
+								<input id="lboundSel" style="width:90%;" type="text" placeholder="年/月/日" class="textForm" name="AutoComfirmToBorrowMsgLbound" value="<%=lfJSON.FormContent.F14%>"<% if(lfJSON.FormContent.F10<=0){ %> disabled="disabled"<%}%>>
 							<%}else{%>
 								<input id="lboundSel" style="width:90%;" type="text" placeholder="" class="textForm" name="AutoComfirmToBorrowMsgLbound" value="<%=lfJSON.FormContent.F14%>"<% if(lfJSON.FormContent.F10<=0){ %> disabled="disabled"<%}%>>
 							<%}%>
@@ -413,7 +413,7 @@
 								<input id="uboundSel" style="width:90%;" type="text" placeholder="" class="textForm" name="AutoComfirmToBorrowMsgUbound" disabled="disabled">
 							<%}else{%>
 								<%if((jsonLend.AutoComfirmToBorrowMsgSorter==="Updated")||(jsonLend.AutoComfirmToBorrowMsgSorter==="Created")){%>
-									<input id="uboundSel" style="width:90%;" type="date" placeholder="年/月/日" class="textForm" name="AutoComfirmToBorrowMsgUbound"<%if(jsonLend.AutoComfirmToBorrowMsgUbound!==-1){%> value="<%=new Date(parseInt(jsonLend.AutoComfirmToBorrowMsgUbound)).getFullYear()%>-<%if(new Date(parseInt(jsonLend.AutoComfirmToBorrowMsgUbound)).getMonth()<9){%>0<%}%><%=new Date(parseInt(jsonLend.AutoComfirmToBorrowMsgUbound)).getMonth()+1%>-<%if(new Date(parseInt(jsonLend.AutoComfirmToBorrowMsgUbound)).getDate()<10){%>0<%}%><%=new Date(parseInt(jsonLend.AutoComfirmToBorrowMsgUbound)).getDate()%>"<%}%><% if(jsonLend.AutoComfirmToBorrowMsgPeriod<=0){ %> disabled="disabled"<%}%>>
+									<input id="uboundSel" style="width:90%;" type="text" placeholder="年/月/日" class="textForm" name="AutoComfirmToBorrowMsgUbound"<%if(jsonLend.AutoComfirmToBorrowMsgUbound!==-1){%> value="<%=new Date(parseInt(jsonLend.AutoComfirmToBorrowMsgUbound)).getFullYear()%>/<%if(new Date(parseInt(jsonLend.AutoComfirmToBorrowMsgUbound)).getMonth()<9){%>0<%}%><%=new Date(parseInt(jsonLend.AutoComfirmToBorrowMsgUbound)).getMonth()+1%>/<%if(new Date(parseInt(jsonLend.AutoComfirmToBorrowMsgUbound)).getDate()<10){%>0<%}%><%=new Date(parseInt(jsonLend.AutoComfirmToBorrowMsgUbound)).getDate()%>"<%}%><% if(jsonLend.AutoComfirmToBorrowMsgPeriod<=0){ %> disabled="disabled"<%}%>>
 								<%}else if(jsonLend.AutoComfirmToBorrowMsgSorter==="InterestRate"){%>
 									<input id="uboundSel" style="width:90%;" type="text" placeholder="" class="textForm" name="AutoComfirmToBorrowMsgUbound"<%if(jsonLend.AutoComfirmToBorrowMsgUbound!==-1){%> value="<%=((jsonLend.AutoComfirmToBorrowMsgUbound-scr)*100).toFixed(2)%>"<%}%><% if(jsonLend.AutoComfirmToBorrowMsgPeriod<=0){ %> disabled="disabled"<%}%>>
 								<%}else if(jsonLend.AutoComfirmToBorrowMsgSorter==="InterestInFutureDivMoney"){%>
@@ -432,7 +432,7 @@
 						</div>
 						<div class="panel-body">
 							<%if((lfJSON.FormContent.F12==="Updated")||(lfJSON.FormContent.F12==="Created")){%>
-								<input id="uboundSel" style="width:90%;" type="date" placeholder="年/月/日" class="textForm" name="AutoComfirmToBorrowMsgUbound" value="<%=lfJSON.FormContent.F15%>"<% if(lfJSON.FormContent.F10<=0){ %> disabled="disabled"<%}%>>
+								<input id="uboundSel" style="width:90%;" type="text" placeholder="年/月/日" class="textForm" name="AutoComfirmToBorrowMsgUbound" value="<%=lfJSON.FormContent.F15%>"<% if(lfJSON.FormContent.F10<=0){ %> disabled="disabled"<%}%>>
 							<%}else{%>
 								<input id="uboundSel" style="width:90%;" type="text" placeholder="" class="textForm" name="AutoComfirmToBorrowMsgUbound" value="<%=lfJSON.FormContent.F15%>"<% if(lfJSON.FormContent.F10<=0){ %> disabled="disabled"<%}%>>
 							<%}%>
@@ -681,10 +681,10 @@ function enableDater(){
 }
 
 function enableDaterInner(){
-	$('#lboundSel').attr('type','date');
-	$('#uboundSel').attr('type','date');
 	$('#lboundSel').attr('placeholder','年/月/日');
 	$('#uboundSel').attr('placeholder','年/月/日');
+	$("#lboundSel").datepicker();
+	$("#uboundSel").datepicker();
 	ifDater=true;
 }
 
@@ -695,10 +695,12 @@ function disableDater(){
 }
 
 function disableDaterInner(){
-	$('#lboundSel').attr('type','text');
-	$('#uboundSel').attr('type','text');
 	$('#lboundSel').attr('placeholder','');
 	$('#uboundSel').attr('placeholder','');
+	$('#lboundSel').datepicker( "destroy" );
+	$('#lboundSel').removeClass("hasDatepicker");
+	$('#uboundSel').datepicker( "destroy" );
+	$('#uboundSel').removeClass("hasDatepicker");
 	ifDater=false;
 }
 

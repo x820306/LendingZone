@@ -6,12 +6,13 @@
 	<title><%if((searchTitle!==null)&&(searchTitle!=='')){%><%=searchTitle%> - <%}%>Lending Zone</title>
 	
 	<!-- jquery js-->
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+	<script type="text/javascript" src="/javascripts/jquery.min.js"></script>
 	<!-- bootstrap js-->
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="/javascripts/bootstrap.min.js"></script>
 	<!-- plugin js-->
 	<script type="text/javascript" src="/javascripts/jquery.cookie.js"></script>
 	<script type="text/javascript" src="/javascripts/jquery-ui.js"></script>
+	<script type="text/javascript" src="/javascripts/datepicker-zh-TW.js"></script>
 	<script type="text/javascript" src="/javascripts/Chart.js"></script>
 	<script type="text/javascript" src="/javascripts/tooltipsy.min.js"></script>
 	<script type="text/javascript" src="/javascripts/highlightRegex.js"></script>
@@ -24,6 +25,7 @@
 	<link rel="stylesheet" href="/stylesheets/theme.css">
 	<!-- local css-->
 	<link rel="stylesheet" href="/stylesheets/ourStyle.css">
+	<link rel="stylesheet" href="/stylesheets/jquery-ui.css">
 </head>
 <body>
 	<header role="banner">
@@ -133,6 +135,7 @@
 										<li id="ali9"<%if(actionDefault==='最高期數'){%> class="active"<%}%>><a href="#" onclick="<%if(nav_cur==='search'){%>sorterSelector(9);<%}%>searchActionSelector(9);return false;" id="searchAction9">最高期數</a></li>
 										<li id="ali10"<%if(actionDefault==='信用等級'){%> class="active"<%}%>><a href="#" onclick="<%if(nav_cur==='search'){%>sorterSelector(10);<%}%>searchActionSelector(10);return false;" id="searchAction10">信用等級</a></li>
 										<li id="ali11"<%if(actionDefault==='按讚次數'){%> class="active"<%}%>><a href="#" onclick="<%if(nav_cur==='search'){%>sorterSelector(11);<%}%>searchActionSelector(11);return false;" id="searchAction11">按讚次數</a></li>
+										<li id="ali12"<%if(actionDefault==='留言次數'){%> class="active"<%}%>><a href="#" onclick="<%if(nav_cur==='search'){%>sorterSelector(12);<%}%>searchActionSelector(12);return false;" id="searchAction12">留言次數</a></li>
 									</ul>
 								</div>
 								<div class="btn-group">
@@ -235,7 +238,7 @@
 			$('#searchActionSelected').html($('#searchAction'+index).text());
 			$('#searchAction0').html($('#searchActionSelected').text());
 			$('#searchActionSelected').append(' <span class=\'caret\'><\/span>');
-			for(i=1;i<=11;i++){
+			for(i=1;i<=12;i++){
 				$('#ali'+i).attr('class','');
 			}
 			$('#ali'+index).attr('class','active');

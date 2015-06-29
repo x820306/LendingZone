@@ -34,7 +34,7 @@
 						生日<br>
 						<span id="s3" style="color:red;"><%if(dcdJSON){%><%if(dcdJSON.Target[2]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=dcdJSON.Message[2]%><%}%><%}%></span>
 					</td>
-					<td><input type="date" class="form-control" id="f3" name="BirthDay" placeholder="生日(yyyy/mm/dd)" required="required" value="<%if(dcdJSON){%><%=dcdJSON.FormContent.F3%><%}else{%><%=user.BirthDay.getFullYear()%>-<%if(user.BirthDay.getMonth()<9){%>0<%}%><%=user.BirthDay.getMonth()+1%>-<%if(user.BirthDay.getDate()<10){%>0<%}%><%=user.BirthDay.getDate()%><%}%>"></td>
+					<td><input type="text" class="form-control" id="f3" name="BirthDay" placeholder="生日(年/月/日)" required="required" value="<%if(dcdJSON){%><%=dcdJSON.FormContent.F3%><%}else{%><%=user.BirthDay.getFullYear()%>/<%if(user.BirthDay.getMonth()<9){%>0<%}%><%=user.BirthDay.getMonth()+1%>/<%if(user.BirthDay.getDate()<10){%>0<%}%><%=user.BirthDay.getDate()%><%}%>"></td>
 				</tr>
 				<tr>
 					<td align = "right" style = "width:15%">
@@ -329,7 +329,7 @@
 	}
 	
 	function checkSsnID(id){
-		var ifDoThis=true;
+		var ifDoThis=false;
 		if(ifDoThis){
 			tab = "ABCDEFGHJKLMNPQRSTUVXYWZIO"                     
 			A1 = new Array (1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,3,3,3,3,3,3 );
@@ -337,7 +337,7 @@
 			Mx = new Array (9,8,7,6,5,4,3,2,1,1);
 
 			if ( id.length !== 10 ) return false;
-			i = tab.indexOf( id.charAt(0) );
+			i = tab.search(new RegExp(id.charAt(0),'i'));
 			if ( i === -1 ) return false;
 			sum = A1[i] + A2[i]*9;
 
@@ -353,8 +353,8 @@
 		}
 	}
 	
-	<%if(dcdJSON){%>
-		$(document).ready(function (){
+	$(document).ready(function (){
+		<%if(dcdJSON){%>
 			<%for(i=0;i<dcdJSON.Target.length;i++){%>
 				<%if(dcdJSON.Target[i]){%>
 					<%if(i!==1){%>
@@ -363,7 +363,10 @@
 					<%break;%>
 				<%}%>
 			<%}%>
-		});
-	<%}%>
+		<%}%>
+		
+		$("#f3").datepicker({yearRange: '-100:+0',minDate: '-100Y', maxDate: +0});
+	});
+
 </script>
 <%- include('layout_footer',{imgSettingCode:"var ifLoadedCount=0;",imgDrawingCode:"",nav_cur:'profile'}); -%>

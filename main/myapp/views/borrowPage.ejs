@@ -72,7 +72,7 @@
     <div class="borrowBlock">
         <div class="borrowBlockTitle">媒合確定最晚期限</div><span id="s8" style="color:red;"><%if(bfJSON){%><%if(bfJSON.Target[7]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=bfJSON.Message[7]%><%}%><%}%></span>
         <div>系統預設為三天</div>
-        <input id="f8" type="date" name="TimeLimit"<%if(bfJSON){%> value="<%=bfJSON.FormContent.F8%>"<%}%>>
+        <input id="f8" type="text" placeholder="年/月/日" name="TimeLimit"<%if(bfJSON){%> value="<%=bfJSON.FormContent.F8%>"<%}%>>
     </div>
 	<input type="hidden" name="Idfr" value="<%=idfr%>">
     <div class="borrowBlock" >
@@ -187,6 +187,8 @@
 				<%}%>
 			<%}%>
 		<%}%>
+		
+		$("#f8").datepicker({yearRange: '-0:+3',minDate: +1, maxDate: '+3Y'});
 		
 		document.body.style['background-color']='#FFE4A3';
 

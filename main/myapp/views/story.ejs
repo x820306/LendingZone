@@ -142,7 +142,7 @@
 						<tr>
 							<td>
 								<div>
-									&nbsp;&nbsp;&nbsp;&nbsp;<%=json.TimeLimit.getFullYear()%>/<%=json.TimeLimit.getMonth()+1%>/<%=json.TimeLimit.getDate()%>
+									&nbsp;&nbsp;&nbsp;&nbsp;<%=json.TimeLimit.getFullYear()%>/<%if(json.TimeLimit.getMonth()<9){%>0<%}%><%=json.TimeLimit.getMonth()+1%>/<%if(json.TimeLimit.getDate()<10){%>0<%}%><%=json.TimeLimit.getDate()%>
 								</div>
 							</td>
 						</tr>
@@ -169,7 +169,7 @@
 							<br>
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%-json.Discussion[i].Content.replace(new RegExp('\n','g'),'<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;').replace(new RegExp(' ','g'),'&nbsp;')%>
 							<br>
-							<div style="display:inline;" class="myTitle">No.<%=i+1%>&nbsp;&nbsp;&nbsp;<%=json.Discussion[i].Updated.getFullYear()%>/<%=json.Discussion[i].Updated.getMonth()+1%>/<%=json.Discussion[i].Updated.getDate()%></div>
+							<div style="display:inline;" class="myTitle">No.<%=i+1%>&nbsp;&nbsp;&nbsp;<%=json.Discussion[i].Updated.getFullYear()%>/<%if(json.Discussion[i].Updated.getMonth()<9){%>0<%}%><%=json.Discussion[i].Updated.getMonth()+1%>/<%if(json.Discussion[i].Updated.getDate()<10){%>0<%}%><%=json.Discussion[i].Updated.getDate()%></div>
 							<br>
 							<br>
 						<%}%>
@@ -271,10 +271,10 @@
 					</td>
 					<td align="right">
 						<div>
-							Updated：<div style="display:inline;" id="updatedDate"><%=json.Updated.getFullYear()%>/<%=json.Updated.getMonth()+1%>/<%=json.Updated.getDate()%></div>
+							Updated：<div style="display:inline;" id="updatedDate"><%=json.Updated.getFullYear()%>/<%if(json.Updated.getMonth()<9){%>0<%}%><%=json.Updated.getMonth()+1%>/<%if(json.Updated.getDate()<10){%>0<%}%><%=json.Updated.getDate()%></div>
 						</div>
 						<div>
-							Created：<%=json.Created.getFullYear()%>/<%=json.Created.getMonth()+1%>/<%=json.Created.getDate()%></div>
+							Created：<%=json.Created.getFullYear()%>/<%if(json.Created.getMonth()<9){%>0<%}%><%=json.Created.getMonth()+1%>/<%if(json.Created.getDate()<10){%>0<%}%><%=json.Created.getDate()%>
 						</div>
 					</td>
 				</tr>
@@ -1159,7 +1159,15 @@
 					success: function(Jdata) {
 						if(Jdata.success){
 							var dateObj=new Date(Jdata.date);
-							$('#updatedDate').html(dateObj.getFullYear()+'/'+(dateObj.getMonth()+1)+'/'+dateObj.getDate());
+							var zeroMonth='';
+							if(dateObj.getMonth()<9){
+								zeroMonth='0';
+							}
+							var zeroDate='';
+							if(dateObj.getDate()<10){
+								zeroDate='0';
+							}
+							$('#updatedDate').html(dateObj.getFullYear()+'/'+zeroMonth+(dateObj.getMonth()+1)+'/'+zeroDate+dateObj.getDate());
 							if(Jdata.status===-1){
 								$('#likeBtn').html('<button class="btn btn-default" data-toggle="modal" data-target="#myModal" id="btnID"><span class="glyphicon glyphicon-thumbs-up myTitle2"></span></button>');	
 							}else if(Jdata.status===0){
@@ -1223,17 +1231,33 @@
 		
 		function renderComments(Jdata){
 			var dateObj=new Date(Jdata.date);
-			$('#updatedDate').html(dateObj.getFullYear()+'/'+(dateObj.getMonth()+1)+'/'+dateObj.getDate());
+			var zeroMonth='';
+			if(dateObj.getMonth()<9){
+				zeroMonth='0';
+			}
+			var zeroDate='';
+			if(dateObj.getDate()<10){
+				zeroDate='0';
+			}
+			$('#updatedDate').html(dateObj.getFullYear()+'/'+zeroMonth+(dateObj.getMonth()+1)+'/'+zeroDate+dateObj.getDate());
 			$('#discussionDiv').html('');
 			for(i=0;i<Jdata.result.length;i++){
 				var dateObj2=new Date(Jdata.result[i].Updated);
+				var zeroMonth2='';
+				if(dateObj2.getMonth()<9){
+					zeroMonth2='0';
+				}
+				var zeroDate2='';
+				if(dateObj2.getDate()<10){
+					zeroDate2='0';
+				}
 				var year=dateObj2.getFullYear();
 				var month=dateObj2.getMonth()+1;
 				var date=dateObj2.getDate();
 				if(!Jdata.CreatedByViewer[i]){
-					$('#discussionDiv').append('<div style="display:inline;" class="myTitle">'+Jdata.result[i].CreatedBy.Username+'：</div><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+Jdata.result[i].Content+'<br><div style="display:inline;" class="myTitle">No.'+(i+1)+'&nbsp;&nbsp;&nbsp;'+year+'/'+month+'/'+date+'</div><br><br>');
+					$('#discussionDiv').append('<div style="display:inline;" class="myTitle">'+Jdata.result[i].CreatedBy.Username+'：</div><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+Jdata.result[i].Content+'<br><div style="display:inline;" class="myTitle">No.'+(i+1)+'&nbsp;&nbsp;&nbsp;'+year+'/'+zeroMonth2+month+'/'+zeroDate2+date+'</div><br><br>');
 				}else{
-					$('#discussionDiv').append('<table width="95%"><tr><td><div style="display:inline;" class="myTitle">'+Jdata.result[i].CreatedBy.Username+'：</div><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;" id="cntIptDiv'+i+'">'+Jdata.result[i].Content.replace(/"/g,'&quot;').replace(new RegExp('\n','g'),'<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;').replace(new RegExp(' ','g'),'&nbsp;')+'</div><br><div style="display:inline;" class="myTitle">No.'+(i+1)+'&nbsp;&nbsp;&nbsp;'+year+'/'+month+'/'+date+'</div></td><td align="right"><div class="btn-group"><button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-pencil myTitle2"></span> <span class="caret myTitle2"></span></button><ul style="width:75px;min-width:75px;" class="dropdown-menu" role="menu"><li class="actionLi"><a href="#" onclick="startEdit('+i+');return false;">編輯</a></li><li class="actionLi"><a href="#" onclick="deleteComment('+i+');return false;">刪除</a></li></ul></div></td></tr></table><input type="hidden" id="hdIpt'+i+'" value="'+Jdata.result[i]._id+'"><input type="hidden" id="hdIpt2'+i+'" value="'+Jdata.result[i].Content.replace(/"/g,'&quot;')+'"><input type="hidden" id="hdIpt3'+i+'" value="'+Jdata.result[i].Content.replace(/"/g,'&quot;').replace(new RegExp('\n','g'),'<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;').replace(new RegExp(' ','g'),'&nbsp;')+'"><br>');
+					$('#discussionDiv').append('<table width="95%"><tr><td><div style="display:inline;" class="myTitle">'+Jdata.result[i].CreatedBy.Username+'：</div><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;" id="cntIptDiv'+i+'">'+Jdata.result[i].Content.replace(/"/g,'&quot;').replace(new RegExp('\n','g'),'<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;').replace(new RegExp(' ','g'),'&nbsp;')+'</div><br><div style="display:inline;" class="myTitle">No.'+(i+1)+'&nbsp;&nbsp;&nbsp;'+year+'/'+zeroMonth2+month+'/'+zeroDate2+date+'</div></td><td align="right"><div class="btn-group"><button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-pencil myTitle2"></span> <span class="caret myTitle2"></span></button><ul style="width:75px;min-width:75px;" class="dropdown-menu" role="menu"><li class="actionLi"><a href="#" onclick="startEdit('+i+');return false;">編輯</a></li><li class="actionLi"><a href="#" onclick="deleteComment('+i+');return false;">刪除</a></li></ul></div></td></tr></table><input type="hidden" id="hdIpt'+i+'" value="'+Jdata.result[i]._id+'"><input type="hidden" id="hdIpt2'+i+'" value="'+Jdata.result[i].Content.replace(/"/g,'&quot;')+'"><input type="hidden" id="hdIpt3'+i+'" value="'+Jdata.result[i].Content.replace(/"/g,'&quot;').replace(new RegExp('\n','g'),'<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;').replace(new RegExp(' ','g'),'&nbsp;')+'"><br>');
 				}	
 			}
 		}
@@ -1382,7 +1406,15 @@
 						success: function(Jdata) {
 							if(Jdata.success){
 								var dateObj=new Date(Jdata.date);
-								$('#updatedDate').html(dateObj.getFullYear()+'/'+(dateObj.getMonth()+1)+'/'+dateObj.getDate());
+								var zeroMonth='';
+								if(dateObj.getMonth()<9){
+									zeroMonth='0';
+								}
+								var zeroDate='';
+								if(dateObj.getDate()<10){
+									zeroDate='0';
+								}
+								$('#updatedDate').html(dateObj.getFullYear()+'/'+zeroMonth+(dateObj.getMonth()+1)+'/'+zeroDate+dateObj.getDate());
 								$('#likeBtn').html('<button class="btn btn-default" onclick="unlike();" id="btnID"><span class="glyphicon glyphicon-remove myTitle2"></span></button>');
 								$('#likeNum').html('&nbsp;'+Jdata.result);
 							}else{
@@ -1407,7 +1439,15 @@
 						success: function(Jdata) {
 							if(Jdata.success){
 								var dateObj=new Date(Jdata.date);
-								$('#updatedDate').html(dateObj.getFullYear()+'/'+(dateObj.getMonth()+1)+'/'+dateObj.getDate());
+								var zeroMonth='';
+								if(dateObj.getMonth()<9){
+									zeroMonth='0';
+								}
+								var zeroDate='';
+								if(dateObj.getDate()<10){
+									zeroDate='0';
+								}
+								$('#updatedDate').html(dateObj.getFullYear()+'/'+zeroMonth+(dateObj.getMonth()+1)+'/'+zeroDate+dateObj.getDate());
 								$('#likeBtn').html('<button class="btn btn-default" onclick="like();" id="btnID"><span class="glyphicon glyphicon-thumbs-up myTitle2"></span></button>');
 								$('#likeNum').html('&nbsp;'+Jdata.result);
 							}else{

@@ -72,7 +72,7 @@ var Users = new Schema({
 	Email: { type: String},
 	Gender: { type: String},
 	BirthDay: { type: Date},
-	IdCardNumber: { type: String},
+	IdCardNumber: { type: String, required: true, index: { unique: true }},
 	Phone: { type: String},
 	Address: { type: String},
 	OrignalLevel: { type: Number, default: 1 },

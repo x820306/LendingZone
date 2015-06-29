@@ -54,6 +54,8 @@ router.get('/search/:keyword?/:category?/:messenger?/:action?/:director?/:lbound
 				actionRecReserve='Created';
 			}else if(action==='按讚次數'){
 				actionRecReserve='Created';
+			}else if(action==='留言次數'){
+				actionRecReserve='Created';
 			}else{
 				actionRecReserve='Created';
 				action='建立日期';
@@ -177,6 +179,7 @@ router.get('/search/:keyword?/:category?/:messenger?/:action?/:director?/:lbound
 					if(!isNaN(tester)){
 						if(tester>=0){
 							lboundRec=tester;
+							lbound=tester;
 						}else{
 							lbound='';
 						}
@@ -189,6 +192,7 @@ router.get('/search/:keyword?/:category?/:messenger?/:action?/:director?/:lbound
 					if(!isNaN(tester)){
 						if(tester>=0){
 							uboundRec=tester;
+							ubound=tester;
 						}else{
 							ubound='';
 						}
@@ -219,7 +223,7 @@ router.get('/search/:keyword?/:category?/:messenger?/:action?/:director?/:lbound
 				andFindCmdAry.push({"Category": categoryRec});
 			}
 			
-			if((action!=='還需要金額')&&(action!=='已經借到金額')&&(action!=='信用等級')&&(action!=='按讚次數')){
+			if((action!=='還需要金額')&&(action!=='已經借到金額')&&(action!=='信用等級')&&(action!=='按讚次數')&&(action!=='留言次數')){
 				var jsonTemp={};
 				if((lboundRec!==null)&&(uboundRec!==null)){
 					jsonTemp[actionRecReserve]={"$gte": lboundRec, "$lte": uboundRec};
@@ -375,6 +379,7 @@ router.get('/search/:keyword?/:category?/:messenger?/:action?/:director?/:lbound
 								
 								for(i=0;i<borrows.length;i++){
 									borrows[i].LikeNumber=borrows[i].Likes.length;
+									borrows[i].DiscussionNumber=borrows[i].Discussion.length;
 									borrows[i].Got=0;
 									for(r=0;r<borrows[i].Message.length;r++){
 										if(borrows[i].Message[r].Status==='Confirmed'){
@@ -418,6 +423,13 @@ router.get('/search/:keyword?/:category?/:messenger?/:action?/:director?/:lbound
 										borrows.sort(function(a,b) { return parseInt(a.LikeNumber) - parseInt(b.LikeNumber)} );
 									}
 									library.arrayFilter(borrows,'LikeNumber',lboundRec,uboundRec);	
+								}else if(action==='留言次數'){
+									if(director==='大至小'){
+										borrows.sort(function(a,b) { return parseInt(b.DiscussionNumber) - parseInt(a.DiscussionNumber)} );
+									}else if(director==='小至大'){
+										borrows.sort(function(a,b) { return parseInt(a.DiscussionNumber) - parseInt(b.DiscussionNumber)} );
+									}
+									library.arrayFilter(borrows,'DiscussionNumber',lboundRec,uboundRec);	
 								}
 								
 								totalResultNumber=borrows.length;
@@ -980,6 +992,7 @@ router.get('/lenderTransactionRecord/:oneid?/:filter?/:messenger?/:classor?/:sor
 					if(!isNaN(tester)){
 						if(tester>=0){
 							lboundRec=tester;
+							lbound=tester;
 						}else{
 							lbound='';
 						}
@@ -992,6 +1005,7 @@ router.get('/lenderTransactionRecord/:oneid?/:filter?/:messenger?/:classor?/:sor
 					if(!isNaN(tester)){
 						if(tester>=0){
 							uboundRec=tester;
+							ubound=tester;
 						}else{
 							ubound='';
 						}
@@ -1665,6 +1679,7 @@ router.get('/lenderReturnRecord/:oneid?/:id?/:messenger?/:classor?/:sorter?/:dir
 							}else{
 								lboundRec=tester;
 							}
+							lbound=tester;
 						}else{
 							lbound='';
 						}
@@ -1685,6 +1700,7 @@ router.get('/lenderReturnRecord/:oneid?/:id?/:messenger?/:classor?/:sorter?/:dir
 							}else{
 								uboundRec=tester;
 							}
+							ubound=tester;
 						}else{
 							ubound='';
 						}
@@ -2105,6 +2121,7 @@ router.get('/lendsList/:oneid?/:classOne?/:classTwo?/:sorter?/:director?/:lbound
 					if(!isNaN(tester)){
 						if(tester>=0){
 							lboundRec=tester;
+							lbound=tester;
 						}else{
 							lbound='';
 						}
@@ -2117,6 +2134,7 @@ router.get('/lendsList/:oneid?/:classOne?/:classTwo?/:sorter?/:director?/:lbound
 					if(!isNaN(tester)){
 						if(tester>=0){
 							uboundRec=tester;
+							ubound=tester;
 						}else{
 							ubound='';
 						}
@@ -2392,6 +2410,7 @@ router.get('/lenderSendMessages/:msgKeyword?/:filter?/:classor?/:sorter?/:direct
 					if(!isNaN(tester)){
 						if(tester>=0){
 							lboundRec=tester;
+							lbound=tester;
 						}else{
 							lbound='';
 						}
@@ -2404,6 +2423,7 @@ router.get('/lenderSendMessages/:msgKeyword?/:filter?/:classor?/:sorter?/:direct
 					if(!isNaN(tester)){
 						if(tester>=0){
 							uboundRec=tester;
+							ubound=tester;
 						}else{
 							ubound='';
 						}
@@ -2788,6 +2808,7 @@ router.get('/lenderReceiveMessages/:msgKeyword?/:filter?/:classor?/:sorter?/:dir
 					if(!isNaN(tester)){
 						if(tester>=0){
 							lboundRec=tester;
+							lbound=tester;
 						}else{
 							lbound='';
 						}
@@ -2800,6 +2821,7 @@ router.get('/lenderReceiveMessages/:msgKeyword?/:filter?/:classor?/:sorter?/:dir
 					if(!isNaN(tester)){
 						if(tester>=0){
 							uboundRec=tester;
+							ubound=tester;
 						}else{
 							ubound='';
 						}
