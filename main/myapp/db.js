@@ -68,6 +68,7 @@ var Messages = new Schema({
 var Users = new Schema({
     Username: { type: String, required: true, index: { unique: true } },
 	Password: { type: String, required: true},
+	Usnl: { type: String},
 	Name: { type: String},
 	Email: { type: String},
 	Gender: { type: String},

@@ -58,25 +58,28 @@
 								<li id="dlis2"<%if(directorDefault==='小至大'){%> class="active"<%}%>><a href="#" onclick="directorSelector(2);return false;" id="director2">小至大</a></li>
 							</ul>
 						</div>
-						<button type="button" class="btn btn-default pageBar" onclick="linker();">Go!</button>
+						<div class="btn-group">
+							<button type="button" class="btn btn-default pageBar" onclick="linker();">Go!</button>
+						</div>
 					</span>
 				</div>
 				<br>
-				<table width='100%'>
-					<tr>
-						<td>
-							<%if((sorterDefault==='建立日期')||(sorterDefault==='更新日期')){%>
-								<input type="text" placeholder="下限(年/月/日)" class="form-control boundIpt" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode===13){linker();}">&nbsp;&nbsp;<span id='lbd'></span>
-								&nbsp;&nbsp;~&nbsp;&nbsp;
-								<input type="text" placeholder="上限(年/月/日)" class="form-control boundIpt" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode===13){linker();}">&nbsp;&nbsp;<span id='ubd'></span>
-							<%}else{%>
-								<input type="text" placeholder="下限" class="form-control boundIpt" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode===13){linker();}">&nbsp;&nbsp;<span id='lbd'></span>
-								&nbsp;&nbsp;~&nbsp;&nbsp;
-								<input type="text" placeholder="上限" class="form-control boundIpt" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode===13){linker();}">&nbsp;&nbsp;<span id='ubd'></span>
-							<%}%>
-						</td>
+				<div style="border-top-style: none;border-right-style: none;border-bottom-style: none;border-left-style: none;margin-top: 0px;margin-bottom: 0px;" class="table-responsive">
+					<table style="margin-bottom: 0px;margin-top: 0px;" class="table" width="100%">
+						<tr>
+							<td style="border-bottom-style: none;border-top-style: none;">
+								<%if((sorterDefault==='建立日期')||(sorterDefault==='更新日期')){%>
+									<input type="text" placeholder="下限(年/月/日)" class="form-control boundIpt" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode===13){linker();}">&nbsp;&nbsp;<span id='lbd'></span>
+									&nbsp;&nbsp;~&nbsp;&nbsp;
+									<input type="text" placeholder="上限(年/月/日)" class="form-control boundIpt" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode===13){linker();}">&nbsp;&nbsp;<span id='ubd'></span>
+								<%}else{%>
+									<input type="text" placeholder="下限" class="form-control boundIpt" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode===13){linker();}">&nbsp;&nbsp;<span id='lbd'></span>
+									&nbsp;&nbsp;~&nbsp;&nbsp;
+									<input type="text" placeholder="上限" class="form-control boundIpt" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode===13){linker();}">&nbsp;&nbsp;<span id='ubd'></span>
+								<%}%>
+							</td>
 						<%if((kpr!=='')&&(totalResultNum>0)&&(!oflg)&&(pflg)){%>
-							<td align="right">
+							<td align="right" style="border-bottom-style: none;border-top-style: none;">
 								<button class="btn btn-default disabled" style="display:none;" id="highlightBtn" onclick="enableHighlight();">
 									關鍵字上色
 								</button>
@@ -85,8 +88,9 @@
 								</button>
 							</td>
 						<%}%>
-					</tr>
-				</table>
+						</tr>
+					</table>
+				</div>
 				<br>
 				<%if((delJSON)&&(filterDefault==='未被確認')){%>
 					<br>
@@ -98,37 +102,40 @@
 				<% if(totalResultNum>0){ %>
 					<% if(filterDefault==='未被確認'){%>
 						<br>
-						<input type="checkbox" id="selectAll" onclick="selectAllFun();"> 全選&nbsp;&nbsp;&nbsp;&nbsp;
-						<button type="button" class="btn btn-danger" onclick="checkAndOpenModal('#chkModal2')">
-							刪除
-						</button>
-						<div class="modal fade" id="chkModal2">
-							<div class="modal-dialog modal-sm">
-								<div class="modal-content">
-									<div class="modal-header" style="text-align: center;">
-										<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-										<h4 class="modal-title">再次確認</h4>
-									</div>
-									<div class="modal-body" style="text-align: center;">
-										<br>
-										您確定要刪除已選之<span id="seCtr1"></span>筆訊息嗎?
-										<br>
-										<br>
-									</div>
-									<div class="modal-footer" style="text-align: center;">
-										<button type="button" class="btn btn-danger" id="deleteBtn" onclick="deleteSelected();">
-											確定
+						<div style="border-top-style: none;border-right-style: none;border-bottom-style: none;border-left-style: none;margin-top: 0px;margin-bottom: 0px;" class="table-responsive">
+							<table style="margin-bottom: 0px;margin-top: 0px;" class="table" width="100%">
+								<tr>
+									<td style="border-bottom-style: none;border-top-style: none;">
+										<input type="checkbox" id="selectAll" onclick="selectAllFun();">&nbsp;&nbsp;&nbsp;&nbsp;
+										<button id="enableAllBtn" type="button" class="btn btn-default" onclick="$('#selectAll').prop('checked', true);selectAllFun();">
+											全選
 										</button>
-										<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-									</div>
-								</div>
-							</div>
+										&nbsp;&nbsp;
+										<button id="disableAllBtn" type="button" class="btn btn-default" onclick="$('#selectAll').prop('checked', false);selectAllFun();">
+											全不選
+										</button>
+										&nbsp;&nbsp;
+										<button id="reverseAllBtn" type="button" class="btn btn-default" onclick="reverseAllFun();">
+											反選
+										</button>
+									</td>
+									<td align="right" style="border-bottom-style: none;border-top-style: none;">		
+										<button type="button" class="btn btn-danger" onclick="checkAndOpenModal('#chkModal2');">
+											刪除
+										</button>
+										<%if(pageNumber>1){%>
+											&nbsp;&nbsp;
+											<button type="button" class="btn btn-danger" data-toggle="modal" data-target="#chkModal1">
+												刪除全部送出之訊息
+											</button>
+										<%}%>
+									</td>
+								</tr>
+							</table>
 						</div>
+						<br>
+						<br>
 						<%if(pageNumber>1){%>
-							&nbsp;&nbsp;
-							<button type="button" class="btn btn-danger" data-toggle="modal" data-target="#chkModal1">
-								刪除全部送出之訊息
-							</button>
 							<div class="modal fade" id="chkModal1">
 								<div class="modal-dialog modal-sm">
 									<div class="modal-content">
@@ -153,9 +160,28 @@
 								</div>
 							</div>
 						<%}%>
-						<br>
-						<br>
-						<br>
+						<div class="modal fade" id="chkModal2">
+							<div class="modal-dialog modal-sm">
+								<div class="modal-content">
+									<div class="modal-header" style="text-align: center;">
+										<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+										<h4 class="modal-title">再次確認</h4>
+									</div>
+									<div class="modal-body" style="text-align: center;">
+										<br>
+										您確定要刪除已選之<span id="seCtr1"></span>筆訊息嗎?
+										<br>
+										<br>
+									</div>
+									<div class="modal-footer" style="text-align: center;">
+										<button type="button" class="btn btn-danger" id="deleteBtn" onclick="deleteSelected();">
+											確定
+										</button>
+										<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+									</div>
+								</div>
+							</div>
+						</div>
 						<div class="modal fade" id="msgModal">
 							<div class="modal-dialog modal-sm">
 								<div class="modal-content">
@@ -631,7 +657,7 @@
 									&nbsp;&nbsp;&nbsp;&nbsp;
 										<span<%if(sorterDefault==='建立日期'){%> class="stronger"<%}%>>Created：</span><%=jsonMessage[i].Created.getFullYear()%>/<%if(jsonMessage[i].Created.getMonth()<9){%>0<%}%><%=jsonMessage[i].Created.getMonth()+1%>/<%if(jsonMessage[i].Created.getDate()<10){%>0<%}%><%=jsonMessage[i].Created.getDate()%>
 									&nbsp;&nbsp;&nbsp;&nbsp;
-										No.<%=i+1%>
+										<span id="noSpan<%=i%>">No.<%=i+1%></span>
 								</div>
 							</td>
 						<tr>
@@ -848,9 +874,9 @@ function linker(){
 					$('.colorCnt').highlightRegex(stringArrayRegex[we]);
 				}
 				$('#unhighlightBtn').removeClass('disabled');
-				$('#unhighlightBtn').css('display','');
+				$('#unhighlightBtn').show();
 				$('#highlightBtn').addClass('disabled');
-				$('#highlightBtn').css('display','none');
+				$('#highlightBtn').hide();
 			}
 		}
 	}
@@ -861,9 +887,9 @@ function linker(){
 				highLightFlag=false;
 				$('.colorCnt').highlightRegex();
 				$('#highlightBtn').removeClass('disabled');
-				$('#highlightBtn').css('display','');
+				$('#highlightBtn').show();
 				$('#unhighlightBtn').addClass('disabled');
-				$('#unhighlightBtn').css('display','none');
+				$('#unhighlightBtn').hide();
 			}
 		}
 	}
@@ -1033,23 +1059,39 @@ function linker(){
 				$('#msgModal').modal('show');
 			}
 		}
+		
+		function reverseAllFun(){
+			$("input[name='selectCheckBox']").each(function() {
+				var target=$(this).attr('id').replace('selectCheckBoxId','');
+				if($(this).prop("checked")){
+					$(this).prop("checked", false);
+				}else{
+					$(this).prop("checked", true);
+				}
+				selectFun(target);
+			});
+		}
 
 		function selectAllFun(){
-			if($("#selectAll").prop("checked"))
-			{
+			if($("#selectAll").prop("checked")){
 				$("input[name='selectCheckBox']").each(function() {
 					$(this).prop("checked", true);
 				});
+				for(i=0;i<<%=jsonMessage.length%>;i++){
+					$('#noSpan'+i).addClass('red');
+				}
 			}else{
 				$("input[name='selectCheckBox']").each(function() {
 					$(this).prop("checked", false);
 				});
+				for(i=0;i<<%=jsonMessage.length%>;i++){
+					$('#noSpan'+i).removeClass('red');
+				}
 			}
 		}
 
 		function selectFun(index){
-			if($("#selectCheckBoxId"+index).prop("checked"))
-			{	
+			if($("#selectCheckBoxId"+index).prop("checked")){	
 				var ctr=0;
 				$("input[name='selectCheckBox']").each(function() {
 					if($(this).prop("checked")){
@@ -1059,6 +1101,8 @@ function linker(){
 				if(ctr===$("input[name='selectCheckBox']").length){
 					$("#selectAll").prop("checked", true);
 				}
+				
+				$('#noSpan'+index).addClass('red');
 			}else{
 				var ctr=0;
 				$("input[name='selectCheckBox']").each(function() {
@@ -1068,7 +1112,9 @@ function linker(){
 				});
 				if(ctr<$("input[name='selectCheckBox']").length){
 					$("#selectAll").prop("checked", false);
-				}		
+				}
+
+				$('#noSpan'+index).removeClass('red');
 			}
 		}
 
@@ -1101,6 +1147,10 @@ function linker(){
 				deleteAllFlag=true;
 				$('#deleteAllBtn').addClass('disabled');
 			<%}%>
+			
+			$('#enableAllBtn').addClass('disabled');
+			$('#disableAllBtn').addClass('disabled');
+			$('#reverseAllBtn').addClass('disabled');
 		}
 
 		function enableButton(){
@@ -1111,6 +1161,10 @@ function linker(){
 				deleteAllFlag=false;
 				$('#deleteAllBtn').removeClass('disabled');
 			<%}%>
+			
+			$('#enableAllBtn').removeClass('disabled');
+			$('#disableAllBtn').removeClass('disabled');
+			$('#reverseAllBtn').removeClass('disabled');
 		}
 
 

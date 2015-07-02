@@ -5,7 +5,7 @@
 			<table width="100%">
 				<tr>
 					<td style="width:90%;">
-						<div class="bigTitle<%if(json.TitleColor==="default"){%> class="default"<%}else if(json.TitleColor==="color1"){%> color1<%}else if(json.TitleColor==="color2"){%> color2<%}else if(json.TitleColor==="color3"){%> color3<%}else if(json.TitleColor==="color4"){%> color4<%}else if(json.TitleColor==="color5"){%> color5<%}else if(json.TitleColor==="color6"){%> color6<%}else if(json.TitleColor==="color7"){%> color7<%}%>">[<%if(json.Category==='general'){%>一般<%}else if(json.Category==='education'){%>教育<%}else if(json.Category==='family'){%>家庭<%}else if(json.Category==='tour'){%>旅遊<%}%>]&nbsp;&nbsp;<%if(json.StoryTitle!==''){%><%-json.StoryTitle.replace(new RegExp(' ','g'),'&nbsp;')%><%}else{%>無標題<%}%></div>
+						<div class="bigTitle<%if(json.TitleColor==="default"){%> default<%}else if(json.TitleColor==="color1"){%> color1<%}else if(json.TitleColor==="color2"){%> color2<%}else if(json.TitleColor==="color3"){%> color3<%}else if(json.TitleColor==="color4"){%> color4<%}else if(json.TitleColor==="color5"){%> color5<%}else if(json.TitleColor==="color6"){%> color6<%}else if(json.TitleColor==="color7"){%> color7<%}%>">[<%if(json.Category==='general'){%>一般<%}else if(json.Category==='education'){%>教育<%}else if(json.Category==='family'){%>家庭<%}else if(json.Category==='tour'){%>旅遊<%}%>]&nbsp;&nbsp;<%if(json.StoryTitle!==''){%><%-json.StoryTitle.replace(new RegExp(' ','g'),'&nbsp;')%><%}else{%>無標題<%}%></div>
 						<div class="subTitle"> by <span id="aiteName"><%=json.CreatedBy.Username%></span></div>
 					</td>
 					<td align="right">
@@ -1278,9 +1278,9 @@
 		}
 		
 		function checkAndOpenModal(target,cntNumber,cntTail,flag){
-			var a=$("input[name='MoneyToLend']").val().trim();
-			var b=$("input[name='InterestRate']").val().trim();
-			var c=$("input[name='MonthPeriod']").val().trim();
+			var a=$("input[name='MoneyToLend']").val().toString().trim();
+			var b=$("input[name='InterestRate']").val().toString().trim();
+			var c=$("input[name='MonthPeriod']").val().toString().trim();
 			var aa=parseInt(a);
 			var bb=parseFloat(b);
 			var cc=parseInt(c);
@@ -1340,7 +1340,7 @@
 		var ecFlag=false;
 		function editComment(index){
 			if(!ecFlag){
-				if($('#actionTa'+index).val().trim()!==''){
+				if($('#actionTa'+index).val().toString().trim()!==''){
 					startRenderComments();
 					$.ajax({ 
 						url: '/Discussions/edit',
@@ -1367,12 +1367,12 @@
 		var scFlag=false;
 		function sendComment(){
 			if(!scFlag){
-				if($('#iptCtr').val().trim()!==''){
+				if($('#iptCtr').val().toString().trim()!==''){
 					startRenderComments();
 					$.ajax({ 
 							url: '/Discussions/create',
 							type: 'POST',
-							data:{Content:$('#iptCtr').val().trim(),BelongTo:"<%=json._id%>"},
+							data:{Content:$('#iptCtr').val().toString().trim(),BelongTo:"<%=json._id%>"},
 							dataType: 'json',
 							success: function(Jdata) {
 								if(Jdata.success){
@@ -1463,10 +1463,10 @@
 			}
 			
 			function interestInFutureCalculator(){
-				if(($("input[name='MoneyToLend']").val().trim()!=='')&&($("input[name='InterestRate']").val().trim()!=='')&&($("input[name='MonthPeriod']").val().trim()!=='')){
-					var money=parseInt($("input[name='MoneyToLend']").val().trim());
-					var rate=parseFloat($("input[name='InterestRate']").val().trim());
-					var month=parseInt($("input[name='MonthPeriod']").val().trim());
+				if(($("input[name='MoneyToLend']").val().toString().trim()!=='')&&($("input[name='InterestRate']").val().toString().trim()!=='')&&($("input[name='MonthPeriod']").val().toString().trim()!=='')){
+					var money=parseInt($("input[name='MoneyToLend']").val().toString().trim());
+					var rate=parseFloat($("input[name='InterestRate']").val().toString().trim());
+					var month=parseInt($("input[name='MonthPeriod']").val().toString().trim());
 					if((!isNaN(month))&&(!isNaN(money))&&(!isNaN(rate))&&(month>=1)&&(month<=36)&&(money>=1)&&(rate>=0.01)&&(rate<=99)){
 						rate/=100;
 						rate/=12;
@@ -1535,7 +1535,7 @@
 				var lendChangerFlag=false;
 				function lendChanger(){
 					if(!lendChangerFlag){
-						var temp=$('#lendChangerIpt').val().trim();
+						var temp=$('#lendChangerIpt').val().toString().trim();
 						if(temp!==''){
 							ajaxer(temp);
 						}else{

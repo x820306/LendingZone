@@ -71,14 +71,18 @@
 			</div>
 		</div>
 	<%}%>
+<% if((nav_cur==='lenderReceiveMessages')||(nav_cur==='lenderSendMessages')||(nav_cur==='lenderTransactionRecord')||(nav_cur==='lenderReturnRecord')||(nav_cur==='lendsList')||(nav_cur==='search')||(nav_cur==='lend')||(nav_cur==='income')){ %>
+	<div class="nav_up" id="nav_up">&uarr;</div>
+	<div class="nav_down" id="nav_down">&darr;</div>
+<% } %>
 <canvas width="640" height="360" onclick="canvasOnClick();" style="position:absolute;left:0px;top:0px;z-index:2000;display:none;" id="introCanvas"></canvas>
 </body>
 <script>
+	var id=null;
 	var ifDrawed=false;
 	<%-imgSettingCode%>
 	
 	$(document).ready(function () {
-		var id;
 		<% if((userName===null)&&(nav_cur!=='signup')){ %>
 			if ($.cookie("rmbUser") === "true") {
 				$("#rememberID").prop("checked", true);
@@ -117,13 +121,56 @@
 		
 		doneResizing();
 		$(window).resize(function(){
-			clearTimeout(id);
+			if(id!==null){
+				clearTimeout(id);
+				id=null;
+			}
 			id = setTimeout(doneResizing, 500);
 		}); 
+		
+		<% if((nav_cur==='lenderReceiveMessages')||(nav_cur==='lenderSendMessages')||(nav_cur==='lenderTransactionRecord')||(nav_cur==='lenderReturnRecord')||(nav_cur==='lendsList')||(nav_cur==='search')||(nav_cur==='lend')||(nav_cur==='income')){ %>
+			if($(document).height() - $(window).height()>300){
+				$("#nav_down").show();
+			}
+			
+			$("#nav_up").click(function(){
+				$('html, body').animate({
+					scrollTop:0
+				},1000);
+			});
+			$(window).scroll(function() {
+				if ( $(window).scrollTop() > 300){
+					$('#nav_up').fadeIn("fast");
+				} else {
+					$('#nav_up').stop().fadeOut("fast");
+				}
+			});
+			
+			$("#nav_down").click(function(){
+				$('html, body').animate({
+					scrollTop:$(document).height() - $(window).height()
+				},1000);
+			});
+			$(window).scroll(function() {
+				var position=$(window).scrollTop();
+				var height=$(document).height() - $(window).height();
+				var border=height-300;
+				border=height-300;
+				if(border<0){
+					border=0;
+				}
+				
+				if ( position > border){
+					$('#nav_down').stop().fadeOut("fast");
+				} else {
+					$('#nav_down').fadeIn("fast");
+				}
+			});
+		<%}%>
 	});
 
 	function canvasOnClick(){
-		$('#introCanvas').css('display','none');
+		$('#introCanvas').hide();
 	}
 	
 	function doneResizing(){

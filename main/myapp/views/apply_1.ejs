@@ -53,12 +53,35 @@
 		<input type="hidden" name="FormSession2" value="<%=formSession2%>">
 		<input type="hidden" name="FormSession3" value="<%=formSession3%>">
 		<div class="btn-toolbar" role="toolbar" style = "margin-top: 10px;">
-			<button id="subBtnID" type="submit" class="btn btn-default btn-lg">
+			<button id="openModalBtn" type="button" class="btn btn-default btn-lg" onclick="checkAndOpenModal('#chkModal');">
 				  <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> 確認
 			</button>
 			<button id="cancelBtnID" type="button" class="btn btn-default btn-lg" onClick = "javascript:location.href='/'" >
 				  <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> 關閉
 			</button>
+		</div>
+		<div class="modal fade" id="chkModal">
+			<div class="modal-dialog modal-sm">
+				<div class="modal-content">
+					<div class="modal-header" style="text-align: center;">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						<h4 class="modal-title">再次確認</h4>
+					</div>
+					<div class="modal-body" style="text-align: center;">
+						<br>
+						您確定要建立帳號嗎？
+						<br>
+						<br>
+					</div>
+					<div class="modal-footer" style="text-align: center;">
+						<button id="subBtnID" type="submit" class="btn btn-danger" onclick="$('#chkModal').modal('hide');">
+							確定
+						</button>
+						&nbsp;
+						<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+					</div>
+				</div>
+			</div>
 		</div>
 	</form>
 </center>
@@ -74,11 +97,13 @@
 	function start(){
 		$('#subBtnID').addClass('disabled');
 		$('#cancelBtnID').addClass('disabled');
+		$('#openModalBtn').addClass('disabled');
 	}
 	
 	function end(){
 		$('#subBtnID').removeClass('disabled');
 		$('#cancelBtnID').removeClass('disabled');
+		$('#openModalBtn').removeClass('disabled');
 	}
 	
 	function disableButton(){
@@ -111,9 +136,8 @@
 		}
 	}
 	
-	function ifUsernameExist(asyncFlag)
-	{
-	    var username = $('#AccIpt').val().trim();
+	function ifUsernameExist(asyncFlag){
+	    var username = $('#AccIpt').val().toString().trim();
 		if(username!==''){
 			if(username.search(/[^\w]/ig)===-1){	
 				$('#confirmMessage1').html('正在比對中');
@@ -157,9 +181,8 @@
 		}
 	}
 	
-	function checkLength()
-	{
-	    var pwd1 = $('#PwdIpt').val().trim();
+	function checkLength(){
+	    var pwd1 = $('#PwdIpt').val().toString().trim();
 	    if(pwd1!==''){
 			if(pwd1.search(/[^\w]/ig)===-1){
 				if(pwd1.length<=6){
@@ -183,10 +206,9 @@
 		}
 	}
 	
-	function checkPwd()
-	{
-	    var pwd1 = $('#PwdIpt').val().trim();
-	    var pwd2 = $('#2PwdIpt').val().trim();
+	function checkPwd(){
+	    var pwd1 = $('#PwdIpt').val().toString().trim();
+	    var pwd2 = $('#2PwdIpt').val().toString().trim();
 	    if(pwd2!==''){
 			if(pwd2.search(/[^\w]/ig)===-1){
 				if(pwd1 === pwd2){
@@ -207,6 +229,25 @@
 			$('#confirmMessage3').html('必填欄位！');
 			$('#confirmMessage3').addClass('red');
 			valiFlag3=true;
+		}
+	}
+	
+	function checkAndOpenModal(target){
+		submitFlag=true;
+		start();
+		ifUsernameExist(false);
+		checkLength();
+		checkPwd();
+		submitFlag=false;
+		end();
+		if(!valiFlag1){
+			$('#AccIpt').focus();
+		}else if(!valiFlag2){
+			$('#PwdIpt').focus();
+		}else if(!valiFlag3){
+			$('#2PwdIpt').focus();
+		}else{
+			$(target).modal('show');
 		}
 	}
 </script>

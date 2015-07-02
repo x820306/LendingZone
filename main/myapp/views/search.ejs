@@ -69,25 +69,28 @@
 								<li id="dlis2"<%if(directorDefault==='小至大'){%> class="active"<%}%>><a href="#" onclick="directorMainSelector(2);directorSelector(2);return false;" id="director2">小至大</a></li>
 							</ul>
 						</div>
-						<button type="button" class="btn btn-default pageBar" onclick="linker();"><span class="glyphicon glyphicon-search"></span></button>
+						<div class="btn-group">
+							<button type="button" class="btn btn-default pageBar" onclick="linker();"><span class="glyphicon glyphicon-search"></span></button>
+						</div>
 					</span>
 				</div> 
 				<br>
-				<table width='100%'>
-					<tr>
-						<td>
-							<%if((actionDefault==='建立日期')||(actionDefault==='更新日期')||(actionDefault==='最晚媒合日期')){%>
-								<input type="text" placeholder="下限(年/月/日)" class="form-control boundIpt" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode===13){ linker();}">&nbsp;&nbsp;<span id='lbd'></span>
-								&nbsp;&nbsp;~&nbsp;&nbsp;
-								<input type="text" placeholder="上限(年/月/日)" class="form-control boundIpt" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode===13){ linker();}">&nbsp;&nbsp;<span id='ubd'></span>
-							<%}else{%>
-								<input type="text" placeholder="下限" class="form-control boundIpt" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode===13){ linker();}">&nbsp;&nbsp;<span id='lbd'></span>
-								&nbsp;&nbsp;~&nbsp;&nbsp;
-								<input type="text" placeholder="上限" class="form-control boundIpt" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode===13){ linker();}">&nbsp;&nbsp;<span id='ubd'></span>
-							<%}%>
-						</td>
+				<div style="border-top-style: none;border-right-style: none;border-bottom-style: none;border-left-style: none;margin-top: 0px;margin-bottom: 0px;" class="table-responsive">
+					<table style="margin-bottom: 0px;margin-top: 0px;" class="table" width="100%">
+						<tr>
+							<td style="border-bottom-style: none;border-top-style: none;">
+								<%if((actionDefault==='建立日期')||(actionDefault==='更新日期')||(actionDefault==='最晚媒合日期')){%>
+									<input type="text" placeholder="下限(年/月/日)" class="form-control boundIpt" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode===13){ linker();}">&nbsp;&nbsp;<span id='lbd'></span>
+									&nbsp;&nbsp;~&nbsp;&nbsp;
+									<input type="text" placeholder="上限(年/月/日)" class="form-control boundIpt" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode===13){ linker();}">&nbsp;&nbsp;<span id='ubd'></span>
+								<%}else{%>
+									<input type="text" placeholder="下限" class="form-control boundIpt" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode===13){ linker();}">&nbsp;&nbsp;<span id='lbd'></span>
+									&nbsp;&nbsp;~&nbsp;&nbsp;
+									<input type="text" placeholder="上限" class="form-control boundIpt" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode===13){ linker();}">&nbsp;&nbsp;<span id='ubd'></span>
+								<%}%>
+							</td>
 						<%if((kpr!=='')&&(totalResultNum>0)&&(!oflg)&&(pflg)){%>
-							<td align="right">
+							<td align="right" style="border-bottom-style: none;border-top-style: none;">
 								<button class="btn btn-default disabled" style="display:none;" id="highlightBtn" onclick="enableHighlight();">
 									關鍵字上色
 								</button>
@@ -96,8 +99,9 @@
 								</button>
 							</td>
 						<%}%>
-					</tr>
-				</table>
+						</tr>
+					</table>
+				</div>
 				<br>
 				<br>
 			<% if(totalResultNum>0){%>
@@ -375,9 +379,9 @@
 						$('.colorCnt').highlightRegex(stringArrayRegex[we]);
 					}
 					$('#unhighlightBtn').removeClass('disabled');
-					$('#unhighlightBtn').css('display','');
+					$('#unhighlightBtn').show();
 					$('#highlightBtn').addClass('disabled');
-					$('#highlightBtn').css('display','none');
+					$('#highlightBtn').hide();
 				}
 			}
 		}
@@ -388,9 +392,9 @@
 					highLightFlag=false;
 					$('.colorCnt').highlightRegex();
 					$('#highlightBtn').removeClass('disabled');
-					$('#highlightBtn').css('display','');
+					$('#highlightBtn').show();
 					$('#unhighlightBtn').addClass('disabled');
-					$('#unhighlightBtn').css('display','none');
+					$('#unhighlightBtn').hide();
 				}
 			}
 		}
@@ -440,10 +444,12 @@
 		
 		$(document).ready(function (){
 			<%if(userName!==null){%>
+				var proArray=[];
 				for(i=0;i<<%=jsonArray.length%>;i++){
 					$('#btnID'+i).addClass('disabled');
-				}
-				recursiveAjax(0,<%=jsonArray.length%>);	
+					proArray.push(i);
+				}	
+				proArray.forEach(ajaxer);
 			<%}%>
 			
 			if(ifDater){
@@ -488,11 +494,11 @@
 		});
 		
 		<%if(userName!==null){%>
-			function recursiveAjax(ctr,ctrTarget){
+			function ajaxer(element, index, array){
 				$.ajax({ 
 					url: '/Borrows/iflike',
 					type: 'POST',
-					data:{_id:$('#borrowID'+ctr).val()},
+					data:{_id:$('#borrowID'+element).val()},
 					dataType: 'json',
 					success: function(Jdata) {
 						if(Jdata.success){
@@ -505,34 +511,24 @@
 							if(dateObj.getDate()<10){
 								zeroDate='0';
 							}
-							$('#updatedDate'+ctr).html(dateObj.getFullYear()+'/'+zeroMonth+(dateObj.getMonth()+1)+'/'+zeroDate+dateObj.getDate());
+							$('#updatedDate'+element).html(dateObj.getFullYear()+'/'+zeroMonth+(dateObj.getMonth()+1)+'/'+zeroDate+dateObj.getDate());
 							
 							if(Jdata.status===-1){
-								$('#likeBtn'+ctr).html('<button class="btn btn-default" data-toggle="modal" data-target="#myModal" id="btnID'+ctr+'"><span class="glyphicon glyphicon-thumbs-up myTitle2"></span></button>');	
+								$('#likeBtn'+element).html('<button class="btn btn-default" data-toggle="modal" data-target="#myModal" id="btnID'+element+'"><span class="glyphicon glyphicon-thumbs-up myTitle2"></span></button>');	
 							}else if(Jdata.status===0){
-								$('#likeBtn'+ctr).html('<button class="btn btn-default" onclick="like('+ctr+');" id="btnID'+ctr+'"><span class="glyphicon glyphicon-thumbs-up myTitle2"></span></button>');	
+								$('#likeBtn'+element).html('<button class="btn btn-default" onclick="like('+element+');" id="btnID'+element+'"><span class="glyphicon glyphicon-thumbs-up myTitle2"></span></button>');	
 							}else if(Jdata.status===1){
-								$('#likeBtn'+ctr).html('<button class="btn btn-default" onclick="unlike('+ctr+');" id="btnID'+ctr+'"><span class="glyphicon glyphicon-remove myTitle2"></span></button>');	
+								$('#likeBtn'+element).html('<button class="btn btn-default" onclick="unlike('+element+');" id="btnID'+element+'"><span class="glyphicon glyphicon-remove myTitle2"></span></button>');	
 							}else if(Jdata.status===2){
-								$('#likeBtn'+ctr).html('<button class="btn btn-default disabled" id="btnID'+ctr+'"><span class="glyphicon glyphicon-thumbs-up myTitle2"></span></button>');	
+								$('#likeBtn'+element).html('<button class="btn btn-default disabled" id="btnID'+element+'"><span class="glyphicon glyphicon-thumbs-up myTitle2"></span></button>');	
 							}
-							$('#likeNum'+ctr).html('&nbsp;'+Jdata.result);
-							ctr++
-							if(ctr<ctrTarget){
-								recursiveAjax(ctr,ctrTarget);
-							}
+							$('#likeNum'+element).html('&nbsp;'+Jdata.result);
 						}else{
-							ctr++
-							if(ctr<ctrTarget){
-								recursiveAjax(ctr,ctrTarget);
-							}
+							console.log(Jdata.error);
 						}
 					},
 					error: function() {
-						ctr++
-						if(ctr<ctrTarget){
-							recursiveAjax(ctr,ctrTarget);
-						}
+						console.log('ajax error.')
 					}
 				});
 			}

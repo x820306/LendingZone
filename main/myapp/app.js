@@ -69,22 +69,22 @@ passport.use('local', new LocalStrategy({
 		passwordField: 'Password'
 	},
     function (Username, Password, done){
-		UsersModel.findOne({Username: Username.toLowerCase()}).select('Username Password').exec(function (err, user){
+		UsersModel.findOne({Usnl: Username.toLowerCase()}).select('Username Password').exec(function (err, user){
 			if (err) {
 				console.log(err);
-				return done(null, false, { errorTarget:1, errorMessage: '資料庫錯誤！' });
+				return done(null, false, { errorTarget:1, errorMessage: '資料庫錯誤!' });
 			}else{
 				if(!user){
 					console.log('Incorrect Username.');
-					return done(null, false, { errorTarget:1, errorMessage: '帳號錯誤！' });
+					return done(null, false, { errorTarget:1, errorMessage: '帳號錯誤!' });
 				}else{
 					user.comparePassword(Password, function(err, isMatch) {
 						if(err){
-							return done(null, false, { errorTarget:1, errorMessage: '資料庫錯誤！' });
+							return done(null, false, { errorTarget:1, errorMessage: '資料庫錯誤!' });
 						}else{
 							if(!isMatch){
 								console.log('Incorrect Password.');
-								return done(null, false, { errorTarget:2, errorMessage: '密碼錯誤！' });
+								return done(null, false, { errorTarget:2, errorMessage: '密碼錯誤!' });
 							}else{
 								console.log('Login Success.');
 								var smaller_user={
@@ -124,7 +124,7 @@ app.get('/',library.loginFormChecker,library.newMsgChecker, function (req, res) 
 });
 
 app.get('/message/:content?',library.loginFormChecker,library.newMsgChecker, function (req, res) {
-	if(typeof(req.query.content) !== "undefined"){
+	if(typeof(req.query.content) === 'string'){
 		var auRst=null;
 		if(req.isAuthenticated()){
 			auRst=req.user.Username;
@@ -139,34 +139,42 @@ app.get('/message/:content?',library.loginFormChecker,library.newMsgChecker, fun
 });
 
 app.post('/login',captchaChecker, function(req, res, next) {
-  passport.authenticate('local', function(err, user, info) {
-    if(err){ 
-		cosole.log(err);
-		res.redirect('/message?content='+encodeURIComponent('錯誤!'));
-	}else{
-		if(!user){ 
-			redirector(req,res,info.errorTarget,info.errorMessage);
+  if((typeof(req.body.Username) === 'string')&&(typeof(req.body.Password) === 'string')){
+	  passport.authenticate('local', function(err, user, info) {
+		if(err){ 
+			cosole.log(err);
+			res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 		}else{
-			req.logIn(user, function(err) {
-				if(err){ 
-					cosole.log(err);
-					res.redirect('/message?content='+encodeURIComponent('錯誤!'));
-				}else{
-					if(routeChecker(req)){
-						res.redirect(req.get('referer'));
+			if(!user){ 
+				redirector(req,res,info.errorTarget,info.errorMessage);
+			}else{
+				req.logIn(user, function(err) {
+					if(err){ 
+						cosole.log(err);
+						res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 					}else{
-						res.redirect('/');
+						if(routeChecker(req)){
+							res.redirect(req.get('referer'));
+						}else{
+							res.redirect('/');
+						}
 					}
-				}
-			});
+				});
+			}
 		}
+	  })(req, res, next);
+  }else{
+	if((typeof(req.body.Username) !== 'string')){
+		redirector(req,res,1,'未送出!');
+	}else if((typeof(req.body.Password) !== 'string')){
+		redirector(req,res,2,'未送出!');
 	}
-  })(req, res, next);
+  }
 });
 
 
 app.get('/captcha/:captchaIdfr?', function (req, res) {
-	if(typeof(req.query.captchaIdfr) !== "undefined"){
+	if(typeof(req.query.captchaIdfr) === 'string'){
 		var captchaIdfr=parseInt(req.query.captchaIdfr);
 		
 		if(captchaIdfr>0){
@@ -368,29 +376,33 @@ app.use(function(err, req, res, next) {
 });
 
 function captchaChecker(req, res, next){
-	var Idfr=parseInt(req.body.CaptchaIdfr);
-	var Text=req.body.CaptchaText;
-	var passFlag=false;
-	if(Idfr>0){
-		var ctr = -1;
-		for(i=0;i<library.captchaTextArray.length;i++){
-			if(Idfr===library.captchaTextArray[i].Idfr){
-				ctr=i;
-				if(Text===library.captchaTextArray[i].Text){
-					passFlag=true;
+	if((typeof(req.body.CaptchaIdfr)  === 'string')&&(typeof(req.body.CaptchaText)  === 'string')){
+		var Idfr=parseInt(req.body.CaptchaIdfr);
+		var Text=req.body.CaptchaText;
+		var passFlag=false;
+		if(Idfr>0){
+			var ctr = -1;
+			for(i=0;i<library.captchaTextArray.length;i++){
+				if(Idfr===library.captchaTextArray[i].Idfr){
+					ctr=i;
+					if(Text===library.captchaTextArray[i].Text){
+						passFlag=true;
+					}
+					break;
 				}
-				break;
+			}
+			if(ctr>-1){
+				library.captchaTextArray.splice(ctr, 1);
 			}
 		}
-		if(ctr>-1){
-			library.captchaTextArray.splice(ctr, 1);
+		
+		if(passFlag){
+			return next();
+		}else{
+			redirector(req,res,3,'錯誤或過期!');
 		}
-	}
-	
-	if(passFlag){
-		return next();
 	}else{
-		redirector(req,res,3,'錯誤或過期！');
+		redirector(req,res,3,'未送出!');
 	}
 }
 
@@ -417,7 +429,7 @@ function routeChecker(req){
 	var subString=stringArray[stringArray.length-1];
 	var subStringArray=subString.split('?');
 	var target=subStringArray[0];
-	if((target==='message')||(target==='forgetActOrPW')||(target==='borrowCreate')||(target==='readable')||(target==='buyInsurance')||(target==='buyInsuranceAll')||(target==='rejectToBorrowMessageInStory')||(target==='confirmToBorrowMessageInStory')||(target==='rejectToBorrowMessageInLRM')||(target==='confirmToBorrowMessageInLRM')||(target==='rejectToBorrowMessageInLRMall')||(target==='confirmToBorrowMessageInLRMall')||(target==='toLendCreate')||(target==='toLendUpdate')||(target==='destroy')||(target==='create')||(target==='update')||(target==='changeData')||(target==='changePW')||(target==='deleteToLendMessageInLRMall')||(target==='buyInsuranceAll')||(target==='rejectToBorrowMessageInLRMall')||(target==='confirmToBorrowMessageInLRMall')||(target==='autoConfirmPost')||(target==='disableAutoConfirmPost')||(target==='autoNotReadablePost')||(target==='disableAutoNotReadablePost')){
+	if((target==='message')||(target==='forgetActOrPW')||(target==='borrowCreate')||(target==='readable')||(target==='buyInsurance')||(target==='buyInsuranceAll')||(target==='rejectToBorrowMessageInStory')||(target==='confirmToBorrowMessageInStory')||(target==='rejectToBorrowMessageInLRM')||(target==='confirmToBorrowMessageInLRM')||(target==='rejectToBorrowMessageInLRMall')||(target==='confirmToBorrowMessageInLRMall')||(target==='toLendCreate')||(target==='toLendUpdate')||(target==='destroy')||(target==='create')||(target==='update')||(target==='changeData')||(target==='changePW')||(target==='changeUsername')||(target==='deleteToLendMessageInLRMall')||(target==='buyInsuranceAll')||(target==='rejectToBorrowMessageInLRMall')||(target==='confirmToBorrowMessageInLRMall')||(target==='autoConfirmPost')||(target==='disableAutoConfirmPost')||(target==='autoNotReadablePost')||(target==='disableAutoNotReadablePost')){
 		return false;
 	}else{
 		return true;
