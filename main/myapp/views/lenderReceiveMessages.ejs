@@ -58,25 +58,28 @@
 								<li id="dlis2"<%if(directorDefault==='小至大'){%> class="active"<%}%>><a href="#" onclick="directorSelector(2);return false;" id="director2">小至大</a></li>
 							</ul>
 						</div>
-						<button type="button" class="btn btn-default pageBar" onclick="linker();">Go!</button>
+						<div class="btn-group">
+							<button type="button" class="btn btn-default pageBar" onclick="linker();">Go!</button>
+						</div>
 					</span>
 				</div> 
 				<br>
-				<table width='100%'>
-					<tr>
-						<td>
-							<%if((sorterDefault==='建立日期')||(sorterDefault==='更新日期')){%>
-								<input type="text" placeholder="下限(年/月/日)" class="form-control boundIpt" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode===13){linker();}">&nbsp;&nbsp;<span id='lbd'></span>
-								&nbsp;&nbsp;~&nbsp;&nbsp;
-								<input type="text" placeholder="上限(年/月/日)" class="form-control boundIpt" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode===13){linker();}">&nbsp;&nbsp;<span id='ubd'></span>
-							<%}else{%>
-								<input type="text" placeholder="下限" class="form-control boundIpt" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode===13){linker();}">&nbsp;&nbsp;<span id='lbd'></span>
-								&nbsp;&nbsp;~&nbsp;&nbsp;
-								<input type="text" placeholder="上限" class="form-control boundIpt" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode===13){linker();}">&nbsp;&nbsp;<span id='ubd'></span>
-							<%}%>
-						</td>
+				<div style="border-top-style: none;border-right-style: none;border-bottom-style: none;border-left-style: none;margin-top: 0px;margin-bottom: 0px;" class="table-responsive">
+					<table style="margin-bottom: 0px;margin-top: 0px;" class="table" width="100%">
+						<tr>
+							<td style="border-bottom-style: none;border-top-style: none;">
+								<%if((sorterDefault==='建立日期')||(sorterDefault==='更新日期')){%>
+									<input type="text" placeholder="下限(年/月/日)" class="form-control boundIpt" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode===13){linker();}">&nbsp;&nbsp;<span id='lbd'></span>
+									&nbsp;&nbsp;~&nbsp;&nbsp;
+									<input type="text" placeholder="上限(年/月/日)" class="form-control boundIpt" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode===13){linker();}">&nbsp;&nbsp;<span id='ubd'></span>
+								<%}else{%>
+									<input type="text" placeholder="下限" class="form-control boundIpt" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode===13){linker();}">&nbsp;&nbsp;<span id='lbd'></span>
+									&nbsp;&nbsp;~&nbsp;&nbsp;
+									<input type="text" placeholder="上限" class="form-control boundIpt" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode===13){linker();}">&nbsp;&nbsp;<span id='ubd'></span>
+								<%}%>
+							</td>
 						<%if((kpr!=='')&&(totalResultNum>0)&&(!oflg)&&(pflg)){%>
-							<td align="right">
+							<td align="right" style="border-bottom-style: none;border-top-style: none;">
 								<button class="btn btn-default disabled" style="display:none;" id="highlightBtn" onclick="enableHighlight();">
 									關鍵字上色
 								</button>
@@ -85,8 +88,9 @@
 								</button>
 							</td>
 						<%}%>
-					</tr>
-				</table>
+						</tr>
+					</table>
+				</div>
 				<br>
 				<%if((cfJSON)&&(filterDefault==='已同意')){%>
 					<br>
@@ -94,56 +98,58 @@
 					<br>
 					欲同意<%=cfJSON.InfoJSON.counter1%>筆訊息，其中<%=cfJSON.InfoJSON.counter2%>筆成功，<%=cfJSON.InfoJSON.counter1-cfJSON.InfoJSON.counter2%>筆失敗
 					<br>
-					<table style="display:inline;" class="table">
-						<thead class="myThead">
-							<tr>
-								<th style="text-align:center">
-								實際借出金額
-								</th>
-								<th style="text-align:center">
-								實際合計總利息
-								</th>
-								<th style="text-align:center">
-								實際合計本利和
-								</th>
-								<th style="text-align:center">
-								實際合計平均利息
-								</th>
-								<th style="text-align:center">
-								實際合計平均本利和
-								</th>
-								<th style="text-align:center">
-								實際合計利本比
-								</th>
-							</tr>
-						</thead>
-						<tbody class="myTbody">
-							<tr>
-								<td align="center">
-									<%=cfJSON.InfoJSON.info1.toFixed(0)%>元
-								</td>
-								<td align="center">
-									<%=cfJSON.InfoJSON.info2.toFixed(0)%>元
-								</td>
-								<td align="center">
-									<%=cfJSON.InfoJSON.info3.toFixed(0)%>元
-								</td>
-								<td align="center">
-									<%=cfJSON.InfoJSON.info4.toFixed(0)%>元/月
-								</td>
-								<td align="center">
-									<%=cfJSON.InfoJSON.info5.toFixed(0)%>元/月
-								</td>
-								<td align="center">
-									<%if(cfJSON.InfoJSON.info1>0){%>
-										<%=(cfJSON.InfoJSON.info2/cfJSON.InfoJSON.info1*100).toFixed(2)%>%
-									<%}else{%>
-										0.00%
-									<%}%>
-								</td>
-							</tr>
-						</tbody>
-					</table>
+					<div style="border-top-style: none;border-right-style: none;border-bottom-style: none;border-left-style: none;margin-top: 0px;margin-bottom: 0px;" class="table-responsive">
+						<table style="margin-bottom: 0px;margin-top: 0px;" class="table" width="100%">
+							<thead class="myThead">
+								<tr>
+									<th style="text-align:center">
+									實際借出金額
+									</th>
+									<th style="text-align:center">
+									實際合計總利息
+									</th>
+									<th style="text-align:center">
+									實際合計本利和
+									</th>
+									<th style="text-align:center">
+									實際合計平均利息
+									</th>
+									<th style="text-align:center">
+									實際合計平均本利和
+									</th>
+									<th style="text-align:center">
+									實際合計利本比
+									</th>
+								</tr>
+							</thead>
+							<tbody class="myTbody">
+								<tr>
+									<td align="center">
+										<%=cfJSON.InfoJSON.info1.toFixed(0)%>元
+									</td>
+									<td align="center">
+										<%=cfJSON.InfoJSON.info2.toFixed(0)%>元
+									</td>
+									<td align="center">
+										<%=cfJSON.InfoJSON.info3.toFixed(0)%>元
+									</td>
+									<td align="center">
+										<%=cfJSON.InfoJSON.info4.toFixed(0)%>元/月
+									</td>
+									<td align="center">
+										<%=cfJSON.InfoJSON.info5.toFixed(0)%>元/月
+									</td>
+									<td align="center">
+										<%if(cfJSON.InfoJSON.info1>0){%>
+											<%=(cfJSON.InfoJSON.info2/cfJSON.InfoJSON.info1*100).toFixed(2)%>%
+										<%}else{%>
+											0.00%
+										<%}%>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
 					<br>
 				<%}%>
 				<%if((rjJSON)&&(filterDefault==='已婉拒')){%>
@@ -155,80 +161,84 @@
 				<% if(totalResultNum>0){ %>
 					<% if(filterDefault==='未確認'){%>
 						<br>
-						<table style="display:inline;" class="table">
-							<thead class="myThead">
-								<tr>
-									<th style="text-align:center">
-									銀行帳戶內餘額
-									</th>
-									<th style="text-align:center">
-									已借出總金額
-									</th>
-									<th style="text-align:center">
-									尚可手動借出金額
-									</th>
-									<th style="text-align:center">
-									已手動借出金額
-									</th>
-								</tr>
-							</thead>
-							<tbody class="myTbody">
-								<tr>
-									<td align="center">
-										<input style="display:inline;width:85%;" id="lendChangerIpt0" type="text" class="form-control" readonly="readonly" value="<%=MoneyInBankAccountValue.toFixed(0)%>"><span>&nbsp;元</span>
-									</td>
-									<td align="center">
-										<input style="display:inline;width:85%;" id="lendChangerIpt2" type="text" class="form-control" readonly="readonly" value="<%=MoneyLended.moneyLendedCumulated.toFixed(0)%>"><span>&nbsp;元</span>
-									</td>
-									<td align="center">
-										<input style="display:inline;width:85%;" id="lendChangerIpt4" type="text" class="form-control" readonly="readonly" value="<%=MoneyLended.moneyLeftToHendLend.toFixed(0)%>"><span>&nbsp;元</span>
-									</td>
-									<td align="center">
-										<input style="display:inline;width:85%;" id="lendChangerIpt3" type="text" class="form-control" readonly="readonly" value="<%=MoneyLended.hendLendCumulated.toFixed(0)%>"><span>&nbsp;元</span>
-									</td>
-								</tr>
-							</tbody>
-						</table>
+						<div style="border-top-style: none;border-right-style: none;border-bottom-style: none;border-left-style: none;margin-top: 0px;margin-bottom: 0px;" class="table-responsive">
+							<table style="margin-bottom: 0px;margin-top: 0px;" class="table" width="100%">
+								<thead class="myThead">
+									<tr>
+										<th style="text-align:center">
+										銀行帳戶內餘額
+										</th>
+										<th style="text-align:center">
+										已借出總金額
+										</th>
+										<th style="text-align:center">
+										尚可手動借出金額
+										</th>
+										<th style="text-align:center">
+										已手動借出金額
+										</th>
+									</tr>
+								</thead>
+								<tbody class="myTbody">
+									<tr>
+										<td align="center">
+											<input style="display:inline;width:85%;" id="lendChangerIpt0" type="text" class="form-control" readonly="readonly" value="<%=MoneyInBankAccountValue.toFixed(0)%>"><span>&nbsp;元</span>
+										</td>
+										<td align="center">
+											<input style="display:inline;width:85%;" id="lendChangerIpt2" type="text" class="form-control" readonly="readonly" value="<%=MoneyLended.moneyLendedCumulated.toFixed(0)%>"><span>&nbsp;元</span>
+										</td>
+										<td align="center">
+											<input style="display:inline;width:85%;" id="lendChangerIpt4" type="text" class="form-control" readonly="readonly" value="<%=MoneyLended.moneyLeftToHendLend.toFixed(0)%>"><span>&nbsp;元</span>
+										</td>
+										<td align="center">
+											<input style="display:inline;width:85%;" id="lendChangerIpt3" type="text" class="form-control" readonly="readonly" value="<%=MoneyLended.hendLendCumulated.toFixed(0)%>"><span>&nbsp;元</span>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
 						<br>
 						<br>
-						<table style="display:inline;" class="table">
-							<thead class="myThead">
-								<tr>
-									<th style="text-align:center">
-									最大可自動借出金額
-									</th>
-									<th style="text-align:center">
-									目前最高可設定自動借出金額
-									</th>
-									<th style="text-align:center">
-									尚可自動借出金額
-									</th>
-									<th style="text-align:center">
-									已自動借出金額
-									</th>
-								</tr>
-							</thead>
-							<tbody class="myTbody">
-								<tr>
-									<td align="center">
-										<%if(jsonLend){%>
-											<input style="display:inline;width:85%;" id="lendChangerIpt" type="text" class="form-control" value="<%=jsonLend.MaxMoneyToLend.toFixed(0)%>" onkeypress="if(event.keyCode===13){lendChanger();}"><span>&nbsp;元</span>
-										<%}else{%>
-											<input type="text" class="form-control" readonly="readonly" value="未找到自動出借設定！">
-										<%}%>
-									</td>
-									<td align="center">
-										<input style="display:inline;width:85%;" id="lendChangerIpt1" type="text" class="form-control" readonly="readonly" value="<%=MoneyLended.maxSettingAutoLend.toFixed(0)%>"><span>&nbsp;元</span>
-									</td>
-									<td align="center">
-										<input style="display:inline;width:85%;" id="lendChangerIpt6" type="text" class="form-control" readonly="readonly" value="<%=MoneyLended.moneyLeftToAutoLend.toFixed(0)%>"><span>&nbsp;元</span>
-									</td>
-									<td align="center">
-										<input style="display:inline;width:85%;" id="lendChangerIpt5" type="text" class="form-control" readonly="readonly" value="<%=MoneyLended.autoLendCumulated.toFixed(0)%>"><span>&nbsp;元</span>
-									</td>
-								</tr>
-							</tbody>
-						</table>
+						<div style="border-top-style: none;border-right-style: none;border-bottom-style: none;border-left-style: none;margin-top: 0px;margin-bottom: 0px;" class="table-responsive">
+							<table style="margin-bottom: 0px;margin-top: 0px;" class="table" width="100%">
+								<thead class="myThead">
+									<tr>
+										<th style="text-align:center">
+										最大可自動借出金額
+										</th>
+										<th style="text-align:center">
+										目前最高可設定自動借出金額
+										</th>
+										<th style="text-align:center">
+										尚可自動借出金額
+										</th>
+										<th style="text-align:center">
+										已自動借出金額
+										</th>
+									</tr>
+								</thead>
+								<tbody class="myTbody">
+									<tr>
+										<td align="center">
+											<%if(jsonLend){%>
+												<input style="display:inline;width:85%;" id="lendChangerIpt" type="text" class="form-control" value="<%=jsonLend.MaxMoneyToLend.toFixed(0)%>" onkeypress="if(event.keyCode===13){lendChanger();}"><span>&nbsp;元</span>
+											<%}else{%>
+												<input type="text" class="form-control" readonly="readonly" value="未找到自動出借設定！">
+											<%}%>
+										</td>
+										<td align="center">
+											<input style="display:inline;width:85%;" id="lendChangerIpt1" type="text" class="form-control" readonly="readonly" value="<%=MoneyLended.maxSettingAutoLend.toFixed(0)%>"><span>&nbsp;元</span>
+										</td>
+										<td align="center">
+											<input style="display:inline;width:85%;" id="lendChangerIpt6" type="text" class="form-control" readonly="readonly" value="<%=MoneyLended.moneyLeftToAutoLend.toFixed(0)%>"><span>&nbsp;元</span>
+										</td>
+										<td align="center">
+											<input style="display:inline;width:85%;" id="lendChangerIpt5" type="text" class="form-control" readonly="readonly" value="<%=MoneyLended.autoLendCumulated.toFixed(0)%>"><span>&nbsp;元</span>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
 						<br>
 						<%if(jsonLend){%>
 							<br>
@@ -238,61 +248,75 @@
 						<%}%>
 						<%if(pageNumber>1){%>
 						<br>
-						<table style="display:inline;" class="table">
-							<thead class="myThead">
-								<tr>
-									<th style="text-align:center">
-									全部合計借出金額
-									</th>
-									<th style="text-align:center">
-									全部合計總利息
-									</th>
-									<th style="text-align:center">
-									全部合計本利和
-									</th>
-									<th style="text-align:center">
-									全部合計平均利息
-									</th>
-									<th style="text-align:center">
-									全部合計平均本利和
-									</th>
-									<th style="text-align:center">
-									全部合計利本比
-									</th>
-								</tr>
-							</thead>
-							<tbody class="myTbody">
-								<tr>
-									<td align="center">
-										<span id="value1All"><%=value1AllDefault.toFixed(0)%></span>元
-									</td>
-									<td align="center">
-										<span id="value2All"><%=value2AllDefault.toFixed(0)%></span>元
-									</td>
-									<td align="center">
-										<span id="value3All"><%=value3AllDefault.toFixed(0)%></span>元
-									</td>
-									<td align="center">
-										<span id="value4All"><%=value4AllDefault.toFixed(0)%></span>元/月
-									</td>
-									<td align="center">
-										<span id="value5All"><%=value5AllDefault.toFixed(0)%></span>元/月
-									</td>
-									<td align="center">
-									<%if(value1AllDefault>0){%>
-										<span id="value6All"><%=(value2AllDefault/value1AllDefault*100).toFixed(2)%></span>%
-									<%}else{%>
-										<span id="value6All">0.00</span>%
-									<%}%>
-									</td>
-								</tr>
-							</tbody>
-						</table>
+						<div style="border-top-style: none;border-right-style: none;border-bottom-style: none;border-left-style: none;margin-top: 0px;margin-bottom: 0px;" class="table-responsive">
+							<table style="margin-bottom: 0px;margin-top: 0px;" class="table" width="100%">
+								<thead class="myThead">
+									<tr>
+										<th style="text-align:center">
+										全部合計借出金額
+										</th>
+										<th style="text-align:center">
+										全部合計總利息
+										</th>
+										<th style="text-align:center">
+										全部合計本利和
+										</th>
+										<th style="text-align:center">
+										全部合計平均利息
+										</th>
+										<th style="text-align:center">
+										全部合計平均本利和
+										</th>
+										<th style="text-align:center">
+										全部合計利本比
+										</th>
+									</tr>
+								</thead>
+								<tbody class="myTbody">
+									<tr>
+										<td align="center">
+											<span id="value1All"><%=value1AllDefault.toFixed(0)%></span>元
+										</td>
+										<td align="center">
+											<span id="value2All"><%=value2AllDefault.toFixed(0)%></span>元
+										</td>
+										<td align="center">
+											<span id="value3All"><%=value3AllDefault.toFixed(0)%></span>元
+										</td>
+										<td align="center">
+											<span id="value4All"><%=value4AllDefault.toFixed(0)%></span>元/月
+										</td>
+										<td align="center">
+											<span id="value5All"><%=value5AllDefault.toFixed(0)%></span>元/月
+										</td>
+										<td align="center">
+										<%if(value1AllDefault>0){%>
+											<span id="value6All"><%=(value2AllDefault/value1AllDefault*100).toFixed(2)%></span>%
+										<%}else{%>
+											<span id="value6All">0.00</span>%
+										<%}%>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
 						<br>
 						<br>
-						<button type="button" class="btn btn-info" data-toggle="modal" data-target="#chkModal1">
-							同意全部收到之請求
-						</button>
+						<div style="border-top-style: none;border-right-style: none;border-bottom-style: none;border-left-style: none;margin-top: 0px;margin-bottom: 0px;" class="table-responsive">
+							<table style="margin-bottom: 0px;margin-top: 0px;" class="table" width="100%">
+								<tr>
+									<td style="border-bottom-style: none;border-top-style: none;">
+										<button type="button" class="btn btn-info" data-toggle="modal" data-target="#chkModal1">
+											同意全部收到之請求
+										</button>
+										&nbsp;&nbsp;
+										<button type="button" class="btn btn-danger" data-toggle="modal" data-target="#chkModal2">
+											婉拒全部收到之請求
+										</button>
+									</td>
+								</tr>
+							</table>
+						</div>
 						<%if(jsonLend){%>
 							<div class="modal fade" id="chkModal1">
 								<div class="modal-dialog modal-sm">
@@ -338,10 +362,6 @@
 								</div>
 							</div>
 						<%}%>
-						&nbsp;&nbsp;
-						<button type="button" class="btn btn-danger" data-toggle="modal" data-target="#chkModal2">
-							婉拒全部收到之請求
-						</button>
 						<div class="modal fade" id="chkModal2">
 							<div class="modal-dialog modal-sm">
 								<div class="modal-content">
@@ -368,58 +388,85 @@
 						<br>
 						<%}%>
 						<br>
-						<table style="display:inline;" class="table">
-							<thead class="myThead">
-								<tr>
-									<th style="text-align:center">
-									已選合計借出金額
-									</th>
-									<th style="text-align:center">
-									已選合計總利息
-									</th>
-									<th style="text-align:center">
-									已選合計本利和
-									</th>
-									<th style="text-align:center">
-									已選合計平均利息
-									</th>
-									<th style="text-align:center">
-									已選合計平均本利和
-									</th>
-									<th style="text-align:center">
-									已選合計利本比
-									</th>
-								</tr>
-							</thead>
-							<tbody class="myTbody">
-								<tr>
-									<td align="center">
-										<span id="value1">0</span><span style="display:none;" id="value1R">0</span>元
-									</td>
-									<td align="center">
-										<span id="value2">0</span><span style="display:none;" id="value2R">0</span>元
-									</td>
-									<td align="center">
-										<span id="value3">0</span><span style="display:none;" id="value3R">0</span>元
-									</td>
-									<td align="center">
-										<span id="value4">0</span><span style="display:none;" id="value4R">0</span>元/月
-									</td>
-									<td align="center">
-										<span id="value5">0</span><span style="display:none;" id="value5R">0</span>元/月
-									</td>
-									<td align="center">
-										<span id="value6">0.00</span>%
-									</td>
-								</tr>
-							</tbody>
-						</table>
+						<div style="border-top-style: none;border-right-style: none;border-bottom-style: none;border-left-style: none;margin-top: 0px;margin-bottom: 0px;" class="table-responsive">
+							<table style="margin-bottom: 0px;margin-top: 0px;" class="table" width="100%">
+								<thead class="myThead">
+									<tr>
+										<th style="text-align:center">
+										已選合計借出金額
+										</th>
+										<th style="text-align:center">
+										已選合計總利息
+										</th>
+										<th style="text-align:center">
+										已選合計本利和
+										</th>
+										<th style="text-align:center">
+										已選合計平均利息
+										</th>
+										<th style="text-align:center">
+										已選合計平均本利和
+										</th>
+										<th style="text-align:center">
+										已選合計利本比
+										</th>
+									</tr>
+								</thead>
+								<tbody class="myTbody">
+									<tr>
+										<td align="center">
+											<span id="value1">0</span><span style="display:none;" id="value1R">0</span>元
+										</td>
+										<td align="center">
+											<span id="value2">0</span><span style="display:none;" id="value2R">0</span>元
+										</td>
+										<td align="center">
+											<span id="value3">0</span><span style="display:none;" id="value3R">0</span>元
+										</td>
+										<td align="center">
+											<span id="value4">0</span><span style="display:none;" id="value4R">0</span>元/月
+										</td>
+										<td align="center">
+											<span id="value5">0</span><span style="display:none;" id="value5R">0</span>元/月
+										</td>
+										<td align="center">
+											<span id="value6">0.00</span>%
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
 						<br>
 						<br>
-						<input type="checkbox" id="selectAll" onclick="selectAllFun();"> 全選&nbsp;&nbsp;&nbsp;&nbsp;
-						<button type="button" class="btn btn-info" onclick="checkAndOpenModal('#chkModal3')">
-							同意
-						</button>
+						<div style="border-top-style: none;border-right-style: none;border-bottom-style: none;border-left-style: none;margin-top: 0px;margin-bottom: 0px;" class="table-responsive">
+							<table style="margin-bottom: 0px;margin-top: 0px;" class="table" width="100%">
+								<tr>
+									<td style="border-bottom-style: none;border-top-style: none;">
+										<input type="checkbox" id="selectAll" onclick="selectAllFun();">&nbsp;&nbsp;&nbsp;&nbsp;
+										<button id="enableAllBtn" type="button" class="btn btn-default" onclick="$('#selectAll').prop('checked', true);selectAllFun();">
+											全選
+										</button>
+										&nbsp;&nbsp;
+										<button id="disableAllBtn" type="button" class="btn btn-default" onclick="$('#selectAll').prop('checked', false);selectAllFun();">
+											全不選
+										</button>
+										&nbsp;&nbsp;
+										<button id="reverseAllBtn" type="button" class="btn btn-default" onclick="reverseAllFun();">
+											反選
+										</button>
+									</td>
+									<td align="right" style="border-bottom-style: none;border-top-style: none;">	
+										<button type="button" class="btn btn-info" onclick="checkAndOpenModal('#chkModal3');">
+											同意
+										</button>
+										&nbsp;&nbsp;
+										<button type="button" class="btn btn-danger" onclick="checkAndOpenModal('#chkModal4');">
+											婉拒
+										</button>
+									</td>
+								</tr>
+							</table>
+						</div>
 						<%if(jsonLend){%>
 							<div class="modal fade" id="chkModal3">
 								<div class="modal-dialog modal-sm">
@@ -464,10 +511,6 @@
 								</div>
 							</div>
 						<%}%>
-						&nbsp;&nbsp;
-						<button type="button" class="btn btn-danger" onclick="checkAndOpenModal('#chkModal4')">
-							婉拒
-						</button>
 						<div class="modal fade" id="chkModal4">
 							<div class="modal-dialog modal-sm">
 								<div class="modal-content">
@@ -968,7 +1011,7 @@
 										&nbsp;&nbsp;&nbsp;&nbsp;
 											<span<%if(sorterDefault==='建立日期'){%> class="stronger"<%}%>>Created：</span><%=jsonMessage[i].Created.getFullYear()%>/<%if(jsonMessage[i].Created.getMonth()<9){%>0<%}%><%=jsonMessage[i].Created.getMonth()+1%>/<%if(jsonMessage[i].Created.getDate()<10){%>0<%}%><%=jsonMessage[i].Created.getDate()%>
 										&nbsp;&nbsp;&nbsp;&nbsp;
-											No.<%=i+1%>
+											<span id="noSpan<%=i%>">No.<%=i+1%></span>
 									</div>
 								</td>
 							<tr>
@@ -1184,9 +1227,9 @@ function linker(){
 					$('.colorCnt').highlightRegex(stringArrayRegex[we]);
 				}
 				$('#unhighlightBtn').removeClass('disabled');
-				$('#unhighlightBtn').css('display','');
+				$('#unhighlightBtn').show();
 				$('#highlightBtn').addClass('disabled');
-				$('#highlightBtn').css('display','none');
+				$('#highlightBtn').hide();
 			}
 		}
 	}
@@ -1197,9 +1240,9 @@ function linker(){
 				highLightFlag=false;
 				$('.colorCnt').highlightRegex();
 				$('#highlightBtn').removeClass('disabled');
-				$('#highlightBtn').css('display','');
+				$('#highlightBtn').show();
 				$('#unhighlightBtn').addClass('disabled');
-				$('#unhighlightBtn').css('display','none');
+				$('#unhighlightBtn').hide();
 			}
 		}
 	}
@@ -1358,7 +1401,7 @@ function linker(){
 			var lendChangerFlag=false;
 			function lendChanger(){
 				if(!lendChangerFlag){
-					var temp=$('#lendChangerIpt').val().trim();
+					var temp=$('#lendChangerIpt').val().toString().trim();
 					if(temp!==''){
 						ajaxer(temp);
 					}else{
@@ -1444,6 +1487,18 @@ function linker(){
 			}
 		}
 
+		function reverseAllFun(){
+			$("input[name='selectCheckBox']").each(function() {
+				var target=$(this).attr('id').replace('selectCheckBoxId','');
+				if($(this).prop("checked")){
+					$(this).prop("checked", false);
+				}else{
+					$(this).prop("checked", true);
+				}
+				selectFun(target);
+			});
+		}
+		
 		function selectAllFun(){
 			if($("#selectAll").prop("checked"))
 			{
@@ -1462,6 +1517,7 @@ function linker(){
 					value3R+=parseFloat($("#value3"+i).text());
 					value4R+=parseFloat($("#value4"+i).text());
 					value5R+=parseFloat($("#value5"+i).text());
+					$('#noSpan'+i).addClass('red');
 				}
 				
 				if(value1R>0){
@@ -1484,6 +1540,9 @@ function linker(){
 				$("input[name='selectCheckBox']").each(function() {
 					$(this).prop("checked", false);
 				});
+				for(i=0;i<<%=jsonMessage.length%>;i++){
+					$('#noSpan'+i).removeClass('red');
+				}
 				$("#value1").text(0);
 				$("#value2").text(0);
 				$("#value3").text(0);
@@ -1544,6 +1603,8 @@ function linker(){
 				if(ctr==$("input[name='selectCheckBox']").length){
 					$("#selectAll").prop("checked", true);
 				}
+				
+				$('#noSpan'+index).addClass('red');
 			}else{
 				value1R-=fee1;
 				value2R-=fee2;
@@ -1575,7 +1636,9 @@ function linker(){
 				});
 				if(ctr<$("input[name='selectCheckBox']").length){
 					$("#selectAll").prop("checked", false);
-				}		
+				}
+				
+				$('#noSpan'+index).removeClass('red');
 			}
 		}
 
@@ -1642,6 +1705,10 @@ function linker(){
 			rejectAllFlag=true;
 			$('#rejectAllBtn').addClass('disabled');
 			<%}%>
+			
+			$('#enableAllBtn').addClass('disabled');
+			$('#disableAllBtn').addClass('disabled');
+			$('#reverseAllBtn').addClass('disabled');
 		}
 
 		function enableButton(){
@@ -1662,6 +1729,10 @@ function linker(){
 				rejectAllFlag=false;
 				$('#rejectAllBtn').removeClass('disabled');
 			<%}%>
+			
+			$('#enableAllBtn').removeClass('disabled');
+			$('#disableAllBtn').removeClass('disabled');
+			$('#reverseAllBtn').removeClass('disabled');
 		}
 
 

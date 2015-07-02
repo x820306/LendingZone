@@ -214,3 +214,39 @@ select{
 .btn-default:focus, .btn-default:hover {
   background-color: #f2c166;
 }
+
+.nav_up{
+	display: none;
+    position: fixed;
+    right: 20px;
+    bottom: 70px;    
+    padding: 10px 15px;    
+    font-size: 20px;
+    background: rgba(119,119,119,0.7);
+    color: white;
+    cursor: pointer;
+}
+.nav_down{
+    display: none;
+	position: fixed;
+    right: 20px;
+    bottom: 10px;    
+    padding: 10px 15px;    
+    font-size: 20px;
+    background: rgba(119,119,119,0.7);
+    color: white;
+    cursor: pointer;
+}
+
+@media (max-width: 480px) {
+	.input-group-addon, .input-group-btn, .input-group .form-control, .input-group-btn>.btn-group{
+		display: block;
+		margin-bottom: 10px;
+		clear: both;
+	}
+	.input-group {
+		position: relative;
+		display: block;
+		border-collapse: separate;
+	}
+}

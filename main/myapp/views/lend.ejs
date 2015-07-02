@@ -207,24 +207,24 @@
 				<br>
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						<h3 class="panel-title">自動同意借款請求</h3>
+						<h3 class="panel-title">自動同意借款請求<span id="s10" class="red"><%if(lfJSON){%><%if(lfJSON.Target[9]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=lfJSON.Message[9]%><%}%><%}%></span></h3>
 					</div>
 					<div class="panel-body">
 						<% if(!jsonLend){ %>
 							 <select class="textForm" name="AutoComfirmToBorrowMsgPeriod" id="periodSel" onchange="autoChanger();">
-								<option value=-1<%if(lfJSON){%><%if(lfJSON.FormContent.F10===-1){%> selected<%}%><%}%>>永不自動同意</option>
-								<option value=0<%if(lfJSON){%><%if(lfJSON.FormContent.F10===0){%> selected<%}%><%}%>>立即自動同意</option>
-								<option value=1<%if(lfJSON){%><%if(lfJSON.FormContent.F10===1){%> selected<%}%><%}%>>每天自動同意一次</option>
-								<option value=2<%if(lfJSON){%><%if(lfJSON.FormContent.F10===2){%> selected<%}%><%}%>>每兩天自動同意一次</option>
-								<option value=3<%if(lfJSON){%><%if(lfJSON.FormContent.F10===3){%> selected<%}%><%}%>>每三天自動同意一次</option>
+								<option value="-1"<%if(lfJSON){%><%if(lfJSON.FormContent.F10==-1){%> selected<%}%><%}%>>永不自動同意</option>
+								<option value="0"<%if(lfJSON){%><%if(lfJSON.FormContent.F10==0){%> selected<%}%><%}%>>立即自動同意</option>
+								<option value="1"<%if(lfJSON){%><%if(lfJSON.FormContent.F10==1){%> selected<%}%><%}%>>每天自動同意一次</option>
+								<option value="2"<%if(lfJSON){%><%if(lfJSON.FormContent.F10==2){%> selected<%}%><%}%>>每兩天自動同意一次</option>
+								<option value="3"<%if(lfJSON){%><%if(lfJSON.FormContent.F10==3){%> selected<%}%><%}%>>每三天自動同意一次</option>
 							  </select>
 						<% }else{ %>
 							<select class="textForm" name="AutoComfirmToBorrowMsgPeriod"  id="periodSel" onchange="autoChanger();">
-								<option value=-1<%if(lfJSON){%><%if(lfJSON.FormContent.F10===-1){%> selected<%}%><%}else{%><%if(jsonLend.AutoComfirmToBorrowMsgPeriod===-1){%> selected<%}%><%}%>>永不自動同意</option>
-								<option value=0<%if(lfJSON){%><%if(lfJSON.FormContent.F10===0){%> selected<%}%><%}else{%><%if(jsonLend.AutoComfirmToBorrowMsgPeriod===0){%> selected<%}%><%}%>>立即自動同意</option>
-								<option value=1<%if(lfJSON){%><%if(lfJSON.FormContent.F10===1){%> selected<%}%><%}else{%><%if(jsonLend.AutoComfirmToBorrowMsgPeriod===1){%> selected<%}%><%}%>>每天自動同意一次</option>
-								<option value=2<%if(lfJSON){%><%if(lfJSON.FormContent.F10===2){%> selected<%}%><%}else{%><%if(jsonLend.AutoComfirmToBorrowMsgPeriod===2){%> selected<%}%><%}%>>每兩天自動同意一次</option>
-								<option value=3<%if(lfJSON){%><%if(lfJSON.FormContent.F10===3){%> selected<%}%><%}else{%><%if(jsonLend.AutoComfirmToBorrowMsgPeriod===3){%> selected<%}%><%}%>>每三天自動同意一次</option>
+								<option value="-1"<%if(lfJSON){%><%if(lfJSON.FormContent.F10==-1){%> selected<%}%><%}else{%><%if(jsonLend.AutoComfirmToBorrowMsgPeriod===-1){%> selected<%}%><%}%>>永不自動同意</option>
+								<option value="0"<%if(lfJSON){%><%if(lfJSON.FormContent.F10==0){%> selected<%}%><%}else{%><%if(jsonLend.AutoComfirmToBorrowMsgPeriod===0){%> selected<%}%><%}%>>立即自動同意</option>
+								<option value="1"<%if(lfJSON){%><%if(lfJSON.FormContent.F10==1){%> selected<%}%><%}else{%><%if(jsonLend.AutoComfirmToBorrowMsgPeriod===1){%> selected<%}%><%}%>>每天自動同意一次</option>
+								<option value="2"<%if(lfJSON){%><%if(lfJSON.FormContent.F10==2){%> selected<%}%><%}else{%><%if(jsonLend.AutoComfirmToBorrowMsgPeriod===2){%> selected<%}%><%}%>>每兩天自動同意一次</option>
+								<option value="3"<%if(lfJSON){%><%if(lfJSON.FormContent.F10==3){%> selected<%}%><%}else{%><%if(jsonLend.AutoComfirmToBorrowMsgPeriod===3){%> selected<%}%><%}%>>每三天自動同意一次</option>
 							  </select>
 						<% } %>
 					</div>
@@ -258,7 +258,7 @@
 				<%}else{%>
 					<div class="panel panel-default" id="classorPnl"<% if(lfJSON.FormContent.F10<=0){ %> style="display:none;"<%}%>>
 						<div class="panel-heading">
-							<h3 class="panel-title">自動同意故事種類</h3>
+							<h3 class="panel-title">自動同意故事種類<span id="s11" class="red"><%if(lfJSON){%><%if(lfJSON.Target[10]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=lfJSON.Message[10]%><%}%><%}%></span></h3>
 						</div>
 						<div class="panel-body">
 							<select class="textForm" class="textForm" name="AutoComfirmToBorrowMsgClassor" id="classorSel"<% if(lfJSON.FormContent.F10<=0){ %> disabled="disabled"<%}%>>
@@ -271,7 +271,7 @@
 						</div>
 					</div>
 				<%}%>
-				<br>
+				<br class="brr">
 				<%if(!lfJSON){%>
 					<div class="panel panel-default" id="sorterPnl"<% if(!jsonLend){%> style="display:none;"<%}else{%><% if(jsonLend.AutoComfirmToBorrowMsgPeriod<=0){ %> style="display:none;"<%}%><%}%>>
 						<div class="panel-heading">
@@ -312,7 +312,7 @@
 				<%}else{%>
 					<div class="panel panel-default" id="sorterPnl"<% if(lfJSON.FormContent.F10<=0){ %> style="display:none;"<%}%>>
 						<div class="panel-heading">
-							<h3 class="panel-title">自動同意排序依據</h3>
+							<h3 class="panel-title">自動同意排序依據<span id="s12" class="red"><%if(lfJSON){%><%if(lfJSON.Target[11]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=lfJSON.Message[11]%><%}%><%}%></span></h3>
 						</div>
 						<div class="panel-body">
 							<select class="textForm" class="textForm" name="AutoComfirmToBorrowMsgSorter" id="sorterSel"<% if(lfJSON.FormContent.F10<=0){ %> disabled="disabled"<%}%> onchange="autoSorter('','');">
@@ -331,7 +331,7 @@
 						</div>
 					</div>
 				<%}%>
-				<br>
+				<br class="brr">
 				<%if(!lfJSON){%>
 					<div class="panel panel-default" id="directorPnl"<% if(!jsonLend){%> style="display:none;"<%}else{%><% if(jsonLend.AutoComfirmToBorrowMsgPeriod<=0){ %> style="display:none;"<%}%><%}%>>
 						<div class="panel-heading">
@@ -354,7 +354,7 @@
 				<%}else{%>
 					<div class="panel panel-default" id="directorPnl"<% if(lfJSON.FormContent.F10<=0){ %> style="display:none;"<%}%>>
 						<div class="panel-heading">
-							<h3 class="panel-title">自動同意排序方向</h3>
+							<h3 class="panel-title">自動同意排序方向<span id="s13" class="red"><%if(lfJSON){%><%if(lfJSON.Target[12]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=lfJSON.Message[12]%><%}%><%}%></span></h3>
 						</div>
 						<div class="panel-body">
 							<select class="textForm" class="textForm" name="AutoComfirmToBorrowMsgDirector" id="directorSel"<% if(lfJSON.FormContent.F10<=0){ %> disabled="disabled"<%}%>>
@@ -364,7 +364,7 @@
 						</div>
 					</div>
 				<%}%>
-				<br>
+				<br class="brr">
 				<%if(!lfJSON){%>
 					<div class="panel panel-default" id="lboundPnl"<% if(!jsonLend){%> style="display:none;"<%}else{%><% if(jsonLend.AutoComfirmToBorrowMsgPeriod<=0){ %> style="display:none;"<%}%><%}%>>
 						<div class="panel-heading">
@@ -402,7 +402,7 @@
 						</div>
 					</div>
 				<%}%>
-				<br>
+				<br class="brr">
 				<%if(!lfJSON){%>
 					<div class="panel panel-default" id="uboundPnl"<% if(!jsonLend){%> style="display:none;"<%}else{%><% if(jsonLend.AutoComfirmToBorrowMsgPeriod<=0){ %> style="display:none;"<%}%><%}%>>
 						<div class="panel-heading">
@@ -440,7 +440,7 @@
 						</div>
 					</div>
 				<%}%>
-				<br>
+				<br class="brr">
 				<%if(!lfJSON){%>
 					<div class="panel panel-default" id="keywordPnl"<% if(!jsonLend){%> style="display:none;"<%}else{%><% if(jsonLend.AutoComfirmToBorrowMsgPeriod<=0){ %> style="display:none;"<%}%><%}%>>
 						<div class="panel-heading">
@@ -457,14 +457,14 @@
 				<%}else{%>
 					<div class="panel panel-default" id="keywordPnl"<% if(lfJSON.FormContent.F10<=0){ %> style="display:none;"<%}%>>
 						<div class="panel-heading">
-							<h3 class="panel-title">自動同意關鍵字</h3>
+							<h3 class="panel-title">自動同意關鍵字<span id="s16" class="red"><%if(lfJSON){%><%if(lfJSON.Target[15]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=lfJSON.Message[15]%><%}%><%}%></span></h3>
 						</div>
 						<div class="panel-body">
 							<input id="keywordSel" type="text" class="textForm" name="AutoComfirmToBorrowMsgKeyWord" value="<%=lfJSON.FormContent.F16%>"<% if(lfJSON.FormContent.F10<=0){ %> disabled="disabled"<%}%>>
 						</div>
 					</div>
 				<%}%>
-				<br>
+				<br class="brr">
 				<% if(!jsonLend){ %>
 					<div style="width:100%;text-align: center;">
 						<div class="btn-group" role="group">
@@ -567,7 +567,15 @@
 		<%if(lfJSON){%>
 			<%for(i=0;i<lfJSON.Target.length;i++){%>
 				<%if(lfJSON.Target[i]){%>
-					<%if(i===13){%>
+					<%if(i===9){%>
+						$('#periodSel').focus();
+					<%}else if(i===10){%>
+						$('#classorSel').focus();
+					<%}else if(i===11){%>
+						$('#sorterSel').focus();
+					<%}else if(i===12){%>
+						$('#directorSel').focus();
+					<%}else if(i===13){%>
 						$('#lboundSel').focus();
 					<%}else if(i===14){%>
 						$('#uboundSel').focus();
@@ -624,46 +632,52 @@ function autoSorter(defaultValuel,defaultValueu){
 
 function autoChanger(){
 	if($('#periodSel').val()>0){
+		$('#nav_down').show();
+		$('.brr').show();
+		
 		$('#sorterSel').prop('disabled', false);
-		$('#sorterPnl').css('display','');
+		$('#sorterPnl').show();
 		
 		$('#directorSel').prop('disabled', false);
-		$('#directorPnl').css('display','');
+		$('#directorPnl').show();
 		
 		$('#classorSel').prop('disabled', false);
-		$('#classorPnl').css('display','');
+		$('#classorPnl').show();
 		
 		$('#lboundSel').prop('disabled', false);
-		$('#lboundPnl').css('display','');
+		$('#lboundPnl').show();
 		
 		$('#uboundSel').prop('disabled', false);
-		$('#uboundPnl').css('display','');
+		$('#uboundPnl').show();
 		
 		$('#keywordSel').prop('disabled', false);
-		$('#keywordPnl').css('display','');
+		$('#keywordPnl').show();
 	}else{
+		$('#nav_down').hide();
+		$('.brr').hide();
+		
 		$('#sorterSel').prop('disabled', true);
 		$('#sorterSel').val('InterestRate');
 		$('#lbd').html('%');
 		$('#ubd').html('%');
-		$('#sorterPnl').css('display','none');
+		$('#sorterPnl').hide();
 		
 		$('#directorSel').prop('disabled', true);
 		$('#directorSel').val('minus');
-		$('#directorPnl').css('display','none');
+		$('#directorPnl').hide();
 		
 		$('#classorSel').prop('disabled', true);
 		$('#classorSel').val('none');
-		$('#classorPnl').css('display','none');
+		$('#classorPnl').hide();
 		
 		$('#lboundSel').prop('disabled', true);
-		$('#lboundPnl').css('display','none');
+		$('#lboundPnl').hide();
 		
 		$('#uboundSel').prop('disabled', true);
-		$('#uboundPnl').css('display','none');
+		$('#uboundPnl').hide();
 		
 		$('#keywordSel').prop('disabled', true);
-		$('#keywordPnl').css('display','none');
+		$('#keywordPnl').hide();
 		
 		$('#lboundSel').val('');
 		$('#uboundSel').val('');
@@ -705,15 +719,15 @@ function disableDaterInner(){
 }
 
 function checkAndOpenModal(target,cntNumber,cntTail,flag){
-	var a=$("input[name='MaxMoneyToLend']").val().trim();
-	var b=$("input[name='InterestRate']").val().trim();
-	var c=$("input[name='MonthPeriod']").val().trim();
-	var d=$("input[name='MinLevelAccepted']").val().trim();
-	var e=$("input[name='MinInterestInFuture']").val().trim();
-	var f=$("input[name='MinMoneyFuture']").val().trim();
-	var g=$("input[name='MinInterestInFutureMonth']").val().trim();
-	var h=$("input[name='MinInterestInFutureMoneyMonth']").val().trim();
-	var i=$("input[name='MinInterestInFutureDivMoney']").val().trim();
+	var a=$("input[name='MaxMoneyToLend']").val().toString().trim();
+	var b=$("input[name='InterestRate']").val().toString().trim();
+	var c=$("input[name='MonthPeriod']").val().toString().trim();
+	var d=$("input[name='MinLevelAccepted']").val().toString().trim();
+	var e=$("input[name='MinInterestInFuture']").val().toString().trim();
+	var f=$("input[name='MinMoneyFuture']").val().toString().trim();
+	var g=$("input[name='MinInterestInFutureMonth']").val().toString().trim();
+	var h=$("input[name='MinInterestInFutureMoneyMonth']").val().toString().trim();
+	var i=$("input[name='MinInterestInFutureDivMoney']").val().toString().trim();
 	var aa=parseInt(a);
 	var bb=parseFloat(b);
 	var cc=parseInt(c);
@@ -758,8 +772,8 @@ function checkAndOpenModal(target,cntNumber,cntTail,flag){
 	var period=$("select[name='AutoComfirmToBorrowMsgPeriod']").val();
 	if(period>0){
 		var sorter=$("select[name='AutoComfirmToBorrowMsgSorter']").val();
-		var lbound=$("input[name='AutoComfirmToBorrowMsgLbound']").val().trim();
-		var ubound=$("input[name='AutoComfirmToBorrowMsgUbound']").val().trim();
+		var lbound=$("input[name='AutoComfirmToBorrowMsgLbound']").val().toString().trim();
+		var ubound=$("input[name='AutoComfirmToBorrowMsgUbound']").val().toString().trim();
 		if(lbound!==''){
 			if((sorter==='Updated')||(sorter==='Created')){
 				var tester=Date.parse(lbound);

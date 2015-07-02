@@ -38,7 +38,7 @@
 			$('#confirmMessage1').html('正在處理中，請稍候');
 			$('#confirmMessage1').removeClass('red');
 		}else{
-			if($('#findByActIpt').val().trim()===''){
+			if($('#findByActIpt').val().toString().trim()===''){
 				$('#confirmMessage1').html('請輸入帳號供查詢');
 				$('#confirmMessage1').addClass('red');
 			}else{
@@ -47,7 +47,7 @@
 				$.ajax({ 
 						url: '/Users/forgetPW',
 						type: 'POST',
-						data:{Username:$('#findByActIpt').val().trim()},
+						data:{Username:$('#findByActIpt').val().toString().trim()},
 						dataType: 'json',
 						success: function(Jdata) {
 							enableThings();
@@ -70,7 +70,7 @@
 			$('#confirmMessage2').html('正在處理中，請稍候');
 			$('#confirmMessage2').removeClass('red');
 		}else{
-			if($('#findByIdCardNumIpt').val().trim()===''){
+			if($('#findByIdCardNumIpt').val().toString().trim()===''){
 				$('#confirmMessage2').html('請輸入身分證字號供查詢');
 				$('#confirmMessage2').addClass('red');
 			}else{
@@ -78,7 +78,7 @@
 				$.ajax({ 
 						url: '/Users/forgetAct',
 						type: 'POST',
-						data:{IdCardNumber:$('#findByIdCardNumIpt').val().trim()},
+						data:{IdCardNumber:$('#findByIdCardNumIpt').val().toString().trim()},
 						dataType: 'json',
 						success: function(Jdata) {
 							enableThings();
@@ -119,4 +119,4 @@
 		$('#cancelBtnID').removeClass('disabled');
 	}
 </script>
-<%- include('layout_footer',{imgSettingCode:"var ifLoadedCount=0;",imgDrawingCode:"",nav_cur:'message'}); -%>
+<%- include('layout_footer',{imgSettingCode:"var ifLoadedCount=0;",imgDrawingCode:"",nav_cur:'forgetActOrPW'}); -%>

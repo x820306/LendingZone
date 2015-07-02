@@ -129,12 +129,14 @@
 										<li id="dli2"<%if(directorDefault==='小至大'){%> class="active"<%}%>><a href="#" onclick="<%if(nav_cur==='search'){%>directorSelector(2);<%}%>directorMainSelector(2);return false;" id="directorMain2">小至大</a></li>
 									</ul>
 								</div>
-								<button type="button" class="btn btn-default headerBar" onclick="<%if(nav_cur==='search'){%>linker();<%}else{%>linkerMain();<%}%>"><span class="glyphicon glyphicon-search"></span></button>
+								<div class="btn-group">
+									<button type="button" class="btn btn-default headerBar" onclick="<%if(nav_cur==='search'){%>linker();<%}else{%>linkerMain();<%}%>"><span class="glyphicon glyphicon-search"></span></button>
+								</div>
 							</span>
 						</div>
 					</div>
 					<ul class="nav navbar-nav navbar-right">
-						<!--<li><a href="#" onclick="if(ifLoadedCount<=0){if(!ifDrawed){doneResizing();}$('#introCanvas').css('display','');}else{alert('請等候圖片載入完畢');}return false;">引導</a></li>%>-->
+						<!--<li><a href="#" onclick="if(ifLoadedCount<=0){if(!ifDrawed){doneResizing();}$('#introCanvas').show();}else{alert('請等候圖片載入完畢');}return false;">引導</a></li>%>-->
 						<% if(nav_cur!=='signup'){ %>
 							<% if(userName===null){ %>
 								<li><a href="#" data-toggle="modal" data-target="#myModal">登入</a></li>
@@ -178,6 +180,10 @@
 				$('#mli'+i).attr('class','');
 			}
 			$('#mli'+index).attr('class','active');
+			
+			<%if(nav_cur!=='search'){%>
+				linkerMain();
+			<%}%>
 		}
 		
 		function categoryMainSelector(index){
@@ -189,6 +195,10 @@
 				$('#cli'+i).attr('class','');
 			}
 			$('#cli'+index).attr('class','active');
+			
+			<%if(nav_cur!=='search'){%>
+				linkerMain();
+			<%}%>
 		}
 		
 		function searchActionSelector(index){
@@ -200,6 +210,10 @@
 				$('#ali'+i).attr('class','');
 			}
 			$('#ali'+index).attr('class','active');
+			
+			<%if(nav_cur!=='search'){%>
+				linkerMain();
+			<%}%>
 		}
 		
 		function directorMainSelector(index){
@@ -211,6 +225,10 @@
 				$('#dli'+i).attr('class','');
 			}
 			$('#dli'+index).attr('class','active');
+			
+			<%if(nav_cur!=='search'){%>
+				linkerMain();
+			<%}%>
 		}
 		
 		function linkerMain(){

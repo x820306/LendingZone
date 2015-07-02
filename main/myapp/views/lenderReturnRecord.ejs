@@ -113,7 +113,9 @@
 						<li id="dlis2"<%if(directorDefault==='小至大'){%> class="active"<%}%>><a href="#" onclick="directorSelector(2);return false;" id="director2">小至大</a></li>
 					</ul>
 				</div>
-				<button type="button" class="btn btn-default pageBar" onclick="linker();">Go!</button>
+				<div class="btn-group">
+					<button type="button" class="btn btn-default pageBar" onclick="linker();">Go!</button>
+				</div>
 			<%if(idDefault===''){%>
 				</span>
 			</div>
@@ -122,21 +124,22 @@
 			<br>
 			<%}%>
 			<br>
-			<table width='100%'>
-				<tr>
-					<td>
-						<%if((sorterDefault==='建立日期')||(sorterDefault==='更新日期')||(sorterDefault==='收款前上次成功收款日期')||(sorterDefault==='收款前下次應收款日期')||(sorterDefault==='收款後上次成功收款日期')||(sorterDefault==='收款後下次應收款日期')){%>
-							<input type="text" placeholder="下限(年/月/日)" class="form-control boundIpt" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode===13){linker();}">&nbsp;&nbsp;<span id='lbd'></span>
-							&nbsp;&nbsp;~&nbsp;&nbsp;
-							<input type="text" placeholder="上限(年/月/日)" class="form-control boundIpt" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode===13){linker();}">&nbsp;&nbsp;<span id='ubd'></span>
-						<%}else{%>
-							<input type="text" placeholder="下限" class="form-control boundIpt" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode===13){linker();}">&nbsp;&nbsp;<span id='lbd'></span>
-							&nbsp;&nbsp;~&nbsp;&nbsp;
-							<input type="text" placeholder="上限" class="form-control boundIpt" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode===13){linker();}">&nbsp;&nbsp;<span id='ubd'></span>
-						<%}%>
-					</td>
+			<div style="border-top-style: none;border-right-style: none;border-bottom-style: none;border-left-style: none;margin-top: 0px;margin-bottom: 0px;" class="table-responsive">
+				<table style="margin-bottom: 0px;margin-top: 0px;" class="table" width="100%">
+					<tr>
+						<td style="border-bottom-style: none;border-top-style: none;">
+							<%if((sorterDefault==='建立日期')||(sorterDefault==='更新日期')||(sorterDefault==='收款前上次成功收款日期')||(sorterDefault==='收款前下次應收款日期')||(sorterDefault==='收款後上次成功收款日期')||(sorterDefault==='收款後下次應收款日期')){%>
+								<input type="text" placeholder="下限(年/月/日)" class="form-control boundIpt" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode===13){linker();}">&nbsp;&nbsp;<span id='lbd'></span>
+								&nbsp;&nbsp;~&nbsp;&nbsp;
+								<input type="text" placeholder="上限(年/月/日)" class="form-control boundIpt" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode===13){linker();}">&nbsp;&nbsp;<span id='ubd'></span>
+							<%}else{%>
+								<input type="text" placeholder="下限" class="form-control boundIpt" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode===13){linker();}">&nbsp;&nbsp;<span id='lbd'></span>
+								&nbsp;&nbsp;~&nbsp;&nbsp;
+								<input type="text" placeholder="上限" class="form-control boundIpt" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode===13){linker();}">&nbsp;&nbsp;<span id='ubd'></span>
+							<%}%>
+						</td>
 					<%if((kpr!=='')&&(totalResultNum>0)&&(!oflg)&&(pflg)){%>
-						<td align="right">
+						<td align="right" style="border-bottom-style: none;border-top-style: none;">
 							<button class="btn btn-default disabled" style="display:none;" id="highlightBtn" onclick="enableHighlight();">
 								關鍵字上色
 							</button>
@@ -145,23 +148,24 @@
 							</button>
 						</td>
 					<%}%>
-				</tr>
-			</table>
+					</tr>
+				</table>
+			</div>
 			<br>
 			<br>
 			<% if(totalResultNum>0){ %>
 				<ul class="nav nav-pills">
 					<li id="pli1" class="active"><a data-toggle="pill" href="#" onclick="piller(1);return false;">還款資訊</a></li>
-					<li id="pli2"><a data-toggle="pill" href="#" onclick="piller(2);return false;">還款前交易資訊</a></li>
-					<li id="pli3"><a data-toggle="pill" href="#" onclick="piller(3);return false;">還款後交易資訊</a></li>
+					<li id="pli2"><a data-toggle="pill" href="#" onclick="piller(2);return false;">還款前</a></li>
+					<li id="pli3"><a data-toggle="pill" href="#" onclick="piller(3);return false;">還款後</a></li>
 				</ul>
 				<br>
 				<br>
 				<% for(var i=0; i<jsonReturns.length; i++) { %>
 					<ul class="nav nav-tabs" id="myTab<%=i%>">
 						<li class="active myCtr1"><a href="#tab1<%=i%>" data-toggle="tab">還款資訊</a></li>
-						<li class="myCtr2"><a href="#tab2<%=i%>" data-toggle="tab">還款前交易資訊</a></li>
-						<li class="myCtr3"><a href="#tab3<%=i%>" data-toggle="tab">還款後交易資訊</a></li>
+						<li class="myCtr2"><a href="#tab2<%=i%>" data-toggle="tab">還款前</a></li>
+						<li class="myCtr3"><a href="#tab3<%=i%>" data-toggle="tab">還款後</a></li>
 					</ul>
 					<div style="height:390px;" class="tab-content my-tab-content">
 						<div class="tab-pane active" id="tab1<%=i%>">
@@ -990,9 +994,9 @@
 						$('.colorCnt').highlightRegex(stringArrayRegex[we]);
 					}
 					$('#unhighlightBtn').removeClass('disabled');
-					$('#unhighlightBtn').css('display','');
+					$('#unhighlightBtn').show();
 					$('#highlightBtn').addClass('disabled');
-					$('#highlightBtn').css('display','none');
+					$('#highlightBtn').hide();
 				}
 			}
 		}
@@ -1003,9 +1007,9 @@
 					highLightFlag=false;
 					$('.colorCnt').highlightRegex();
 					$('#highlightBtn').removeClass('disabled');
-					$('#highlightBtn').css('display','');
+					$('#highlightBtn').show();
 					$('#unhighlightBtn').addClass('disabled');
-					$('#unhighlightBtn').css('display','none');
+					$('#unhighlightBtn').hide();
 				}
 			}
 		}

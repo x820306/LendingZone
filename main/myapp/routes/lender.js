@@ -5,7 +5,7 @@ var express = require('express');
 var router = express.Router();
 
 router.get('/search/:keyword?/:category?/:messenger?/:action?/:director?/:lbound?/:ubound?/:page?',library.loginFormChecker,library.newMsgChecker, function (req, res) {
-	if((typeof(req.query.keyword) !== "undefined")&&(typeof(req.query.category) !== "undefined")&&(typeof(req.query.messenger) !== "undefined")&&(typeof(req.query.action) !== "undefined")&&(typeof(req.query.director) !== "undefined")&&(typeof(req.query.lbound) !== "undefined")&&(typeof(req.query.ubound) !== "undefined")&&(typeof(req.query.page) !== "undefined")){
+	if((typeof(req.query.keyword) === 'string')&&(typeof(req.query.category) === 'string')&&(typeof(req.query.messenger) === 'string')&&(typeof(req.query.action) === 'string')&&(typeof(req.query.director) === 'string')&&(typeof(req.query.lbound) === 'string')&&(typeof(req.query.ubound) === 'string')&&(typeof(req.query.page) === 'string')){
 		var targetPage=parseInt(req.query.page);
 		if(!isNaN(targetPage)){
 			var auRst=null;
@@ -288,7 +288,9 @@ router.get('/search/:keyword?/:category?/:messenger?/:action?/:director?/:lbound
 									
 									var filterResponse=library.keywordFilter(orFlag,orFlagM,testString,borrows[j]._id,keywordArray,keywordArrayM,keyObjIDarray);
 																	
-									objFlag=filterResponse.localObjFlag;
+									if(!objFlag){
+										objFlag=filterResponse.localObjFlag;
+									}
 									if((!filterResponse.localFlag0)&&((!filterResponse.localFlag1)||(!filterResponse.localFlag2))){
 										borrows.splice(j, 1);
 									}
@@ -486,7 +488,7 @@ router.get('/search/:keyword?/:category?/:messenger?/:action?/:director?/:lbound
 });
 
 router.get('/story/:id?',library.loginFormChecker,library.newMsgChecker, function (req, res){
-	if(typeof(req.query.id) !== "undefined"){
+	if(typeof(req.query.id) === 'string'){
 		var auRst=null;
 		if(req.isAuthenticated()){
 			auRst=req.user.Username;
@@ -751,7 +753,7 @@ router.get('/lend',library.loginFormChecker,library.ensureAuthenticated,library.
 });
 
 router.get('/lenderTransactionRecord/:oneid?/:filter?/:messenger?/:classor?/:sorter?/:director?/:lbound?/:ubound?/:page?',library.loginFormChecker, library.ensureAuthenticated,library.newMsgChecker, function (req, res) {
-	if((typeof(req.query.oneid) !== "undefined")&&(typeof(req.query.filter) !== "undefined")&&(typeof(req.query.messenger) !== "undefined")&&(typeof(req.query.classor) !== "undefined")&&(typeof(req.query.sorter) !== "undefined")&&(typeof(req.query.director) !== "undefined")&&(typeof(req.query.lbound) !== "undefined")&&(typeof(req.query.ubound) !== "undefined")&&(typeof(req.query.page) !== "undefined")){
+	if((typeof(req.query.oneid) === 'string')&&(typeof(req.query.filter) === 'string')&&(typeof(req.query.messenger) === 'string')&&(typeof(req.query.classor) === 'string')&&(typeof(req.query.sorter) === 'string')&&(typeof(req.query.director) === 'string')&&(typeof(req.query.lbound) === 'string')&&(typeof(req.query.ubound) === 'string')&&(typeof(req.query.page) === 'string')){
 		var targetPage=parseInt(req.query.page);
 		if(!isNaN(targetPage)){
 			
@@ -1095,7 +1097,9 @@ router.get('/lenderTransactionRecord/:oneid?/:filter?/:messenger?/:classor?/:sor
 									var testString=transactions[j].Borrower.Username+'\r\n'+transactions[j].CreatedFrom.FromBorrowRequest.StoryTitle;
 									var filterResponse=library.keywordFilter(orFlag,orFlagM,testString,transactions[j]._id,keywordArray,keywordArrayM,ObjIDarray);
 																	
-									objFlag=filterResponse.localObjFlag;
+									if(!objFlag){
+										objFlag=filterResponse.localObjFlag;
+									}
 									if((!filterResponse.localFlag0)&&((!filterResponse.localFlag1)||(!filterResponse.localFlag2))){
 										transactions.splice(j, 1);
 									}
@@ -1430,7 +1434,7 @@ router.get('/lenderTransactionRecord/:oneid?/:filter?/:messenger?/:classor?/:sor
 });
 
 router.get('/lenderReturnRecord/:oneid?/:id?/:messenger?/:classor?/:sorter?/:director?/:lbound?/:ubound?/:page?',library.loginFormChecker, library.ensureAuthenticated, library.newMsgChecker,function (req, res) {
-	if((typeof(req.query.oneid) !== "undefined")&&(typeof(req.query.id) !== "undefined")&&(typeof(req.query.messenger) !== "undefined")&&(typeof(req.query.classor) !== "undefined")&&(typeof(req.query.sorter) !== "undefined")&&(typeof(req.query.director) !== "undefined")&&(typeof(req.query.lbound) !== "undefined")&&(typeof(req.query.ubound) !== "undefined")&&(typeof(req.query.page) !== "undefined")){
+	if((typeof(req.query.oneid) === 'string')&&(typeof(req.query.id) === 'string')&&(typeof(req.query.messenger) === 'string')&&(typeof(req.query.classor) === 'string')&&(typeof(req.query.sorter) === 'string')&&(typeof(req.query.director) === 'string')&&(typeof(req.query.lbound) === 'string')&&(typeof(req.query.ubound) === 'string')&&(typeof(req.query.page) === 'string')){
 		var targetPage=parseInt(req.query.page);
 		if(!isNaN(targetPage)){
 			var objFlag=false;
@@ -1809,7 +1813,9 @@ router.get('/lenderReturnRecord/:oneid?/:id?/:messenger?/:classor?/:sorter?/:dir
 											var testString=returns[j].Borrower.Username+'\r\n'+returns[j].ToTransaction.CreatedFrom.FromBorrowRequest.StoryTitle;
 											var filterResponse=library.keywordFilter(orFlag,orFlagM,testString,returns[j]._id,keywordArray,keywordArrayM,ObjIDarray);
 																	
-											objFlag=filterResponse.localObjFlag;
+											if(!objFlag){
+												objFlag=filterResponse.localObjFlag;
+											}
 											if((!filterResponse.localFlag0)&&((!filterResponse.localFlag1)||(!filterResponse.localFlag2))){
 												returns.splice(j, 1);
 											}
@@ -1964,7 +1970,7 @@ router.get('/lenderReturnRecord/:oneid?/:id?/:messenger?/:classor?/:sorter?/:dir
 });
 
 router.get('/lendsList/:oneid?/:classOne?/:classTwo?/:sorter?/:director?/:lbound?/:ubound?/:page?',library.loginFormChecker, library.ensureAuthenticated, library.newMsgChecker,function (req, res) {
-	if((typeof(req.query.oneid) !== "undefined")&&(typeof(req.query.classOne) !== "undefined")&&(typeof(req.query.classTwo) !== "undefined")&&(typeof(req.query.sorter) !== "undefined")&&(typeof(req.query.director) !== "undefined")&&(typeof(req.query.lbound) !== "undefined")&&(typeof(req.query.ubound) !== "undefined")&&(typeof(req.query.page) !== "undefined")){
+	if((typeof(req.query.oneid) === 'string')&&(typeof(req.query.classOne) === 'string')&&(typeof(req.query.classTwo) === 'string')&&(typeof(req.query.sorter) === 'string')&&(typeof(req.query.director) === 'string')&&(typeof(req.query.lbound) === 'string')&&(typeof(req.query.ubound) === 'string')&&(typeof(req.query.page) === 'string')){
 		var targetPage=parseInt(req.query.page);
 		if(!isNaN(targetPage)){
 			var objFlag=false;
@@ -2220,7 +2226,9 @@ router.get('/lendsList/:oneid?/:classOne?/:classTwo?/:sorter?/:director?/:lbound
 							
 							var filterResponse=library.keywordFilter(orFlag,orFlagM,testString,lends[j]._id,keywordArray,keywordArrayM,ObjIDarray);
 																	
-							objFlag=filterResponse.localObjFlag;
+							if(!objFlag){
+								objFlag=filterResponse.localObjFlag;
+							}
 							if((!filterResponse.localFlag0)&&((!filterResponse.localFlag1)||(!filterResponse.localFlag2))){
 								lends.splice(j, 1);
 							}
@@ -2265,7 +2273,7 @@ router.get('/lendsList/:oneid?/:classOne?/:classTwo?/:sorter?/:director?/:lbound
 });
 
 router.get('/lenderSendMessages/:msgKeyword?/:filter?/:classor?/:sorter?/:director?/:lbound?/:ubound?/:page?',library.loginFormChecker, library.ensureAuthenticated,library.newMsgChecker, function (req, res) {
-	if((typeof(req.query.msgKeyword) !== "undefined")&&(typeof(req.query.filter) !== "undefined")&&(typeof(req.query.classor) !== "undefined")&&(typeof(req.query.sorter) !== "undefined")&&(typeof(req.query.director) !== "undefined")&&(typeof(req.query.lbound) !== "undefined")&&(typeof(req.query.ubound) !== "undefined")&&(typeof(req.query.page) !== "undefined")){
+	if((typeof(req.query.msgKeyword) === 'string')&&(typeof(req.query.filter) === 'string')&&(typeof(req.query.classor) === 'string')&&(typeof(req.query.sorter) === 'string')&&(typeof(req.query.director) === 'string')&&(typeof(req.query.lbound) === 'string')&&(typeof(req.query.ubound) === 'string')&&(typeof(req.query.page) === 'string')){
 		var targetPage=parseInt(req.query.page);
 		if(!isNaN(targetPage)){
 			
@@ -2524,7 +2532,9 @@ router.get('/lenderSendMessages/:msgKeyword?/:filter?/:classor?/:sorter?/:direct
 									var testString=messages[j].Message+'\r\n'+messages[j].FromBorrowRequest.StoryTitle+'\r\n'+messages[j].SendTo.Username;
 									var filterResponse=library.keywordFilter(orFlag,orFlagM,testString,messages[j]._id,keywordArray,keywordArrayM,msgObjIDarray);
 																	
-									objFlag=filterResponse.localObjFlag;
+									if(!objFlag){
+										objFlag=filterResponse.localObjFlag;
+									}
 									if((!filterResponse.localFlag0)&&((!filterResponse.localFlag1)||(!filterResponse.localFlag2))){
 										messages.splice(j, 1);
 									}
@@ -2643,7 +2653,7 @@ router.get('/lenderSendMessages/:msgKeyword?/:filter?/:classor?/:sorter?/:direct
 });
 
 router.get('/lenderReceiveMessages/:msgKeyword?/:filter?/:classor?/:sorter?/:director?/:lbound?/:ubound?/:page?',library.loginFormChecker, library.ensureAuthenticated,library.newMsgChecker, function (req, res) {
-	if((typeof(req.query.msgKeyword) !== "undefined")&&(typeof(req.query.filter) !== "undefined")&&(typeof(req.query.classor) !== "undefined")&&(typeof(req.query.sorter) !== "undefined")&&(typeof(req.query.director) !== "undefined")&&(typeof(req.query.lbound) !== "undefined")&&(typeof(req.query.ubound) !== "undefined")&&(typeof(req.query.page) !== "undefined")){
+	if((typeof(req.query.msgKeyword) === 'string')&&(typeof(req.query.filter) === 'string')&&(typeof(req.query.classor) === 'string')&&(typeof(req.query.sorter) === 'string')&&(typeof(req.query.director) === 'string')&&(typeof(req.query.lbound) === 'string')&&(typeof(req.query.ubound) === 'string')&&(typeof(req.query.page) === 'string')){
 		var targetPage=parseInt(req.query.page);
 		if(!isNaN(targetPage)){
 			
@@ -2924,7 +2934,9 @@ router.get('/lenderReceiveMessages/:msgKeyword?/:filter?/:classor?/:sorter?/:dir
 									var testString=messages[j].Message+'\r\n'+messages[j].FromBorrowRequest.StoryTitle+'\r\n'+messages[j].CreatedBy.Username;
 									var filterResponse=library.keywordFilter(orFlag,orFlagM,testString,messages[j]._id,keywordArray,keywordArrayM,msgObjIDarray);
 																	
-									objFlag=filterResponse.localObjFlag;
+									if(!objFlag){
+										objFlag=filterResponse.localObjFlag;
+									}
 									if((!filterResponse.localFlag0)&&((!filterResponse.localFlag1)||(!filterResponse.localFlag2))){
 										messages.splice(j, 1);
 									}
