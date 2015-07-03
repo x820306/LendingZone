@@ -7,8 +7,8 @@
 	input[type="text"]::-webkit-input-placeholder {color: #050505;}
 	.hint{
 	position:absolute;
-	right:400px; 
-	bottom:400px;
+	right:25%; 
+	top:25%;
 	}
 	</style>
 	<div align = "center">
@@ -27,39 +27,41 @@
 			<center>
 			<form method="post" action="/signup/apply">
 				<h3>個人資料確認<br></h3>
-				<table class="table table-hover myTbody" style = "width:80%">
-				<tr>
-					<td align = "right" style = "width:15%">姓名</td>
-					<td>金貝貝<input type="hidden" class="form-control" value="金貝貝" id="nameIpt" name = "nameIpt" placeholder="金貝貝"></td>
-				</tr>
-				<tr>
-					<td align = "right" style = "width:15%">性別</td>
-					<td>女性<label style="display:none;" class="radio-inline">
-					<input type="radio" name="genderIpt" id="genderIpt" value="Male"></label>
-					<label style="display:none;" class="radio-inline">
-					<input type="radio" name="genderIpt" id="genderIpt" value="Female" checked></label></td>
-				</tr>
-				<tr>
-					<td align = "right" style = "width:15%">生日</td>
-					<td>1990/01/01<input type="hidden" class="form-control" id="birthIpt" name = "birthIpt" value="1990-01-01" placeholder="1990-01-01"></td>
-				</tr>
-				<tr>
-					<td align = "right" style = "width:15%">身分證字號</td>
-					<td>A<%=usrNum%>23456789<input type="hidden" class="form-control" id="ssnIpt" name = "ssnIpt" value="A<%=usrNum%>23456789" placeholder="A<%=usrNum%>23456789"></td>
-				</tr>
-				<tr>
-					<td align = "right" style = "width:15%">行動電話</td>
-					<td><input type="text" required="required" class="form-control" id="telIpt" name = "telIpt" value="0912345678" placeholder="0912345678"></td>
-				</tr>
-				<tr>
-					<td align = "right" style = "width:15%">E-mail</td>
-					<td><input type="email" required="required" class="form-control" id="emailIpt" name = "emailIpt" value="baby@jin.com" placeholder="baby@jin.com"></td>
-				</tr>
-				<tr>
-					<td align = "right" style = "width:15%">住址</td>
-					<td><input type="text" required="required" class="form-control" id="addrIpt" name = "addrIpt" value = "天龍市貝比路1號" placeholder="天龍市貝比路1號"></td>
-				</tr>
-				</table>
+				<div class="resp">
+					<table class="table table-hover myTbody" style = "width:80%">
+						<tr>
+							<td align = "right" style = "width:15%">姓名</td>
+							<td>金貝貝<input type="hidden" class="form-control" value="金貝貝" id="nameIpt" name = "nameIpt" placeholder="金貝貝"></td>
+						</tr>
+						<tr>
+							<td align = "right" style = "width:15%">性別</td>
+							<td>女性<label style="display:none;" class="radio-inline">
+							<input type="radio" name="genderIpt" id="genderIpt" value="Male"></label>
+							<label style="display:none;" class="radio-inline">
+							<input type="radio" name="genderIpt" id="genderIpt" value="Female" checked></label></td>
+						</tr>
+						<tr>
+							<td align = "right" style = "width:15%">生日</td>
+							<td>1990/01/01<input type="hidden" class="form-control" id="birthIpt" name = "birthIpt" value="1990-01-01" placeholder="1990-01-01"></td>
+						</tr>
+						<tr>
+							<td align = "right" style = "width:15%">身分證字號</td>
+							<td>A<%=usrNum%>23456789<input type="hidden" class="form-control" id="ssnIpt" name = "ssnIpt" value="A<%=usrNum%>23456789" placeholder="A<%=usrNum%>23456789"></td>
+						</tr>
+						<tr>
+							<td align = "right" style = "width:15%">行動電話</td>
+							<td><input type="text" required="required" class="form-control" id="telIpt" name = "telIpt" value="0912345678" placeholder="0912345678"></td>
+						</tr>
+						<tr>
+							<td align = "right" style = "width:15%">E-mail</td>
+							<td><input type="email" required="required" class="form-control" id="emailIpt" name = "emailIpt" value="baby@jin.com" placeholder="baby@jin.com"></td>
+						</tr>
+						<tr>
+							<td align = "right" style = "width:15%">住址</td>
+							<td><input type="text" required="required" class="form-control" id="addrIpt" name = "addrIpt" value = "天龍市貝比路1號" placeholder="天龍市貝比路1號"></td>
+						</tr>
+					</table>
+				</div>
 				<div class="btn-toolbar" role="toolbar" style = "margin-top: 10px;">
 				<input type="hidden" name="BankAccountNumber" value="<%=BankAccountNumber%>">
 				<input type="hidden" name="BankAccountPassword" value="<%=BankAccountPassword%>">

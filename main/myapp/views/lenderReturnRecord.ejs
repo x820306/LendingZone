@@ -181,608 +181,602 @@
 								<br>
 							</div>
 							<div>
-								<div class="row">
-									<div class="col-md-6">
-										<table width="100%" height="270px">
-											<tr>
-												<td>
-													<span class="<%if(sorterDefault==='實收金額'){%>stronger<%}else{%>myTitle<%}%>">實收金額：</span>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].MoneyReallyPaid.toFixed(0)%>元
-												</td>
-											</tr>
-											<tr>
-												<td>
-													<span class="<%if(sorterDefault==='應收金額'){%>stronger<%}else{%>myTitle<%}%>">應收金額：</span>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].MoneyShouldPaid.toFixed(0)%>元
-												</td>
-											</tr>
-											<tr>
-												<td>
-													<%if(jsonReturns[i].MoneyNotPaid>=0){%><span class="<%if(sorterDefault==='未收金額'){%>stronger<%}else{%>myTitle<%}%>">未收金額：</span><%}else{%><span class="<%if(sorterDefault==='超收金額'){%>stronger<%}else{%>myTitle<%}%>">超收金額：</span><%}%>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													&nbsp;&nbsp;&nbsp;&nbsp;<%if(jsonReturns[i].MoneyNotPaid>=0){%><%=jsonReturns[i].MoneyNotPaid.toFixed(0)%><%}else{%><%=(jsonReturns[i].MoneyNotPaid*-1).toFixed(0)%><%}%>元
-												</td>
-											</tr>
-											<tr>
-												<td>
-													<span class="<%if(sorterDefault==='實收本金'){%>stronger<%}else{%>myTitle<%}%>">實收本金：</span>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													&nbsp;&nbsp;&nbsp;&nbsp;<%=(jsonReturns[i].PrincipalShouldPaid-jsonReturns[i].PrincipalNotPaid).toFixed(0)%>元
-												</td>
-											</tr>
-											<tr>
-												<td>
-													<span class="<%if(sorterDefault==='應收本金'){%>stronger<%}else{%>myTitle<%}%>">應收本金：</span>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].PrincipalShouldPaid.toFixed(0)%>元
-												</td>
-											</tr>
-											<tr>
-												<td>
-													<%if(jsonReturns[i].PrincipalNotPaid>=0){%><span class="<%if(sorterDefault==='未收本金'){%>stronger<%}else{%>myTitle<%}%>">未收本金：</span><%}else{%><span class="<%if(sorterDefault==='超收本金'){%>stronger<%}else{%>myTitle<%}%>">超收本金：</span><%}%>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													&nbsp;&nbsp;&nbsp;&nbsp;<%if(jsonReturns[i].PrincipalNotPaid>=0){%><%=jsonReturns[i].PrincipalNotPaid.toFixed(0)%><%}else{%><%=(jsonReturns[i].PrincipalNotPaid*-1).toFixed(0)%><%}%>元
-												</td>
-											</tr>
-										</table>
-									</div>
-									<div class="col-md-6">
-										<table width="100%" height="270px">
-											<tr>
-												<td>
-													<span class="<%if(sorterDefault==='實收利息'){%>stronger<%}else{%>myTitle<%}%>">實收利息：</span>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													&nbsp;&nbsp;&nbsp;&nbsp;<%=(jsonReturns[i].InterestShouldPaid-jsonReturns[i].InterestNotPaid).toFixed(0)%>元
-												</td>
-											</tr>
-											<tr>
-												<td>
-													<span class="<%if(sorterDefault==='應收利息'){%>stronger<%}else{%>myTitle<%}%>">應收利息：</span>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].InterestShouldPaid.toFixed(0)%>元
-												</td>
-											</tr>
-											<tr>
-												<td>
-													<%if(jsonReturns[i].InterestNotPaid>=0){%><span class="<%if(sorterDefault==='未收利息'){%>stronger<%}else{%>myTitle<%}%>">未收利息：</span><%}else{%><span class="<%if(sorterDefault==='超收利息'){%>stronger<%}else{%>myTitle<%}%>">超收利息：</span><%}%>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													&nbsp;&nbsp;&nbsp;&nbsp;<%if(jsonReturns[i].InterestNotPaid>=0){%><%=jsonReturns[i].InterestNotPaid.toFixed(0)%><%}else{%><%=(jsonReturns[i].InterestNotPaid*-1).toFixed(0)%><%}%>元
-												</td>
-											</tr>
-											<tr>
-												<td>
-													<span class="<%if(sorterDefault==='建立日期'){%>stronger<%}else{%>myTitle<%}%>">收款日期：</span>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].Created.getFullYear()%>/<%if(jsonReturns[i].Created.getMonth()<9){%>0<%}%><%=jsonReturns[i].Created.getMonth()+1%>/<%if(jsonReturns[i].Created.getDate()<10){%>0<%}%><%=jsonReturns[i].Created.getDate()%>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													<span class="<%if(sorterDefault==='信用等級'){%>stronger<%}else{%>myTitle<%}%>">信用等級：</span>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].Level.toFixed(0)%>級
-												</td>
-											</tr>
-											<tr>
-												<td>
-													對方銀行帳號：
-												</td>
-											</tr>
-											<tr>
-												<td>
-													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].BorrowerBankAccountNumber%>
-												</td>
-											</tr>
-										</table>
-									</div>
+								<div class="col-md-6">
+									<table width="100%" height="270px">
+										<tr>
+											<td>
+												<span class="<%if(sorterDefault==='實收金額'){%>stronger<%}else{%>myTitle<%}%>">實收金額：</span>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].MoneyReallyPaid.toFixed(0)%>元
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span class="<%if(sorterDefault==='應收金額'){%>stronger<%}else{%>myTitle<%}%>">應收金額：</span>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].MoneyShouldPaid.toFixed(0)%>元
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<%if(jsonReturns[i].MoneyNotPaid>=0){%><span class="<%if(sorterDefault==='未收金額'){%>stronger<%}else{%>myTitle<%}%>">未收金額：</span><%}else{%><span class="<%if(sorterDefault==='超收金額'){%>stronger<%}else{%>myTitle<%}%>">超收金額：</span><%}%>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												&nbsp;&nbsp;&nbsp;&nbsp;<%if(jsonReturns[i].MoneyNotPaid>=0){%><%=jsonReturns[i].MoneyNotPaid.toFixed(0)%><%}else{%><%=(jsonReturns[i].MoneyNotPaid*-1).toFixed(0)%><%}%>元
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span class="<%if(sorterDefault==='實收本金'){%>stronger<%}else{%>myTitle<%}%>">實收本金：</span>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=(jsonReturns[i].PrincipalShouldPaid-jsonReturns[i].PrincipalNotPaid).toFixed(0)%>元
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span class="<%if(sorterDefault==='應收本金'){%>stronger<%}else{%>myTitle<%}%>">應收本金：</span>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].PrincipalShouldPaid.toFixed(0)%>元
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<%if(jsonReturns[i].PrincipalNotPaid>=0){%><span class="<%if(sorterDefault==='未收本金'){%>stronger<%}else{%>myTitle<%}%>">未收本金：</span><%}else{%><span class="<%if(sorterDefault==='超收本金'){%>stronger<%}else{%>myTitle<%}%>">超收本金：</span><%}%>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												&nbsp;&nbsp;&nbsp;&nbsp;<%if(jsonReturns[i].PrincipalNotPaid>=0){%><%=jsonReturns[i].PrincipalNotPaid.toFixed(0)%><%}else{%><%=(jsonReturns[i].PrincipalNotPaid*-1).toFixed(0)%><%}%>元
+											</td>
+										</tr>
+									</table>
+								</div>
+								<div class="col-md-6">
+									<table width="100%" height="270px">
+										<tr>
+											<td>
+												<span class="<%if(sorterDefault==='實收利息'){%>stronger<%}else{%>myTitle<%}%>">實收利息：</span>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=(jsonReturns[i].InterestShouldPaid-jsonReturns[i].InterestNotPaid).toFixed(0)%>元
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span class="<%if(sorterDefault==='應收利息'){%>stronger<%}else{%>myTitle<%}%>">應收利息：</span>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].InterestShouldPaid.toFixed(0)%>元
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<%if(jsonReturns[i].InterestNotPaid>=0){%><span class="<%if(sorterDefault==='未收利息'){%>stronger<%}else{%>myTitle<%}%>">未收利息：</span><%}else{%><span class="<%if(sorterDefault==='超收利息'){%>stronger<%}else{%>myTitle<%}%>">超收利息：</span><%}%>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												&nbsp;&nbsp;&nbsp;&nbsp;<%if(jsonReturns[i].InterestNotPaid>=0){%><%=jsonReturns[i].InterestNotPaid.toFixed(0)%><%}else{%><%=(jsonReturns[i].InterestNotPaid*-1).toFixed(0)%><%}%>元
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span class="<%if(sorterDefault==='建立日期'){%>stronger<%}else{%>myTitle<%}%>">收款日期：</span>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].Created.getFullYear()%>/<%if(jsonReturns[i].Created.getMonth()<9){%>0<%}%><%=jsonReturns[i].Created.getMonth()+1%>/<%if(jsonReturns[i].Created.getDate()<10){%>0<%}%><%=jsonReturns[i].Created.getDate()%>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span class="<%if(sorterDefault==='信用等級'){%>stronger<%}else{%>myTitle<%}%>">信用等級：</span>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].Level.toFixed(0)%>級
+											</td>
+										</tr>
+										<tr>
+											<td>
+												對方銀行帳號：
+											</td>
+										</tr>
+										<tr>
+											<td>
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].BorrowerBankAccountNumber%>
+											</td>
+										</tr>
+									</table>
 								</div>
 							</div>	
 						</div>
 						<div class="tab-pane" id="tab2<%=i%>">
-							<div class="row">
-								<div class="col-md-4">
-									<table width="100%" height="355px">
-										<tr>
-											<td>
-												<span class="<%if(sorterDefault==='收款前額外本金'){%>stronger<%}else{%>myTitle<%}%>">收款前額外本金：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].ExtendPrincipalBeforePaid.toFixed(0)%>元
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="<%if(sorterDefault==='收款前總本金'){%>stronger<%}else{%>myTitle<%}%>">收款前總本金：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].TotalPrincipalNowBeforePaid.toFixed(0)%>元
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="<%if(sorterDefault==='收款前未還本金'){%>stronger<%}else{%>myTitle<%}%>">收款前未還本金：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].PrincipalNotReturnBeforePaid.toFixed(0)%>元
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="<%if(sorterDefault==='收款前已還本金'){%>stronger<%}else{%>myTitle<%}%>">收款前已還本金：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].PrincipalReturnBeforePaid.toFixed(0)%>元
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="<%if(sorterDefault==='收款前已得利息'){%>stronger<%}else{%>myTitle<%}%>">收款前已得利息：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].InterestBeforePaid.toFixed(0)%>元
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="<%if(sorterDefault==='收款前已得本利和'){%>stronger<%}else{%>myTitle<%}%>">收款前已得本利和：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].PrincipalInterestBeforePaid.toFixed(0)%>元
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="<%if(sorterDefault==='收款前已得平均利息'){%>stronger<%}else{%>myTitle<%}%>">收款前已得平均利息：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].InterestMonthBeforePaid.toFixed(0)%>元/月
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="<%if(sorterDefault==='收款前已得平均本利和'){%>stronger<%}else{%>myTitle<%}%>">收款前已得平均本利和：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].PrincipalInterestMonthBeforePaid.toFixed(0)%>元/月
-											</td>
-										</tr>
-									</table>
-								</div>
-								<div class="col-md-4">
-									<table width="100%" height="355px">
-										<tr>
-											<td>
-												<span class="<%if(sorterDefault==='收款前已得利本比'){%>stronger<%}else{%>myTitle<%}%>">收款前已得利本比：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=(jsonReturns[i].InterestDivPrincipalBeforePaid*100).toFixed(2)%>%
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="<%if(sorterDefault==='收款前額外期數'){%>stronger<%}else{%>myTitle<%}%>">收款前額外期數：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].ExtendMonthPeriodBeforePaid.toFixed(0)%>個月
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="<%if(sorterDefault==='收款前總期數'){%>stronger<%}else{%>myTitle<%}%>">收款前總期數：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].TotalMonthPeriodNowBeforePaid.toFixed(0)%>個月
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="<%if(sorterDefault==='收款前剩下期數'){%>stronger<%}else{%>myTitle<%}%>">收款前剩下期數：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].MonthPeriodLeftBeforePaid.toFixed(0)%>個月
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="<%if(sorterDefault==='收款前已過期數'){%>stronger<%}else{%>myTitle<%}%>">收款前已過期數：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].MonthPeriodPastBeforePaid.toFixed(0)%>個月
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="<%if(sorterDefault==='收款前預計剩餘利息'){%>stronger<%}else{%>myTitle<%}%>">收款前預計剩餘利息：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].InterestInFutureBeforePaid.toFixed(0)%>元
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="<%if(sorterDefault==='收款前預計剩餘本利和'){%>stronger<%}else{%>myTitle<%}%>">收款前預計剩餘本利和：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].MoneyFutureBeforePaid.toFixed(0)%>元
-											</td>
-										</tr>
-									</table>
-								</div>
-								<div class="col-md-4">
-									<table width="100%" height="355px">
-										<tr>
-											<td>
-												<span class="<%if(sorterDefault==='收款前預計剩餘平均利息'){%>stronger<%}else{%>myTitle<%}%>">收款前預計剩餘平均利息：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].InterestInFutureMonthBeforePaid.toFixed(0)%>元/月
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="<%if(sorterDefault==='收款前預計剩餘平均本利和'){%>stronger<%}else{%>myTitle<%}%>">收款前預計剩餘平均本利和：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].InterestInFutureMoneyMonthBeforePaid.toFixed(0)%>元/月
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="<%if(sorterDefault==='收款前預計剩餘利本比'){%>stronger<%}else{%>myTitle<%}%>">收款前預計剩餘利本比：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=(jsonReturns[i].InterestInFutureDivMoneyBeforePaid*100).toFixed(2)%>%
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="<%if(sorterDefault==='收款前收款次數'){%>stronger<%}else{%>myTitle<%}%>">收款前收款次數：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].ReturnCountBeforePaid.toFixed(0)%>次
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="<%if(sorterDefault==='收款前上次成功收款日期'){%>stronger<%}else{%>myTitle<%}%>">收款前上次成功收款日期：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%if(jsonReturns[i].previousPayDateBeforePaid){%><%=jsonReturns[i].previousPayDateBeforePaid.getFullYear()%>/<%if(jsonReturns[i].previousPayDateBeforePaid.getMonth()<9){%>0<%}%><%=jsonReturns[i].previousPayDateBeforePaid.getMonth()+1%>/<%if(jsonReturns[i].previousPayDateBeforePaid.getDate()<10){%>0<%}%><%=jsonReturns[i].previousPayDateBeforePaid.getDate()%><%}else{%>無收款記錄<%}%>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="<%if(sorterDefault==='收款前下次應收款日期'){%>stronger<%}else{%>myTitle<%}%>">收款前下次應收款日期：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;<%if(jsonReturns[i].nextPayDateBeforePaid){%><%=jsonReturns[i].nextPayDateBeforePaid.getFullYear()%>/<%if(jsonReturns[i].nextPayDateBeforePaid.getMonth()<9){%>0<%}%><%=jsonReturns[i].nextPayDateBeforePaid.getMonth()+1%>/<%if(jsonReturns[i].nextPayDateBeforePaid.getDate()<10){%>0<%}%><%=jsonReturns[i].nextPayDateBeforePaid.getDate()%><%}else{%>已還清<%}%>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="<%if(sorterDefault==='收款前信用等級'){%>stronger<%}else{%>myTitle<%}%>">收款前信用等級：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].LevelBeforePaid.toFixed(0)%>級
-											</td>
-										</tr>
-									</table>
-								</div>
+							<div class="col-md-4">
+								<table width="100%" height="355px">
+									<tr>
+										<td>
+											<span class="<%if(sorterDefault==='收款前額外本金'){%>stronger<%}else{%>myTitle<%}%>">收款前額外本金：</span>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].ExtendPrincipalBeforePaid.toFixed(0)%>元
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="<%if(sorterDefault==='收款前總本金'){%>stronger<%}else{%>myTitle<%}%>">收款前總本金：</span>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].TotalPrincipalNowBeforePaid.toFixed(0)%>元
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="<%if(sorterDefault==='收款前未還本金'){%>stronger<%}else{%>myTitle<%}%>">收款前未還本金：</span>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].PrincipalNotReturnBeforePaid.toFixed(0)%>元
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="<%if(sorterDefault==='收款前已還本金'){%>stronger<%}else{%>myTitle<%}%>">收款前已還本金：</span>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].PrincipalReturnBeforePaid.toFixed(0)%>元
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="<%if(sorterDefault==='收款前已得利息'){%>stronger<%}else{%>myTitle<%}%>">收款前已得利息：</span>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].InterestBeforePaid.toFixed(0)%>元
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="<%if(sorterDefault==='收款前已得本利和'){%>stronger<%}else{%>myTitle<%}%>">收款前已得本利和：</span>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].PrincipalInterestBeforePaid.toFixed(0)%>元
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="<%if(sorterDefault==='收款前已得平均利息'){%>stronger<%}else{%>myTitle<%}%>">收款前已得平均利息：</span>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].InterestMonthBeforePaid.toFixed(0)%>元/月
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="<%if(sorterDefault==='收款前已得平均本利和'){%>stronger<%}else{%>myTitle<%}%>">收款前已得平均本利和：</span>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].PrincipalInterestMonthBeforePaid.toFixed(0)%>元/月
+										</td>
+									</tr>
+								</table>
+							</div>
+							<div class="col-md-4">
+								<table width="100%" height="355px">
+									<tr>
+										<td>
+											<span class="<%if(sorterDefault==='收款前已得利本比'){%>stronger<%}else{%>myTitle<%}%>">收款前已得利本比：</span>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											&nbsp;&nbsp;&nbsp;&nbsp;<%=(jsonReturns[i].InterestDivPrincipalBeforePaid*100).toFixed(2)%>%
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="<%if(sorterDefault==='收款前額外期數'){%>stronger<%}else{%>myTitle<%}%>">收款前額外期數：</span>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].ExtendMonthPeriodBeforePaid.toFixed(0)%>個月
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="<%if(sorterDefault==='收款前總期數'){%>stronger<%}else{%>myTitle<%}%>">收款前總期數：</span>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].TotalMonthPeriodNowBeforePaid.toFixed(0)%>個月
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="<%if(sorterDefault==='收款前剩下期數'){%>stronger<%}else{%>myTitle<%}%>">收款前剩下期數：</span>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].MonthPeriodLeftBeforePaid.toFixed(0)%>個月
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="<%if(sorterDefault==='收款前已過期數'){%>stronger<%}else{%>myTitle<%}%>">收款前已過期數：</span>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].MonthPeriodPastBeforePaid.toFixed(0)%>個月
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="<%if(sorterDefault==='收款前預計剩餘利息'){%>stronger<%}else{%>myTitle<%}%>">收款前預計剩餘利息：</span>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].InterestInFutureBeforePaid.toFixed(0)%>元
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="<%if(sorterDefault==='收款前預計剩餘本利和'){%>stronger<%}else{%>myTitle<%}%>">收款前預計剩餘本利和：</span>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].MoneyFutureBeforePaid.toFixed(0)%>元
+										</td>
+									</tr>
+								</table>
+							</div>
+							<div class="col-md-4">
+								<table width="100%" height="355px">
+									<tr>
+										<td>
+											<span class="<%if(sorterDefault==='收款前預計剩餘平均利息'){%>stronger<%}else{%>myTitle<%}%>">收款前預計剩餘平均利息：</span>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].InterestInFutureMonthBeforePaid.toFixed(0)%>元/月
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="<%if(sorterDefault==='收款前預計剩餘平均本利和'){%>stronger<%}else{%>myTitle<%}%>">收款前預計剩餘平均本利和：</span>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].InterestInFutureMoneyMonthBeforePaid.toFixed(0)%>元/月
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="<%if(sorterDefault==='收款前預計剩餘利本比'){%>stronger<%}else{%>myTitle<%}%>">收款前預計剩餘利本比：</span>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											&nbsp;&nbsp;&nbsp;&nbsp;<%=(jsonReturns[i].InterestInFutureDivMoneyBeforePaid*100).toFixed(2)%>%
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="<%if(sorterDefault==='收款前收款次數'){%>stronger<%}else{%>myTitle<%}%>">收款前收款次數：</span>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].ReturnCountBeforePaid.toFixed(0)%>次
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="<%if(sorterDefault==='收款前上次成功收款日期'){%>stronger<%}else{%>myTitle<%}%>">收款前上次成功收款日期：</span>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											&nbsp;&nbsp;&nbsp;&nbsp;<%if(jsonReturns[i].previousPayDateBeforePaid){%><%=jsonReturns[i].previousPayDateBeforePaid.getFullYear()%>/<%if(jsonReturns[i].previousPayDateBeforePaid.getMonth()<9){%>0<%}%><%=jsonReturns[i].previousPayDateBeforePaid.getMonth()+1%>/<%if(jsonReturns[i].previousPayDateBeforePaid.getDate()<10){%>0<%}%><%=jsonReturns[i].previousPayDateBeforePaid.getDate()%><%}else{%>無收款記錄<%}%>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="<%if(sorterDefault==='收款前下次應收款日期'){%>stronger<%}else{%>myTitle<%}%>">收款前下次應收款日期：</span>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											&nbsp;&nbsp;&nbsp;<%if(jsonReturns[i].nextPayDateBeforePaid){%><%=jsonReturns[i].nextPayDateBeforePaid.getFullYear()%>/<%if(jsonReturns[i].nextPayDateBeforePaid.getMonth()<9){%>0<%}%><%=jsonReturns[i].nextPayDateBeforePaid.getMonth()+1%>/<%if(jsonReturns[i].nextPayDateBeforePaid.getDate()<10){%>0<%}%><%=jsonReturns[i].nextPayDateBeforePaid.getDate()%><%}else{%>已還清<%}%>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="<%if(sorterDefault==='收款前信用等級'){%>stronger<%}else{%>myTitle<%}%>">收款前信用等級：</span>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].LevelBeforePaid.toFixed(0)%>級
+										</td>
+									</tr>
+								</table>
 							</div>
 						</div>
 						<div class="tab-pane" id="tab3<%=i%>">
-							<div class="row">
-								<div class="col-md-4">
-									<table width="100%" height="355px">
-										<tr>
-											<td>
-												<span class="<%if(sorterDefault==='收款後額外本金'){%>stronger<%}else{%>myTitle<%}%>">收款後額外本金：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].ExtendPrincipalAfterPaid.toFixed(0)%>元
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="<%if(sorterDefault==='收款後總本金'){%>stronger<%}else{%>myTitle<%}%>">收款後總本金：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].TotalPrincipalNowAfterPaid.toFixed(0)%>元
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="<%if(sorterDefault==='收款後未還本金'){%>stronger<%}else{%>myTitle<%}%>">收款後未還本金：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].PrincipalNotReturnAfterPaid.toFixed(0)%>元
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="<%if(sorterDefault==='收款後已還本金'){%>stronger<%}else{%>myTitle<%}%>">收款後已還本金：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].PrincipalReturnAfterPaid.toFixed(0)%>元
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="<%if(sorterDefault==='收款後已得利息'){%>stronger<%}else{%>myTitle<%}%>">收款後已得利息：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].InterestAfterPaid.toFixed(0)%>元
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="<%if(sorterDefault==='收款後已得本利和'){%>stronger<%}else{%>myTitle<%}%>">收款後已得本利和：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].PrincipalInterestAfterPaid.toFixed(0)%>元
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="<%if(sorterDefault==='收款後已得平均利息'){%>stronger<%}else{%>myTitle<%}%>">收款後已得平均利息：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].InterestMonthAfterPaid.toFixed(0)%>元/月
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="<%if(sorterDefault==='收款後已得平均本利和'){%>stronger<%}else{%>myTitle<%}%>">收款後已得平均本利和：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].PrincipalInterestMonthAfterPaid.toFixed(0)%>元/月
-											</td>
-										</tr>
-									</table>
-								</div>
-								<div class="col-md-4">
-									<table width="100%" height="355px">
-										<tr>
-											<td>
-												<span class="<%if(sorterDefault==='收款後已得利本比'){%>stronger<%}else{%>myTitle<%}%>">收款後已得利本比：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=(jsonReturns[i].InterestDivPrincipalAfterPaid*100).toFixed(2)%>%
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="<%if(sorterDefault==='收款後額外期數'){%>stronger<%}else{%>myTitle<%}%>">收款後額外期數：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].ExtendMonthPeriodAfterPaid.toFixed(0)%>個月
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="<%if(sorterDefault==='收款後總期數'){%>stronger<%}else{%>myTitle<%}%>">收款後總期數：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].TotalMonthPeriodNowAfterPaid.toFixed(0)%>個月
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="<%if(sorterDefault==='收款後剩下期數'){%>stronger<%}else{%>myTitle<%}%>">收款後剩下期數：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].MonthPeriodLeftAfterPaid.toFixed(0)%>個月
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="<%if(sorterDefault==='收款後已過期數'){%>stronger<%}else{%>myTitle<%}%>">收款後已過期數：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].MonthPeriodPastAfterPaid.toFixed(0)%>個月
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="<%if(sorterDefault==='收款後預計剩餘利息'){%>stronger<%}else{%>myTitle<%}%>">收款後預計剩餘利息：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].InterestInFutureAfterPaid.toFixed(0)%>元
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="<%if(sorterDefault==='收款後預計剩餘本利和'){%>stronger<%}else{%>myTitle<%}%>">收款後預計剩餘本利和：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].MoneyFutureAfterPaid.toFixed(0)%>元
-											</td>
-										</tr>
-									</table>
-								</div>
-								<div class="col-md-4">
-									<table width="100%" height="355px">
-										<tr>
-											<td>
-												<span class="<%if(sorterDefault==='收款後預計剩餘平均利息'){%>stronger<%}else{%>myTitle<%}%>">收款後預計剩餘平均利息：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].InterestInFutureMonthAfterPaid.toFixed(0)%>元/月
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="<%if(sorterDefault==='收款後預計剩餘平均本利和'){%>stronger<%}else{%>myTitle<%}%>">收款後預計剩餘平均本利和：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].InterestInFutureMoneyMonthAfterPaid.toFixed(0)%>元/月
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="<%if(sorterDefault==='收款後預計剩餘利本比'){%>stronger<%}else{%>myTitle<%}%>">收款後預計剩餘利本比：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=(jsonReturns[i].InterestInFutureDivMoneyAfterPaid*100).toFixed(2)%>%
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="<%if(sorterDefault==='收款後收款次數'){%>stronger<%}else{%>myTitle<%}%>">收款後收款次數：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].ReturnCountAfterPaid.toFixed(0)%>次
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="<%if(sorterDefault==='收款後上次成功收款日期'){%>stronger<%}else{%>myTitle<%}%>">收款後上次成功收款日期：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%if(jsonReturns[i].previousPayDateAfterPaid){%><%=jsonReturns[i].previousPayDateAfterPaid.getFullYear()%>/<%if(jsonReturns[i].previousPayDateAfterPaid.getMonth()<9){%>0<%}%><%=jsonReturns[i].previousPayDateAfterPaid.getMonth()+1%>/<%if(jsonReturns[i].previousPayDateAfterPaid.getDate()<10){%>0<%}%><%=jsonReturns[i].previousPayDateAfterPaid.getDate()%><%}else{%>無收款記錄<%}%>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="<%if(sorterDefault==='收款後下次應收款日期'){%>stronger<%}else{%>myTitle<%}%>">收款後下次應收款日期：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;<%if(jsonReturns[i].nextPayDateAfterPaid){%><%=jsonReturns[i].nextPayDateAfterPaid.getFullYear()%>/<%if(jsonReturns[i].nextPayDateAfterPaid.getMonth()<9){%>0<%}%><%=jsonReturns[i].nextPayDateAfterPaid.getMonth()+1%>/<%if(jsonReturns[i].nextPayDateAfterPaid.getDate()<10){%>0<%}%><%=jsonReturns[i].nextPayDateAfterPaid.getDate()%><%}else{%>已還清<%}%>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="<%if(sorterDefault==='收款後信用等級'){%>stronger<%}else{%>myTitle<%}%>">收款後信用等級：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].LevelAfterPaid.toFixed(0)%>級
-											</td>
-										</tr>
-									</table>
-								</div>
+							<div class="col-md-4">
+								<table width="100%" height="355px">
+									<tr>
+										<td>
+											<span class="<%if(sorterDefault==='收款後額外本金'){%>stronger<%}else{%>myTitle<%}%>">收款後額外本金：</span>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].ExtendPrincipalAfterPaid.toFixed(0)%>元
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="<%if(sorterDefault==='收款後總本金'){%>stronger<%}else{%>myTitle<%}%>">收款後總本金：</span>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].TotalPrincipalNowAfterPaid.toFixed(0)%>元
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="<%if(sorterDefault==='收款後未還本金'){%>stronger<%}else{%>myTitle<%}%>">收款後未還本金：</span>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].PrincipalNotReturnAfterPaid.toFixed(0)%>元
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="<%if(sorterDefault==='收款後已還本金'){%>stronger<%}else{%>myTitle<%}%>">收款後已還本金：</span>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].PrincipalReturnAfterPaid.toFixed(0)%>元
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="<%if(sorterDefault==='收款後已得利息'){%>stronger<%}else{%>myTitle<%}%>">收款後已得利息：</span>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].InterestAfterPaid.toFixed(0)%>元
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="<%if(sorterDefault==='收款後已得本利和'){%>stronger<%}else{%>myTitle<%}%>">收款後已得本利和：</span>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].PrincipalInterestAfterPaid.toFixed(0)%>元
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="<%if(sorterDefault==='收款後已得平均利息'){%>stronger<%}else{%>myTitle<%}%>">收款後已得平均利息：</span>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].InterestMonthAfterPaid.toFixed(0)%>元/月
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="<%if(sorterDefault==='收款後已得平均本利和'){%>stronger<%}else{%>myTitle<%}%>">收款後已得平均本利和：</span>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].PrincipalInterestMonthAfterPaid.toFixed(0)%>元/月
+										</td>
+									</tr>
+								</table>
+							</div>
+							<div class="col-md-4">
+								<table width="100%" height="355px">
+									<tr>
+										<td>
+											<span class="<%if(sorterDefault==='收款後已得利本比'){%>stronger<%}else{%>myTitle<%}%>">收款後已得利本比：</span>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											&nbsp;&nbsp;&nbsp;&nbsp;<%=(jsonReturns[i].InterestDivPrincipalAfterPaid*100).toFixed(2)%>%
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="<%if(sorterDefault==='收款後額外期數'){%>stronger<%}else{%>myTitle<%}%>">收款後額外期數：</span>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].ExtendMonthPeriodAfterPaid.toFixed(0)%>個月
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="<%if(sorterDefault==='收款後總期數'){%>stronger<%}else{%>myTitle<%}%>">收款後總期數：</span>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].TotalMonthPeriodNowAfterPaid.toFixed(0)%>個月
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="<%if(sorterDefault==='收款後剩下期數'){%>stronger<%}else{%>myTitle<%}%>">收款後剩下期數：</span>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].MonthPeriodLeftAfterPaid.toFixed(0)%>個月
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="<%if(sorterDefault==='收款後已過期數'){%>stronger<%}else{%>myTitle<%}%>">收款後已過期數：</span>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].MonthPeriodPastAfterPaid.toFixed(0)%>個月
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="<%if(sorterDefault==='收款後預計剩餘利息'){%>stronger<%}else{%>myTitle<%}%>">收款後預計剩餘利息：</span>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].InterestInFutureAfterPaid.toFixed(0)%>元
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="<%if(sorterDefault==='收款後預計剩餘本利和'){%>stronger<%}else{%>myTitle<%}%>">收款後預計剩餘本利和：</span>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].MoneyFutureAfterPaid.toFixed(0)%>元
+										</td>
+									</tr>
+								</table>
+							</div>
+							<div class="col-md-4">
+								<table width="100%" height="355px">
+									<tr>
+										<td>
+											<span class="<%if(sorterDefault==='收款後預計剩餘平均利息'){%>stronger<%}else{%>myTitle<%}%>">收款後預計剩餘平均利息：</span>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].InterestInFutureMonthAfterPaid.toFixed(0)%>元/月
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="<%if(sorterDefault==='收款後預計剩餘平均本利和'){%>stronger<%}else{%>myTitle<%}%>">收款後預計剩餘平均本利和：</span>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].InterestInFutureMoneyMonthAfterPaid.toFixed(0)%>元/月
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="<%if(sorterDefault==='收款後預計剩餘利本比'){%>stronger<%}else{%>myTitle<%}%>">收款後預計剩餘利本比：</span>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											&nbsp;&nbsp;&nbsp;&nbsp;<%=(jsonReturns[i].InterestInFutureDivMoneyAfterPaid*100).toFixed(2)%>%
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="<%if(sorterDefault==='收款後收款次數'){%>stronger<%}else{%>myTitle<%}%>">收款後收款次數：</span>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].ReturnCountAfterPaid.toFixed(0)%>次
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="<%if(sorterDefault==='收款後上次成功收款日期'){%>stronger<%}else{%>myTitle<%}%>">收款後上次成功收款日期：</span>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											&nbsp;&nbsp;&nbsp;&nbsp;<%if(jsonReturns[i].previousPayDateAfterPaid){%><%=jsonReturns[i].previousPayDateAfterPaid.getFullYear()%>/<%if(jsonReturns[i].previousPayDateAfterPaid.getMonth()<9){%>0<%}%><%=jsonReturns[i].previousPayDateAfterPaid.getMonth()+1%>/<%if(jsonReturns[i].previousPayDateAfterPaid.getDate()<10){%>0<%}%><%=jsonReturns[i].previousPayDateAfterPaid.getDate()%><%}else{%>無收款記錄<%}%>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="<%if(sorterDefault==='收款後下次應收款日期'){%>stronger<%}else{%>myTitle<%}%>">收款後下次應收款日期：</span>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											&nbsp;&nbsp;&nbsp;<%if(jsonReturns[i].nextPayDateAfterPaid){%><%=jsonReturns[i].nextPayDateAfterPaid.getFullYear()%>/<%if(jsonReturns[i].nextPayDateAfterPaid.getMonth()<9){%>0<%}%><%=jsonReturns[i].nextPayDateAfterPaid.getMonth()+1%>/<%if(jsonReturns[i].nextPayDateAfterPaid.getDate()<10){%>0<%}%><%=jsonReturns[i].nextPayDateAfterPaid.getDate()%><%}else{%>已還清<%}%>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="<%if(sorterDefault==='收款後信用等級'){%>stronger<%}else{%>myTitle<%}%>">收款後信用等級：</span>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonReturns[i].LevelAfterPaid.toFixed(0)%>級
+										</td>
+									</tr>
+								</table>
 							</div>
 						</div>
 					</div>

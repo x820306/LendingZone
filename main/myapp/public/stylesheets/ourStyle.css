@@ -253,6 +253,10 @@ select{
 	white-space: nowrap;
 }
 
+.inlineTable{
+	display:inline;
+}
+
 .actioner{
 	width:100px;
 }
