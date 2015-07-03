@@ -799,7 +799,7 @@
 									&nbsp;&nbsp;&nbsp;&nbsp;
 										<span<%if(sorterDefault==='建立日期'){%> class="stronger"<%}%>>Created：</span><%=jsonReturns[i].Created.getFullYear()%>/<%if(jsonReturns[i].Created.getMonth()<9){%>0<%}%><%=jsonReturns[i].Created.getMonth()+1%>/<%if(jsonReturns[i].Created.getDate()<10){%>0<%}%><%=jsonReturns[i].Created.getDate()%>
 									&nbsp;&nbsp;&nbsp;&nbsp;
-										No.<%=i+1%>
+										No.<%=(dvr*(targetPageNumber-1))+i+1%>
 									</div>
 								</td>
 							<tr>

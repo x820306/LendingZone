@@ -240,7 +240,7 @@ router.post('/changeData',library.loginFormChecker, library.ensureAuthenticated,
 				if(req.body.Email===''){
 					errorTarget[7]=true;
 					errorMessage[7]='必要參數未填!';
-				}else if(req.body.Email.search(/@/)===-1){
+				}else if(req.body.Email.search(/^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$/)===-1){
 					errorTarget[7]=true;
 					errorMessage[7]='Email格式錯誤!';
 				}
@@ -673,7 +673,7 @@ router.post('/apply',library.loginFormChecker,library.newMsgChecker, function (r
 						}
 						
 						var emailFlag=false;
-						if(req.body.emailIpt.search(/@/)>-1){
+						if(req.body.emailIpt.search(/^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$/)>-1){
 							emailFlag=true;
 						}
 						if((tLimitFlag)&&(emailFlag)&&(library.checkSsnID(req.body.ssnIpt))&&(!ifIdCardNumberExist)){
@@ -875,7 +875,7 @@ router.post('/_apply',library.loginFormChecker,library.newMsgChecker, function (
 						if(req.body.emailIpt===''){
 							errorTarget[7]=true;
 							errorMessage[7]='必要參數未填!';
-						}else if(req.body.emailIpt.search(/@/)===-1){
+						}else if(req.body.emailIpt.search(/^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$/)===-1){
 							errorTarget[7]=true;
 							errorMessage[7]='Email格式錯誤!';
 						}					
@@ -1302,7 +1302,7 @@ function userCreator(req,res,callback){
 				}
 				
 				var emailFlag=false;
-				if(req.body.Email.search(/@/)>-1){
+				if(req.body.Email.search(/^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$/)>-1){
 					emailFlag=true;
 				}
 

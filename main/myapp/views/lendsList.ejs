@@ -376,7 +376,7 @@
 											&nbsp;&nbsp;&nbsp;&nbsp;
 												<span<%if(sorterDefault==='建立日期'){%> class="stronger"<%}%>>Creadted：</span><%=jsonLends[i].Created.getFullYear()%>/<%if(jsonLends[i].Created.getMonth()<9){%>0<%}%><%=jsonLends[i].Created.getMonth()+1%>/<%if(jsonLends[i].Created.getDate()<10){%>0<%}%><%=jsonLends[i].Created.getDate()%>
 											&nbsp;&nbsp;&nbsp;&nbsp;
-												No.<%=i+1%>
+												No.<%=(dvr*(targetPageNumber-1))+i+1%>
 										</div>
 									</td>
 								<tr>
