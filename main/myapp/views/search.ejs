@@ -189,13 +189,13 @@
 									&nbsp;&nbsp;
 										<span<%if(actionDefault==='留言次數'){%> class="stronger"<%}%>>留言：</span><%=jsonArray[i].DiscussionNumber.toFixed(0)%>次
 									&nbsp;&nbsp;
-										<span<%if(actionDefault==='最晚媒合日期'){%> class="stronger"<%}%>>Deadline：</span><%=jsonArray[i].TimeLimit.getFullYear()%>/<%if(jsonArray[i].TimeLimit.getMonth()<9){%>0<%}%><%=jsonArray[i].TimeLimit.getMonth()+1%>/<%if(jsonArray[i].TimeLimit.getDate()<10){%>0<%}%><%=jsonArray[i].TimeLimit.getDate()%>
+										<span<%if(actionDefault==='最晚媒合日期'){%> class="stronger"<%}%>>Tlimit：</span><%=jsonArray[i].TimeLimit.getFullYear()%>/<%if(jsonArray[i].TimeLimit.getMonth()<9){%>0<%}%><%=jsonArray[i].TimeLimit.getMonth()+1%>/<%if(jsonArray[i].TimeLimit.getDate()<10){%>0<%}%><%=jsonArray[i].TimeLimit.getDate()%>
 									&nbsp;&nbsp;
 										<span<%if(actionDefault==='建立日期'){%> class="stronger"<%}%>>Created：</span><%=jsonArray[i].Created.getFullYear()%>/<%if(jsonArray[i].Created.getMonth()<9){%>0<%}%><%=jsonArray[i].Created.getMonth()+1%>/<%if(jsonArray[i].Created.getDate()<10){%>0<%}%><%=jsonArray[i].Created.getDate()%>
 									&nbsp;&nbsp;
 										<span<%if(actionDefault==='更新日期'){%> class="stronger"<%}%>>Updated：</span><span id="updatedDate<%=i%>"><%=jsonArray[i].Updated.getFullYear()%>/<%if(jsonArray[i].Updated.getMonth()<9){%>0<%}%><%=jsonArray[i].Updated.getMonth()+1%>/<%if(jsonArray[i].Updated.getDate()<10){%>0<%}%><%=jsonArray[i].Updated.getDate()%></span>
 									&nbsp;&nbsp;
-										No.<%=i+1%>
+										No.<%=(dvr*(targetPageNumber-1))+i+1%>
 									</div>
 								</td>
 							</tr>

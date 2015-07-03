@@ -767,7 +767,7 @@
 									&nbsp;&nbsp;&nbsp;&nbsp;
 										<span<%if(sorterDefault==='建立日期'){%> class="stronger"<%}%>>Created：</span><%=jsonTransaction[i].Created.getFullYear()%>/<%if(jsonTransaction[i].Created.getMonth()<9){%>0<%}%><%=jsonTransaction[i].Created.getMonth()+1%>/<%if(jsonTransaction[i].Created.getDate()<10){%>0<%}%><%=jsonTransaction[i].Created.getDate()%>
 									&nbsp;&nbsp;&nbsp;&nbsp;
-										<span id="noSpan<%=i%>">No.<%=i+1%></span>
+										<span id="noSpan<%=i%>">No.<%=(dvr*(targetPageNumber-1))+i+1%></span>
 									</div>
 								</td>
 							<tr>

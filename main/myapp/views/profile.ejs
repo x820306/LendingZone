@@ -279,7 +279,7 @@
 			}
 			
 			var emailFlag=false;
-			if(f.search(/@/)>-1){
+			if(f.search(/^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$/)>-1){
 				emailFlag=true;
 			}
 			var fileFlag1=true;
