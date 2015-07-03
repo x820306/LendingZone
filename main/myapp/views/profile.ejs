@@ -11,164 +11,166 @@
 					</h4>
 					<br>
 				<%}%>
-				<table class="table table-hover myTbody" style="width:70%">
-				<tr>
-					<td align = "right" style = "width:15%">
-						姓名<br>
-						<span id="s1" class="red"><%if(dcdJSON){%><%if(dcdJSON.Target[0]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=dcdJSON.Message[0]%><%}%><%}%></span>
-					</td>
-					<td><input type="text" class="form-control" id="f1" name="Name" placeholder="姓名" required="required" value="<%if(dcdJSON){%><%=dcdJSON.FormContent.F1%><%}else{%><%=user.Name%><%}%>"></td>
-				</tr>
-				<tr>
-					<td align = "right" style = "width:15%">
-						性別<br>
-						<span id="s2" class="red"><%if(dcdJSON){%><%if(dcdJSON.Target[1]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=dcdJSON.Message[1]%><%}%><%}%></span>
-					</td>
-					<td><label class="radio-inline">
-					<input type="radio" name="Gender" id="f2a" value="Male" required="required"<%if(dcdJSON){%><%if(dcdJSON.FormContent.F2==='Male'){%> checked="true"<%}%><%}else{%><%if(user.Gender==='Male'){%> checked="true"<%}%><%}%>> 男性</label>
-					<label class="radio-inline">
-					<input type="radio" name="Gender" id="f2b" value="Female" required="required"<%if(dcdJSON){%><%if(dcdJSON.FormContent.F2==='Female'){%> checked="true"<%}%><%}else{%><%if(user.Gender==='Female'){%> checked="true"<%}%><%}%>> 女性</label></td>
-				</tr>
-				<tr>
-					<td align = "right" style = "width:15%">
-						生日<br>
-						<span id="s3" class="red"><%if(dcdJSON){%><%if(dcdJSON.Target[2]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=dcdJSON.Message[2]%><%}%><%}%></span>
-					</td>
-					<td><input type="text" class="form-control" id="f3" name="BirthDay" placeholder="生日(年/月/日)" required="required" value="<%if(dcdJSON){%><%=dcdJSON.FormContent.F3%><%}else{%><%=user.BirthDay.getFullYear()%>/<%if(user.BirthDay.getMonth()<9){%>0<%}%><%=user.BirthDay.getMonth()+1%>/<%if(user.BirthDay.getDate()<10){%>0<%}%><%=user.BirthDay.getDate()%><%}%>"></td>
-				</tr>
-				<tr>
-					<td align = "right" style = "width:15%">
-						身分證字號<br>
-						<span id="s4" class="red"><%if(dcdJSON){%><%if(dcdJSON.Target[3]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=dcdJSON.Message[3]%><%}%><%}%></span>
-					</td>
-					<td><input type="text" class="form-control" id="f4" name="IdCardNumber" placeholder="身分證字號" required="required" value="<%if(dcdJSON){%><%=dcdJSON.FormContent.F4%><%}else{%><%=user.IdCardNumber%><%}%>"></td>
-				</tr>
-				<tr>
-					<td align = "right" style="width:15%">
-						身分證圖檔<br>
-						<span id="s5" class="red"><%if(dcdJSON){%><%if(dcdJSON.Target[4]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=dcdJSON.Message[4]%><%}%><%}%></span>
-					</td>
-					<td>
-						<table>
-							<tr>
-								<td>
-									<img style="width:120px;" src="/Users/IdCard?id=<%=user._id%>">
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<br>
-									<input type="file" id="f5" name="IdCard" accept="image/png,image/jpeg">
-									<p class="help-block">如您需要修改請重新選擇檔案</p>
-								</td>
-							</tr>
-						</table>
-					</td>
-				</tr>
-				<tr>
-					<td align = "right" style = "width:15%">
-						第二證件圖檔<br>
-						<span id="s6" class="red"><%if(dcdJSON){%><%if(dcdJSON.Target[5]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=dcdJSON.Message[5]%><%}%><%}%></span>
-					</td>
-					<td>
-						<table>
-							<tr>
-								<td>
-									<img style="width:120px;" src="/Users/SecondCard?id=<%=user._id%>">
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<br>
-									<input type="file" id="f6" name="SecondCard" accept="image/png,image/jpeg">
-									<p class="help-block">如您需要修改請重新選擇檔案</p>
-								</td>
-							</tr>
-						</table>
-					</td>
-				</tr>
-				<tr>
-					<td align = "right" style = "width:15%">
-						行動電話<br>
-						<span id="s7" class="red"><%if(dcdJSON){%><%if(dcdJSON.Target[6]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=dcdJSON.Message[6]%><%}%><%}%></span>
-					</td>
-					<td><input type="text" class="form-control" id="f7" name="Phone" placeholder="行動電話" required="required" value="<%if(dcdJSON){%><%=dcdJSON.FormContent.F7%><%}else{%><%=user.Phone%><%}%>"></td>
-				</tr>
-				<tr>
-					<td align = "right" style = "width:15%">
-						E-mail<br>
-						<span id="s8" class="red"><%if(dcdJSON){%><%if(dcdJSON.Target[7]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=dcdJSON.Message[7]%><%}%><%}%></span>
-					</td>
-					<td>
-						<table width="100%">
-							<tr>
-								<td>
-									<input type="email" class="form-control" id="f8" name="Email" placeholder="E-mail" required="required" value="<%if(dcdJSON){%><%=dcdJSON.FormContent.F8%><%}else{%><%=user.Email%><%}%>">
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<br>
-									<%if(!user.ifMailValid){%>
-										<h5 style="color:red;display:inline;">未認證</h5>&nbsp;&nbsp;&nbsp;&nbsp;
-										<button type="button" class="btn btn-default" data-toggle="modal" data-target="#chkModal2">
-											重發認證信
-										</button>
-										<div class="modal fade" id="chkModal2">
-											<div class="modal-dialog modal-sm">
-												<div class="modal-content">
-													<div class="modal-header" style="text-align: center;">
-														<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-														<h4 class="modal-title">再次確認</h4>
-													</div>
-													<div class="modal-body" style="text-align: center;">
-														<br>
-														您確定要重發認證信嗎？
-														<br>
-														<br>
-													</div>
-													<div class="modal-footer" style="text-align: center;">
-														<a href="/signup/resendValidMail">
-															<button type="button" class="btn btn-default" id="resendBtn" onclick="$('#chkModal2').modal('hide');disableButton();">
-																確定
-															</button>
-														</a>
-														&nbsp;
-														<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+				<div class="resp">
+					<table class="table table-hover myTbody" style="width:70%">
+						<tr>
+							<td align = "right" style = "width:15%">
+								姓名<br>
+								<span id="s1" class="red"><%if(dcdJSON){%><%if(dcdJSON.Target[0]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=dcdJSON.Message[0]%><%}%><%}%></span>
+							</td>
+							<td><input type="text" class="form-control" id="f1" name="Name" placeholder="姓名" required="required" value="<%if(dcdJSON){%><%=dcdJSON.FormContent.F1%><%}else{%><%=user.Name%><%}%>"></td>
+						</tr>
+						<tr>
+							<td align = "right" style = "width:15%">
+								性別<br>
+								<span id="s2" class="red"><%if(dcdJSON){%><%if(dcdJSON.Target[1]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=dcdJSON.Message[1]%><%}%><%}%></span>
+							</td>
+							<td><label class="radio-inline">
+							<input type="radio" name="Gender" id="f2a" value="Male" required="required"<%if(dcdJSON){%><%if(dcdJSON.FormContent.F2==='Male'){%> checked="true"<%}%><%}else{%><%if(user.Gender==='Male'){%> checked="true"<%}%><%}%>> 男性</label>
+							<label class="radio-inline">
+							<input type="radio" name="Gender" id="f2b" value="Female" required="required"<%if(dcdJSON){%><%if(dcdJSON.FormContent.F2==='Female'){%> checked="true"<%}%><%}else{%><%if(user.Gender==='Female'){%> checked="true"<%}%><%}%>> 女性</label></td>
+						</tr>
+						<tr>
+							<td align = "right" style = "width:15%">
+								生日<br>
+								<span id="s3" class="red"><%if(dcdJSON){%><%if(dcdJSON.Target[2]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=dcdJSON.Message[2]%><%}%><%}%></span>
+							</td>
+							<td><input type="text" class="form-control" id="f3" name="BirthDay" placeholder="生日(年/月/日)" required="required" value="<%if(dcdJSON){%><%=dcdJSON.FormContent.F3%><%}else{%><%=user.BirthDay.getFullYear()%>/<%if(user.BirthDay.getMonth()<9){%>0<%}%><%=user.BirthDay.getMonth()+1%>/<%if(user.BirthDay.getDate()<10){%>0<%}%><%=user.BirthDay.getDate()%><%}%>"></td>
+						</tr>
+						<tr>
+							<td align = "right" style = "width:15%">
+								身分證字號<br>
+								<span id="s4" class="red"><%if(dcdJSON){%><%if(dcdJSON.Target[3]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=dcdJSON.Message[3]%><%}%><%}%></span>
+							</td>
+							<td><input type="text" class="form-control" id="f4" name="IdCardNumber" placeholder="身分證字號" required="required" value="<%if(dcdJSON){%><%=dcdJSON.FormContent.F4%><%}else{%><%=user.IdCardNumber%><%}%>"></td>
+						</tr>
+						<tr>
+							<td align = "right" style="width:15%">
+								身分證圖檔<br>
+								<span id="s5" class="red"><%if(dcdJSON){%><%if(dcdJSON.Target[4]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=dcdJSON.Message[4]%><%}%><%}%></span>
+							</td>
+							<td>
+								<table>
+									<tr>
+										<td>
+											<img style="width:120px;" src="/Users/IdCard?id=<%=user._id%>">
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<br>
+											<input type="file" id="f5" name="IdCard" accept="image/png,image/jpeg">
+											<p class="help-block">如您需要修改請重新選擇檔案</p>
+										</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+						<tr>
+							<td align = "right" style = "width:15%">
+								第二證件圖檔<br>
+								<span id="s6" class="red"><%if(dcdJSON){%><%if(dcdJSON.Target[5]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=dcdJSON.Message[5]%><%}%><%}%></span>
+							</td>
+							<td>
+								<table>
+									<tr>
+										<td>
+											<img style="width:120px;" src="/Users/SecondCard?id=<%=user._id%>">
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<br>
+											<input type="file" id="f6" name="SecondCard" accept="image/png,image/jpeg">
+											<p class="help-block">如您需要修改請重新選擇檔案</p>
+										</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+						<tr>
+							<td align = "right" style = "width:15%">
+								行動電話<br>
+								<span id="s7" class="red"><%if(dcdJSON){%><%if(dcdJSON.Target[6]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=dcdJSON.Message[6]%><%}%><%}%></span>
+							</td>
+							<td><input type="text" class="form-control" id="f7" name="Phone" placeholder="行動電話" required="required" value="<%if(dcdJSON){%><%=dcdJSON.FormContent.F7%><%}else{%><%=user.Phone%><%}%>"></td>
+						</tr>
+						<tr>
+							<td align = "right" style = "width:15%">
+								E-mail<br>
+								<span id="s8" class="red"><%if(dcdJSON){%><%if(dcdJSON.Target[7]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=dcdJSON.Message[7]%><%}%><%}%></span>
+							</td>
+							<td>
+								<table width="100%">
+									<tr>
+										<td>
+											<input type="email" class="form-control" id="f8" name="Email" placeholder="E-mail" required="required" value="<%if(dcdJSON){%><%=dcdJSON.FormContent.F8%><%}else{%><%=user.Email%><%}%>">
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<br>
+											<%if(!user.ifMailValid){%>
+												<h5 style="color:red;display:inline;">未認證</h5>&nbsp;&nbsp;&nbsp;&nbsp;
+												<button type="button" class="btn btn-default" data-toggle="modal" data-target="#chkModal2">
+													重發認證信
+												</button>
+												<div class="modal fade" id="chkModal2">
+													<div class="modal-dialog modal-sm">
+														<div class="modal-content">
+															<div class="modal-header" style="text-align: center;">
+																<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+																<h4 class="modal-title">再次確認</h4>
+															</div>
+															<div class="modal-body" style="text-align: center;">
+																<br>
+																您確定要重發認證信嗎？
+																<br>
+																<br>
+															</div>
+															<div class="modal-footer" style="text-align: center;">
+																<a href="/signup/resendValidMail">
+																	<button type="button" class="btn btn-default" id="resendBtn" onclick="$('#chkModal2').modal('hide');disableButton();">
+																		確定
+																	</button>
+																</a>
+																&nbsp;
+																<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+															</div>
+														</div>
 													</div>
 												</div>
-											</div>
-										</div>
-									<%}else{%>
-										<h5 style="color:blue;display:inline;">已認證</h5>
-									<%}%>
-								</td>
-							</tr>
-						</table>
-					</td>
-				</tr>
-				<tr>
-					<td align = "right" style = "width:15%">
-						住址<br>
-						<span id="s9" class="red"><%if(dcdJSON){%><%if(dcdJSON.Target[8]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=dcdJSON.Message[8]%><%}%><%}%></span>
-					</td>
-					<td><input type="text" class="form-control" id="f9" name="Address" placeholder="住址" required="required" value="<%if(dcdJSON){%><%=dcdJSON.FormContent.F9%><%}else{%><%=user.Address%><%}%>"></td>
-				</tr>
-				<tr>
-					<td align = "right" style = "width:15%">
-						卡片卡號<br>
-						<span id="s10" class="red"><%if(dcdJSON){%><%if(dcdJSON.Target[9]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=dcdJSON.Message[9]%><%}%><%}%></span>
-					</td>
-					<td><input type="text" class="form-control" id="f10" name="BankAccountNumber" placeholder="欲使用卡片之卡號" required="required" value="<%if(dcdJSON){%><%=dcdJSON.FormContent.F10%><%}else{%><%=account.BankAccountNumber%><%}%>"></td>
-				</tr>
-				<tr>
-					<td align = "right" style = "width:15%">
-						卡片密碼<br>
-						<span id="s11" class="red"><%if(dcdJSON){%><%if(dcdJSON.Target[10]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=dcdJSON.Message[10]%><%}%><%}%></span>
-					</td>
-					<td><input type="password" class="form-control" id="f11" name="BankAccountPassword" placeholder="卡片密碼" required="required" value="<%if(dcdJSON){%><%=dcdJSON.FormContent.F11%><%}else{%><%=account.BankAccountPassword%><%}%>"></td>
-				</tr>
-				</table>
+											<%}else{%>
+												<h5 style="color:blue;display:inline;">已認證</h5>
+											<%}%>
+										</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+						<tr>
+							<td align = "right" style = "width:15%">
+								住址<br>
+								<span id="s9" class="red"><%if(dcdJSON){%><%if(dcdJSON.Target[8]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=dcdJSON.Message[8]%><%}%><%}%></span>
+							</td>
+							<td><input type="text" class="form-control" id="f9" name="Address" placeholder="住址" required="required" value="<%if(dcdJSON){%><%=dcdJSON.FormContent.F9%><%}else{%><%=user.Address%><%}%>"></td>
+						</tr>
+						<tr>
+							<td align = "right" style = "width:15%">
+								卡片卡號<br>
+								<span id="s10" class="red"><%if(dcdJSON){%><%if(dcdJSON.Target[9]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=dcdJSON.Message[9]%><%}%><%}%></span>
+							</td>
+							<td><input type="text" class="form-control" id="f10" name="BankAccountNumber" placeholder="欲使用卡片之卡號" required="required" value="<%if(dcdJSON){%><%=dcdJSON.FormContent.F10%><%}else{%><%=account.BankAccountNumber%><%}%>"></td>
+						</tr>
+						<tr>
+							<td align = "right" style = "width:15%">
+								卡片密碼<br>
+								<span id="s11" class="red"><%if(dcdJSON){%><%if(dcdJSON.Target[10]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=dcdJSON.Message[10]%><%}%><%}%></span>
+							</td>
+							<td><input type="password" class="form-control" id="f11" name="BankAccountPassword" placeholder="卡片密碼" required="required" value="<%if(dcdJSON){%><%=dcdJSON.FormContent.F11%><%}else{%><%=account.BankAccountPassword%><%}%>"></td>
+						</tr>
+					</table>
+				</div>
 				<div class="btn-toolbar" role="toolbar" style = "margin-top: 10px;">
 					<button type="button" class="btn btn-primary" onclick="checkAndOpenModal('#chkModal1');">
 					  <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> 更新

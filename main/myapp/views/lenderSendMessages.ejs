@@ -234,402 +234,398 @@
 							<%if(jsonMessage[i].Message!==''){%><div class="colorCnt"><%-jsonMessage[i].Message.replace(new RegExp('\n','g'),'<br>').replace(new RegExp(' ','g'),'&nbsp;')%></div><%}else{%>無內容<%}%>
 						</div>
 						<div class="tab-pane" id="tab2<%=i%>">
-							<div class="row">
-								<div class="col-md-12">
-									<table width="100%" height="470px">
-										<tr>
-											<td>
-												<span class="<%if(sorterDefault==='欲借出金額'){%>stronger<%}else{%>myTitle<%}%>">欲借出金額：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].MoneyToLend.toFixed(0)%>元	
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="<%if(sorterDefault==='欲借出年利率'){%>stronger<%}else{%>myTitle<%}%>">欲借出年利率：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=(jsonMessage[i].InterestRate*100).toFixed(2)%>%
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="<%if(sorterDefault==='欲借出期數'){%>stronger<%}else{%>myTitle<%}%>">欲借出期數：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].MonthPeriod.toFixed(0)%>個月
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="<%if(sorterDefault==='信用等級'){%>stronger<%}else{%>myTitle<%}%>">信用等級：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Level.toFixed(0)%>級
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="<%if(sorterDefault==='預計總利息'){%>stronger<%}else{%>myTitle<%}%>">預計總利息：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].InterestInFuture.toFixed(0)%>元
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="<%if(sorterDefault==='預計本利和'){%>stronger<%}else{%>myTitle<%}%>">預計本利和：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].MoneyFuture.toFixed(0)%>元
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="<%if(sorterDefault==='預計平均利息'){%>stronger<%}else{%>myTitle<%}%>">預計平均利息：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].InterestInFutureMonth.toFixed(0)%>元/月
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="<%if(sorterDefault==='預計平均本利和'){%>stronger<%}else{%>myTitle<%}%>">預計平均本利和：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].InterestInFutureMoneyMonth.toFixed(0)%>元/月
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="<%if(sorterDefault==='預計利本比'){%>stronger<%}else{%>myTitle<%}%>">預計利本比：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=(jsonMessage[i].InterestInFutureDivMoney*100).toFixed(2)%>%
-											</td>
-										</tr>
-									</table>	
-								</div>
+							<div class="col-md-12">
+								<table width="100%" height="470px">
+									<tr>
+										<td>
+											<span class="<%if(sorterDefault==='欲借出金額'){%>stronger<%}else{%>myTitle<%}%>">欲借出金額：</span>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].MoneyToLend.toFixed(0)%>元	
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="<%if(sorterDefault==='欲借出年利率'){%>stronger<%}else{%>myTitle<%}%>">欲借出年利率：</span>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											&nbsp;&nbsp;&nbsp;&nbsp;<%=(jsonMessage[i].InterestRate*100).toFixed(2)%>%
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="<%if(sorterDefault==='欲借出期數'){%>stronger<%}else{%>myTitle<%}%>">欲借出期數：</span>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].MonthPeriod.toFixed(0)%>個月
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="<%if(sorterDefault==='信用等級'){%>stronger<%}else{%>myTitle<%}%>">信用等級：</span>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Level.toFixed(0)%>級
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="<%if(sorterDefault==='預計總利息'){%>stronger<%}else{%>myTitle<%}%>">預計總利息：</span>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].InterestInFuture.toFixed(0)%>元
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="<%if(sorterDefault==='預計本利和'){%>stronger<%}else{%>myTitle<%}%>">預計本利和：</span>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].MoneyFuture.toFixed(0)%>元
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="<%if(sorterDefault==='預計平均利息'){%>stronger<%}else{%>myTitle<%}%>">預計平均利息：</span>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].InterestInFutureMonth.toFixed(0)%>元/月
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="<%if(sorterDefault==='預計平均本利和'){%>stronger<%}else{%>myTitle<%}%>">預計平均本利和：</span>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].InterestInFutureMoneyMonth.toFixed(0)%>元/月
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="<%if(sorterDefault==='預計利本比'){%>stronger<%}else{%>myTitle<%}%>">預計利本比：</span>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											&nbsp;&nbsp;&nbsp;&nbsp;<%=(jsonMessage[i].InterestInFutureDivMoney*100).toFixed(2)%>%
+										</td>
+									</tr>
+								</table>	
 							</div>
 						</div>
 						<% if(jsonMessage[i].Status==='Confirmed'){%>
 							<div class="tab-pane" id="tab3<%=i%>">
-								<div class="row">
-									<div class="col-md-4">
-										<table width="100%" height="470px">
-											<tr>
-												<td>
-													<span class="myTitle">原始本金：</span>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].Principal.toFixed(0)%>元
-												</td>
-											</tr>
-											<tr>
-												<td>
-													<span class="myTitle">額外本金：</span>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].ExtendPrincipal.toFixed(0)%>元
-												</td>
-											</tr>
-											<tr>
-												<td>
-													<span class="myTitle">目前總本金：</span>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].TotalPrincipalNow.toFixed(0)%>元
-												</td>
-											</tr>
-											<tr>
-												<td>
-													<span class="myTitle">未還本金：</span>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].PrincipalNotReturn.toFixed(0)%>元
-												</td>
-											</tr>
-											<tr>
-												<td>
-													<span class="myTitle">已還本金：</span>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].PrincipalReturn.toFixed(0)%>元
-												</td>
-											</tr>
-											<tr>
-												<td>
-													<span class="myTitle">年利率：</span>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													&nbsp;&nbsp;&nbsp;&nbsp;<%=(jsonMessage[i].Transaction[0].InterestRate*100).toFixed(2)%>%
-												</td>
-											</tr>
-											<tr>
-												<td>
-													<span class="myTitle">已得利息：</span>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].Interest.toFixed(0)%>元
-												</td>
-											</tr>
-											<tr>
-												<td>
-													<span class="myTitle">已得本利和：</span>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].PrincipalInterest.toFixed(0)%>元
-												</td>
-											</tr>
-											<tr>
-												<td>
-													<span class="myTitle">已得平均利息：</span>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].InterestMonth.toFixed(0)%>元/月
-												</td>
-											</tr>
-											<tr>
-												<td>
-													<span class="myTitle">已得平均本利和：</span>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].PrincipalInterestMonth.toFixed(0)%>元/月
-												</td>
-											</tr>
-										</table>
-									</div>
-									<div class="col-md-4">
-										<table width="100%" height="470px">
-											<tr>
-												<td>
-													<span class="myTitle">已得利本比：</span>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													&nbsp;&nbsp;&nbsp;&nbsp;<%=(jsonMessage[i].Transaction[0].InterestDivPrincipal*100).toFixed(2)%>%
-												</td>
-											</tr>
-											<tr>
-												<td>
-													<span class="myTitle">原始期數：</span>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].MonthPeriod.toFixed(0)%>個月
-												</td>
-											</tr>
-											<tr>
-												<td>
-													<span class="myTitle">額外期數：</span>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].ExtendMonthPeriod.toFixed(0)%>個月
-												</td>
-											</tr>
-											<tr>
-												<td>
-													<span class="myTitle">目前總期數：</span>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].TotalMonthPeriodNow.toFixed(0)%>個月
-												</td>
-											</tr>
-											<tr>
-												<td>
-													<span class="myTitle">剩下期數：</span>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].MonthPeriodLeft.toFixed(0)%>個月
-												</td>
-											</tr>
-											<tr>
-												<td>
-													<span class="myTitle">已過期數：</span>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].MonthPeriodPast.toFixed(0)%>個月
-												</td>
-											</tr>
-											<tr>
-												<td>
-													<span class="myTitle">成交日期：</span>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].Created.getFullYear()%>/<%if(jsonMessage[i].Transaction[0].Created.getMonth()<9){%>0<%}%><%=jsonMessage[i].Transaction[0].Created.getMonth()+1%>/<%if(jsonMessage[i].Transaction[0].Created.getDate()<10){%>0<%}%><%=jsonMessage[i].Transaction[0].Created.getDate()%>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													<span class="myTitle">狀態：</span>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													&nbsp;&nbsp;&nbsp;&nbsp;<%if(jsonMessage[i].Transaction[0].PrincipalNotReturn>0){%><%if(jsonMessage[i].Transaction[0].InsuranceFeePaid>0){%>已保險<%}else{%>未保險<%}%><%}else{%>已結清<%}%>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													<span class="myTitle">收款次數：</span>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													<%if(jsonMessage[i].Transaction[0].ReturnCount>0){%>
-														&nbsp;&nbsp;&nbsp;&nbsp;<a href="/lender/lenderReturnRecord?oneid=&id=<%=jsonMessage[i].Transaction[0]._id%>&messenger=<%=encodeURIComponent('不分訊息種類')%>&classor=<%=encodeURIComponent("不分故事種類");%>&sorter=<%=encodeURIComponent("建立日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1"><%=jsonMessage[i].Transaction[0].ReturnCount.toFixed(0)%>次</a>
-													<%}else{%>
-														&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].ReturnCount.toFixed(0)%>次
-													<%}%>
-												</td>
-											</tr>
-										</table>
-									</div>
-									<div class="col-md-4">
-										<table width="100%" height="470px">
-											<tr>
-												<td>
-													<span class="myTitle">預計剩餘利息：</span>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].InterestInFuture.toFixed(0)%>元
-												</td>
-											</tr>
-											<tr>
-												<td>
-													<span class="myTitle">預計剩餘本利和：</span>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].MoneyFuture.toFixed(0)%>元
-												</td>
-											</tr>
-											<tr>
-												<td>
-													<span class="myTitle">預計剩餘平均利息：</span>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].InterestInFutureMonth.toFixed(0)%>元/月
-												</td>
-											</tr>
-											<tr>
-												<td>
-													<span class="myTitle">預計剩餘平均本利和：</span>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].InterestInFutureMoneyMonth.toFixed(0)%>元/月
-												</td>
-											</tr>
-											<tr>
-												<td>
-													<span class="myTitle">預計剩餘利本比：</span>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													&nbsp;&nbsp;&nbsp;&nbsp;<%=(jsonMessage[i].Transaction[0].InterestInFutureDivMoney*100).toFixed(2)%>%
-												</td>
-											</tr>
-											<tr>
-												<td>
-													<span class="myTitle">上次成功收款日期：</span>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													&nbsp;&nbsp;&nbsp;&nbsp;<%if(jsonMessage[i].Transaction[0].previousPayDate){%><%=jsonMessage[i].Transaction[0].previousPayDate.getFullYear()%>/<%if(jsonMessage[i].Transaction[0].previousPayDate.getMonth()<9){%>0<%}%><%=jsonMessage[i].Transaction[0].previousPayDate.getMonth()+1%>/<%if(jsonMessage[i].Transaction[0].previousPayDate.getDate()<10){%>0<%}%><%=jsonMessage[i].Transaction[0].previousPayDate.getDate()%><%}else{%>無收款記錄<%}%>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													<span class="myTitle">下次應收款日期：</span>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													&nbsp;&nbsp;&nbsp;&nbsp;<%if(jsonMessage[i].Transaction[0].nextPayDate){%><%=jsonMessage[i].Transaction[0].nextPayDate.getFullYear()%>/<%if(jsonMessage[i].Transaction[0].nextPayDate.getMonth()<9){%>0<%}%><%=jsonMessage[i].Transaction[0].nextPayDate.getMonth()+1%>/<%if(jsonMessage[i].Transaction[0].nextPayDate.getDate()<10){%>0<%}%><%=jsonMessage[i].Transaction[0].nextPayDate.getDate()%><%}else{%>已還清<%}%>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													<span class="myTitle">保險所需費用：</span>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													&nbsp;&nbsp;&nbsp;&nbsp;<%if(jsonMessage[i].Transaction[0].Principal>0){%><%if(jsonMessage[i].Transaction[0].Principal*insuranceRate<1){%>1<%}else{%><%=(jsonMessage[i].Transaction[0].Principal*insuranceRate).toFixed(0)%><%}%><%}else{%>0<%}%>元
-												</td>
-											</tr>
-											<tr>
-												<td>
-													<span class="myTitle">已付保險費用：</span>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].InsuranceFeePaid.toFixed(0)%>元
-												</td>
-											</tr>
-										</table>
-									</div>
+								<div class="col-md-4">
+									<table width="100%" height="470px">
+										<tr>
+											<td>
+												<span class="myTitle">原始本金：</span>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].Principal.toFixed(0)%>元
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span class="myTitle">額外本金：</span>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].ExtendPrincipal.toFixed(0)%>元
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span class="myTitle">目前總本金：</span>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].TotalPrincipalNow.toFixed(0)%>元
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span class="myTitle">未還本金：</span>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].PrincipalNotReturn.toFixed(0)%>元
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span class="myTitle">已還本金：</span>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].PrincipalReturn.toFixed(0)%>元
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span class="myTitle">年利率：</span>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=(jsonMessage[i].Transaction[0].InterestRate*100).toFixed(2)%>%
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span class="myTitle">已得利息：</span>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].Interest.toFixed(0)%>元
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span class="myTitle">已得本利和：</span>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].PrincipalInterest.toFixed(0)%>元
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span class="myTitle">已得平均利息：</span>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].InterestMonth.toFixed(0)%>元/月
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span class="myTitle">已得平均本利和：</span>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].PrincipalInterestMonth.toFixed(0)%>元/月
+											</td>
+										</tr>
+									</table>
+								</div>
+								<div class="col-md-4">
+									<table width="100%" height="470px">
+										<tr>
+											<td>
+												<span class="myTitle">已得利本比：</span>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=(jsonMessage[i].Transaction[0].InterestDivPrincipal*100).toFixed(2)%>%
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span class="myTitle">原始期數：</span>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].MonthPeriod.toFixed(0)%>個月
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span class="myTitle">額外期數：</span>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].ExtendMonthPeriod.toFixed(0)%>個月
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span class="myTitle">目前總期數：</span>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].TotalMonthPeriodNow.toFixed(0)%>個月
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span class="myTitle">剩下期數：</span>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].MonthPeriodLeft.toFixed(0)%>個月
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span class="myTitle">已過期數：</span>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].MonthPeriodPast.toFixed(0)%>個月
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span class="myTitle">成交日期：</span>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].Created.getFullYear()%>/<%if(jsonMessage[i].Transaction[0].Created.getMonth()<9){%>0<%}%><%=jsonMessage[i].Transaction[0].Created.getMonth()+1%>/<%if(jsonMessage[i].Transaction[0].Created.getDate()<10){%>0<%}%><%=jsonMessage[i].Transaction[0].Created.getDate()%>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span class="myTitle">狀態：</span>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												&nbsp;&nbsp;&nbsp;&nbsp;<%if(jsonMessage[i].Transaction[0].PrincipalNotReturn>0){%><%if(jsonMessage[i].Transaction[0].InsuranceFeePaid>0){%>已保險<%}else{%>未保險<%}%><%}else{%>已結清<%}%>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span class="myTitle">收款次數：</span>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<%if(jsonMessage[i].Transaction[0].ReturnCount>0){%>
+													&nbsp;&nbsp;&nbsp;&nbsp;<a href="/lender/lenderReturnRecord?oneid=&id=<%=jsonMessage[i].Transaction[0]._id%>&messenger=<%=encodeURIComponent('不分訊息種類')%>&classor=<%=encodeURIComponent("不分故事種類");%>&sorter=<%=encodeURIComponent("建立日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1"><%=jsonMessage[i].Transaction[0].ReturnCount.toFixed(0)%>次</a>
+												<%}else{%>
+													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].ReturnCount.toFixed(0)%>次
+												<%}%>
+											</td>
+										</tr>
+									</table>
+								</div>
+								<div class="col-md-4">
+									<table width="100%" height="470px">
+										<tr>
+											<td>
+												<span class="myTitle">預計剩餘利息：</span>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].InterestInFuture.toFixed(0)%>元
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span class="myTitle">預計剩餘本利和：</span>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].MoneyFuture.toFixed(0)%>元
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span class="myTitle">預計剩餘平均利息：</span>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].InterestInFutureMonth.toFixed(0)%>元/月
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span class="myTitle">預計剩餘平均本利和：</span>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].InterestInFutureMoneyMonth.toFixed(0)%>元/月
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span class="myTitle">預計剩餘利本比：</span>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=(jsonMessage[i].Transaction[0].InterestInFutureDivMoney*100).toFixed(2)%>%
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span class="myTitle">上次成功收款日期：</span>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												&nbsp;&nbsp;&nbsp;&nbsp;<%if(jsonMessage[i].Transaction[0].previousPayDate){%><%=jsonMessage[i].Transaction[0].previousPayDate.getFullYear()%>/<%if(jsonMessage[i].Transaction[0].previousPayDate.getMonth()<9){%>0<%}%><%=jsonMessage[i].Transaction[0].previousPayDate.getMonth()+1%>/<%if(jsonMessage[i].Transaction[0].previousPayDate.getDate()<10){%>0<%}%><%=jsonMessage[i].Transaction[0].previousPayDate.getDate()%><%}else{%>無收款記錄<%}%>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span class="myTitle">下次應收款日期：</span>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												&nbsp;&nbsp;&nbsp;&nbsp;<%if(jsonMessage[i].Transaction[0].nextPayDate){%><%=jsonMessage[i].Transaction[0].nextPayDate.getFullYear()%>/<%if(jsonMessage[i].Transaction[0].nextPayDate.getMonth()<9){%>0<%}%><%=jsonMessage[i].Transaction[0].nextPayDate.getMonth()+1%>/<%if(jsonMessage[i].Transaction[0].nextPayDate.getDate()<10){%>0<%}%><%=jsonMessage[i].Transaction[0].nextPayDate.getDate()%><%}else{%>已還清<%}%>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span class="myTitle">保險所需費用：</span>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												&nbsp;&nbsp;&nbsp;&nbsp;<%if(jsonMessage[i].Transaction[0].Principal>0){%><%if(jsonMessage[i].Transaction[0].Principal*insuranceRate<1){%>1<%}else{%><%=(jsonMessage[i].Transaction[0].Principal*insuranceRate).toFixed(0)%><%}%><%}else{%>0<%}%>元
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span class="myTitle">已付保險費用：</span>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].InsuranceFeePaid.toFixed(0)%>元
+											</td>
+										</tr>
+									</table>
 								</div>
 							</div>
 						<%}%>
