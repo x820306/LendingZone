@@ -85,7 +85,6 @@ td{
 
 .chartSection{
     width: 60%;
-    height: 350px;
     padding-top: 25px;
     margin-left:20%;
     margin-right:20%;
@@ -156,7 +155,6 @@ float: left;
 .topSection{
     margin-top: -20px;
     width: 100%;
-    height: 300px;
     background-color: #DDDDDD;
 }
 
@@ -176,8 +174,6 @@ float: left;
 .topText{
     width: 75%;
     height: 300px;
-    position: relative;
-    float: left;
     padding-top: 25px;
 }
 

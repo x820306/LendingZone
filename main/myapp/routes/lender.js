@@ -530,6 +530,7 @@ router.get('/story/:id?',library.loginFormChecker,library.newMsgChecker, functio
 				if(!borrow){
 					res.redirect('/message?content='+encodeURIComponent('錯誤ID!'));
 				}else{
+					borrow.Discussion.sort(function(a,b) { return a.Created.getTime() - b.Created.getTime()} );
 					borrow.LikeNumber=borrow.Likes.length;
 					var optionsX = {
 						path: 'Message.Transaction',

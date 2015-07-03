@@ -374,6 +374,7 @@ router.post('/findDiscussions', function(req, res, next) {
 									createdByViewerArray.push(false);
 								}
 							}
+							borrow.Discussion.sort(function(a,b) { return a.Created.getTime() - b.Created.getTime()} );
 							res.json({success:true,result:borrow.Discussion,CreatedByViewer:createdByViewerArray,date:borrow.Updated});
 						}
 					});

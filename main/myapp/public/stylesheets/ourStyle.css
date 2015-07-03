@@ -238,15 +238,37 @@ select{
     cursor: pointer;
 }
 
+.resp{
+	overflow: auto;
+}
+
+.resp2{
+}
+
+.category{
+	white-space: nowrap;
+}
+
+.myResTable td, .myResTable th{
+	white-space: nowrap;
+}
+
+.actioner{
+	width:100px;
+}
+
+.disFtrTable{
+	display:inline;
+}
+
 @media (max-width: 480px) {
-	.input-group-addon, .input-group-btn, .input-group .form-control, .input-group-btn>.btn-group{
+	.resp2 .btn-group, .resp2 .input-group-btn{
 		display: block;
 		margin-bottom: 10px;
 		clear: both;
 	}
 	.input-group {
 		position: relative;
-		display: block;
 		border-collapse: separate;
 	}
 }

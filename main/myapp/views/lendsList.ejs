@@ -3,88 +3,91 @@
 	<div class="row">
 		<div class="col-md-9">
 			<div class="bigTitle">自動借出設定列表</div>
-				<div class="subTitle">&nbsp;<%=totalResultNum%> result</div>
+				<div class="subTitle">&nbsp;<%=totalResultNum%>&nbsp;result&nbsp;&nbsp;&nbsp;&nbsp;<%=pageNumber%>&nbsp;page</div>
 				<br>
-				<div class="input-group">
-					<input type="text" class="form-control pageBar" id="oneidIpt" placeholder="搜尋用戶名稱或關鍵字設定" value="<%=oneidDefault%>" onkeypress="if(event.keyCode===13){linker();}">	
-					<span class="input-group-btn">
-						<div class="btn-group">
-							<button type="button" class="btn btn-default dropdown-toggle pageBar" data-toggle="dropdown" id="classOneSelected">
-								<%=classOneDefault%> <span class="caret"></span>
-							</button>
-							<ul class="dropdown-menu">
-								<li style="display:none"><a href="#" id="classOne0"><%=classOneDefault%></a></li>
-								<li id="colis1"<%if(classOneDefault==='不篩選自動同意設定'){%> class="active"<%}%>><a href="#" onclick="classOneSelector(1);return false;" id="classOne1">不篩選自動同意設定</a></li>
-								<li id="colis2"<%if(classOneDefault==='永不自動同意'){%> class="active"<%}%>><a href="#" onclick="classOneSelector(2);return false;" id="classOne2">永不自動同意</a></li>
-								<li id="colis3"<%if(classOneDefault==='立即自動同意'){%> class="active"<%}%>><a href="#" onclick="classOneSelector(3);return false;" id="classOne3">立即自動同意</a></li>
-								<li id="colis4"<%if(classOneDefault==='每天自動同意一次'){%> class="active"<%}%>><a href="#" onclick="classOneSelector(4);return false;" id="classOne4">每天自動同意一次</a></li>
-								<li id="colis5"<%if(classOneDefault==='每兩天自動同意一次'){%> class="active"<%}%>><a href="#" onclick="classOneSelector(5);return false;" id="classOne5">每兩天自動同意一次</a></li>
-								<li id="colis6"<%if(classOneDefault==='每三天自動同意一次'){%> class="active"<%}%>><a href="#" onclick="classOneSelector(6);return false;" id="classOne6">每三天自動同意一次</a></li>
-							</ul>
-						</div>
-						<div class="btn-group">
-							<button type="button" class="btn btn-default dropdown-toggle pageBar" data-toggle="dropdown" id="classTwoSelected">
-								<%=classTwoDefault%> <span class="caret"></span>
-							</button>
-							<ul class="dropdown-menu">
-								<li style="display:none"><a href="#" id="classTwo0"><%=classTwoDefault%></a></li>
-								<li id="ctlis1"<%if(classTwoDefault==='不篩選故事種類設定'){%> class="active"<%}%>><a href="#" onclick="classTwoSelector(1);return false;" id="classTwo1">不篩選故事種類設定</a></li>
-								<li id="ctlis2"<%if(classTwoDefault==='不分類'){%> class="active"<%}%>><a href="#" onclick="classTwoSelector(2);return false;" id="classTwo2">不分類</a></li>
-								<li id="ctlis3"<%if(classTwoDefault==='一般'){%> class="active"<%}%>><a href="#" onclick="classTwoSelector(3);return false;" id="classTwo3">一般</a></li>
-								<li id="ctlis4"<%if(classTwoDefault==='教育'){%> class="active"<%}%>><a href="#" onclick="classTwoSelector(4);return false;" id="classTwo4">教育</a></li>
-								<li id="ctlis5"<%if(classTwoDefault==='家庭'){%> class="active"<%}%>><a href="#" onclick="classTwoSelector(5);return false;" id="classTwo5">家庭</a></li>
-								<li id="ctlis6"<%if(classTwoDefault==='旅遊'){%> class="active"<%}%>><a href="#" onclick="classTwoSelector(6);return false;" id="classTwo6">旅遊</a></li>
-							</ul>
-						</div>
-						<div class="btn-group">
-							<button type="button" class="btn btn-default dropdown-toggle pageBar" data-toggle="dropdown" id="sorterSelected">
-								<%=sorterDefault%> <span class="caret"></span>
-							</button>
-							<ul class="dropdown-menu">
-								<li style="display:none"><a href="#" id="sorter0"><%=sorterDefault%></a></li>
-								<li id="slis1"<%if(sorterDefault==='更新日期'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(1);return false;" id="sorter1">更新日期</a></li>
-								<li id="slis2"<%if(sorterDefault==='建立日期'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(2);return false;" id="sorter2">建立日期</a></li>
-								<li id="slis3"<%if(sorterDefault==='最大可自動借出金額'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(3);return false;" id="sorter3">最大可自動借出金額</a></li>
-								<li id="slis4"<%if(sorterDefault==='可接受年利率'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(4);return false;" id="sorter4">可接受年利率</a></li>
-								<li id="slis5"<%if(sorterDefault==='可接受期數'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(5);return false;" id="sorter5">可接受期數</a></li>
-								<li id="slis6"<%if(sorterDefault==='可接受信用等級'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(6);return false;" id="sorter6">可接受信用等級</a></li>
-								<li id="slis7"<%if(sorterDefault==='可接受總利息'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(7);return false;" id="sorter7">可接受總利息</a></li>
-								<li id="slis8"<%if(sorterDefault==='可接受本利和'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(8);return false;" id="sorter8">可接受本利和</a></li>
-								<li id="slis9"<%if(sorterDefault==='可接受平均利息'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(9);return false;" id="sorter9">可接受平均利息</a></li>
-								<li id="slis10"<%if(sorterDefault==='可接受平均本利和'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(10);return false;" id="sorter10">可接受平均本利和</a></li>
-								<li id="slis11"<%if(sorterDefault==='可接受利本比'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(11);return false;" id="sorter11">可接受利本比</a></li>
-							</ul>
-						</div>
-						<div class="btn-group">
-							<button type="button" class="btn btn-default pageBar" id="directorSelected" data-toggle="dropdown" aria-expanded="false"><%=directorDefault%> <span class='caret'></span></button>
-							<ul class="dropdown-menu" role="menu">
-								<li style="display:none"><a href="#" id="director0"><%=directorDefault%></a></li>
-								<li id="dlis1"<%if(directorDefault==='大至小'){%> class="active"<%}%>><a href="#" onclick="directorSelector(1);return false;" id="director1">大至小</a></li>
-								<li id="dlis2"<%if(directorDefault==='小至大'){%> class="active"<%}%>><a href="#" onclick="directorSelector(2);return false;" id="director2">小至大</a></li>
-							</ul>
-						</div>
-						<div class="btn-group">
-							<button type="button" class="btn btn-default pageBar" onclick="linker();">Go!</button>
-						</div>
-					</span>
-				</div> 
+				<div class="resp2">
+					<div class="input-group">
+						<input type="text" class="form-control pageBar" id="oneidIpt" placeholder="搜尋用戶名稱或關鍵字設定" value="<%=oneidDefault%>" onkeypress="if(event.keyCode===13){linker();}">	
+						<span class="input-group-btn">
+							<div class="btn-group">
+								<button type="button" class="btn btn-default dropdown-toggle pageBar" data-toggle="dropdown" id="classOneSelected">
+									<%=classOneDefault%> <span class="caret"></span>
+								</button>
+								<ul class="dropdown-menu">
+									<li style="display:none"><a href="#" id="classOne0"><%=classOneDefault%></a></li>
+									<li id="colis1"<%if(classOneDefault==='不篩選自動同意設定'){%> class="active"<%}%>><a href="#" onclick="classOneSelector(1);return false;" id="classOne1">不篩選自動同意設定</a></li>
+									<li id="colis2"<%if(classOneDefault==='永不自動同意'){%> class="active"<%}%>><a href="#" onclick="classOneSelector(2);return false;" id="classOne2">永不自動同意</a></li>
+									<li id="colis3"<%if(classOneDefault==='立即自動同意'){%> class="active"<%}%>><a href="#" onclick="classOneSelector(3);return false;" id="classOne3">立即自動同意</a></li>
+									<li id="colis4"<%if(classOneDefault==='每天自動同意一次'){%> class="active"<%}%>><a href="#" onclick="classOneSelector(4);return false;" id="classOne4">每天自動同意一次</a></li>
+									<li id="colis5"<%if(classOneDefault==='每兩天自動同意一次'){%> class="active"<%}%>><a href="#" onclick="classOneSelector(5);return false;" id="classOne5">每兩天自動同意一次</a></li>
+									<li id="colis6"<%if(classOneDefault==='每三天自動同意一次'){%> class="active"<%}%>><a href="#" onclick="classOneSelector(6);return false;" id="classOne6">每三天自動同意一次</a></li>
+								</ul>
+							</div>
+							<div class="btn-group">
+								<button type="button" class="btn btn-default dropdown-toggle pageBar" data-toggle="dropdown" id="classTwoSelected">
+									<%=classTwoDefault%> <span class="caret"></span>
+								</button>
+								<ul class="dropdown-menu">
+									<li style="display:none"><a href="#" id="classTwo0"><%=classTwoDefault%></a></li>
+									<li id="ctlis1"<%if(classTwoDefault==='不篩選故事種類設定'){%> class="active"<%}%>><a href="#" onclick="classTwoSelector(1);return false;" id="classTwo1">不篩選故事種類設定</a></li>
+									<li id="ctlis2"<%if(classTwoDefault==='不分類'){%> class="active"<%}%>><a href="#" onclick="classTwoSelector(2);return false;" id="classTwo2">不分類</a></li>
+									<li id="ctlis3"<%if(classTwoDefault==='一般'){%> class="active"<%}%>><a href="#" onclick="classTwoSelector(3);return false;" id="classTwo3">一般</a></li>
+									<li id="ctlis4"<%if(classTwoDefault==='教育'){%> class="active"<%}%>><a href="#" onclick="classTwoSelector(4);return false;" id="classTwo4">教育</a></li>
+									<li id="ctlis5"<%if(classTwoDefault==='家庭'){%> class="active"<%}%>><a href="#" onclick="classTwoSelector(5);return false;" id="classTwo5">家庭</a></li>
+									<li id="ctlis6"<%if(classTwoDefault==='旅遊'){%> class="active"<%}%>><a href="#" onclick="classTwoSelector(6);return false;" id="classTwo6">旅遊</a></li>
+								</ul>
+							</div>
+							<div class="btn-group">
+								<button type="button" class="btn btn-default dropdown-toggle pageBar" data-toggle="dropdown" id="sorterSelected">
+									<%=sorterDefault%> <span class="caret"></span>
+								</button>
+								<ul class="dropdown-menu">
+									<li style="display:none"><a href="#" id="sorter0"><%=sorterDefault%></a></li>
+									<li id="slis1"<%if(sorterDefault==='更新日期'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(1);return false;" id="sorter1">更新日期</a></li>
+									<li id="slis2"<%if(sorterDefault==='建立日期'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(2);return false;" id="sorter2">建立日期</a></li>
+									<li id="slis3"<%if(sorterDefault==='最大可自動借出金額'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(3);return false;" id="sorter3">最大可自動借出金額</a></li>
+									<li id="slis4"<%if(sorterDefault==='可接受年利率'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(4);return false;" id="sorter4">可接受年利率</a></li>
+									<li id="slis5"<%if(sorterDefault==='可接受期數'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(5);return false;" id="sorter5">可接受期數</a></li>
+									<li id="slis6"<%if(sorterDefault==='可接受信用等級'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(6);return false;" id="sorter6">可接受信用等級</a></li>
+									<li id="slis7"<%if(sorterDefault==='可接受總利息'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(7);return false;" id="sorter7">可接受總利息</a></li>
+									<li id="slis8"<%if(sorterDefault==='可接受本利和'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(8);return false;" id="sorter8">可接受本利和</a></li>
+									<li id="slis9"<%if(sorterDefault==='可接受平均利息'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(9);return false;" id="sorter9">可接受平均利息</a></li>
+									<li id="slis10"<%if(sorterDefault==='可接受平均本利和'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(10);return false;" id="sorter10">可接受平均本利和</a></li>
+									<li id="slis11"<%if(sorterDefault==='可接受利本比'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(11);return false;" id="sorter11">可接受利本比</a></li>
+								</ul>
+							</div>
+							<div class="btn-group">
+								<button type="button" class="btn btn-default pageBar" id="directorSelected" data-toggle="dropdown" aria-expanded="false"><%=directorDefault%> <span class='caret'></span></button>
+								<ul class="dropdown-menu" role="menu">
+									<li style="display:none"><a href="#" id="director0"><%=directorDefault%></a></li>
+									<li id="dlis1"<%if(directorDefault==='大至小'){%> class="active"<%}%>><a href="#" onclick="directorSelector(1);return false;" id="director1">大至小</a></li>
+									<li id="dlis2"<%if(directorDefault==='小至大'){%> class="active"<%}%>><a href="#" onclick="directorSelector(2);return false;" id="director2">小至大</a></li>
+								</ul>
+							</div>
+							<div class="btn-group">
+								<button type="button" class="btn btn-default pageBar" onclick="linker();">Go!</button>
+							</div>
+						</span>
+					</div> 
+				</div>
 				<br>
-				<div style="border-top-style: none;border-right-style: none;border-bottom-style: none;border-left-style: none;margin-top: 0px;margin-bottom: 0px;" class="table-responsive">
-					<table style="margin-bottom: 0px;margin-top: 0px;" class="table" width="100%">
+				<div class="resp">
+					<table class="myResTable" width="100%">
 						<tr>
-							<td style="border-bottom-style: none;border-top-style: none;">
+							<td>
 								<%if((sorterDefault==='建立日期')||(sorterDefault==='更新日期')){%>
 									<input type="text" placeholder="下限(年/月/日)" class="form-control boundIpt" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode===13){linker();}">&nbsp;&nbsp;<span id='lbd'></span>
-									&nbsp;&nbsp;~&nbsp;&nbsp;
+									&nbsp;&nbsp;~&nbsp;&nbsp;&nbsp;&nbsp;
 									<input type="text" placeholder="上限(年/月/日)" class="form-control boundIpt" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode===13){linker();}">&nbsp;&nbsp;<span id='ubd'></span>
 								<%}else{%>
 									<input type="text" placeholder="下限" class="form-control boundIpt" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode===13){linker();}">&nbsp;&nbsp;<span id='lbd'></span>
-									&nbsp;&nbsp;~&nbsp;&nbsp;
+									&nbsp;&nbsp;~&nbsp;&nbsp;&nbsp;&nbsp;
 									<input type="text" placeholder="上限" class="form-control boundIpt" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode===13){linker();}">&nbsp;&nbsp;<span id='ubd'></span>
 								<%}%>
 							</td>
 						<%if((kpr!=='')&&(totalResultNum>0)&&(!oflg)&&(pflg)){%>
-							<td align="right" style="border-bottom-style: none;border-top-style: none;">
+							<td align="right">
+								&nbsp;&nbsp;&nbsp;&nbsp;
 								<button class="btn btn-default disabled" style="display:none;" id="highlightBtn" onclick="enableHighlight();">
 									關鍵字上色
 								</button>
@@ -105,269 +108,272 @@
 								<div class="m1 colorCnt myTitle"><%=jsonLends[i].CreatedBy.Username%></div>
 								<br>
 								<br>
-								<div class="col-md-6">
-									<table width="100%" height="250px">
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<span class="<%if(sorterDefault==='最大可自動借出金額'){%>stronger<%}else{%>myTitle<%}%>">最大可自動借出金額：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonLends[i].MaxMoneyToLend.toFixed(0)%>元
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<span class="<%if(sorterDefault==='可接受年利率'){%>stronger<%}else{%>myTitle<%}%>">可接受年利率：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=((jsonLends[i].InterestRate-scr)*100).toFixed(2)%>%
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<span class="<%if(sorterDefault==='可接受期數'){%>stronger<%}else{%>myTitle<%}%>">可接受期數：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonLends[i].MonthPeriod.toFixed(0)%>個月
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<span class="<%if(sorterDefault==='可接受信用等級'){%>stronger<%}else{%>myTitle<%}%>">可接受信用等級：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%if(jsonLends[i].MinLevelAccepted!==-1){%><%=jsonLends[i].MinLevelAccepted.toFixed(0)%>級<%}else{%>未設定<%}%>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<span class="<%if(sorterDefault==='可接受總利息'){%>stronger<%}else{%>myTitle<%}%>">可接受總利息：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%if(jsonLends[i].MinInterestInFuture!==-1){%><%=jsonLends[i].MinInterestInFuture.toFixed(0)%>元<%}else{%>未設定<%}%>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<span class="<%if(sorterDefault==='可接受本利和'){%>stronger<%}else{%>myTitle<%}%>">可接受本利和：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%if(jsonLends[i].MinMoneyFuture!==-1){%><%=jsonLends[i].MinMoneyFuture.toFixed(0)%>元<%}else{%>未設定<%}%>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<span class="<%if(sorterDefault==='可接受平均利息'){%>stronger<%}else{%>myTitle<%}%>">可接受平均利息：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%if(jsonLends[i].MinInterestInFutureMonth!==-1){%><%=jsonLends[i].MinInterestInFutureMonth.toFixed(0)%>元/月<%}else{%>未設定<%}%>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<span class="<%if(sorterDefault==='可接受平均本利和'){%>stronger<%}else{%>myTitle<%}%>">可接受平均本利和：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%if(jsonLends[i].MinInterestInFutureMoneyMonth!==-1){%><%=jsonLends[i].MinInterestInFutureMoneyMonth.toFixed(0)%>元/月<%}else{%>未設定<%}%>
-											</td>
-										</tr>
-									</table>	
-								</div>	
-								<div class="col-md-6">
-									<table width="100%" height="250px">
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<span class="<%if(sorterDefault==='可接受利本比'){%>stronger<%}else{%>myTitle<%}%>">可接受利本比：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%if(jsonLends[i].MinInterestInFutureDivMoney!==-1){%><%=(jsonLends[i].MinInterestInFutureDivMoney*100).toFixed(2)%>%<%}else{%>未設定<%}%>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<span class="<%if(classOneDefault!=='不篩選自動同意設定'){%>stronger<%}else{%>myTitle<%}%>">自動同意借款請求：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-												<%if(jsonLends[i].AutoComfirmToBorrowMsgPeriod===-1){%>
-													永不自動同意
-												<%}else if(jsonLends[i].AutoComfirmToBorrowMsgPeriod===0){%>
-													立即自動同意
-												<%}else if(jsonLends[i].AutoComfirmToBorrowMsgPeriod===1){%>
-													每天自動同意一次
-												<%}else if(jsonLends[i].AutoComfirmToBorrowMsgPeriod===2){%>
-													每兩天自動同意一次
-												<%}else if(jsonLends[i].AutoComfirmToBorrowMsgPeriod===3){%>
-													每三天自動同意一次
-												<%}%>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<span class="<%if(classTwoDefault!=='不篩選故事種類設定'){%>stronger<%}else{%>myTitle<%}%>">自動同意故事種類：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-												<%if(jsonLends[i].AutoComfirmToBorrowMsgClassor==="invalid"){%>
-													無效
-												<%}else if(jsonLends[i].AutoComfirmToBorrowMsgClassor==="none"){%>
-													不分類
-												<%}else if(jsonLends[i].AutoComfirmToBorrowMsgClassor==="general"){%>
-													一般
-												<%}else if(jsonLends[i].AutoComfirmToBorrowMsgClassor==="education"){%>
-													教育
-												<%}else if(jsonLends[i].AutoComfirmToBorrowMsgClassor==="family"){%>
-													家庭
-												<%}else if(jsonLends[i].AutoComfirmToBorrowMsgClassor==="tour"){%>
-													旅遊
-												<%}%>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<span class="myTitle">自動同意排序依據：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-												<%if(jsonLends[i].AutoComfirmToBorrowMsgSorter==="invalid"){%>
-													無效
-												<%}else if(jsonLends[i].AutoComfirmToBorrowMsgSorter==="InterestRate"){%>
-													欲借入年利率
-												<%}else if(jsonLends[i].AutoComfirmToBorrowMsgSorter==="MoneyToLend"){%>
-													欲借入金額
-												<%}else if(jsonLends[i].AutoComfirmToBorrowMsgSorter==="MonthPeriod"){%>
-													欲借入期數
-												<%}else if(jsonLends[i].AutoComfirmToBorrowMsgSorter==="Level"){%>
-													信用等級
-												<%}else if(jsonLends[i].AutoComfirmToBorrowMsgSorter==="InterestInFuture"){%>
-													預計總利息
-												<%}else if(jsonLends[i].AutoComfirmToBorrowMsgSorter==="MoneyFuture"){%>
-													預計本利和
-												<%}else if(jsonLends[i].AutoComfirmToBorrowMsgSorter==="InterestInFutureMonth"){%>
-													預計平均利息
-												<%}else if(jsonLends[i].AutoComfirmToBorrowMsgSorter==="InterestInFutureMoneyMonth"){%>
-													預計平均本利和
-												<%}else if(jsonLends[i].AutoComfirmToBorrowMsgSorter==="InterestInFutureDivMoney"){%>
-													預計利本比
-												<%}else if(jsonLends[i].AutoComfirmToBorrowMsgSorter==="Updated"){%>
-													更新日期
-												<%}else if(jsonLends[i].AutoComfirmToBorrowMsgSorter==="Created"){%>
-													建立日期
-												<%}%>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<span class="myTitle">自動同意排序方向：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-												<%if(jsonLends[i].AutoComfirmToBorrowMsgDirector==="invalid"){%>
-													無效
-												<%}else if(jsonLends[i].AutoComfirmToBorrowMsgDirector==="minus"){%>
-													大至小
-												<%}else if(jsonLends[i].AutoComfirmToBorrowMsgDirector==="plus"){%>
-													小至大
-												<%}%>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<span class="myTitle">自動同意下限：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<%if(jsonLends[i].AutoComfirmToBorrowMsgLbound===-1){%>
-													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;未設定
-												<%}else{%>
-													<%if(jsonLends[i].AutoComfirmToBorrowMsgSorter==='InterestRate'){%>
-														&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=((jsonLends[i].AutoComfirmToBorrowMsgLbound-scr)*100).toFixed(2)%>%
-													<%}else if(jsonLends[i].AutoComfirmToBorrowMsgSorter==='InterestInFutureDivMoney'){%>
-														&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=(jsonLends[i].AutoComfirmToBorrowMsgLbound*100).toFixed(2)%>%
-													<%}else if(jsonLends[i].AutoComfirmToBorrowMsgSorter==='Level'){%>
-														&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonLends[i].AutoComfirmToBorrowMsgLbound.toFixed(0)%>級
-													<%}else if((jsonLends[i].AutoComfirmToBorrowMsgSorter==='Updated')||(jsonLends[i].AutoComfirmToBorrowMsgSorter==='Created')){%>
-														&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=new Date(parseInt(jsonLends[i].AutoComfirmToBorrowMsgLbound)).getFullYear()%>/<%if(new Date(parseInt(jsonLends[i].AutoComfirmToBorrowMsgLbound)).getMonth()<9){%>0<%}%><%=new Date(parseInt(jsonLends[i].AutoComfirmToBorrowMsgLbound)).getMonth()+1%>/<%if(new Date(parseInt(jsonLends[i].AutoComfirmToBorrowMsgLbound)).getDate()<10){%>0<%}%><%=new Date(parseInt(jsonLends[i].AutoComfirmToBorrowMsgLbound)).getDate()%>
-													<%}else{%>
-														&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonLends[i].AutoComfirmToBorrowMsgLbound.toFixed(0)%>元
+								<div class="row">
+									<div class="col-md-6">
+										<table width="100%" height="250px">
+											<tr>
+												<td>
+													&nbsp;&nbsp;&nbsp;&nbsp;<span class="<%if(sorterDefault==='最大可自動借出金額'){%>stronger<%}else{%>myTitle<%}%>">最大可自動借出金額：</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonLends[i].MaxMoneyToLend.toFixed(0)%>元
+												</td>
+											</tr>
+											<tr>
+												<td>
+													&nbsp;&nbsp;&nbsp;&nbsp;<span class="<%if(sorterDefault==='可接受年利率'){%>stronger<%}else{%>myTitle<%}%>">可接受年利率：</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=((jsonLends[i].InterestRate-scr)*100).toFixed(2)%>%
+												</td>
+											</tr>
+											<tr>
+												<td>
+													&nbsp;&nbsp;&nbsp;&nbsp;<span class="<%if(sorterDefault==='可接受期數'){%>stronger<%}else{%>myTitle<%}%>">可接受期數：</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonLends[i].MonthPeriod.toFixed(0)%>個月
+												</td>
+											</tr>
+											<tr>
+												<td>
+													&nbsp;&nbsp;&nbsp;&nbsp;<span class="<%if(sorterDefault==='可接受信用等級'){%>stronger<%}else{%>myTitle<%}%>">可接受信用等級：</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%if(jsonLends[i].MinLevelAccepted!==-1){%><%=jsonLends[i].MinLevelAccepted.toFixed(0)%>級<%}else{%>未設定<%}%>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													&nbsp;&nbsp;&nbsp;&nbsp;<span class="<%if(sorterDefault==='可接受總利息'){%>stronger<%}else{%>myTitle<%}%>">可接受總利息：</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%if(jsonLends[i].MinInterestInFuture!==-1){%><%=jsonLends[i].MinInterestInFuture.toFixed(0)%>元<%}else{%>未設定<%}%>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													&nbsp;&nbsp;&nbsp;&nbsp;<span class="<%if(sorterDefault==='可接受本利和'){%>stronger<%}else{%>myTitle<%}%>">可接受本利和：</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%if(jsonLends[i].MinMoneyFuture!==-1){%><%=jsonLends[i].MinMoneyFuture.toFixed(0)%>元<%}else{%>未設定<%}%>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													&nbsp;&nbsp;&nbsp;&nbsp;<span class="<%if(sorterDefault==='可接受平均利息'){%>stronger<%}else{%>myTitle<%}%>">可接受平均利息：</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%if(jsonLends[i].MinInterestInFutureMonth!==-1){%><%=jsonLends[i].MinInterestInFutureMonth.toFixed(0)%>元/月<%}else{%>未設定<%}%>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													&nbsp;&nbsp;&nbsp;&nbsp;<span class="<%if(sorterDefault==='可接受平均本利和'){%>stronger<%}else{%>myTitle<%}%>">可接受平均本利和：</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%if(jsonLends[i].MinInterestInFutureMoneyMonth!==-1){%><%=jsonLends[i].MinInterestInFutureMoneyMonth.toFixed(0)%>元/月<%}else{%>未設定<%}%>
+												</td>
+											</tr>
+										</table>	
+									</div>	
+									<div class="col-md-6">
+										<table width="100%" height="250px">
+											<tr>
+												<td>
+													&nbsp;&nbsp;&nbsp;&nbsp;<span class="<%if(sorterDefault==='可接受利本比'){%>stronger<%}else{%>myTitle<%}%>">可接受利本比：</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%if(jsonLends[i].MinInterestInFutureDivMoney!==-1){%><%=(jsonLends[i].MinInterestInFutureDivMoney*100).toFixed(2)%>%<%}else{%>未設定<%}%>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													&nbsp;&nbsp;&nbsp;&nbsp;<span class="<%if(classOneDefault!=='不篩選自動同意設定'){%>stronger<%}else{%>myTitle<%}%>">自動同意借款請求：</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+													<%if(jsonLends[i].AutoComfirmToBorrowMsgPeriod===-1){%>
+														永不自動同意
+													<%}else if(jsonLends[i].AutoComfirmToBorrowMsgPeriod===0){%>
+														立即自動同意
+													<%}else if(jsonLends[i].AutoComfirmToBorrowMsgPeriod===1){%>
+														每天自動同意一次
+													<%}else if(jsonLends[i].AutoComfirmToBorrowMsgPeriod===2){%>
+														每兩天自動同意一次
+													<%}else if(jsonLends[i].AutoComfirmToBorrowMsgPeriod===3){%>
+														每三天自動同意一次
 													<%}%>
-												<%}%>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<span class="myTitle">自動同意上限：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<%if(jsonLends[i].AutoComfirmToBorrowMsgUbound===-1){%>
-													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;未設定
-												<%}else{%>
-													<%if(jsonLends[i].AutoComfirmToBorrowMsgSorter==='InterestRate'){%>
-														&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=((jsonLends[i].AutoComfirmToBorrowMsgUbound-scr)*100).toFixed(2)%>%
-													<%}else if(jsonLends[i].AutoComfirmToBorrowMsgSorter==='InterestInFutureDivMoney'){%>
-														&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=(jsonLends[i].AutoComfirmToBorrowMsgUbound*100).toFixed(2)%>%
-													<%}else if(jsonLends[i].AutoComfirmToBorrowMsgSorter==='Level'){%>
-														&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonLends[i].AutoComfirmToBorrowMsgUbound.toFixed(0)%>級
-													<%}else if((jsonLends[i].AutoComfirmToBorrowMsgSorter==='Updated')||(jsonLends[i].AutoComfirmToBorrowMsgSorter==='Created')){%>
-														&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=new Date(parseInt(jsonLends[i].AutoComfirmToBorrowMsgUbound)).getFullYear()%>/<%if(new Date(parseInt(jsonLends[i].AutoComfirmToBorrowMsgUbound)).getMonth()<9){%>0<%}%><%=new Date(parseInt(jsonLends[i].AutoComfirmToBorrowMsgUbound)).getMonth()+1%>/<%if(new Date(parseInt(jsonLends[i].AutoComfirmToBorrowMsgUbound)).getDate()<10){%>0<%}%><%=new Date(parseInt(jsonLends[i].AutoComfirmToBorrowMsgUbound)).getDate()%>
-													<%}else{%>
-														&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonLends[i].AutoComfirmToBorrowMsgUbound.toFixed(0)%>元
+												</td>
+											</tr>
+											<tr>
+												<td>
+													&nbsp;&nbsp;&nbsp;&nbsp;<span class="<%if(classTwoDefault!=='不篩選故事種類設定'){%>stronger<%}else{%>myTitle<%}%>">自動同意故事種類：</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+													<%if(jsonLends[i].AutoComfirmToBorrowMsgClassor==="invalid"){%>
+														無效
+													<%}else if(jsonLends[i].AutoComfirmToBorrowMsgClassor==="none"){%>
+														不分類
+													<%}else if(jsonLends[i].AutoComfirmToBorrowMsgClassor==="general"){%>
+														一般
+													<%}else if(jsonLends[i].AutoComfirmToBorrowMsgClassor==="education"){%>
+														教育
+													<%}else if(jsonLends[i].AutoComfirmToBorrowMsgClassor==="family"){%>
+														家庭
+													<%}else if(jsonLends[i].AutoComfirmToBorrowMsgClassor==="tour"){%>
+														旅遊
 													<%}%>
-												<%}%>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<span class="myTitle">自動同意關鍵字：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<%if(jsonLends[i].AutoComfirmToBorrowMsgKeyWord===''){%>
-													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;未設定
-												<%}else{%>
-													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div class="colorCnt"><%=jsonLends[i].AutoComfirmToBorrowMsgKeyWord%></div>
-												<%}%>
-											</td>
-										</tr>
-									</table>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													&nbsp;&nbsp;&nbsp;&nbsp;<span class="myTitle">自動同意排序依據：</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+													<%if(jsonLends[i].AutoComfirmToBorrowMsgSorter==="invalid"){%>
+														無效
+													<%}else if(jsonLends[i].AutoComfirmToBorrowMsgSorter==="InterestRate"){%>
+														欲借入年利率
+													<%}else if(jsonLends[i].AutoComfirmToBorrowMsgSorter==="MoneyToLend"){%>
+														欲借入金額
+													<%}else if(jsonLends[i].AutoComfirmToBorrowMsgSorter==="MonthPeriod"){%>
+														欲借入期數
+													<%}else if(jsonLends[i].AutoComfirmToBorrowMsgSorter==="Level"){%>
+														信用等級
+													<%}else if(jsonLends[i].AutoComfirmToBorrowMsgSorter==="InterestInFuture"){%>
+														預計總利息
+													<%}else if(jsonLends[i].AutoComfirmToBorrowMsgSorter==="MoneyFuture"){%>
+														預計本利和
+													<%}else if(jsonLends[i].AutoComfirmToBorrowMsgSorter==="InterestInFutureMonth"){%>
+														預計平均利息
+													<%}else if(jsonLends[i].AutoComfirmToBorrowMsgSorter==="InterestInFutureMoneyMonth"){%>
+														預計平均本利和
+													<%}else if(jsonLends[i].AutoComfirmToBorrowMsgSorter==="InterestInFutureDivMoney"){%>
+														預計利本比
+													<%}else if(jsonLends[i].AutoComfirmToBorrowMsgSorter==="Updated"){%>
+														更新日期
+													<%}else if(jsonLends[i].AutoComfirmToBorrowMsgSorter==="Created"){%>
+														建立日期
+													<%}%>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													&nbsp;&nbsp;&nbsp;&nbsp;<span class="myTitle">自動同意排序方向：</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+													<%if(jsonLends[i].AutoComfirmToBorrowMsgDirector==="invalid"){%>
+														無效
+													<%}else if(jsonLends[i].AutoComfirmToBorrowMsgDirector==="minus"){%>
+														大至小
+													<%}else if(jsonLends[i].AutoComfirmToBorrowMsgDirector==="plus"){%>
+														小至大
+													<%}%>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													&nbsp;&nbsp;&nbsp;&nbsp;<span class="myTitle">自動同意下限：</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<%if(jsonLends[i].AutoComfirmToBorrowMsgLbound===-1){%>
+														&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;未設定
+													<%}else{%>
+														<%if(jsonLends[i].AutoComfirmToBorrowMsgSorter==='InterestRate'){%>
+															&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=((jsonLends[i].AutoComfirmToBorrowMsgLbound-scr)*100).toFixed(2)%>%
+														<%}else if(jsonLends[i].AutoComfirmToBorrowMsgSorter==='InterestInFutureDivMoney'){%>
+															&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=(jsonLends[i].AutoComfirmToBorrowMsgLbound*100).toFixed(2)%>%
+														<%}else if(jsonLends[i].AutoComfirmToBorrowMsgSorter==='Level'){%>
+															&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonLends[i].AutoComfirmToBorrowMsgLbound.toFixed(0)%>級
+														<%}else if((jsonLends[i].AutoComfirmToBorrowMsgSorter==='Updated')||(jsonLends[i].AutoComfirmToBorrowMsgSorter==='Created')){%>
+															&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=new Date(parseInt(jsonLends[i].AutoComfirmToBorrowMsgLbound)).getFullYear()%>/<%if(new Date(parseInt(jsonLends[i].AutoComfirmToBorrowMsgLbound)).getMonth()<9){%>0<%}%><%=new Date(parseInt(jsonLends[i].AutoComfirmToBorrowMsgLbound)).getMonth()+1%>/<%if(new Date(parseInt(jsonLends[i].AutoComfirmToBorrowMsgLbound)).getDate()<10){%>0<%}%><%=new Date(parseInt(jsonLends[i].AutoComfirmToBorrowMsgLbound)).getDate()%>
+														<%}else{%>
+															&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonLends[i].AutoComfirmToBorrowMsgLbound.toFixed(0)%>元
+														<%}%>
+													<%}%>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													&nbsp;&nbsp;&nbsp;&nbsp;<span class="myTitle">自動同意上限：</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<%if(jsonLends[i].AutoComfirmToBorrowMsgUbound===-1){%>
+														&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;未設定
+													<%}else{%>
+														<%if(jsonLends[i].AutoComfirmToBorrowMsgSorter==='InterestRate'){%>
+															&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=((jsonLends[i].AutoComfirmToBorrowMsgUbound-scr)*100).toFixed(2)%>%
+														<%}else if(jsonLends[i].AutoComfirmToBorrowMsgSorter==='InterestInFutureDivMoney'){%>
+															&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=(jsonLends[i].AutoComfirmToBorrowMsgUbound*100).toFixed(2)%>%
+														<%}else if(jsonLends[i].AutoComfirmToBorrowMsgSorter==='Level'){%>
+															&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonLends[i].AutoComfirmToBorrowMsgUbound.toFixed(0)%>級
+														<%}else if((jsonLends[i].AutoComfirmToBorrowMsgSorter==='Updated')||(jsonLends[i].AutoComfirmToBorrowMsgSorter==='Created')){%>
+															&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=new Date(parseInt(jsonLends[i].AutoComfirmToBorrowMsgUbound)).getFullYear()%>/<%if(new Date(parseInt(jsonLends[i].AutoComfirmToBorrowMsgUbound)).getMonth()<9){%>0<%}%><%=new Date(parseInt(jsonLends[i].AutoComfirmToBorrowMsgUbound)).getMonth()+1%>/<%if(new Date(parseInt(jsonLends[i].AutoComfirmToBorrowMsgUbound)).getDate()<10){%>0<%}%><%=new Date(parseInt(jsonLends[i].AutoComfirmToBorrowMsgUbound)).getDate()%>
+														<%}else{%>
+															&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonLends[i].AutoComfirmToBorrowMsgUbound.toFixed(0)%>元
+														<%}%>
+													<%}%>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													&nbsp;&nbsp;&nbsp;&nbsp;<span class="myTitle">自動同意關鍵字：</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<%if(jsonLends[i].AutoComfirmToBorrowMsgKeyWord===''){%>
+														&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;未設定
+													<%}else{%>
+														&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div class="colorCnt"><%=jsonLends[i].AutoComfirmToBorrowMsgKeyWord%></div>
+													<%}%>
+												</td>
+											</tr>
+										</table>
+									</div>
 								</div>
 							</div>
 						</div>
-						<div style="border-top-style: none;border-right-style: none;border-bottom-style: none;border-left-style: none;margin-top: 0px;margin-bottom: 0px;" class="table-responsive">
-							<table style="margin-bottom: 0px;margin-top: 0px;" class="table" width="100%">
+						<div class="resp">	
+							<table class="myResTable" width="100%">
 								<tr>
-									<td align="right" style="border-bottom-style: none;border-top-style: none;">
+									<td align="right">
 										<div class="m2">
+											&nbsp;&nbsp;&nbsp;&nbsp;
 												<span<%if(sorterDefault==='更新日期'){%> class="stronger"<%}%>>Updated：</span><%=jsonLends[i].Updated.getFullYear()%>/<%if(jsonLends[i].Updated.getMonth()<9){%>0<%}%><%=jsonLends[i].Updated.getMonth()+1%>/<%if(jsonLends[i].Updated.getDate()<10){%>0<%}%><%=jsonLends[i].Updated.getDate()%>
 											&nbsp;&nbsp;&nbsp;&nbsp;
 												<span<%if(sorterDefault==='建立日期'){%> class="stronger"<%}%>>Creadted：</span><%=jsonLends[i].Created.getFullYear()%>/<%if(jsonLends[i].Created.getMonth()<9){%>0<%}%><%=jsonLends[i].Created.getMonth()+1%>/<%if(jsonLends[i].Created.getDate()<10){%>0<%}%><%=jsonLends[i].Created.getDate()%>
@@ -382,16 +388,12 @@
 						<br>
 					<%}%>
 				<br>
-				<table align="center">
+				<table width="100%">
 					<tr>
-						<td>
+						<td align="center">
 							<nav>
 							  <ul class="pagination">
-								<li 
-									<% if(targetPageNumber===1){%>
-										class="disabled"
-									<%}%>
-								>
+								<li class="pagination-prev<% if(targetPageNumber===1){%> disabled<%}%>">
 								<% if(targetPageNumber!==1){%>
 									<a href="/lender/lendsList?oneid=<%=encodeURIComponent(oneidDefault)%>&classOne=<%=encodeURIComponent(classOneDefault)%>&classTwo=<%=encodeURIComponent(classTwoDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=targetPageNumber-1%>">
 								<%}else{%>
@@ -433,11 +435,7 @@
 										<%}%>
 									<%}%>
 								<%}%>
-								<li 
-									<% if(targetPageNumber===pageNumber){%>
-										class="disabled"
-									<%}%>
-								>	
+								<li class="pagination-next<% if(targetPageNumber===pageNumber){%> disabled<%}%>">
 								<% if(targetPageNumber!==pageNumber){%>
 									<a href="/lender/lendsList?oneid=<%=encodeURIComponent(oneidDefault)%>&classOne=<%=encodeURIComponent(classOneDefault)%>&classTwo=<%=encodeURIComponent(classTwoDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=targetPageNumber+1%>">
 								<%}else{%>

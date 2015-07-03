@@ -4,88 +4,91 @@
 <div class="borrowContainerTitle">還款紀錄</div>
 
 <section class="chartSection">
-  <div  class="chart">
-    <canvas id="pieChart" width="300" height="300"></canvas>
-  </div>
-  <div class="chart textChart">
-      <div style="font-size:3em;">已完成還款</div>
-      <div class="number" style="font-size:5em;">0%</div>
-      <div style="font-size:2em;">剩餘金額
-        <div class="number">
-          $100,000
-        </div>
-      </div>
-  </div>
-
+	<div class="row">
+		<div style="text-align: center;" class="col-md-6">
+			<canvas id="pieChart" width="180" height="180"></canvas>
+		</div>
+		<div class="col-md-6">
+			<div style="font-size:3em;">已完成還款</div>
+			<div class="number" style="font-size:5em;">0%</div>
+			<div style="font-size:2em;">剩餘金額
+				<div class="number">
+				  $100,000
+				</div>
+			</div>
+		</div>
+	</div>
 </section>
 
 <section class="lender_info">
-<table class="table">
-      <thead>
-        <tr class="tableAttribute">
-          <th><div class="tdContent">出借人編號</div></th>
-          <th><div class="tdContent">每期應償還金額</div></th>
-          <th><div class="tdContent">總期數</div></th>
-          <th><div class="tdContent">總款項</div></th>
-          <th><div class="tdContent">剩餘期數</div></th>
-          <th><div class="tdContent">剩餘款項</div></th>
-          <th><div class="tdContent">最近償還日期</div></th>
-          <th><div class="tdContent">下次償還日期</div></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr class="eachTrans">
-          <td><div class="tdContent">01</div></td>
-          <td><div class="tdContent">$2,699</div></td>
-          <td><div class="tdContent">12</div></td>
-          <td><div class="tdContent">$32,000</div></td>
-          <td><div class="tdContent">12</div></td>
-          <td><div class="tdContent">$32,000</div></td>
-          <td><div class="tdContent">無</div></td>
-          <td><div class="tdContent">2015/06/30</div></td>
-        </tr>
-        <tr class="eachTrans">
-          <td><div class="tdContent">02</div></td>
-          <td><div class="tdContent">$679</div></td>
-          <td><div class="tdContent">15</div></td>
-          <td><div class="tdContent">$10,000</div></td>
-          <td><div class="tdContent">15</div></td>
-          <td><div class="tdContent">$10,000</div></td>
-          <td><div class="tdContent">無</div></td>
-          <td><div class="tdContent">2015/06/30</div></td>
-        </tr>
-        <tr class="eachTrans">
-          <td><div class="tdContent">03</div></td>
-          <td><div class="tdContent">$1,223</div></td>
-          <td><div class="tdContent">15</div></td>
-          <td><div class="tdContent">$18,000</div></td>
-          <td><div class="tdContent">15</div></td>
-          <td><div class="tdContent">$18,000</div></td>
-          <td><div class="tdContent">無</div></td>
-          <td><div class="tdContent">2015/06/30</div></td>
-        </tr>
-        <tr class="eachTrans">
-          <td><div class="tdContent">04</div></td>
-          <td><div class="tdContent">$1,271</div></td>
-          <td><div class="tdContent">12</div></td>
-          <td><div class="tdContent">$15,000</div></td>
-          <td><div class="tdContent">15</div></td>
-          <td><div class="tdContent">$15,000</div></td>
-          <td><div class="tdContent">無</div></td>
-          <td><div class="tdContent">2015/06/30</div></td>
-        </tr>
-        <tr class="eachTrans">
-          <td><div class="tdContent">05</div></td>
-          <td><div class="tdContent">$1,288</div></td>
-          <td><div class="tdContent">20</div></td>
-          <td><div class="tdContent">$25,000</div></td>
-          <td><div class="tdContent">15</div></td>
-          <td><div class="tdContent">$25,000</div></td>
-          <td><div class="tdContent">無</div></td>
-          <td><div class="tdContent">2015/06/30</div></td>
-        </tr>
-      </tbody>
-    </table>
+	<div style="border-top-style: none;border-right-style: none;border-bottom-style: none;border-left-style: none;margin-top: 0px;margin-bottom: 0px;" class="table-responsive">
+		<table class="table">
+			<thead>
+				<tr class="tableAttribute">
+				  <th><div class="tdContent">出借人編號</div></th>
+				  <th><div class="tdContent">每期應償還金額</div></th>
+				  <th><div class="tdContent">總期數</div></th>
+				  <th><div class="tdContent">總款項</div></th>
+				  <th><div class="tdContent">剩餘期數</div></th>
+				  <th><div class="tdContent">剩餘款項</div></th>
+				  <th><div class="tdContent">最近償還日期</div></th>
+				  <th><div class="tdContent">下次償還日期</div></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr class="eachTrans">
+				  <td><div class="tdContent">01</div></td>
+				  <td><div class="tdContent">$2,699</div></td>
+				  <td><div class="tdContent">12</div></td>
+				  <td><div class="tdContent">$32,000</div></td>
+				  <td><div class="tdContent">12</div></td>
+				  <td><div class="tdContent">$32,000</div></td>
+				  <td><div class="tdContent">無</div></td>
+				  <td><div class="tdContent">2015/06/30</div></td>
+				</tr>
+				<tr class="eachTrans">
+				  <td><div class="tdContent">02</div></td>
+				  <td><div class="tdContent">$679</div></td>
+				  <td><div class="tdContent">15</div></td>
+				  <td><div class="tdContent">$10,000</div></td>
+				  <td><div class="tdContent">15</div></td>
+				  <td><div class="tdContent">$10,000</div></td>
+				  <td><div class="tdContent">無</div></td>
+				  <td><div class="tdContent">2015/06/30</div></td>
+				</tr>
+				<tr class="eachTrans">
+				  <td><div class="tdContent">03</div></td>
+				  <td><div class="tdContent">$1,223</div></td>
+				  <td><div class="tdContent">15</div></td>
+				  <td><div class="tdContent">$18,000</div></td>
+				  <td><div class="tdContent">15</div></td>
+				  <td><div class="tdContent">$18,000</div></td>
+				  <td><div class="tdContent">無</div></td>
+				  <td><div class="tdContent">2015/06/30</div></td>
+				</tr>
+				<tr class="eachTrans">
+				  <td><div class="tdContent">04</div></td>
+				  <td><div class="tdContent">$1,271</div></td>
+				  <td><div class="tdContent">12</div></td>
+				  <td><div class="tdContent">$15,000</div></td>
+				  <td><div class="tdContent">15</div></td>
+				  <td><div class="tdContent">$15,000</div></td>
+				  <td><div class="tdContent">無</div></td>
+				  <td><div class="tdContent">2015/06/30</div></td>
+				</tr>
+				<tr class="eachTrans">
+				  <td><div class="tdContent">05</div></td>
+				  <td><div class="tdContent">$1,288</div></td>
+				  <td><div class="tdContent">20</div></td>
+				  <td><div class="tdContent">$25,000</div></td>
+				  <td><div class="tdContent">15</div></td>
+				  <td><div class="tdContent">$25,000</div></td>
+				  <td><div class="tdContent">無</div></td>
+				  <td><div class="tdContent">2015/06/30</div></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
 </section>
 </div>
 
@@ -111,8 +114,8 @@
         var pieCtx = document.getElementById("pieChart").getContext("2d");
         var PieChart = new Chart(pieCtx).Pie(data);
 
-        var textCtx = document.getElementById("textChart").getContext("2d");
-        textCtx.fillText("已完成還款", 350, 350);
+        /*var textCtx = document.getElementById("textChart").getContext("2d");
+        textCtx.fillText("已完成還款", 350, 350);*/
 
     </script>
 <%- include('layout_footer',{imgSettingCode:"var ifLoadedCount=0;",imgDrawingCode:"",nav_cur:'borrowerPanel'}); -%>

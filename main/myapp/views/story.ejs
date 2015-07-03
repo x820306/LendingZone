@@ -2,40 +2,43 @@
 <div class="container">
 	<div class="row">
 		<div class="col-md-9">
-			<table width="100%">
-				<tr>
-					<td style="width:90%;">
-						<div class="bigTitle<%if(json.TitleColor==="default"){%> default<%}else if(json.TitleColor==="color1"){%> color1<%}else if(json.TitleColor==="color2"){%> color2<%}else if(json.TitleColor==="color3"){%> color3<%}else if(json.TitleColor==="color4"){%> color4<%}else if(json.TitleColor==="color5"){%> color5<%}else if(json.TitleColor==="color6"){%> color6<%}else if(json.TitleColor==="color7"){%> color7<%}%>">[<%if(json.Category==='general'){%>一般<%}else if(json.Category==='education'){%>教育<%}else if(json.Category==='family'){%>家庭<%}else if(json.Category==='tour'){%>旅遊<%}%>]&nbsp;&nbsp;<%if(json.StoryTitle!==''){%><%-json.StoryTitle.replace(new RegExp(' ','g'),'&nbsp;')%><%}else{%>無標題<%}%></div>
-						<div class="subTitle"> by <span id="aiteName"><%=json.CreatedBy.Username%></span></div>
-					</td>
-					<td align="right">
-						<div style="display:inline;" class="myTitle2 m3" id="likeBtn">
-							<%if(userName===null){ %>
-								<button class="btn btn-default" data-toggle="modal" data-target="#myModal" id="btnID">
-									<span class="glyphicon glyphicon-thumbs-up myTitle2"></span>
-								</button>
-							<% }else{ %>
-								<%if(!ifSelf){ %>
-									<%if(!ifLiked){ %>
-										<button class="btn btn-default" onclick="like();" id="btnID">
-											<span class="glyphicon glyphicon-thumbs-up myTitle2"></span>
-										</button>
-									<% }else{ %>
-										<button class="btn btn-default" onclick="unlike();" id="btnID">
-											<span class="glyphicon glyphicon-remove myTitle2"></span>
-										</button>
-									<%}%>
-								<% }else{ %>
-									<button class="btn btn-default disabled" id="btnID">
+			<div class="resp">
+				<table width="100%">
+					<tr>
+						<td style="width:90%;">
+							<div class="bigTitle<%if(json.TitleColor==="default"){%> default<%}else if(json.TitleColor==="color1"){%> color1<%}else if(json.TitleColor==="color2"){%> color2<%}else if(json.TitleColor==="color3"){%> color3<%}else if(json.TitleColor==="color4"){%> color4<%}else if(json.TitleColor==="color5"){%> color5<%}else if(json.TitleColor==="color6"){%> color6<%}else if(json.TitleColor==="color7"){%> color7<%}%>"><span class="category">[<%if(json.Category==='general'){%>一般<%}else if(json.Category==='education'){%>教育<%}else if(json.Category==='family'){%>家庭<%}else if(json.Category==='tour'){%>旅遊<%}%>]</span>&nbsp;&nbsp;<%if(json.StoryTitle!==''){%><%-json.StoryTitle.replace(new RegExp(' ','g'),'&nbsp;')%><%}else{%>無標題<%}%></div>
+							<div class="subTitle"> by <span id="aiteName"><%=json.CreatedBy.Username%></span></div>
+						</td>
+						<td nowrap="nowrap" align="right">
+							&nbsp;&nbsp;&nbsp;&nbsp;
+							<div style="display:inline;" class="myTitle2 m3" id="likeBtn">
+								<%if(userName===null){ %>
+									<button class="btn btn-default" data-toggle="modal" data-target="#myModal" id="btnID">
 										<span class="glyphicon glyphicon-thumbs-up myTitle2"></span>
 									</button>
+								<% }else{ %>
+									<%if(!ifSelf){ %>
+										<%if(!ifLiked){ %>
+											<button class="btn btn-default" onclick="like();" id="btnID">
+												<span class="glyphicon glyphicon-thumbs-up myTitle2"></span>
+											</button>
+										<% }else{ %>
+											<button class="btn btn-default" onclick="unlike();" id="btnID">
+												<span class="glyphicon glyphicon-remove myTitle2"></span>
+											</button>
+										<%}%>
+									<% }else{ %>
+										<button class="btn btn-default disabled" id="btnID">
+											<span class="glyphicon glyphicon-thumbs-up myTitle2"></span>
+										</button>
+									<%}%>
 								<%}%>
-							<%}%>
-						</div>
-						<span class="m3 red" id="likeNum">&nbsp;<%=json.LikeNumber%></span>
-					</td>
-				<tr>
-			</table>
+							</div>
+							<span class="m3 red" id="likeNum">&nbsp;<%=json.LikeNumber%></span>
+						</td>
+					<tr>
+				</table>
+			</div>
 			<br>
 			<ul class="nav nav-tabs" id="myTab">
 				<li class="active"><a href="#tab1" data-toggle="tab">故事</a></li>
@@ -169,22 +172,27 @@
 							<br>
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%-json.Discussion[i].Content.replace(new RegExp('\n','g'),'<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;').replace(new RegExp(' ','g'),'&nbsp;')%>
 							<br>
-							<span class="myTitle">No.<%=i+1%>&nbsp;&nbsp;&nbsp;<%=json.Discussion[i].Updated.getFullYear()%>/<%if(json.Discussion[i].Updated.getMonth()<9){%>0<%}%><%=json.Discussion[i].Updated.getMonth()+1%>/<%if(json.Discussion[i].Updated.getDate()<10){%>0<%}%><%=json.Discussion[i].Updated.getDate()%></span>
-							<br>
+							<table class="disFtrTable"><tr><td nowrap="nowrap"><span class="myTitle">No.<%=i+1%></span>&nbsp;&nbsp;&nbsp;</td><td><div class="myTitle">Created&nbsp;:&nbsp;<%=json.Discussion[i].Created.getFullYear()%>/<%if(json.Discussion[i].Created.getMonth()<9){%>0<%}%><%=json.Discussion[i].Created.getMonth()+1%>/<%if(json.Discussion[i].Created.getDate()<10){%>0<%}%><%=json.Discussion[i].Created.getDate()%></div><div class="myTitle">Updated:&nbsp;<%=json.Discussion[i].Updated.getFullYear()%>/<%if(json.Discussion[i].Updated.getMonth()<9){%>0<%}%><%=json.Discussion[i].Updated.getMonth()+1%>/<%if(json.Discussion[i].Updated.getDate()<10){%>0<%}%><%=json.Discussion[i].Updated.getDate()%></div></td></tr></table>
 							<br>
 						<%}%>
 					</div>
 					<div class="input-group my_discussion_ipt">
 						<%if(userName===null){ %>
-							<textarea style="height:35px;" placeholder="留言...Enter送出，Shift+Enter換行" class="form-control" onkeypress="if(event.keyCode===13){if(!event.shiftKey){$('#myModal').modal('show');return false;}}"></textarea>
+							<textarea style="height:35px;" placeholder="留言...Enter送出，Shift+Enter換行" class="form-control" onkeyup="value='';$('#myModal').modal('show');return false;"></textarea>
 							<span class="input-group-btn">
-								<button style="height:35px;" class="btn btn-default" type="button" id="sendButton" data-toggle="modal" data-target="#myModal">
+								<button style="height:35px;" class="btn btn-default" type="button" data-toggle="modal" data-target="#myModal">
+									<span class="glyphicon glyphicon-arrow-down myTitle2"></span>
+								</button>
+								<button style="height:35px;" class="btn btn-default" type="button" data-toggle="modal" data-target="#myModal">
 									<span class="glyphicon glyphicon-comment myTitle2"></span>
 								</button>
 							</span>
 						<% }else{ %>
 							<textarea id="iptCtr" style="height:35px;" placeholder="留言...Enter送出，Shift+Enter換行" class="form-control" onkeypress="if(event.keyCode===13){if(!event.shiftKey){sendComment();return false;}}"></textarea>
 							<span class="input-group-btn">
+								<button style="height:35px;" onclick="newLineMain();" class="btn btn-default" type="button" id="newlButton">
+									<span class="glyphicon glyphicon-arrow-down myTitle2"></span>
+								</button>
 								<button style="height:35px;" onclick="sendComment();" class="btn btn-default" type="button" id="sendButton">
 									<span class="glyphicon glyphicon-comment myTitle2"></span>
 								</button>
@@ -194,96 +202,99 @@
 				</div>
             </div>
 			<br>
-			<table width="100%">
-				<tr>
-					<td>
-						<%if(userName===null){ %>
-							<button class="btn btn-default" data-toggle="modal" data-target="#myModal">
-								<span class="myTitle2">我想借錢給此人</span>
-							</button>
-						<% }else{ %>
-							<%if(!ifSelf){ %>
-								<%if(!jsonBorrowMessage){%>
-									<%if(!jsonMessage){ %>
-										<%if(!json.IfReadable){ %>
-											<button type="button" class="btn btn-default disabled">
-												<span class="myTitle2">該故事已封存</span>
-											</button>
-										<%}else{%>
-											<button type="button" class="btn btn-default" onclick="openForm('#hendLendModal');">
-												<span class="myTitle2">我想借錢給此人</span>
-											</button>
+			<div class="resp">
+				<table width="100%">
+					<tr>
+						<td nowrap="nowrap">
+							<%if(userName===null){ %>
+								<button class="btn btn-default" data-toggle="modal" data-target="#myModal">
+									<span class="myTitle2">我想借錢給此人</span>
+								</button>
+							<% }else{ %>
+								<%if(!ifSelf){ %>
+									<%if(!jsonBorrowMessage){%>
+										<%if(!jsonMessage){ %>
+											<%if(!json.IfReadable){ %>
+												<button type="button" class="btn btn-default disabled">
+													<span class="myTitle2">該故事已封存</span>
+												</button>
+											<%}else{%>
+												<button type="button" class="btn btn-default" onclick="openForm('#hendLendModal');">
+													<span class="myTitle2">我想借錢給此人</span>
+												</button>
+											<%}%>
+										<% }else{ %>
+											<%if(!json.IfReadable){ %>
+												<button type="button" class="btn btn-default" onclick="openForm('#hendLendModal');">
+													<span class="myTitle2">該故事已封存，但您仍可查看訊息</span>
+												</button>
+											<%}else{%>
+												<%if(jsonMessage.Status==='Confirmed'){ %>
+													<button type="button" class="btn btn-default" onclick="openForm('#hendLendModal');">
+														<span class="myTitle2">您的出借訊息已被同意</span>
+													</button>
+												<% }else if(jsonMessage.Status==='Rejected'){ %>
+													<button type="button" class="btn btn-default" onclick="openForm('#hendLendModal');">
+														<span class="myTitle2">您的出借訊息已被婉拒</span>
+													</button>
+												<% }else if(jsonMessage.Status==='NotConfirmed'){ %>
+													<button type="button" class="btn btn-default" onclick="openForm('#hendLendModal');">
+														<span class="myTitle2">我想更新出借訊息</span>
+													</button>
+												<%}%>
+											<%}%>
 										<%}%>
-									<% }else{ %>
+									<%}else{%>
 										<%if(!json.IfReadable){ %>
-											<button type="button" class="btn btn-default" onclick="openForm('#hendLendModal');">
+											<button type="button" class="btn btn-default" onclick="openForm('#confirmModal');">
 												<span class="myTitle2">該故事已封存，但您仍可查看訊息</span>
 											</button>
 										<%}else{%>
-											<%if(jsonMessage.Status==='Confirmed'){ %>
-												<button type="button" class="btn btn-default" onclick="openForm('#hendLendModal');">
-													<span class="myTitle2">您的出借訊息已被同意</span>
+											<%if(jsonBorrowMessage.Status==='Confirmed'){ %>
+												<button type="button" class="btn btn-default" onclick="openForm('#confirmModal');">
+													<span class="myTitle2">您已同意來自此人的借款請求</span>
 												</button>
-											<% }else if(jsonMessage.Status==='Rejected'){ %>
-												<button type="button" class="btn btn-default" onclick="openForm('#hendLendModal');">
-													<span class="myTitle2">您的出借訊息已被婉拒</span>
+											<% }else if(jsonBorrowMessage.Status==='Rejected'){ %>
+												<button type="button" class="btn btn-default" onclick="openForm('#confirmModal');">
+													<span class="myTitle2">您已婉拒來自此人的借款請求</span>
 												</button>
-											<% }else if(jsonMessage.Status==='NotConfirmed'){ %>
-												<button type="button" class="btn btn-default" onclick="openForm('#hendLendModal');">
-													<span class="myTitle2">我想更新出借訊息</span>
+											<% }else if(jsonBorrowMessage.Status==='NotConfirmed'){ %>
+												<button type="button" class="btn btn-default" onclick="openForm('#confirmModal');">
+													<span class="myTitle2">查看來自此人的訊息</span>
 												</button>
 											<%}%>
 										<%}%>
 									<%}%>
 								<%}else{%>
-									<%if(!json.IfReadable){ %>
-										<button type="button" class="btn btn-default" onclick="openForm('#confirmModal');">
-											<span class="myTitle2">該故事已封存，但您仍可查看訊息</span>
+									<%if(json.IfReadable){ %>
+										<button type="button" class="btn btn-default"  data-toggle="modal" data-target="#readableModal">
+											<span class="myTitle2">此故事為您所有，點擊可進行封存</span>
 										</button>
 									<%}else{%>
-										<%if(jsonBorrowMessage.Status==='Confirmed'){ %>
-											<button type="button" class="btn btn-default" onclick="openForm('#confirmModal');">
-												<span class="myTitle2">您已同意來自此人的借款請求</span>
-											</button>
-										<% }else if(jsonBorrowMessage.Status==='Rejected'){ %>
-											<button type="button" class="btn btn-default" onclick="openForm('#confirmModal');">
-												<span class="myTitle2">您已婉拒來自此人的借款請求</span>
-											</button>
-										<% }else if(jsonBorrowMessage.Status==='NotConfirmed'){ %>
-											<button type="button" class="btn btn-default" onclick="openForm('#confirmModal');">
-												<span class="myTitle2">查看來自此人的訊息</span>
-											</button>
-										<%}%>
+										<button type="button" class="btn btn-default disabled">
+											<span class="myTitle2">此故事為您所有，且已經封存</span>
+										</button>
 									<%}%>
 								<%}%>
-							<%}else{%>
-								<%if(json.IfReadable){ %>
-									<button type="button" class="btn btn-default"  data-toggle="modal" data-target="#readableModal">
-										<span class="myTitle2">此故事為您所有，點擊可進行封存</span>
-									</button>
-								<%}else{%>
-									<button type="button" class="btn btn-default disabled">
-										<span class="myTitle2">此故事為您所有，且已經封存</span>
-									</button>
-								<%}%>
 							<%}%>
-						<%}%>
-					</td>
-					<td align="right">
-						<div>
-							Updated：<span id="updatedDate"><%=json.Updated.getFullYear()%>/<%if(json.Updated.getMonth()<9){%>0<%}%><%=json.Updated.getMonth()+1%>/<%if(json.Updated.getDate()<10){%>0<%}%><%=json.Updated.getDate()%></span>
-						</div>
-						<div>
-							Created：<%=json.Created.getFullYear()%>/<%if(json.Created.getMonth()<9){%>0<%}%><%=json.Created.getMonth()+1%>/<%if(json.Created.getDate()<10){%>0<%}%><%=json.Created.getDate()%>
-						</div>
-					</td>
-				</tr>
-				<tr>
-					<td align="center">
-						&nbsp;&nbsp;&nbsp;&nbsp;<span><img width="65px" height="65px" src="/images/icon.png" class="hastip" title="喜歡這個故事的話可以<br>主動借款給他喔！"/></span>
-					</td>
-				</tr>
-			</table>
+							&nbsp;&nbsp;&nbsp;&nbsp;
+						</td>
+						<td align="right">
+							<div>
+								Updated：<span id="updatedDate"><%=json.Updated.getFullYear()%>/<%if(json.Updated.getMonth()<9){%>0<%}%><%=json.Updated.getMonth()+1%>/<%if(json.Updated.getDate()<10){%>0<%}%><%=json.Updated.getDate()%></span>
+							</div>
+							<div>
+								Created：<%=json.Created.getFullYear()%>/<%if(json.Created.getMonth()<9){%>0<%}%><%=json.Created.getMonth()+1%>/<%if(json.Created.getDate()<10){%>0<%}%><%=json.Created.getDate()%>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td align="center">
+							&nbsp;&nbsp;&nbsp;&nbsp;<span><img width="65px" height="65px" src="/images/icon.png" class="hastip" title="喜歡這個故事的話可以<br>主動借款給他喔！"/></span>
+						</td>
+					</tr>
+				</table>
+			</div>
 		</div>
 		<div class="col-md-3">
 		</div>
@@ -546,7 +557,7 @@
 										&nbsp;
 									<%}%>
 									<a href="/lender/lenderSendMessages?msgKeyword=<%=jsonMessage._id%>&filter=<%if(jsonMessage.Status==="NotConfirmed"){%><%=encodeURIComponent('未被確認')%><%}else if(jsonMessage.Status==="Confirmed"){%><%=encodeURIComponent('已被同意')%><%}else if(jsonMessage.Status==="Rejected"){%><%=encodeURIComponent('已被婉拒')%><%}%>&classor=<%=encodeURIComponent("不分故事種類");%>&sorter=<%=encodeURIComponent("更新日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">
-										<button type="button" class="btn btn-default">於列表查看</button>
+										<button type="button" class="btn btn-default">查看</button>
 									</a>
 									&nbsp;
 									<button type="button" class="btn btn-default" data-dismiss="modal">關閉</button>
@@ -713,7 +724,7 @@
 									</div>
 									<div style="float:right;">
 										<a href="/lender/lenderSendMessages?msgKeyword=<%=jsonMessage._id%>&filter=<%if(jsonMessage.Status==="NotConfirmed"){%><%=encodeURIComponent('未被確認')%><%}else if(jsonMessage.Status==="Confirmed"){%><%=encodeURIComponent('已被同意')%><%}else if(jsonMessage.Status==="Rejected"){%><%=encodeURIComponent('已被婉拒')%><%}%>&classor=<%=encodeURIComponent("不分故事種類");%>&sorter=<%=encodeURIComponent("更新日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">
-											<button type="button" class="btn btn-default">於列表查看</button>
+											<button type="button" class="btn btn-default">查看</button>
 										</a>
 										<button type="button" class="btn btn-default" data-dismiss="modal">關閉</button>
 									</div>
@@ -833,7 +844,7 @@
 									&nbsp;
 								<%}%>
 								<a href="/lender/lenderReceiveMessages?msgKeyword=<%=jsonBorrowMessage._id%>&filter=<%if(jsonBorrowMessage.Status==="NotConfirmed"){%><%=encodeURIComponent('未確認')%><%}else if(jsonBorrowMessage.Status==="Confirmed"){%><%=encodeURIComponent('已同意')%><%}else if(jsonBorrowMessage.Status==="Rejected"){%><%=encodeURIComponent('已婉拒')%><%}%>&classor=<%=encodeURIComponent("不分故事種類");%>&sorter=<%=encodeURIComponent("更新日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">
-									<button type="button" class="btn btn-default">於列表查看</button>
+									<button type="button" class="btn btn-default">查看</button>
 								</a>
 								&nbsp;
 								<button type="button" class="btn btn-default" data-dismiss="modal">關閉</button>
@@ -1002,7 +1013,7 @@
 								</div>
 								<div style="float:right;">
 									<a href="/lender/lenderReceiveMessages?msgKeyword=<%=jsonBorrowMessage._id%>&filter=<%if(jsonBorrowMessage.Status==="NotConfirmed"){%><%=encodeURIComponent('未確認')%><%}else if(jsonBorrowMessage.Status==="Confirmed"){%><%=encodeURIComponent('已同意')%><%}else if(jsonBorrowMessage.Status==="Rejected"){%><%=encodeURIComponent('已婉拒')%><%}%>&classor=<%=encodeURIComponent("不分故事種類");%>&sorter=<%=encodeURIComponent("更新日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">
-										<button type="button" class="btn btn-default">於列表查看</button>
+										<button type="button" class="btn btn-default">查看</button>
 									</a>
 									<button type="button" class="btn btn-default" data-dismiss="modal">關閉</button>
 								</div>
@@ -1215,18 +1226,28 @@
 		}
 		
 		function startRenderComments(){
+			dcFlag=true;
+			ecFlag=true;
+			scFlag=true;
 			$('#iptCtr').attr('onkeypress','');
 			$('#iptCtr').attr('readonly','readonly');
 			$('#sendButton').addClass('disabled');
+			$('#newlButton').addClass('disabled');
 			$(".actionTa").each(function() {
 				$(this).attr('readonly','readonly');
 			});
 			$(".actionLi").each(function() {
 				$(this).addClass('disabled');
 			});
-			dcFlag=true;
-			ecFlag=true;
-			scFlag=true;
+			$(".newBtnNel").each(function() {
+				$(this).addClass('disabled');
+			});
+			$(".newBtnCom").each(function() {
+				$(this).addClass('disabled');
+			});
+			$(".newBtnRev").each(function() {
+				$(this).addClass('disabled');
+			});
 		}
 		
 		function renderComments(Jdata){
@@ -1242,39 +1263,78 @@
 			$('#updatedDate').html(dateObj.getFullYear()+'/'+zeroMonth+(dateObj.getMonth()+1)+'/'+zeroDate+dateObj.getDate());
 			$('#discussionDiv').html('');
 			for(i=0;i<Jdata.result.length;i++){
-				var dateObj2=new Date(Jdata.result[i].Updated);
-				var zeroMonth2='';
+				var dateObj2=new Date(Jdata.result[i].Created);
+				var zeroMonth2_1='';
 				if(dateObj2.getMonth()<9){
-					zeroMonth2='0';
+					zeroMonth2_1='0';
 				}
-				var zeroDate2='';
+				var zeroDate2_1='';
 				if(dateObj2.getDate()<10){
-					zeroDate2='0';
+					zeroDate2_1='0';
 				}
 				var year=dateObj2.getFullYear();
 				var month=dateObj2.getMonth()+1;
 				var date=dateObj2.getDate();
+				
+				dateObj2=new Date(Jdata.result[i].Updated);
+				var zeroMonth2_2='';
+				if(dateObj2.getMonth()<9){
+					zeroMonth2_2='0';
+				}
+				var zeroDate2_2='';
+				if(dateObj2.getDate()<10){
+					zeroDate2_2='0';
+				}
+				var year2=dateObj2.getFullYear();
+				var month2=dateObj2.getMonth()+1;
+				var date2=dateObj2.getDate();
+				
 				if(!Jdata.CreatedByViewer[i]){
-					$('#discussionDiv').append('<span class="myTitle">'+Jdata.result[i].CreatedBy.Username+'：</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+Jdata.result[i].Content+'<br><span class="myTitle">No.'+(i+1)+'&nbsp;&nbsp;&nbsp;'+year+'/'+zeroMonth2+month+'/'+zeroDate2+date+'</span><br><br>');
+					$('#discussionDiv').append('<span class="myTitle">'+Jdata.result[i].CreatedBy.Username+'：</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+Jdata.result[i].Content.replace(/"/g,'&quot;').replace(new RegExp('\n','g'),'<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;').replace(new RegExp(' ','g'),'&nbsp;')+'<br><table class="disFtrTable"><tr><td nowrap="nowrap"><span class="myTitle">No.'+(i+1)+'</span>&nbsp;&nbsp;&nbsp;</td><td><div class="myTitle">Created&nbsp;:&nbsp;'+year+'/'+zeroMonth2_1+month+'/'+zeroDate2_1+date+'</div><div class="myTitle">Updated:&nbsp;'+year2+'/'+zeroMonth2_2+month2+'/'+zeroDate2_2+date2+'</div></td></tr></table><br>');
 				}else{
-					$('#discussionDiv').append('<table width="95%"><tr><td><div style="display:inline;" class="myTitle">'+Jdata.result[i].CreatedBy.Username+'：</div><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div style="display:inline;" id="cntIptDiv'+i+'">'+Jdata.result[i].Content.replace(/"/g,'&quot;').replace(new RegExp('\n','g'),'<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;').replace(new RegExp(' ','g'),'&nbsp;')+'</div><br><div style="display:inline;" class="myTitle">No.'+(i+1)+'&nbsp;&nbsp;&nbsp;'+year+'/'+zeroMonth2+month+'/'+zeroDate2+date+'</div></td><td align="right"><div class="btn-group"><button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-pencil myTitle2"></span> <span class="caret myTitle2"></span></button><ul style="width:75px;min-width:75px;" class="dropdown-menu" role="menu"><li class="actionLi"><a href="#" onclick="startEdit('+i+');return false;">編輯</a></li><li class="actionLi"><a href="#" onclick="deleteComment('+i+');return false;">刪除</a></li></ul></div></td></tr></table><input type="hidden" id="hdIpt'+i+'" value="'+Jdata.result[i]._id+'"><input type="hidden" id="hdIpt2'+i+'" value="'+Jdata.result[i].Content.replace(/"/g,'&quot;')+'"><input type="hidden" id="hdIpt3'+i+'" value="'+Jdata.result[i].Content.replace(/"/g,'&quot;').replace(new RegExp('\n','g'),'<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;').replace(new RegExp(' ','g'),'&nbsp;')+'"><br>');
+					$('#discussionDiv').append('<span class="myTitle">'+Jdata.result[i].CreatedBy.Username+'：</span><table width="95%"><tr><td><div style="display:inline;" id="cntIptDiv'+i+'">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+Jdata.result[i].Content.replace(/"/g,'&quot;').replace(new RegExp('\n','g'),'<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;').replace(new RegExp(' ','g'),'&nbsp;')+'</div><td nowrap="nowrap" align="right">&nbsp;&nbsp;&nbsp;&nbsp;<div class="btn-group"><button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-pencil myTitle2"></span> <span class="caret myTitle2"></span></button><ul style="width:75px;min-width:75px;" class="dropdown-menu" role="menu"><li class="actionLi"><a href="#" onclick="startEdit('+i+');return false;">編輯</a></li><li class="actionLi"><a href="#" onclick="deleteComment('+i+');return false;">刪除</a></li></ul></div></td></tr></table><table class="disFtrTable"><tr><td nowrap="nowrap"><span class="myTitle">No.'+(i+1)+'</span>&nbsp;&nbsp;&nbsp;</td><td><div class="myTitle">Created&nbsp;:&nbsp;'+year+'/'+zeroMonth2_1+month+'/'+zeroDate2_1+date+'</div><div id="uptDate'+i+'" class="myTitle">Updated:&nbsp;'+year2+'/'+zeroMonth2_2+month2+'/'+zeroDate2_2+date2+'</div></td></tr></table></td><input type="hidden" id="hdIpt'+i+'" value="'+Jdata.result[i]._id+'"><input type="hidden" id="hdIpt2'+i+'" value="'+Jdata.result[i].Content.replace(/"/g,'&quot;')+'"><input type="hidden" id="hdIpt3'+i+'" value="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+Jdata.result[i].Content.replace(/"/g,'&quot;').replace(new RegExp('\n','g'),'<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;').replace(new RegExp(' ','g'),'&nbsp;')+'"><br>');
 				}	
 			}
 		}
 		
 		function endRenderComments(){
+			dcFlag=false;
+			ecFlag=false;
+			scFlag=false;
 			$('#iptCtr').attr('onkeypress','if(event.keyCode===13){if(!event.shiftKey){sendComment();return false;}}');
 			$('#iptCtr').removeAttr("readonly");
 			$('#sendButton').removeClass('disabled');
+			$('#newlButton').removeClass('disabled');
 			$(".actionTa").each(function() {
 				$(this).removeAttr("readonly");
 			});
 			$(".actionLi").each(function() {
 				$(this).removeClass('disabled');
 			});
-			dcFlag=false;
-			ecFlag=false;
-			scFlag=false;
+			$(".newBtnNel").each(function() {
+				$(this).removeClass('disabled');
+			});
+			$(".newBtnCom").each(function() {
+				$(this).removeClass('disabled');
+			});
+			$(".newBtnRev").each(function() {
+				$(this).removeClass('disabled');
+			});
+		}
+
+		function flicker(index){
+			var target='#uptDate'+index;
+			$(target).addClass('red');
+			$(target).fadeOut(500).fadeIn(500);
+			var cidd=setInterval(function(){
+				$(target).fadeOut(500).fadeIn(500);
+			},1000);
+			setTimeout(function(){  
+				clearTimeout(cidd);
+				$(target).stop().fadeIn('fast');
+				$(target).removeClass('red');
+				endRenderComments();
+			}, 3000);
 		}
 		
 		function checkAndOpenModal(target,cntNumber,cntTail,flag){
@@ -1329,8 +1389,21 @@
 			}
 		}
 		
+		function newLineMain(){
+			$('#iptCtr').val($('#iptCtr').val()+'\n');
+			$('#iptCtr').focus();
+		}
+
+		function newLine(index){
+			$('#actionTa'+index).val($('#actionTa'+index).val()+'\n');
+			$('#actionTa'+index).focus();
+		}
+		
 		function startEdit(index){
-			$('#cntIptDiv'+index).html('<textarea id="actionTa'+index+'" class="actionTa form-control" style="display:inline;width:70%;height:35px;" placeholder="ESC鍵可取消編輯" onkeypress="if(event.keyCode===13){if(!event.shiftKey){editComment('+index+');return false;}}" onkeyup="if(event.keyCode===27){endEdit('+index+');}">'+$('#hdIpt2'+index).val().replace(/&quot;/g,'"').replace(/&gt;/g,'>').replace(/&lt;/g,'<').replace(/&amp;/g,'&')+'</textarea>');
+			var content='<div class="input-group" style="width:70%;">';
+			content+='<textarea id="actionTa'+index+'" class="form-control actionTa" style="height:35px;min-width:150px;" placeholder="ESC鍵可取消編輯" onkeypress="if(event.keyCode===13){if(!event.shiftKey){editComment('+index+');return false;}}" onkeyup="if(event.keyCode===27){endEdit('+index+');}">'+$('#hdIpt2'+index).val().replace(/&quot;/g,'"').replace(/&gt;/g,'>').replace(/&lt;/g,'<').replace(/&amp;/g,'&')+'</textarea>';
+			content+='<span class="input-group-btn"><button class="btn btn-default newBtnNel" style="height:35px;" onclick="newLine('+index+');" type="button"><span class="glyphicon glyphicon-arrow-down myTitle2"></span></button><button class="btn btn-default newBtnCom" style="height:35px;" onclick="editComment('+index+');" type="button"><span class="glyphicon glyphicon-comment myTitle2"></span></button><button class="btn btn-default newBtnRev" style="height:35px;" onclick="endEdit('+index+');" type="button"><span class="glyphicon glyphicon-remove myTitle2"></span></button></span></div>';
+			$('#cntIptDiv'+index).html(content);
 		}
 		
 		function endEdit(index){
@@ -1342,10 +1415,11 @@
 			if(!ecFlag){
 				if($('#actionTa'+index).val().toString().trim()!==''){
 					startRenderComments();
+					var savedID=$('#hdIpt'+index).val();
 					$.ajax({ 
 						url: '/Discussions/edit',
 						type: 'POST',
-						data:{_id:$('#hdIpt'+index).val(),Content:$('#actionTa'+index).val()},
+						data:{_id:savedID,Content:$('#actionTa'+index).val()},
 						dataType: 'json',
 						success: function(Jdata) {
 							if(Jdata.success){
@@ -1353,7 +1427,19 @@
 							}else{
 								alert(Jdata.error);
 							}
-							endRenderComments();
+							var foundFlag=false;
+							for(i=0;i<Jdata.result.length-1;i++){
+								var tempppe=$('#hdIpt'+i).val();
+								if(tempppe===savedID){
+									foundFlag=true;
+									flicker(i);
+									break;
+								}
+							}
+							if(!foundFlag){
+								alert('something wrong.');
+								endRenderComments();
+							}
 						},
 						error: function() {
 							alert('something wrong.');
