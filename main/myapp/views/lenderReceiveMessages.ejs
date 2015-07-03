@@ -3,83 +3,86 @@
 	<div class="row">
 		<div class="col-md-9">
 			<div class="bigTitle">借出者收到之訊息 - <%=filterDefault%></div>
-				<div class="subTitle">&nbsp;<%=totalResultNum%> result</div>
+				<div class="subTitle">&nbsp;<%=totalResultNum%>&nbsp;result&nbsp;&nbsp;&nbsp;&nbsp;<%=pageNumber%>&nbsp;page</div>
 				<br>
-				<div class="input-group">
-					<input type="text" class="form-control pageBar" id="msgKeywordIpt" placeholder="搜尋訊息內容、故事標題或用戶名稱" value="<%=msgKeywordDefault%>" onkeypress="if(event.keyCode===13){linker();}">
-					<span class="input-group-btn">
-						<div class="btn-group">
-							<button type="button" class="btn btn-default dropdown-toggle pageBar" data-toggle="dropdown" id="filterSelected">
-								<%=filterDefault%> <span class="caret"></span>
-							</button>
-							<ul class="dropdown-menu">
-								<li style="display:none"><a href="#" id="filter0"><%=filterDefault%></a></li>
-								<li id="flis1"<%if(filterDefault==='未確認'){%> class="active"<%}%>><a href="#" onclick="filterSelector(1);return false;" id="filter1">未確認</a></li>
-								<li id="flis2"<%if(filterDefault==='已同意'){%> class="active"<%}%>><a href="#" onclick="filterSelector(2);return false;" id="filter2">已同意</a></li>
-								<li id="flis3"<%if(filterDefault==='已婉拒'){%> class="active"<%}%>><a href="#" onclick="filterSelector(3);return false;" id="filter3">已婉拒</a></li>
-								<li id="flis4"<%if(filterDefault==='不分類'){%> class="active"<%}%>><a href="#" onclick="filterSelector(4);return false;" id="filter4">不分類</a></li>
-							</ul>
-						</div>
-						<div class="btn-group">
-							<button type="button" class="btn btn-default dropdown-toggle pageBar" data-toggle="dropdown" id="classorSelected">
-								<%=classorDefault%> <span class="caret"></span>
-							</button>
-							<ul class="dropdown-menu">
-								<li style="display:none"><a href="#" id="classor0"><%=classorDefault%></a></li>
-								<li id="clis1"<%if(classorDefault==='不分故事種類'){%> class="active"<%}%>><a href="#" onclick="classorSelector(1);return false;" id="classor1">不分故事種類</a></li>
-								<li id="clis2"<%if(classorDefault==='一般'){%> class="active"<%}%>><a href="#" onclick="classorSelector(2);return false;" id="classor2">一般</a></li>
-								<li id="clis3"<%if(classorDefault==='教育'){%> class="active"<%}%>><a href="#" onclick="classorSelector(3);return false;" id="classor3">教育</a></li>
-								<li id="clis4"<%if(classorDefault==='家庭'){%> class="active"<%}%>><a href="#" onclick="classorSelector(4);return false;" id="classor4">家庭</a></li>
-								<li id="clis5"<%if(classorDefault==='旅遊'){%> class="active"<%}%>><a href="#" onclick="classorSelector(5);return false;" id="classor5">旅遊</a></li>
-							</ul>
-						</div>
-						<div class="btn-group">
-							<button type="button" class="btn btn-default pageBar" id="sorterSelected" data-toggle="dropdown" aria-expanded="false"><%=sorterDefault%> <span class='caret'></span></button>
-							<ul class="dropdown-menu" role="menu">
-								<li style="display:none"><a href="#" id="sorter0"><%=sorterDefault%></a></li>
-								<li id="slis1"<%if(sorterDefault==='更新日期'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(1);return false;" id="sorter1">更新日期</a></li>
-								<li id="slis2"<%if(sorterDefault==='建立日期'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(2);return false;" id="sorter2">建立日期</a></li>
-								<li id="slis3"<%if(sorterDefault==='欲借入年利率'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(3);return false;" id="sorter3">欲借入年利率</a></li>
-								<li id="slis4"<%if(sorterDefault==='欲借入金額'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(4);return false;" id="sorter4">欲借入金額</a></li>
-								<li id="slis5"<%if(sorterDefault==='欲借入期數'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(5);return false;" id="sorter5">欲借入期數</a></li>
-								<li id="slis6"<%if(sorterDefault==='信用等級'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(6);return false;" id="sorter6">信用等級</a></li>
-								<li id="slis7"<%if(sorterDefault==='預計總利息'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(7);return false;" id="sorter7">預計總利息</a></li>
-								<li id="slis8"<%if(sorterDefault==='預計本利和'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(8);return false;" id="sorter8">預計本利和</a></li>
-								<li id="slis9"<%if(sorterDefault==='預計平均利息'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(9);return false;" id="sorter9">預計平均利息</a></li>
-								<li id="slis10"<%if(sorterDefault==='預計平均本利和'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(10);return false;" id="sorter10">預計平均本利和</a></li>
-								<li id="slis11"<%if(sorterDefault==='預計利本比'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(11);return false;" id="sorter11">預計利本比</a></li>
-							</ul>
-						</div>
-						<div class="btn-group">
-							<button type="button" class="btn btn-default pageBar" id="directorSelected" data-toggle="dropdown" aria-expanded="false"><%=directorDefault%> <span class='caret'></span></button>
-							<ul class="dropdown-menu" role="menu">
-								<li style="display:none"><a href="#" id="director0"><%=directorDefault%></a></li>
-								<li id="dlis1"<%if(directorDefault==='大至小'){%> class="active"<%}%>><a href="#" onclick="directorSelector(1);return false;" id="director1">大至小</a></li>
-								<li id="dlis2"<%if(directorDefault==='小至大'){%> class="active"<%}%>><a href="#" onclick="directorSelector(2);return false;" id="director2">小至大</a></li>
-							</ul>
-						</div>
-						<div class="btn-group">
-							<button type="button" class="btn btn-default pageBar" onclick="linker();">Go!</button>
-						</div>
-					</span>
-				</div> 
+				<div class="resp2">
+					<div class="input-group">
+						<input type="text" class="form-control pageBar" id="msgKeywordIpt" placeholder="搜尋訊息內容、故事標題或用戶名稱" value="<%=msgKeywordDefault%>" onkeypress="if(event.keyCode===13){linker();}">
+						<span class="input-group-btn">
+							<div class="btn-group">
+								<button type="button" class="btn btn-default dropdown-toggle pageBar" data-toggle="dropdown" id="filterSelected">
+									<%=filterDefault%> <span class="caret"></span>
+								</button>
+								<ul class="dropdown-menu">
+									<li style="display:none"><a href="#" id="filter0"><%=filterDefault%></a></li>
+									<li id="flis1"<%if(filterDefault==='未確認'){%> class="active"<%}%>><a href="#" onclick="filterSelector(1);return false;" id="filter1">未確認</a></li>
+									<li id="flis2"<%if(filterDefault==='已同意'){%> class="active"<%}%>><a href="#" onclick="filterSelector(2);return false;" id="filter2">已同意</a></li>
+									<li id="flis3"<%if(filterDefault==='已婉拒'){%> class="active"<%}%>><a href="#" onclick="filterSelector(3);return false;" id="filter3">已婉拒</a></li>
+									<li id="flis4"<%if(filterDefault==='不分類'){%> class="active"<%}%>><a href="#" onclick="filterSelector(4);return false;" id="filter4">不分類</a></li>
+								</ul>
+							</div>
+							<div class="btn-group">
+								<button type="button" class="btn btn-default dropdown-toggle pageBar" data-toggle="dropdown" id="classorSelected">
+									<%=classorDefault%> <span class="caret"></span>
+								</button>
+								<ul class="dropdown-menu">
+									<li style="display:none"><a href="#" id="classor0"><%=classorDefault%></a></li>
+									<li id="clis1"<%if(classorDefault==='不分故事種類'){%> class="active"<%}%>><a href="#" onclick="classorSelector(1);return false;" id="classor1">不分故事種類</a></li>
+									<li id="clis2"<%if(classorDefault==='一般'){%> class="active"<%}%>><a href="#" onclick="classorSelector(2);return false;" id="classor2">一般</a></li>
+									<li id="clis3"<%if(classorDefault==='教育'){%> class="active"<%}%>><a href="#" onclick="classorSelector(3);return false;" id="classor3">教育</a></li>
+									<li id="clis4"<%if(classorDefault==='家庭'){%> class="active"<%}%>><a href="#" onclick="classorSelector(4);return false;" id="classor4">家庭</a></li>
+									<li id="clis5"<%if(classorDefault==='旅遊'){%> class="active"<%}%>><a href="#" onclick="classorSelector(5);return false;" id="classor5">旅遊</a></li>
+								</ul>
+							</div>
+							<div class="btn-group">
+								<button type="button" class="btn btn-default pageBar" id="sorterSelected" data-toggle="dropdown" aria-expanded="false"><%=sorterDefault%> <span class='caret'></span></button>
+								<ul class="dropdown-menu" role="menu">
+									<li style="display:none"><a href="#" id="sorter0"><%=sorterDefault%></a></li>
+									<li id="slis1"<%if(sorterDefault==='更新日期'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(1);return false;" id="sorter1">更新日期</a></li>
+									<li id="slis2"<%if(sorterDefault==='建立日期'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(2);return false;" id="sorter2">建立日期</a></li>
+									<li id="slis3"<%if(sorterDefault==='欲借入年利率'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(3);return false;" id="sorter3">欲借入年利率</a></li>
+									<li id="slis4"<%if(sorterDefault==='欲借入金額'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(4);return false;" id="sorter4">欲借入金額</a></li>
+									<li id="slis5"<%if(sorterDefault==='欲借入期數'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(5);return false;" id="sorter5">欲借入期數</a></li>
+									<li id="slis6"<%if(sorterDefault==='信用等級'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(6);return false;" id="sorter6">信用等級</a></li>
+									<li id="slis7"<%if(sorterDefault==='預計總利息'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(7);return false;" id="sorter7">預計總利息</a></li>
+									<li id="slis8"<%if(sorterDefault==='預計本利和'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(8);return false;" id="sorter8">預計本利和</a></li>
+									<li id="slis9"<%if(sorterDefault==='預計平均利息'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(9);return false;" id="sorter9">預計平均利息</a></li>
+									<li id="slis10"<%if(sorterDefault==='預計平均本利和'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(10);return false;" id="sorter10">預計平均本利和</a></li>
+									<li id="slis11"<%if(sorterDefault==='預計利本比'){%> class="active"<%}%>><a href="#" onclick="sorterSelector(11);return false;" id="sorter11">預計利本比</a></li>
+								</ul>
+							</div>
+							<div class="btn-group">
+								<button type="button" class="btn btn-default pageBar" id="directorSelected" data-toggle="dropdown" aria-expanded="false"><%=directorDefault%> <span class='caret'></span></button>
+								<ul class="dropdown-menu" role="menu">
+									<li style="display:none"><a href="#" id="director0"><%=directorDefault%></a></li>
+									<li id="dlis1"<%if(directorDefault==='大至小'){%> class="active"<%}%>><a href="#" onclick="directorSelector(1);return false;" id="director1">大至小</a></li>
+									<li id="dlis2"<%if(directorDefault==='小至大'){%> class="active"<%}%>><a href="#" onclick="directorSelector(2);return false;" id="director2">小至大</a></li>
+								</ul>
+							</div>
+							<div class="btn-group">
+								<button type="button" class="btn btn-default pageBar" onclick="linker();">Go!</button>
+							</div>
+						</span>
+					</div> 
+				</div>
 				<br>
-				<div style="border-top-style: none;border-right-style: none;border-bottom-style: none;border-left-style: none;margin-top: 0px;margin-bottom: 0px;" class="table-responsive">
-					<table style="margin-bottom: 0px;margin-top: 0px;" class="table" width="100%">
+				<div class="resp">
+					<table class="myResTable" width="100%">
 						<tr>
-							<td style="border-bottom-style: none;border-top-style: none;">
+							<td>
 								<%if((sorterDefault==='建立日期')||(sorterDefault==='更新日期')){%>
 									<input type="text" placeholder="下限(年/月/日)" class="form-control boundIpt" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode===13){linker();}">&nbsp;&nbsp;<span id='lbd'></span>
-									&nbsp;&nbsp;~&nbsp;&nbsp;
+									&nbsp;&nbsp;~&nbsp;&nbsp;&nbsp;&nbsp;
 									<input type="text" placeholder="上限(年/月/日)" class="form-control boundIpt" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode===13){linker();}">&nbsp;&nbsp;<span id='ubd'></span>
 								<%}else{%>
 									<input type="text" placeholder="下限" class="form-control boundIpt" value="<%=lboundDefault%>" id="lbound" onkeypress="if(event.keyCode===13){linker();}">&nbsp;&nbsp;<span id='lbd'></span>
-									&nbsp;&nbsp;~&nbsp;&nbsp;
+									&nbsp;&nbsp;~&nbsp;&nbsp;&nbsp;&nbsp;
 									<input type="text" placeholder="上限" class="form-control boundIpt" value="<%=uboundDefault%>" id="ubound" onkeypress="if(event.keyCode===13){linker();}">&nbsp;&nbsp;<span id='ubd'></span>
 								<%}%>
 							</td>
 						<%if((kpr!=='')&&(totalResultNum>0)&&(!oflg)&&(pflg)){%>
-							<td align="right" style="border-bottom-style: none;border-top-style: none;">
+							<td align="right">
+								&nbsp;&nbsp;&nbsp;&nbsp;
 								<button class="btn btn-default disabled" style="display:none;" id="highlightBtn" onclick="enableHighlight();">
 									關鍵字上色
 								</button>
@@ -98,8 +101,8 @@
 					<br>
 					欲同意<%=cfJSON.InfoJSON.counter1%>筆訊息，其中<%=cfJSON.InfoJSON.counter2%>筆成功，<%=cfJSON.InfoJSON.counter1-cfJSON.InfoJSON.counter2%>筆失敗
 					<br>
-					<div style="border-top-style: none;border-right-style: none;border-bottom-style: none;border-left-style: none;margin-top: 0px;margin-bottom: 0px;" class="table-responsive">
-						<table style="margin-bottom: 0px;margin-top: 0px;" class="table" width="100%">
+					<div class="resp">
+						<table style="display:inline;" class="table myResTable">
 							<thead class="myThead">
 								<tr>
 									<th style="text-align:center">
@@ -161,8 +164,8 @@
 				<% if(totalResultNum>0){ %>
 					<% if(filterDefault==='未確認'){%>
 						<br>
-						<div style="border-top-style: none;border-right-style: none;border-bottom-style: none;border-left-style: none;margin-top: 0px;margin-bottom: 0px;" class="table-responsive">
-							<table style="margin-bottom: 0px;margin-top: 0px;" class="table" width="100%">
+						<div class="resp">
+							<table style="display:inline;" class="table myResTable">
 								<thead class="myThead">
 									<tr>
 										<th style="text-align:center">
@@ -199,8 +202,8 @@
 						</div>
 						<br>
 						<br>
-						<div style="border-top-style: none;border-right-style: none;border-bottom-style: none;border-left-style: none;margin-top: 0px;margin-bottom: 0px;" class="table-responsive">
-							<table style="margin-bottom: 0px;margin-top: 0px;" class="table" width="100%">
+						<div class="resp">
+							<table style="display:inline;" class="table myResTable">
 								<thead class="myThead">
 									<tr>
 										<th style="text-align:center">
@@ -248,8 +251,8 @@
 						<%}%>
 						<%if(pageNumber>1){%>
 						<br>
-						<div style="border-top-style: none;border-right-style: none;border-bottom-style: none;border-left-style: none;margin-top: 0px;margin-bottom: 0px;" class="table-responsive">
-							<table style="margin-bottom: 0px;margin-top: 0px;" class="table" width="100%">
+						<div class="resp">
+							<table style="display:inline;" class="table myResTable">
 								<thead class="myThead">
 									<tr>
 										<th style="text-align:center">
@@ -302,16 +305,16 @@
 						</div>
 						<br>
 						<br>
-						<div style="border-top-style: none;border-right-style: none;border-bottom-style: none;border-left-style: none;margin-top: 0px;margin-bottom: 0px;" class="table-responsive">
-							<table style="margin-bottom: 0px;margin-top: 0px;" class="table" width="100%">
+						<div class="resp">
+							<table class="myResTable" width="100%">
 								<tr>
-									<td style="border-bottom-style: none;border-top-style: none;">
+									<td>
 										<button type="button" class="btn btn-info" data-toggle="modal" data-target="#chkModal1">
-											同意全部收到之請求
+											全部同意
 										</button>
 										&nbsp;&nbsp;
 										<button type="button" class="btn btn-danger" data-toggle="modal" data-target="#chkModal2">
-											婉拒全部收到之請求
+											全部婉拒
 										</button>
 									</td>
 								</tr>
@@ -388,8 +391,8 @@
 						<br>
 						<%}%>
 						<br>
-						<div style="border-top-style: none;border-right-style: none;border-bottom-style: none;border-left-style: none;margin-top: 0px;margin-bottom: 0px;" class="table-responsive">
-							<table style="margin-bottom: 0px;margin-top: 0px;" class="table" width="100%">
+						<div class="resp">
+							<table style="display:inline;" class="table myResTable">
 								<thead class="myThead">
 									<tr>
 										<th style="text-align:center">
@@ -438,35 +441,35 @@
 						</div>
 						<br>
 						<br>
-						<div style="border-top-style: none;border-right-style: none;border-bottom-style: none;border-left-style: none;margin-top: 0px;margin-bottom: 0px;" class="table-responsive">
-							<table style="margin-bottom: 0px;margin-top: 0px;" class="table" width="100%">
-								<tr>
-									<td style="border-bottom-style: none;border-top-style: none;">
-										<input type="checkbox" id="selectAll" onclick="selectAllFun();">&nbsp;&nbsp;&nbsp;&nbsp;
-										<button id="enableAllBtn" type="button" class="btn btn-default" onclick="$('#selectAll').prop('checked', true);selectAllFun();">
-											全選
-										</button>
-										&nbsp;&nbsp;
-										<button id="disableAllBtn" type="button" class="btn btn-default" onclick="$('#selectAll').prop('checked', false);selectAllFun();">
-											全不選
-										</button>
-										&nbsp;&nbsp;
-										<button id="reverseAllBtn" type="button" class="btn btn-default" onclick="reverseAllFun();">
-											反選
-										</button>
-									</td>
-									<td align="right" style="border-bottom-style: none;border-top-style: none;">	
-										<button type="button" class="btn btn-info" onclick="checkAndOpenModal('#chkModal3');">
-											同意
-										</button>
-										&nbsp;&nbsp;
-										<button type="button" class="btn btn-danger" onclick="checkAndOpenModal('#chkModal4');">
-											婉拒
-										</button>
-									</td>
-								</tr>
-							</table>
+						<div class="input-group actioner">
+							<span class="input-group-addon">
+								<input type="checkbox" id="selectAll" onclick="selectAllFun();">
+							</span>
+							<span class="input-group-btn">
+								<div class="btn-group">
+									<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+										動作 <span class="caret"></span>
+									</button>
+									<ul class="dropdown-menu">
+										<li><a href="#" onclick="$('#selectAll').prop('checked', true);selectAllFun();return false;">全選</a></li>
+										<li><a href="#" onclick="$('#selectAll').prop('checked', false);selectAllFun();return false;">全不選</a></li>
+										<li><a href="#" onclick="reverseAllFun();return false;">反選</a></li>
+									</ul>
+								</div>
+							</span>
 						</div>
+						<br>
+						<br>
+						<button type="button" class="btn btn-info" onclick="checkAndOpenModal('#chkModal3');">
+							同意請求
+						</button>
+						&nbsp;&nbsp;
+						<button type="button" class="btn btn-danger" onclick="checkAndOpenModal('#chkModal4');">
+							婉拒請求
+						</button>
+						<br>
+						<br>
+						<br>
 						<%if(jsonLend){%>
 							<div class="modal fade" id="chkModal3">
 								<div class="modal-dialog modal-sm">
@@ -533,9 +536,6 @@
 								</div>
 							</div>
 						</div>
-						<br>
-						<br>
-						<br>
 						<div class="modal fade" id="msgModal">
 							<div class="modal-dialog modal-sm">
 								<div class="modal-content">
@@ -581,417 +581,421 @@
 							<span class="m1">來自&nbsp;</span>
 							<div class="m1 myTitle colorCnt"><%=jsonMessage[i].CreatedBy.Username%></div>
 							<br>
-							&nbsp;&nbsp;在&nbsp;&nbsp;<a class="m2<%if(jsonMessage[i].color==="color1"){%> color1<%}else if(jsonMessage[i].color==="color2"){%> color2<%}else if(jsonMessage[i].color==="color3"){%> color3<%}else if(jsonMessage[i].color==="color4"){%> color4<%}else if(jsonMessage[i].color==="color5"){%> color5<%}else if(jsonMessage[i].color==="color6"){%> color6<%}else if(jsonMessage[i].color==="color7"){%> color7<%}%>" href="/lender/story?id=<%=jsonMessage[i].FromBorrowRequest._id%>">[<%if(jsonMessage[i].FromBorrowRequest.Category==='general'){%>一般<%}else if(jsonMessage[i].FromBorrowRequest.Category==='education'){%>教育<%}else if(jsonMessage[i].FromBorrowRequest.Category==='family'){%>家庭<%}else if(jsonMessage[i].FromBorrowRequest.Category==='tour'){%>旅遊<%}%>]&nbsp;<%if(jsonMessage[i].FromBorrowRequest.StoryTitle!==''){%><div class="colorCnt"><%-jsonMessage[i].FromBorrowRequest.StoryTitle.replace(new RegExp(' ','g'),'&nbsp;')%></div><%}else{%>無標題<%}%></a>
+							&nbsp;&nbsp;在&nbsp;&nbsp;<a class="m2<%if(jsonMessage[i].color==="color1"){%> color1<%}else if(jsonMessage[i].color==="color2"){%> color2<%}else if(jsonMessage[i].color==="color3"){%> color3<%}else if(jsonMessage[i].color==="color4"){%> color4<%}else if(jsonMessage[i].color==="color5"){%> color5<%}else if(jsonMessage[i].color==="color6"){%> color6<%}else if(jsonMessage[i].color==="color7"){%> color7<%}%>" href="/lender/story?id=<%=jsonMessage[i].FromBorrowRequest._id%>"><span class="category">[<%if(jsonMessage[i].FromBorrowRequest.Category==='general'){%>一般<%}else if(jsonMessage[i].FromBorrowRequest.Category==='education'){%>教育<%}else if(jsonMessage[i].FromBorrowRequest.Category==='family'){%>家庭<%}else if(jsonMessage[i].FromBorrowRequest.Category==='tour'){%>旅遊<%}%>]</span>&nbsp;<%if(jsonMessage[i].FromBorrowRequest.StoryTitle!==''){%><div class="colorCnt"><%-jsonMessage[i].FromBorrowRequest.StoryTitle.replace(new RegExp(' ','g'),'&nbsp;')%></div><%}else{%>無標題<%}%></a>
 							<br>
 							<br>
 							<%if(jsonMessage[i].Message!==''){%><div class="colorCnt"><%-jsonMessage[i].Message.replace(new RegExp('\n','g'),'<br>').replace(new RegExp(' ','g'),'&nbsp;')%></div><%}else{%>無內容<%}%>
 						</div>
 						<div class="tab-pane" id="tab2<%=i%>">
-							<div class="col-md-12">
-								<table width="100%" height="470px">
-									<tr>
-										<td>
-											<span class="<%if(sorterDefault==='欲借入金額'){%>stronger<%}else{%>myTitle<%}%>">欲借入金額：</span>
-										</td>
-									</tr>
-									<tr>
-										<td>
-											&nbsp;&nbsp;&nbsp;&nbsp;<span style="display:none;" id="value1<%=i%>"><%=jsonMessage[i].MoneyToLend%></span><%=jsonMessage[i].MoneyToLend.toFixed(0)%>元
-										</td>
-									</tr>
-									<tr>
-										<td>
-											<span class="<%if(sorterDefault==='欲借入年利率'){%>stronger<%}else{%>myTitle<%}%>">欲借入年利率：</span>
-										</td>
-									</tr>
-									<tr>
-										<td>
-											&nbsp;&nbsp;&nbsp;&nbsp;<%=(jsonMessage[i].InterestRate*100).toFixed(2)%>%
-										</td>
-									</tr>
-									<tr>
-										<td>
-											<span class="<%if(sorterDefault==='欲借入期數'){%>stronger<%}else{%>myTitle<%}%>">欲借入期數：</span>
-										</td>
-									</tr>
-									<tr>
-										<td>
-											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].MonthPeriod.toFixed(0)%>個月s
-										</td>
-									</tr>
-									<tr>
-										<td>
-											<span class="<%if(sorterDefault==='信用等級'){%>stronger<%}else{%>myTitle<%}%>">信用等級：</span>
-										</td>
-									</tr>
-									<tr>
-										<td>
-											&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Level.toFixed(0)%>級
-										</td>
-									</tr>
-									<tr>
-										<td>
-											<span class="<%if(sorterDefault==='預計總利息'){%>stronger<%}else{%>myTitle<%}%>">預計總利息：</span>
-										</td>
-									</tr>
-									<tr>
-										<td>
-											&nbsp;&nbsp;&nbsp;&nbsp;<span style="display:none;" id="value2<%=i%>"><%=jsonMessage[i].InterestInFuture%></span><%=jsonMessage[i].InterestInFuture.toFixed(0)%>元
-										</td>
-									</tr>
-									<tr>
-										<td>
-											<span class="<%if(sorterDefault==='預計本利和'){%>stronger<%}else{%>myTitle<%}%>">預計本利和：</span>
-										</td>
-									</tr>
-									<tr>
-										<td>
-											&nbsp;&nbsp;&nbsp;&nbsp;<span style="display:none;" id="value3<%=i%>"><%=jsonMessage[i].MoneyFuture%></span><%=jsonMessage[i].MoneyFuture.toFixed(0)%>元
-										</td>
-									</tr>
-									<tr>
-										<td>
-											<span class="<%if(sorterDefault==='預計平均利息'){%>stronger<%}else{%>myTitle<%}%>">預計平均利息：</span>
-										</td>
-									</tr>
-									<tr>
-										<td>
-											&nbsp;&nbsp;&nbsp;&nbsp;<span style="display:none;" id="value4<%=i%>"><%=jsonMessage[i].InterestInFutureMonth%></span><%=jsonMessage[i].InterestInFutureMonth.toFixed(0)%>元/月
-										</td>
-									</tr>
-									<tr>
-										<td>
-											<span class="<%if(sorterDefault==='預計平均本利和'){%>stronger<%}else{%>myTitle<%}%>">預計平均本利和：</span>
-										</td>
-									</tr>
-									<tr>
-										<td>
-											&nbsp;&nbsp;&nbsp;&nbsp;<span style="display:none;" id="value5<%=i%>"><%=jsonMessage[i].InterestInFutureMoneyMonth%></span><%=jsonMessage[i].InterestInFutureMoneyMonth.toFixed(0)%>元/月
-										</td>
-									</tr>
-									<tr>
-										<td>
-											<span class="<%if(sorterDefault==='預計利本比'){%>stronger<%}else{%>myTitle<%}%>">預計利本比：</span>
-										</td>
-									</tr>
-									<tr>
-										<td>
-											&nbsp;&nbsp;&nbsp;&nbsp;<%=(jsonMessage[i].InterestInFutureDivMoney*100).toFixed(2)%>%
-										</td>
-									</tr>
-								</table>	
+							<div class="row">
+								<div class="col-md-12">
+									<table width="100%" height="470px">
+										<tr>
+											<td>
+												<span class="<%if(sorterDefault==='欲借入金額'){%>stronger<%}else{%>myTitle<%}%>">欲借入金額：</span>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												&nbsp;&nbsp;&nbsp;&nbsp;<span style="display:none;" id="value1<%=i%>"><%=jsonMessage[i].MoneyToLend%></span><%=jsonMessage[i].MoneyToLend.toFixed(0)%>元
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span class="<%if(sorterDefault==='欲借入年利率'){%>stronger<%}else{%>myTitle<%}%>">欲借入年利率：</span>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=(jsonMessage[i].InterestRate*100).toFixed(2)%>%
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span class="<%if(sorterDefault==='欲借入期數'){%>stronger<%}else{%>myTitle<%}%>">欲借入期數：</span>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].MonthPeriod.toFixed(0)%>個月s
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span class="<%if(sorterDefault==='信用等級'){%>stronger<%}else{%>myTitle<%}%>">信用等級：</span>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Level.toFixed(0)%>級
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span class="<%if(sorterDefault==='預計總利息'){%>stronger<%}else{%>myTitle<%}%>">預計總利息：</span>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												&nbsp;&nbsp;&nbsp;&nbsp;<span style="display:none;" id="value2<%=i%>"><%=jsonMessage[i].InterestInFuture%></span><%=jsonMessage[i].InterestInFuture.toFixed(0)%>元
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span class="<%if(sorterDefault==='預計本利和'){%>stronger<%}else{%>myTitle<%}%>">預計本利和：</span>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												&nbsp;&nbsp;&nbsp;&nbsp;<span style="display:none;" id="value3<%=i%>"><%=jsonMessage[i].MoneyFuture%></span><%=jsonMessage[i].MoneyFuture.toFixed(0)%>元
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span class="<%if(sorterDefault==='預計平均利息'){%>stronger<%}else{%>myTitle<%}%>">預計平均利息：</span>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												&nbsp;&nbsp;&nbsp;&nbsp;<span style="display:none;" id="value4<%=i%>"><%=jsonMessage[i].InterestInFutureMonth%></span><%=jsonMessage[i].InterestInFutureMonth.toFixed(0)%>元/月
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span class="<%if(sorterDefault==='預計平均本利和'){%>stronger<%}else{%>myTitle<%}%>">預計平均本利和：</span>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												&nbsp;&nbsp;&nbsp;&nbsp;<span style="display:none;" id="value5<%=i%>"><%=jsonMessage[i].InterestInFutureMoneyMonth%></span><%=jsonMessage[i].InterestInFutureMoneyMonth.toFixed(0)%>元/月
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span class="<%if(sorterDefault==='預計利本比'){%>stronger<%}else{%>myTitle<%}%>">預計利本比：</span>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												&nbsp;&nbsp;&nbsp;&nbsp;<%=(jsonMessage[i].InterestInFutureDivMoney*100).toFixed(2)%>%
+											</td>
+										</tr>
+									</table>	
+								</div>
 							</div>
 						</div>
 						<% if(jsonMessage[i].Status==='Confirmed'){%>
 							<div class="tab-pane" id="tab3<%=i%>">
-								<div class="col-md-4">
-									<table width="100%" height="470px">
-										<tr>
-											<td>
-												<span class="myTitle">原始本金：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].Principal.toFixed(0)%>元	
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="myTitle">額外本金：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].ExtendPrincipal.toFixed(0)%>元
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="myTitle">目前總本金：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].TotalPrincipalNow.toFixed(0)%>元
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="myTitle">未還本金：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].PrincipalNotReturn.toFixed(0)%>元
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="myTitle">已還本金：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].PrincipalReturn.toFixed(0)%>元
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="myTitle">年利率：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=(jsonMessage[i].Transaction[0].InterestRate*100).toFixed(2)%>%
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="myTitle">已得利息：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].Interest.toFixed(0)%>元
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="myTitle">已得本利和：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].PrincipalInterest.toFixed(0)%>元
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="myTitle">已得平均利息：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].InterestMonth.toFixed(0)%>元/月
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="myTitle">已得平均本利和：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].PrincipalInterestMonth.toFixed(0)%>元/月
-											</td>
-										</tr>
-									</table>
-								</div>
-								<div class="col-md-4">
-									<table width="100%" height="470px">
-										<tr>
-											<td>
-												<span class="myTitle">已得利本比：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=(jsonMessage[i].Transaction[0].InterestDivPrincipal*100).toFixed(2)%>%
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="myTitle">原始期數：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].MonthPeriod.toFixed(0)%>個月
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="myTitle">額外期數：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].ExtendMonthPeriod.toFixed(0)%>個月
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="myTitle">目前總期數：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].TotalMonthPeriodNow.toFixed(0)%>個月
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="myTitle">剩下期數：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].MonthPeriodLeft.toFixed(0)%>個月
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="myTitle">已過期數：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].MonthPeriodPast.toFixed(0)%>個月
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="myTitle">成交日期：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].Created.getFullYear()%>/<%if(jsonMessage[i].Transaction[0].Created.getMonth()<9){%>0<%}%><%=jsonMessage[i].Transaction[0].Created.getMonth()+1%>/<%if(jsonMessage[i].Transaction[0].Created.getDate()<10){%>0<%}%><%=jsonMessage[i].Transaction[0].Created.getDate()%>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="myTitle">狀態：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%if(jsonMessage[i].Transaction[0].PrincipalNotReturn>0){%><%if(jsonMessage[i].Transaction[0].InsuranceFeePaid>0){%>已保險<%}else{%>未保險<%}%><%}else{%>已結清<%}%>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="myTitle">收款次數：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<%if(jsonMessage[i].Transaction[0].ReturnCount>0){%>
-													&nbsp;&nbsp;&nbsp;&nbsp;<a href="/lender/lenderReturnRecord?oneid=&id=<%=jsonMessage[i].Transaction[0]._id%>&messenger=<%=encodeURIComponent('不分訊息種類')%>&classor=<%=encodeURIComponent("不分故事種類");%>&sorter=<%=encodeURIComponent("建立日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1"><%=jsonMessage[i].Transaction[0].ReturnCount.toFixed(0)%>次</a>
-												<%}else{%>
-													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].ReturnCount.toFixed(0)%>次
-												<%}%>
-											</td>
-										</tr>
-									</table>
-								</div>
-								<div class="col-md-4">
-									<table width="100%" height="470px">
-										<tr>
-											<td>
-												<span class="myTitle">預計剩餘利息：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].InterestInFuture.toFixed(0)%>元	
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="myTitle">預計剩餘本利和：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].MoneyFuture.toFixed(0)%>元
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="myTitle">預計剩餘平均利息：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].InterestInFutureMonth.toFixed(0)%>元/月
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="myTitle">預計剩餘平均本利和：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].InterestInFutureMoneyMonth.toFixed(0)%>元/月
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="myTitle">預計剩餘利本比：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=(jsonMessage[i].Transaction[0].InterestInFutureDivMoney*100).toFixed(2)%>%
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="myTitle">上次成功收款日期：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%if(jsonMessage[i].Transaction[0].previousPayDate){%><%=jsonMessage[i].Transaction[0].previousPayDate.getFullYear()%>/<%if(jsonMessage[i].Transaction[0].previousPayDate.getMonth()<9){%>0<%}%><%=jsonMessage[i].Transaction[0].previousPayDate.getMonth()+1%>/<%if(jsonMessage[i].Transaction[0].previousPayDate.getDate()<10){%>0<%}%><%=jsonMessage[i].Transaction[0].previousPayDate.getDate()%><%}else{%>無收款記錄<%}%>	
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="myTitle">下次應收款日期：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%if(jsonMessage[i].Transaction[0].nextPayDate){%><%=jsonMessage[i].Transaction[0].nextPayDate.getFullYear()%>/<%if(jsonMessage[i].Transaction[0].nextPayDate.getMonth()<9){%>0<%}%><%=jsonMessage[i].Transaction[0].nextPayDate.getMonth()+1%>/<%if(jsonMessage[i].Transaction[0].nextPayDate.getDate()<10){%>0<%}%><%=jsonMessage[i].Transaction[0].nextPayDate.getDate()%><%}else{%>已還清<%}%>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="myTitle">保險所需費用：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%if(jsonMessage[i].Transaction[0].Principal>0){%><%if(jsonMessage[i].Transaction[0].Principal*insuranceRate<1){%>1<%}else{%><%=(jsonMessage[i].Transaction[0].Principal*insuranceRate).toFixed(0)%><%}%><%}else{%>0<%}%>元	
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="myTitle">已付保險費用：</span>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].InsuranceFeePaid.toFixed(0)%>元
-											</td>
-										</tr>
-									</table>
+								<div class="row">
+									<div class="col-md-4">
+										<table width="100%" height="470px">
+											<tr>
+												<td>
+													<span class="myTitle">原始本金：</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].Principal.toFixed(0)%>元	
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<span class="myTitle">額外本金：</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].ExtendPrincipal.toFixed(0)%>元
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<span class="myTitle">目前總本金：</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].TotalPrincipalNow.toFixed(0)%>元
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<span class="myTitle">未還本金：</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].PrincipalNotReturn.toFixed(0)%>元
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<span class="myTitle">已還本金：</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].PrincipalReturn.toFixed(0)%>元
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<span class="myTitle">年利率：</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													&nbsp;&nbsp;&nbsp;&nbsp;<%=(jsonMessage[i].Transaction[0].InterestRate*100).toFixed(2)%>%
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<span class="myTitle">已得利息：</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].Interest.toFixed(0)%>元
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<span class="myTitle">已得本利和：</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].PrincipalInterest.toFixed(0)%>元
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<span class="myTitle">已得平均利息：</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].InterestMonth.toFixed(0)%>元/月
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<span class="myTitle">已得平均本利和：</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].PrincipalInterestMonth.toFixed(0)%>元/月
+												</td>
+											</tr>
+										</table>
+									</div>
+									<div class="col-md-4">
+										<table width="100%" height="470px">
+											<tr>
+												<td>
+													<span class="myTitle">已得利本比：</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													&nbsp;&nbsp;&nbsp;&nbsp;<%=(jsonMessage[i].Transaction[0].InterestDivPrincipal*100).toFixed(2)%>%
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<span class="myTitle">原始期數：</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].MonthPeriod.toFixed(0)%>個月
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<span class="myTitle">額外期數：</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].ExtendMonthPeriod.toFixed(0)%>個月
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<span class="myTitle">目前總期數：</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].TotalMonthPeriodNow.toFixed(0)%>個月
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<span class="myTitle">剩下期數：</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].MonthPeriodLeft.toFixed(0)%>個月
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<span class="myTitle">已過期數：</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].MonthPeriodPast.toFixed(0)%>個月
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<span class="myTitle">成交日期：</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].Created.getFullYear()%>/<%if(jsonMessage[i].Transaction[0].Created.getMonth()<9){%>0<%}%><%=jsonMessage[i].Transaction[0].Created.getMonth()+1%>/<%if(jsonMessage[i].Transaction[0].Created.getDate()<10){%>0<%}%><%=jsonMessage[i].Transaction[0].Created.getDate()%>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<span class="myTitle">狀態：</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													&nbsp;&nbsp;&nbsp;&nbsp;<%if(jsonMessage[i].Transaction[0].PrincipalNotReturn>0){%><%if(jsonMessage[i].Transaction[0].InsuranceFeePaid>0){%>已保險<%}else{%>未保險<%}%><%}else{%>已結清<%}%>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<span class="myTitle">收款次數：</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<%if(jsonMessage[i].Transaction[0].ReturnCount>0){%>
+														&nbsp;&nbsp;&nbsp;&nbsp;<a href="/lender/lenderReturnRecord?oneid=&id=<%=jsonMessage[i].Transaction[0]._id%>&messenger=<%=encodeURIComponent('不分訊息種類')%>&classor=<%=encodeURIComponent("不分故事種類");%>&sorter=<%=encodeURIComponent("建立日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1"><%=jsonMessage[i].Transaction[0].ReturnCount.toFixed(0)%>次</a>
+													<%}else{%>
+														&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].ReturnCount.toFixed(0)%>次
+													<%}%>
+												</td>
+											</tr>
+										</table>
+									</div>
+									<div class="col-md-4">
+										<table width="100%" height="470px">
+											<tr>
+												<td>
+													<span class="myTitle">預計剩餘利息：</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].InterestInFuture.toFixed(0)%>元	
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<span class="myTitle">預計剩餘本利和：</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].MoneyFuture.toFixed(0)%>元
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<span class="myTitle">預計剩餘平均利息：</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].InterestInFutureMonth.toFixed(0)%>元/月
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<span class="myTitle">預計剩餘平均本利和：</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].InterestInFutureMoneyMonth.toFixed(0)%>元/月
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<span class="myTitle">預計剩餘利本比：</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													&nbsp;&nbsp;&nbsp;&nbsp;<%=(jsonMessage[i].Transaction[0].InterestInFutureDivMoney*100).toFixed(2)%>%
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<span class="myTitle">上次成功收款日期：</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													&nbsp;&nbsp;&nbsp;&nbsp;<%if(jsonMessage[i].Transaction[0].previousPayDate){%><%=jsonMessage[i].Transaction[0].previousPayDate.getFullYear()%>/<%if(jsonMessage[i].Transaction[0].previousPayDate.getMonth()<9){%>0<%}%><%=jsonMessage[i].Transaction[0].previousPayDate.getMonth()+1%>/<%if(jsonMessage[i].Transaction[0].previousPayDate.getDate()<10){%>0<%}%><%=jsonMessage[i].Transaction[0].previousPayDate.getDate()%><%}else{%>無收款記錄<%}%>	
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<span class="myTitle">下次應收款日期：</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													&nbsp;&nbsp;&nbsp;&nbsp;<%if(jsonMessage[i].Transaction[0].nextPayDate){%><%=jsonMessage[i].Transaction[0].nextPayDate.getFullYear()%>/<%if(jsonMessage[i].Transaction[0].nextPayDate.getMonth()<9){%>0<%}%><%=jsonMessage[i].Transaction[0].nextPayDate.getMonth()+1%>/<%if(jsonMessage[i].Transaction[0].nextPayDate.getDate()<10){%>0<%}%><%=jsonMessage[i].Transaction[0].nextPayDate.getDate()%><%}else{%>已還清<%}%>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<span class="myTitle">保險所需費用：</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													&nbsp;&nbsp;&nbsp;&nbsp;<%if(jsonMessage[i].Transaction[0].Principal>0){%><%if(jsonMessage[i].Transaction[0].Principal*insuranceRate<1){%>1<%}else{%><%=(jsonMessage[i].Transaction[0].Principal*insuranceRate).toFixed(0)%><%}%><%}else{%>0<%}%>元	
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<span class="myTitle">已付保險費用：</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													&nbsp;&nbsp;&nbsp;&nbsp;<%=jsonMessage[i].Transaction[0].InsuranceFeePaid.toFixed(0)%>元
+												</td>
+											</tr>
+										</table>
+									</div>
 								</div>
 							</div>
 						<%}%>
 					</div>
-					<div style="border-top-style: none;border-right-style: none;border-bottom-style: none;border-left-style: none;margin-top: 0px;margin-bottom: 0px;" class="table-responsive">
-						<table style="margin-bottom: 0px;margin-top: 0px;" class="table" width="100%">
+					<div class="resp">
+						<table class="myResTable" width="100%">
 							<tr>
 								<%if(filterDefault==='未確認'){%>
-									<td style="border-bottom-style: none;border-top-style: none;">
+									<td>
 										<input type="checkbox" name="selectCheckBox" id="selectCheckBoxId<%=i%>" onclick="selectFun(<%=i%>);" value='{"FromBorrowRequest":"<%=jsonMessage[i].FromBorrowRequest._id%>","MessageID":"<%=jsonMessage[i]._id%>"}'> 選擇
 									</td>
 								<%}else if(filterDefault==='不分類'){%>
-									<td style="border-bottom-style: none;border-top-style: none;">
+									<td>
 										<%if(jsonMessage[i].Status==='NotConfirmed'){%>
 											<a href="/lender/lenderReceiveMessages?msgKeyword=<%=encodeURIComponent(jsonMessage[i]._id)%>&filter=<%=encodeURIComponent('未確認')%>&classor=<%=encodeURIComponent('不分故事種類')%>&sorter=<%=encodeURIComponent('更新日期')%>&director=<%=encodeURIComponent('大至小')%>&lbound=&ubound=&page=1">未確認</a>
 										<%}else if(jsonMessage[i].Status==='Confirmed'){%>
@@ -1001,8 +1005,9 @@
 										<%}%>
 									</td>
 								<%}%>
-								<td align="right" style="border-bottom-style: none;border-top-style: none;">
+								<td align="right">
 									<div class="m2">
+										&nbsp;&nbsp;&nbsp;&nbsp;
 										<%if(jsonMessage[i].Status==='Confirmed'){%>
 											<a href="/lender/lenderTransactionRecord?oneid=<%=jsonMessage[i].Transaction[0]._id%>&filter=<%if(jsonMessage[i].Transaction[0].PrincipalNotReturn>0){%><%if(jsonMessage[i].Transaction[0].InsuranceFeePaid>0){%><%=encodeURIComponent('已保險')%><%}else{%><%=encodeURIComponent('未保險')%><%}%><%}else{%><%=encodeURIComponent('已結清')%><%}%>&messenger=<%=encodeURIComponent('不分訊息種類')%>&classor=<%=encodeURIComponent("不分故事種類");%>&sorter=<%=encodeURIComponent("建立日期")%>&director=<%=encodeURIComponent("大至小");%>&lbound=&ubound=&page=1">查詢該筆交易</a>
 										&nbsp;&nbsp;&nbsp;&nbsp;
@@ -1035,16 +1040,12 @@
 					</form>
 				<%}%>
 				<br>
-				<table align="center">
+				<table width="100%">
 					<tr>
-						<td>
+						<td align="center">
 							<nav>
 							  <ul class="pagination">
-								<li 
-									<% if(targetPageNumber===1){%>
-										class="disabled"
-									<%}%>
-								>
+								<li class="pagination-prev<% if(targetPageNumber===1){%> disabled<%}%>">
 								<% if(targetPageNumber!==1){%>
 									<a href="/lender/lenderReceiveMessages?msgKeyword=<%=encodeURIComponent(msgKeywordDefault)%>&filter=<%=encodeURIComponent(filterDefault)%>&classor=<%=encodeURIComponent(classorDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=targetPageNumber-1%>">
 								<%}else{%>
@@ -1086,11 +1087,7 @@
 										<%}%>
 									<%}%>
 								<%}%>
-								<li 
-									<% if(targetPageNumber===pageNumber){%>
-										class="disabled"
-									<%}%>
-								>	
+								<li class="pagination-next<% if(targetPageNumber===pageNumber){%> disabled<%}%>">
 								<% if(targetPageNumber!==pageNumber){%>
 									<a href="/lender/lenderReceiveMessages?msgKeyword=<%=encodeURIComponent(msgKeywordDefault)%>&filter=<%=encodeURIComponent(filterDefault)%>&classor=<%=encodeURIComponent(classorDefault)%>&sorter=<%=encodeURIComponent(sorterDefault)%>&director=<%=encodeURIComponent(directorDefault)%>&lbound=<%=encodeURIComponent(lboundDefault)%>&ubound=<%=encodeURIComponent(uboundDefault)%>&page=<%=targetPageNumber+1%>">
 								<%}else{%>
@@ -1705,10 +1702,6 @@ function linker(){
 			rejectAllFlag=true;
 			$('#rejectAllBtn').addClass('disabled');
 			<%}%>
-			
-			$('#enableAllBtn').addClass('disabled');
-			$('#disableAllBtn').addClass('disabled');
-			$('#reverseAllBtn').addClass('disabled');
 		}
 
 		function enableButton(){
@@ -1729,10 +1722,6 @@ function linker(){
 				rejectAllFlag=false;
 				$('#rejectAllBtn').removeClass('disabled');
 			<%}%>
-			
-			$('#enableAllBtn').removeClass('disabled');
-			$('#disableAllBtn').removeClass('disabled');
-			$('#reverseAllBtn').removeClass('disabled');
 		}
 
 

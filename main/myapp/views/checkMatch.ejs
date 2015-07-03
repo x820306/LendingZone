@@ -1,5 +1,6 @@
 <%- include('layout_header',{searchTitle:null,nav_cur:'checkMatch',messengerDefault:'不分訊息狀態',actionDefault:'建立日期',directorDefault:'大至小',keywordDefault:'',categoryDefault:'不分類'}); -%>
 <section class="lender_info">
+<div style="border-top-style: none;border-right-style: none;border-bottom-style: none;border-left-style: none;margin-top: 0px;margin-bottom: 0px;" class="table-responsive">
 <table class="table">
       <thead>
         <tr class="tableAttribute" style="background-color:#F9CAA2;">
@@ -60,6 +61,7 @@
         </tr>
       </tbody>
     </table>
+</div>
 </section>
 
 <section class="total">
@@ -81,8 +83,8 @@
 
 <section class="buttonBlock">
     <form action="borrowerConfirmedMatch" method="get">
-      <button type="button" id="buttonCancel" class="buttonExit" onclick="location.replace('/')">放棄，我想繼續等待新的媒合</button>
-      <button type="submit" id="buttonSubmit" class="buttonSubmit">確定，以上配對我很滿意</button>
+      <button type="button" id="buttonCancel" class="buttonExit" onclick="location.replace('/')">放棄</button>
+      <button type="submit" id="buttonSubmit" class="buttonSubmit">確定</button>
     </form>
 </section>
 
