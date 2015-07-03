@@ -342,7 +342,7 @@ router.post('/findDiscussions', function(req, res, next) {
 	if(typeof(req.body._id) === 'string'){
 		req.body._id=sanitizer.sanitize(req.body._id.trim());
 		
-		Borrows.findById(req.body._id).populate('Discussion').exec(function (err, borrow){
+		Borrows.findById(req.body._id).populate('Discussion',null, null, {sort: { Created: 1 }}).exec(function (err, borrow){
 			if (err) {
 				console.log(err);
 				res.json({error: "Borrow finding failed.",success:false}, 500);
@@ -374,7 +374,6 @@ router.post('/findDiscussions', function(req, res, next) {
 									createdByViewerArray.push(false);
 								}
 							}
-							borrow.Discussion.sort(function(a,b) { return a.Created.getTime() - b.Created.getTime()} );
 							res.json({success:true,result:borrow.Discussion,CreatedByViewer:createdByViewerArray,date:borrow.Updated});
 						}
 					});

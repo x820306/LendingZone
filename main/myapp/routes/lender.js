@@ -522,7 +522,7 @@ router.get('/story/:id?',library.loginFormChecker,library.newMsgChecker, functio
 			maxSettingAutoLend:0
 		};
 		
-		Borrows.findById(req.query.id).populate('CreatedBy', 'Username Level').populate('Discussion').populate('Message').exec(function (err, borrow){
+		Borrows.findById(req.query.id).populate('CreatedBy', 'Username Level').populate('Discussion',null, null, {sort: { Created: 1 }}).populate('Message').exec(function (err, borrow){
 			if (err) {
 				console.log(err);
 				res.redirect('/message?content='+encodeURIComponent('錯誤!'));
@@ -530,7 +530,6 @@ router.get('/story/:id?',library.loginFormChecker,library.newMsgChecker, functio
 				if(!borrow){
 					res.redirect('/message?content='+encodeURIComponent('錯誤ID!'));
 				}else{
-					borrow.Discussion.sort(function(a,b) { return a.Created.getTime() - b.Created.getTime()} );
 					borrow.LikeNumber=borrow.Likes.length;
 					var optionsX = {
 						path: 'Message.Transaction',
