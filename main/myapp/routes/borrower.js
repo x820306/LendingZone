@@ -45,7 +45,7 @@ function redirector(req,res,target,message){
 	var string=JSON.stringify(json);
 	
 	req.flash('borrowForm',string);
-	res.redirect(req.get('referer'));
+	res.redirect('/borrower/borrowPage');
 }
 
 router.post('/borrowCreate',library.loginFormChecker, library.ensureAuthenticated, function(req, res) {

@@ -15,6 +15,10 @@ var multer = require('multer');
 var session = require('express-session')
 var passport = require('passport')
 var LocalStrategy = require('passport-local').Strategy;
+var totp = require('notp').totp;
+var base32 = require('thirty-two');
+var sanitizer = require('sanitizer');
+var MongoStore = require('connect-mongo')(session);
 
 //database models routers
 var Users= require('./routes/Users');
@@ -49,7 +53,9 @@ app.use(cookieParser('lendingZone'));
 app.use(session({ secret: 'lendingZone',
 				  name: 'cookie_name',
 				  resave: true,
-				  saveUninitialized: true}));
+				  saveUninitialized: true,
+				  store: new MongoStore({ mongooseConnection: mongoose.connection })
+				}));
 app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
@@ -69,7 +75,7 @@ passport.use('local', new LocalStrategy({
 		passwordField: 'Password'
 	},
     function (Username, Password, done){
-		UsersModel.findOne({Usnl: Username.toLowerCase()}).select('Username Password').exec(function (err, user){
+		UsersModel.findOne({Usnl: Username.toLowerCase()}).select('Username Password keyObj').exec(function (err, user){
 			if (err) {
 				console.log(err);
 				return done(null, false, { errorTarget:1, errorMessage: '資料庫錯誤!' });
@@ -88,7 +94,8 @@ passport.use('local', new LocalStrategy({
 							}else{
 								console.log('Login Success.');
 								var smaller_user={
-									_id: user._id
+									_id: user._id,
+									keyFlag: user.keyObj.flag
 								}
 								return done(null, smaller_user);
 							}
@@ -105,7 +112,7 @@ passport.serializeUser(function (user, done) {
 });
 
 passport.deserializeUser(function (_id, done) {
-	UsersModel.findById(_id).select('Username Name Gender BirthDay Phone Address Email IdCardNumber ifMailValid	Level OrignalLevel Created Updated').exec(function(err, user) {
+	UsersModel.findById(_id).select('Username Name Gender BirthDay Phone Address Email IdCardNumber ifMailValid	Level OrignalLevel Created Updated keyObj').exec(function(err, user) {
 		done(err, user);
 	});
 });
@@ -114,24 +121,14 @@ app.get('/protocol', function (req, res) {
     res.send(req.protocol);
 });
 
-app.get('/',library.loginFormChecker,library.newMsgChecker, function (req, res) {
-	var auRst=null;
-	if(req.isAuthenticated()){
-		auRst=req.user.Username;
-	}
-
-	res.render('index',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst});
+app.get('/',library.loginFormChecker,library.newMsgChecker,library.usrNameGenerator, function (req, res) {
+	res.render('index',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.auRst});
 });
 
-app.get('/message/:content?',library.loginFormChecker,library.newMsgChecker, function (req, res) {
+app.get('/message/:content?',library.loginFormChecker,library.newMsgChecker,library.usrNameGenerator, function (req, res) {
 	if(typeof(req.query.content) === 'string'){
-		var auRst=null;
-		if(req.isAuthenticated()){
-			auRst=req.user.Username;
-		}
-		
 		var temp=decodeURIComponent(req.query.content);
-		res.render('message',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst, content:temp});
+		res.render('message',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.auRst, content:temp});
 	
 	}else{
 		res.redirect('/');
@@ -140,36 +137,80 @@ app.get('/message/:content?',library.loginFormChecker,library.newMsgChecker, fun
 
 app.post('/login',captchaChecker, function(req, res, next) {
   if((typeof(req.body.Username) === 'string')&&(typeof(req.body.Password) === 'string')){
-	  passport.authenticate('local', function(err, user, info) {
-		if(err){ 
-			cosole.log(err);
-			res.redirect('/message?content='+encodeURIComponent('錯誤!'));
-		}else{
-			if(!user){ 
-				redirector(req,res,info.errorTarget,info.errorMessage);
+		req.body.Username=sanitizer.sanitize(req.body.Username.trim());
+		req.body.Password=sanitizer.sanitize(req.body.Password.trim());
+		passport.authenticate('local', function(err, user, info) {
+			if(err){ 
+				cosole.log(err);
+				res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 			}else{
-				req.logIn(user, function(err) {
-					if(err){ 
-						cosole.log(err);
-						res.redirect('/message?content='+encodeURIComponent('錯誤!'));
-					}else{
-						if(routeChecker(req)){
-							res.redirect(req.get('referer'));
+				if(!user){ 
+					redirector(req,res,info.errorTarget,info.errorMessage);
+				}else{
+					req.logIn(user, function(err) {
+						if(err){ 
+							cosole.log(err);
+							res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 						}else{
-							res.redirect('/');
+							if((user.keyFlag===true)&&(req.session.passport.secondFactor !== 'totp')){
+								var path=library.pathProcesser(req,true);
+								res.redirect('/totp_login?path='+path);
+							}else{
+								var targetPath=library.refererChecker(req);
+								if(!library.routeChecker(targetPath)){
+									targetPath='/';
+								}
+								res.redirect(targetPath);
+							}
 						}
-					}
-				});
+					});
+				}
 			}
+		})(req, res, next);
+	}else{
+		if((typeof(req.body.Username) !== 'string')){
+			redirector(req,res,1,'未送出!');
+		}else if((typeof(req.body.Password) !== 'string')){
+			redirector(req,res,2,'未送出!');
 		}
-	  })(req, res, next);
-  }else{
-	if((typeof(req.body.Username) !== 'string')){
-		redirector(req,res,1,'未送出!');
-	}else if((typeof(req.body.Password) !== 'string')){
-		redirector(req,res,2,'未送出!');
 	}
-  }
+});
+
+app.get('/totp_login/:path?',library.loginFormChecker,library.newMsgChecker,library.totpDefender,function(req, res) {
+	if(typeof(req.query.path) === 'string'){
+		req.query.path=base32.decode(decodeURIComponent(req.query.path)).toString();
+
+		var totpCodeArray=req.flash('totpCode');
+		var totpCodeContent='';
+		if(totpCodeArray.length>0){
+			totpCodeContent=totpCodeArray[0];
+		}
+		
+		var targetPath=req.query.path;
+		if(!library.routeChecker(targetPath)){
+			targetPath='/';
+		}
+		res.render('totp_login',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:null,tgtPath:targetPath,totpCodeCnt:totpCodeContent});
+	}else{
+		res.redirect('/');
+	}
+});
+
+app.post('/totp_login',library.totpDefender,function(req, res) {
+	if((typeof(req.body.Code) === 'string')&&(typeof(req.body.TargetPath) === 'string')){
+		req.body.Code=sanitizer.sanitize(req.body.Code.trim());
+		req.body.TargetPath=sanitizer.sanitize(req.body.TargetPath.trim()).replace(/&amp;/ig,'&');
+		var rv = totp.verify(req.body.Code, req.user.keyObj.key, { window: 6, time: req.user.keyObj.period });
+		if(rv){
+			req.session.passport.secondFactor = 'totp';
+			res.redirect(req.body.TargetPath);
+		}else{
+			req.flash('totpCode','驗證碼錯誤!');
+			res.redirect(library.refererChecker(req));
+		}
+	}else{
+		res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+	}
 });
 
 
@@ -203,26 +244,19 @@ app.get('/captcha/:captchaIdfr?', function (req, res) {
 });
 
 app.get('/logout', function (req, res) {
-    req.logout();
+    if(req.session.passport.hasOwnProperty('secondFactor')){
+		delete req.session.passport.secondFactor;
+	}
+	req.logout();
     res.redirect('/');
 });
 
-app.get('/signupTest',library.loginFormChecker,library.newMsgChecker, function (req, res) {
-	var auRst=null;
-	if(req.isAuthenticated()){
-		auRst=req.user.Username;
-	}
-	
-	res.render('signupTest',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst});
+app.get('/signupTest',library.loginFormChecker,library.newMsgChecker,library.usrNameGenerator, function (req, res) {
+	res.render('signupTest',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.auRst});
 });
 
-app.get('/forgetActOrPW',library.loginFormChecker,library.newMsgChecker, function (req, res) {
-	var auRst=null;
-	if(req.isAuthenticated()){
-		auRst=req.user.Username;
-	}
-	
-	res.render('forgetActOrPW',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst});
+app.get('/forgetActOrPW',library.loginFormChecker,library.newMsgChecker,library.usrNameGenerator, function (req, res) {
+	res.render('forgetActOrPW',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.auRst});
 });
 
 
@@ -329,6 +363,11 @@ app.get('/test5', function (req, res) {
 	res.json(library.autoNotReadableArray);
 });
 
+app.get('/test6', function (req, res) {
+	console.log(req.session.passport);
+	res.json(req.session.passport);
+});
+
 //database models routers
 app.use('/Users', Users);
 app.use('/Borrows', Borrows);
@@ -377,6 +416,8 @@ app.use(function(err, req, res, next) {
 
 function captchaChecker(req, res, next){
 	if((typeof(req.body.CaptchaIdfr)  === 'string')&&(typeof(req.body.CaptchaText)  === 'string')){
+		req.body.CaptchaIdfr=sanitizer.sanitize(req.body.CaptchaIdfr.trim());
+		req.body.CaptchaText=sanitizer.sanitize(req.body.CaptchaText.trim());
 		var Idfr=parseInt(req.body.CaptchaIdfr);
 		var Text=req.body.CaptchaText;
 		var passFlag=false;
@@ -416,24 +457,11 @@ function redirector(req,res,target,message){
 	var json={FormContent:formContent,Target:target,Message:message};
 	var string=JSON.stringify(json);
 	req.flash('loginForm',string);
-	if(routeChecker(req)){
-		res.redirect(req.get('referer'));
-	}else{
-		res.redirect('/');
+	var targetPath=library.refererChecker(req);
+	if(!library.routeChecker(targetPath)){
+		targetPath='/';
 	}
-}
-
-function routeChecker(req){
-	var origString=req.get('referer');
-	var stringArray=origString.split('/');
-	var subString=stringArray[stringArray.length-1];
-	var subStringArray=subString.split('?');
-	var target=subStringArray[0];
-	if((target==='message')||(target==='forgetActOrPW')||(target==='borrowCreate')||(target==='readable')||(target==='buyInsurance')||(target==='buyInsuranceAll')||(target==='rejectToBorrowMessageInStory')||(target==='confirmToBorrowMessageInStory')||(target==='rejectToBorrowMessageInLRM')||(target==='confirmToBorrowMessageInLRM')||(target==='rejectToBorrowMessageInLRMall')||(target==='confirmToBorrowMessageInLRMall')||(target==='toLendCreate')||(target==='toLendUpdate')||(target==='destroy')||(target==='create')||(target==='update')||(target==='changeData')||(target==='changePW')||(target==='changeUsername')||(target==='deleteToLendMessageInLRMall')||(target==='buyInsuranceAll')||(target==='rejectToBorrowMessageInLRMall')||(target==='confirmToBorrowMessageInLRMall')||(target==='autoConfirmPost')||(target==='disableAutoConfirmPost')||(target==='autoNotReadablePost')||(target==='disableAutoNotReadablePost')){
-		return false;
-	}else{
-		return true;
-	}
+	res.redirect(targetPath);
 }
 
 module.exports = app;

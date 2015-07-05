@@ -1,0 +1,37 @@
+<%- include('layout_header',{searchTitle:null,nav_cur:'enableTotp',messengerDefault:'不分訊息狀態',actionDefault:'建立日期',directorDefault:'大至小',keywordDefault:'',categoryDefault:'不分類'}); -%>
+<div class="container">
+	<div class="row">
+		<center>
+			<br><br>
+			<%-content%>
+			<a href="https://itunes.apple.com/tw/app/google-authenticator/id388497605?mt=8">
+				<img width="220px" height="80px" src="/images/apple.png">
+			</a>
+			&nbsp;&nbsp;&nbsp;&nbsp;
+			<a href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2&hl=zh_TW">
+				<img width="220px" height="80px" src="/images/google.png">
+			</a>
+			<br>
+			<br>
+			<br>
+			<p><b>透過Google Authenticator掃描以下QR code</b></p>
+				<img src="<%- qrImage %>"/>
+			<br>
+			<br>
+			<p><b>或手動複製貼上</b></p>
+				<b><%= key %></b>
+			<br>
+			<br>
+			<div class="btn-toolbar" role="toolbar">
+				<button type="button" class="btn btn-default btn-lg" onclick="javascript:location.href='/signup/profile'">
+					回檔案
+				</button>
+				<button type="button" class="btn btn-default btn-lg" onClick = "javascript:location.href='/'" >
+					回首頁
+				</button>
+			</div>
+			<br><br><br><br><br><br><br>
+		</center>
+	</div>
+</div>
+<%- include('layout_footer',{imgSettingCode:"var ifLoadedCount=0;",imgDrawingCode:"",nav_cur:'enableTotp'}); -%>

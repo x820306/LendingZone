@@ -11,6 +11,13 @@
 					</h4>
 					<br>
 				<%}%>
+				<%if(dTotpString!==null){%>
+					<br>
+					<h4 class="red">
+						<%-dTotpString%>
+					</h4>
+					<br>
+				<%}%>
 				<div class="resp">
 					<table class="table table-hover myTbody" style="width:70%">
 						<tr>
@@ -169,6 +176,78 @@
 							</td>
 							<td><input type="password" class="form-control" id="f11" name="BankAccountPassword" placeholder="卡片密碼" required="required" value="<%if(dcdJSON){%><%=dcdJSON.FormContent.F11%><%}else{%><%=account.BankAccountPassword%><%}%>"></td>
 						</tr>
+						<tr>
+							<td align = "right" style = "width:15%">
+								兩階段驗證
+							</td>
+							<td>
+								<%if(user.keyObj.flag===true){%>
+									<button type="button" class="btn btn-default" data-toggle="modal" data-target="#chkModal3">
+										停用
+									</button>
+									&nbsp;&nbsp;
+									<a href="/Users/enableTotp">
+										<button type="button" class="btn btn-default" id="findTotpBtn">
+											查詢Key
+										</button>
+									</a>
+									<div class="modal fade" id="chkModal3">
+										<div class="modal-dialog modal-sm">
+											<div class="modal-content">
+												<div class="modal-header" style="text-align: center;">
+													<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+													<h4 class="modal-title">再次確認</h4>
+												</div>
+												<div class="modal-body" style="text-align: center;">
+													<br>
+													您確定要停用兩階段驗證嗎？
+													<br>
+													<br>
+												</div>
+												<div class="modal-footer" style="text-align: center;">
+													<a href="/Users/disableTotp">
+														<button type="button" class="btn btn-default" id="disableTotpBtn" onclick="$('#chkModal3').modal('hide');disableButton();">
+															確定
+														</button>
+													</a>
+													&nbsp;
+													<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+												</div>
+											</div>
+										</div>
+									</div>
+								<%}else{%>
+									<button type="button" class="btn btn-default" data-toggle="modal" data-target="#chkModal4">
+										啟用
+									</button>
+									<div class="modal fade" id="chkModal4">
+										<div class="modal-dialog modal-sm">
+											<div class="modal-content">
+												<div class="modal-header" style="text-align: center;">
+													<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+													<h4 class="modal-title">再次確認</h4>
+												</div>
+												<div class="modal-body" style="text-align: center;">
+													<br>
+													您確定要啟用兩階段驗證嗎？
+													<br>
+													<br>
+												</div>
+												<div class="modal-footer" style="text-align: center;">
+													<a href="/Users/enableTotp">
+														<button type="button" class="btn btn-default" id="enableTotpBtn" onclick="$('#chkModal4').modal('hide');disableButton();">
+															確定
+														</button>
+													</a>
+													&nbsp;
+													<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+												</div>
+											</div>
+										</div>
+									</div>
+								<%}%>
+							</td>
+						</tr>
 					</table>
 				</div>
 				<div class="btn-toolbar" role="toolbar" style = "margin-top: 10px;">
@@ -241,6 +320,12 @@
 			$('#sbmtBtn').addClass('disabled');
 			<%if(!user.ifMailValid){%>
 				$('#resendBtn').addClass('disabled');
+			<%}%>
+			<%if(user.keyObj.flag===true){%>
+				$('#findTotpBtn').addClass('disabled');
+				$('#disableTotpBtn').addClass('disabled');
+			<%}else{%>
+				$('#enableTotpBtn').addClass('disabled');
 			<%}%>
 			submitFlag=true;
 			return true;
