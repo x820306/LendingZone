@@ -387,7 +387,7 @@ function redirector(req,res,target,message){
 	var string=JSON.stringify(json);
 	
 	req.flash('hendLendForm',string);
-	res.redirect(req.get('referer'));
+	res.redirect('/lender/story?id='+req.body.FromBorrowRequest);
 }
 
 function toLendCreatePart(res,req,borrow,lenderBankaccount,outterPara){

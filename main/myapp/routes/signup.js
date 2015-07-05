@@ -21,6 +21,12 @@ router.get('/profile',library.loginFormChecker,library.ensureAuthenticated,libra
 		mailValidString=stringArrayFlash2[0];
 	}
 	
+	var stringArrayFlash3=req.flash('disableTOTP');
+	var disableTotpString=null;
+	if(stringArrayFlash3.length>0){
+		disableTotpString=stringArrayFlash3[0];
+	}
+	
 	Users.findById(req.user._id).exec(function (err, foundUser){
 		if (err) {
 			console.log(err);
@@ -37,7 +43,7 @@ router.get('/profile',library.loginFormChecker,library.ensureAuthenticated,libra
 						if(!foundAccount){
 							res.redirect('/message?content='+encodeURIComponent('錯誤'));
 						}else{
-							res.render('profile',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,user:foundUser,account:foundAccount,dcdJSON:dataCDFormJson,mvString:mailValidString});
+							res.render('profile',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,user:foundUser,account:foundAccount,dcdJSON:dataCDFormJson,mvString:mailValidString,dTotpString:disableTotpString});
 						}
 					}
 				});
@@ -453,7 +459,7 @@ function redirectorCD(req,res,target,message){
 	var string=JSON.stringify(json);
 	
 	req.flash('dataCDForm',string);
-	res.redirect(req.get('referer'));
+	res.redirect('/signup/profile');
 }
 
 function redirectorNewACC(req,res,target,message){
@@ -473,7 +479,7 @@ function redirectorNewACC(req,res,target,message){
 	var string=JSON.stringify(json);
 	
 	req.flash('newAccForm',string);
-	res.redirect(req.get('referer'));
+	res.redirect('/signup/newAcc');
 }
 
 function redirectorCardData(req,res,target,message){
@@ -486,16 +492,11 @@ function redirectorCardData(req,res,target,message){
 	var string=JSON.stringify(json);
 	
 	req.flash('cardDataForm',string);
-	res.redirect(req.get('referer'));
+	res.redirect('/signup/cardData');
 }
 
 // this is the basic type when page no need to ensure authenticated. U can try this by /signup/signupExample
-router.get('/cardData',library.loginFormChecker,library.newMsgChecker, function (req, res) {
-	var auRst=null;
-	if(req.isAuthenticated()){
-		auRst=req.user.Username;
-	}
-	
+router.get('/cardData',library.loginFormChecker,library.newMsgChecker,library.usrNameGenerator, function (req, res) {
 	var stringArrayFlash=req.flash('cardDataForm');
 	var cardDataFormJson=null;
 	if(stringArrayFlash.length>0){
@@ -509,11 +510,11 @@ router.get('/cardData',library.loginFormChecker,library.newMsgChecker, function 
 	//get data from database and process them here
 	
 	//pass what u get from database and send them into ejs in this line
-	res.render('cardData_1',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,formSession1:tempIdfr,cdfJSON:cardDataFormJson});
+	res.render('cardData_1',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.auRst,formSession1:tempIdfr,cdfJSON:cardDataFormJson});
 });
 
 // this is the basic type when page no need to ensure authenticated. U can try this by /signup/signupExample
-router.post('/checkPro',library.loginFormChecker,library.newMsgChecker, function (req, res) {
+router.post('/checkPro',library.loginFormChecker,library.newMsgChecker,library.usrNameGenerator, function (req, res) {
 	if(typeof(req.body.FormSession1) === 'string'){
 		var Idfr=parseInt(req.body.FormSession1);
 		var passFlag=false;
@@ -572,16 +573,11 @@ router.post('/checkPro',library.loginFormChecker,library.newMsgChecker, function
 						console.log(err);
 						res.redirect('/message?content='+encodeURIComponent('錯誤'));
 					}else{
-						var auRst=null;
-						if(req.isAuthenticated()){
-							auRst=req.user.Username;
-						}
-						
 						library.formIdfrCtr+=1;
 						var tempIdfr=library.formIdfrCtr;
 						library.formIdfrArray.push({Idfr:tempIdfr,SaveT:Date.now()});
 						
-						res.render('checkPro_1',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,BankAccountNumber:req.body.cardIpt,BankAccountPassword:req.body.cardPwdIpt,formSession1:req.body.FormSession1,formSession2:tempIdfr,usrNum:users.length+1});
+						res.render('checkPro_1',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.auRst,BankAccountNumber:req.body.cardIpt,BankAccountPassword:req.body.cardPwdIpt,formSession1:req.body.FormSession1,formSession2:tempIdfr,usrNum:users.length+1});
 					}
 				});
 			}else{
@@ -596,12 +592,7 @@ router.post('/checkPro',library.loginFormChecker,library.newMsgChecker, function
 });
 
 // this is the basic type when page no need to ensure authenticated. U can try this by /signup/signupExample
-router.get('/newAcc',library.loginFormChecker,library.newMsgChecker, function (req, res) {
-	var auRst=null;
-	if(req.isAuthenticated()){
-		auRst=req.user.Username;
-	}
-	
+router.get('/newAcc',library.loginFormChecker,library.newMsgChecker,library.usrNameGenerator, function (req, res) {
 	var stringArrayFlash=req.flash('newAccForm');
 	var newAccFormJson=null;
 	if(stringArrayFlash.length>0){
@@ -615,11 +606,11 @@ router.get('/newAcc',library.loginFormChecker,library.newMsgChecker, function (r
 	//get data from database and process them here
 	
 	//pass what u get from database and send them into ejs in this line
-	res.render('newAcc_2',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,formSession1:tempIdfr,nafJSON:newAccFormJson});
+	res.render('newAcc_2',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.auRst,formSession1:tempIdfr,nafJSON:newAccFormJson});
 });
 
 // this is the basic type when page no need to ensure authenticated. U can try this by /signup/signupExample
-router.post('/apply',library.loginFormChecker,library.newMsgChecker, function (req, res) {
+router.post('/apply',library.loginFormChecker,library.newMsgChecker,library.usrNameGenerator, function (req, res) {
 	if((typeof(req.body.FormSession2) === 'string')&&(typeof(req.body.ssnIpt) === 'string')&&(typeof(req.body.nameIpt) === 'string')&&(typeof(req.body.genderIpt) === 'string')&&(typeof(req.body.birthIpt) === 'string')&&(typeof(req.body.telIpt) === 'string')&&(typeof(req.body.emailIpt) === 'string')&&(typeof(req.body.addrIpt) === 'string')&&(typeof(req.body.BankAccountNumber) === 'string')&&(typeof(req.body.BankAccountPassword) === 'string')&&(typeof(req.body.IdCardStr) === 'string')&&(typeof(req.body.SecondCardStr) === 'string')){
 		var Idfr=parseInt(req.body.FormSession2);
 		var passFlag=false;
@@ -677,16 +668,11 @@ router.post('/apply',library.loginFormChecker,library.newMsgChecker, function (r
 							emailFlag=true;
 						}
 						if((tLimitFlag)&&(emailFlag)&&(library.checkSsnID(req.body.ssnIpt))&&(!ifIdCardNumberExist)){
-							var auRst=null;
-							if(req.isAuthenticated()){
-								auRst=req.user.Username;
-							}
-
 							library.formIdfrCtr+=1;
 							var tempIdfr=library.formIdfrCtr;
 							library.formIdfrArray.push({Idfr:tempIdfr,SaveT:Date.now()});
 							
-							res.render('apply_1',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst, Name:req.body.nameIpt, Email:req.body.emailIpt, Gender:req.body.genderIpt,
+							res.render('apply_1',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.auRst, Name:req.body.nameIpt, Email:req.body.emailIpt, Gender:req.body.genderIpt,
 								BirthDay:req.body.birthIpt, Phone:req.body.telIpt, Address:req.body.addrIpt,IdCardNumber:req.body.ssnIpt,IdCardStr:req.body.IdCardStr,SecondCardStr:req.body.SecondCardStr,
 								BankAccountNumber:req.body.BankAccountNumber,BankAccountPassword:req.body.BankAccountPassword,formSession1:req.body.FormSession1,formSession2:req.body.FormSession2,formSession3:tempIdfr});
 						}else{
@@ -709,7 +695,7 @@ router.post('/apply',library.loginFormChecker,library.newMsgChecker, function (r
 	}
 });
 
-router.post('/_apply',library.loginFormChecker,library.newMsgChecker, function (req, res) {
+router.post('/_apply',library.loginFormChecker,library.newMsgChecker,library.usrNameGenerator, function (req, res) {
 	if(typeof(req.body.FormSession1) === 'string'){
 		var Idfr=parseInt(req.body.FormSession1);
 		var passFlag=false;
@@ -930,11 +916,6 @@ router.post('/_apply',library.loginFormChecker,library.newMsgChecker, function (
 					}
 					
 					if(valiFlag){
-						var auRst=null;
-						if(req.isAuthenticated()){
-							auRst=req.user.Username;
-						}
-						
 						var idCardJson={};
 						if(req.files.ssnImg){
 							idCardJson.originalname=req.files.ssnImg.originalname;
@@ -958,7 +939,7 @@ router.post('/_apply',library.loginFormChecker,library.newMsgChecker, function (
 						library.formIdfrArray.push({Idfr:tempIdfr,SaveT:Date.now()});
 						
 						//pass what u get from database and send them into ejs in this line
-						res.render('apply_2',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst, Name:req.body.nameIpt, Email:req.body.emailIpt, Gender:req.body.genderIpt,
+						res.render('apply_2',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.auRst, Name:req.body.nameIpt, Email:req.body.emailIpt, Gender:req.body.genderIpt,
 							BirthDay:req.body.birthIpt, Phone:req.body.telIpt, Address:req.body.addrIpt,IdCardNumber:req.body.ssnIpt,IdCardStr:idCardString,SecondCardStr:secondCardString,
 							BankAccountNumber:req.body.cardIpt,BankAccountPassword:req.body.cardPwdIpt,formSession1:req.body.FormSession1,formSession2:tempIdfr});
 					}else{
@@ -1053,7 +1034,7 @@ router.post('/_apply',library.loginFormChecker,library.newMsgChecker, function (
 });
 
 // this is the basic type when page no need to ensure authenticated. U can try this by /signup/signupExample
-router.post('/community',library.loginFormChecker,library.newMsgChecker, function (req, res) {
+router.post('/community',library.loginFormChecker,library.newMsgChecker,library.usrNameGenerator, function (req, res) {
 	if((typeof(req.body.FormSession1) === 'string')&&(typeof(req.body.FormSession2) === 'string')&&(typeof(req.body.FormSession3) === 'string')&&(typeof(req.body.IdCardNumber) === 'string')&&(typeof(req.body.Username) === 'string')&&(typeof(req.body.Password) === 'string')&&(typeof(req.body.Password2nd) === 'string')&&(typeof(req.body.Name) === 'string')&&(typeof(req.body.Email) === 'string')&&(typeof(req.body.Gender) === 'string')&&(typeof(req.body.BirthDay) === 'string')&&(typeof(req.body.Phone) === 'string')&&(typeof(req.body.Address) === 'string')&&(typeof(req.body.IdCardStr) === 'string')&&(typeof(req.body.SecondCardStr) === 'string')&&(typeof(req.body.BankAccountNumber) === 'string')&&(typeof(req.body.BankAccountPassword) === 'string')){
 		var Idfr1=parseInt(req.body.FormSession1);
 		var Idfr2=parseInt(req.body.FormSession2);
@@ -1069,10 +1050,6 @@ router.post('/community',library.loginFormChecker,library.newMsgChecker, functio
 		}
 		
 		if(passFlag){
-			var auRst=null;
-			if(req.isAuthenticated()){
-				auRst=req.user.Username;
-			}
 			userCreator(req,res,function (){
 				var ctr1=-1;
 				if(Idfr1>0){
@@ -1110,7 +1087,7 @@ router.post('/community',library.loginFormChecker,library.newMsgChecker, functio
 				if(ctr3>-1){
 					library.formIdfrArray.splice(ctr3, 1);
 				}
-				res.render('community_1',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,email:req.body.Email});
+				res.render('community_1',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.auRst,email:req.body.Email});
 			});
 		}else{
 			res.redirect('/signupTest');
@@ -1121,7 +1098,7 @@ router.post('/community',library.loginFormChecker,library.newMsgChecker, functio
 });
 
 // this is the basic type when page no need to ensure authenticated. U can try this by /signup/signupExample
-router.post('/_community',library.loginFormChecker,library.newMsgChecker, function (req, res) {
+router.post('/_community',library.loginFormChecker,library.newMsgChecker,library.usrNameGenerator, function (req, res) {
 	if((typeof(req.body.FormSession1) === 'string')&&(typeof(req.body.FormSession2) === 'string')&&(typeof(req.body.IdCardNumber) === 'string')&&(typeof(req.body.Username) === 'string')&&(typeof(req.body.Password) === 'string')&&(typeof(req.body.Password2nd) === 'string')&&(typeof(req.body.Name) === 'string')&&(typeof(req.body.Email) === 'string')&&(typeof(req.body.Gender) === 'string')&&(typeof(req.body.BirthDay) === 'string')&&(typeof(req.body.Phone) === 'string')&&(typeof(req.body.Address) === 'string')&&(typeof(req.body.IdCardStr) === 'string')&&(typeof(req.body.SecondCardStr) === 'string')&&(typeof(req.body.BankAccountNumber) === 'string')&&(typeof(req.body.BankAccountPassword) === 'string')){
 		var Idfr1=parseInt(req.body.FormSession1);
 		var Idfr2=parseInt(req.body.FormSession2);
@@ -1136,10 +1113,6 @@ router.post('/_community',library.loginFormChecker,library.newMsgChecker, functi
 		}
 		
 		if(passFlag){
-			var auRst=null;
-			if(req.isAuthenticated()){
-				auRst=req.user.Username;
-			}
 			userCreator(req,res,function (){
 				var ctr1=-1;
 				if(Idfr1>0){
@@ -1165,7 +1138,7 @@ router.post('/_community',library.loginFormChecker,library.newMsgChecker, functi
 				if(ctr2>-1){
 					library.formIdfrArray.splice(ctr2, 1);
 				}
-				res.render('community_2',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,email:req.body.Email});
+				res.render('community_2',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.auRst,email:req.body.Email});
 			});
 		}else{
 			res.redirect('/signupTest');
@@ -1175,30 +1148,12 @@ router.post('/_community',library.loginFormChecker,library.newMsgChecker, functi
 	}
 });
 
-// this is the basic type when page no need to ensure authenticated. U can try this by /signup/signupExample
-router.get('/success',library.loginFormChecker,library.newMsgChecker, function (req, res) {
-	var auRst=null;
-	if(req.isAuthenticated()){
-		auRst=req.user.Username;
-	}
-	
-	//get data from database and process them here
-	
-	//pass what u get from database and send them into ejs in this line
-	res.render('success_1',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst});
+router.get('/success',library.loginFormChecker,library.newMsgChecker,library.usrNameGenerator, function (req, res) {
+	res.render('success_1',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.auRst});
 });
 
-// this is the basic type when page no need to ensure authenticated. U can try this by /signup/signupExample
-router.get('/_success',library.loginFormChecker,library.newMsgChecker, function (req, res) {
-	var auRst=null;
-	if(req.isAuthenticated()){
-		auRst=req.user.Username;
-	}
-	
-	//get data from database and process them here
-	
-	//pass what u get from database and send them into ejs in this line
-	res.render('success_2',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst});
+router.get('/_success',library.loginFormChecker,library.newMsgChecker,library.usrNameGenerator, function (req, res) {
+	res.render('success_2',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.auRst});
 });
 
 function userCreator(req,res,callback){

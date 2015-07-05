@@ -84,7 +84,12 @@ var Users = new Schema({
 	resetPasswordExpires: { type: Date},
 	mailValidToken: { type: String},
 	mailValidExpires: { type: Date},
-	ifMailValid:{ type: Boolean, default: false }
+	ifMailValid:{ type: Boolean, default: false },
+	keyObj:{ 
+		flag:{ type: Boolean, default: false }, 
+		key:{ type: String, default: '' }, 
+		period:{type: Number, default: -1}
+	}
 });
 
 var BankAccounts = new Schema({

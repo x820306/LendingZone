@@ -4,15 +4,10 @@ var mongoose = require('mongoose');
 var express = require('express');
 var router = express.Router();
 
-router.get('/search/:keyword?/:category?/:messenger?/:action?/:director?/:lbound?/:ubound?/:page?',library.loginFormChecker,library.newMsgChecker, function (req, res) {
+router.get('/search/:keyword?/:category?/:messenger?/:action?/:director?/:lbound?/:ubound?/:page?',library.loginFormChecker,library.newMsgChecker,library.usrNameGenerator, function (req, res) {
 	if((typeof(req.query.keyword) === 'string')&&(typeof(req.query.category) === 'string')&&(typeof(req.query.messenger) === 'string')&&(typeof(req.query.action) === 'string')&&(typeof(req.query.director) === 'string')&&(typeof(req.query.lbound) === 'string')&&(typeof(req.query.ubound) === 'string')&&(typeof(req.query.page) === 'string')){
 		var targetPage=parseInt(req.query.page);
 		if(!isNaN(targetPage)){
-			var auRst=null;
-			if(req.isAuthenticated()){
-				auRst=req.user.Username;
-			}
-			
 			var objFlag=false;
 			var resArrays=[];
 			var action=decodeURIComponent(library.replacer(req.query.action,false));
@@ -112,7 +107,7 @@ router.get('/search/:keyword?/:category?/:messenger?/:action?/:director?/:lbound
 				messengerRec=false;
 				messenger='不分訊息狀態';
 			}
-			if(auRst===null){
+			if(req.auRst===null){
 				messengerRec=false;
 				messenger='不分訊息狀態';
 			}
@@ -269,7 +264,7 @@ router.get('/search/:keyword?/:category?/:messenger?/:action?/:director?/:lbound
 						if(targetPage>1){
 							res.redirect('/message?content='+encodeURIComponent('錯誤頁碼!'));
 						}else{
-							res.render('search',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,keywordDefault:keyword,messengerDefault:messenger,actionDefault:action,categoryDefault:category,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,jsonArray:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,oflg:objFlag,pflg:plusFlag,kpr:keeper,dvr:divider});
+							res.render('search',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.auRst,keywordDefault:keyword,messengerDefault:messenger,actionDefault:action,categoryDefault:category,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,jsonArray:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,oflg:objFlag,pflg:plusFlag,kpr:keeper,dvr:divider});
 						}
 					}else{
 						var Transactions  = mongoose.model('Transactions');
@@ -298,7 +293,7 @@ router.get('/search/:keyword?/:category?/:messenger?/:action?/:director?/:lbound
 								}
 								
 								for(i=borrows.length-1;i>-1;i--){
-									if(auRst===null){
+									if(req.auRst===null){
 										borrows[i].TitleColor='default';
 									}else{
 										borrows[i].TitleColor='default';
@@ -441,7 +436,7 @@ router.get('/search/:keyword?/:category?/:messenger?/:action?/:director?/:lbound
 									if(targetPage>1){
 										res.redirect('/message?content='+encodeURIComponent('錯誤頁碼!'));
 									}else{
-										res.render('search',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,keywordDefault:keyword,messengerDefault:messenger,actionDefault:action,categoryDefault:category,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,jsonArray:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,oflg:objFlag,pflg:plusFlag,kpr:keeper,dvr:divider});
+										res.render('search',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.auRst,keywordDefault:keyword,messengerDefault:messenger,actionDefault:action,categoryDefault:category,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,jsonArray:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,oflg:objFlag,pflg:plusFlag,kpr:keeper,dvr:divider});
 									}
 								}else{
 									pageNum=Math.ceil(totalResultNumber/divider);
@@ -461,7 +456,7 @@ router.get('/search/:keyword?/:category?/:messenger?/:action?/:director?/:lbound
 										}
 										for(i=0;i<resArrays.length;i++){
 											resArrays[i].MaxInterestRateAccepted-=library.serviceChargeRate;//scr
-											if(auRst!==null){
+											if(req.auRst!==null){
 												resArrays[i].ifLiked=false;
 												for(j=0;j<resArrays[i].Likes.length;j++){
 													if(resArrays[i].Likes[j].equals(req.user._id)){
@@ -471,7 +466,7 @@ router.get('/search/:keyword?/:category?/:messenger?/:action?/:director?/:lbound
 												}
 											}
 										}
-										res.render('search',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,keywordDefault:keyword,messengerDefault:messenger,actionDefault:action,categoryDefault:category,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,jsonArray:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,oflg:objFlag,pflg:plusFlag,kpr:keeper,dvr:divider});
+										res.render('search',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.auRst,keywordDefault:keyword,messengerDefault:messenger,actionDefault:action,categoryDefault:category,directorDefault:director,lboundDefault:lbound,uboundDefault:ubound,jsonArray:resArrays,totalResultNum:totalResultNumber,pageNumber:pageNum,targetPageNumber:targetPage,oflg:objFlag,pflg:plusFlag,kpr:keeper,dvr:divider});
 									}
 								}
 							}
@@ -487,13 +482,8 @@ router.get('/search/:keyword?/:category?/:messenger?/:action?/:director?/:lbound
 	}
 });
 
-router.get('/story/:id?',library.loginFormChecker,library.newMsgChecker, function (req, res){
+router.get('/story/:id?',library.loginFormChecker,library.newMsgChecker,library.usrNameGenerator, function (req, res){
 	if(typeof(req.query.id) === 'string'){
-		var auRst=null;
-		if(req.isAuthenticated()){
-			auRst=req.user.Username;
-		}
-		
 		var stringArrayFlash=req.flash('hendLendForm');
 		var hendLendFormJson=null;
 		if(stringArrayFlash.length>0){
@@ -569,13 +559,13 @@ router.get('/story/:id?',library.loginFormChecker,library.newMsgChecker, functio
 									
 									var ifSelfValue=false;
 									var ifLikedValue=false;
-									if(auRst===null){
-										res.render('story',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,ifSelf:ifSelfValue,ifLiked:ifLikedValue,json:borrow,jsonMessage:null,jsonBorrowMessage:null,jsonLend:null,MoneyInBankAccountValue:0,MoneyLended:moneyLendedJson,hlfJSON:hendLendFormJson,cfJSON:confirmFormJson});
+									if(req.auRst===null){
+										res.render('story',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.auRst,ifSelf:ifSelfValue,ifLiked:ifLikedValue,json:borrow,jsonMessage:null,jsonBorrowMessage:null,jsonLend:null,MoneyInBankAccountValue:0,MoneyLended:moneyLendedJson,hlfJSON:hendLendFormJson,cfJSON:confirmFormJson});
 									}else{
 										if(borrow.CreatedBy._id.equals(req.user._id)){
 											borrow.TitleColor='color4';
 											ifSelfValue=true;
-											res.render('story',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,ifSelf:ifSelfValue,ifLiked:ifLikedValue,json:borrow,jsonMessage:null,jsonBorrowMessage:null,jsonLend:null,MoneyInBankAccountValue:0,MoneyLended:moneyLendedJson,hlfJSON:hendLendFormJson,cfJSON:confirmFormJson});
+											res.render('story',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.auRst,ifSelf:ifSelfValue,ifLiked:ifLikedValue,json:borrow,jsonMessage:null,jsonBorrowMessage:null,jsonLend:null,MoneyInBankAccountValue:0,MoneyLended:moneyLendedJson,hlfJSON:hendLendFormJson,cfJSON:confirmFormJson});
 										}else{
 											var j = 0;
 											for (j = 0; j < borrow.Likes.length; j++) {
@@ -659,7 +649,7 @@ router.get('/story/:id?',library.loginFormChecker,library.newMsgChecker, functio
 																			moneyLendedJson.moneyLeftToHendLend=0;
 																		}
 																		moneyLendedJson.maxSettingAutoLend=bankaccount.MoneyInBankAccount+moneyLendedJson.autoLendCumulated;
-																		res.render('story',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:auRst,ifSelf:ifSelfValue,ifLiked:ifLikedValue,json:borrow,jsonMessage:message,jsonBorrowMessage:borrowMessage,jsonLend:lend,MoneyInBankAccountValue:bankaccount.MoneyInBankAccount,MoneyLended:moneyLendedJson,hlfJSON:hendLendFormJson,cfJSON:confirmFormJson});
+																		res.render('story',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.auRst,ifSelf:ifSelfValue,ifLiked:ifLikedValue,json:borrow,jsonMessage:message,jsonBorrowMessage:borrowMessage,jsonLend:lend,MoneyInBankAccountValue:bankaccount.MoneyInBankAccount,MoneyLended:moneyLendedJson,hlfJSON:hendLendFormJson,cfJSON:confirmFormJson});
 																	}
 																});
 															}

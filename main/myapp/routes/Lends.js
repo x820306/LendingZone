@@ -505,7 +505,7 @@ function redirector(req,res,target,message){
 	var string=JSON.stringify(json);
 	
 	req.flash('lendForm',string);
-	res.redirect(req.get('referer'));
+	res.redirect('/lender/lend');
 }
 
 function createPart(res,req,outterPara){

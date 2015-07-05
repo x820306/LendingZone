@@ -7,6 +7,7 @@ var Messages  = mongoose.model('Messages');
 var Transactions  = mongoose.model('Transactions');
 var BankAccounts  = mongoose.model('BankAccounts');
 var crypto = require('crypto');
+var base32 = require('thirty-two');
 var sanitizer = require('sanitizer'); 
 var nodemailer = require('nodemailer');
 var generator = require('xoauth2').createXOAuth2Generator({
@@ -151,6 +152,79 @@ router.post('/destoryImages', function(req, res, next) {
 		}
 	}else{
 		res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+	}
+});
+
+router.get('/enableTotp',library.loginFormChecker,library.ensureAuthenticated,library.newMsgChecker, function(req, res, next) {
+	if(req.user.keyObj.flag==true){
+		var encodedKey = base32.encode(req.user.keyObj.key);
+      
+		var otpUrl = 'otpauth://totp/'+req.user.Username+'_at_lendingZone?secret=' + encodedKey + '&period=' + req.user.keyObj.period;
+		var qrImage = 'https://chart.googleapis.com/chart?chs=166x166&chld=L|0&cht=qr&chl=' + encodeURIComponent(otpUrl);
+		  
+		res.render('enableTotp', {lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username, key: encodedKey, qrImage: qrImage, content:'' });
+	}else{
+		var key = library.randomKey(10);
+		var encodedKey = base32.encode(key);
+      
+		var otpUrl = 'otpauth://totp/'+req.user.Username+'_at_lendingZone?secret=' + encodedKey + '&period=30';
+		var qrImage = 'https://chart.googleapis.com/chart?chs=166x166&chld=L|0&cht=qr&chl=' + encodeURIComponent(otpUrl);
+		Users.findById(req.user._id).exec(function (err, foundUser){
+			if (err) {
+				console.log(err);
+				res.redirect('/message?content='+encodeURIComponent('錯誤'));
+			}else{
+				if(!foundUser){
+					res.redirect('/message?content='+encodeURIComponent('錯誤'));
+				}else{
+					foundUser.keyObj.flag=true;
+					foundUser.keyObj.key=key;
+					foundUser.keyObj.period=30;
+					foundUser.save(function (err,newUpdated){
+						if (err){
+							console.log(err);
+							res.redirect('/message?content='+encodeURIComponent('錯誤'));
+						}else{
+							req.session.passport.secondFactor = 'totp';
+							res.render('enableTotp', {lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username, key: encodedKey, qrImage: qrImage, content:'<h4 class="red">您已啟用兩階段驗證</h4><br>' });
+						}
+					});
+				}
+			}
+		});
+	}
+});
+
+router.get('/disableTotp',library.loginFormChecker,library.ensureAuthenticated,library.newMsgChecker, function(req, res, next) {
+	if(req.user.keyObj.flag==true){
+		Users.findById(req.user._id).exec(function (err, foundUser){
+			if (err) {
+				console.log(err);
+				res.redirect('/message?content='+encodeURIComponent('錯誤'));
+			}else{
+				if(!foundUser){
+					res.redirect('/message?content='+encodeURIComponent('錯誤'));
+				}else{
+					foundUser.keyObj.flag=false;
+					foundUser.keyObj.key='';
+					foundUser.keyObj.period=-1;
+					foundUser.save(function (err,newUpdated){
+						if (err){
+							console.log(err);
+							res.redirect('/message?content='+encodeURIComponent('錯誤'));
+						}else{
+							if(req.session.passport.hasOwnProperty('secondFactor')){
+								delete req.session.passport.secondFactor;
+							}
+							req.flash('disableTOTP','您已停用兩階段驗證');
+							res.redirect('/signup/profile');
+						}
+					});
+				}
+			}
+		});
+	}else{
+		res.redirect('/signup/profile');
 	}
 });
 
@@ -340,12 +414,8 @@ router.post('/forgetAct', function(req, res, next) {
 	}
 });
 
-router.get('/resetPWpage/:token?',library.loginFormChecker, library.newMsgChecker, function(req, res, next) {
+router.get('/resetPWpage/:token?',library.loginFormChecker, library.newMsgChecker,library.usrNameGenerator, function(req, res, next) {
 	if(typeof(req.query.token) === 'string'){
-		var auRst=null;
-		if(req.isAuthenticated()){
-			auRst=req.user.Username;
-		}
 		var stringArrayFlash=req.flash('backerReset');
 		var formJson=null;
 		if(stringArrayFlash.length>0){
@@ -358,7 +428,7 @@ router.get('/resetPWpage/:token?',library.loginFormChecker, library.newMsgChecke
 				if (!user) {
 					res.redirect('/message?content='+encodeURIComponent('token過期或無效!'));
 				}else{
-					res.render('resetPWpage',{lgfJSON:req.loginFormJson,newlrmNum: req.newlrmNumber,newlsmNum: req.newlsmNumber,userName: auRst,tk:req.query.token,fJSON:formJson});
+					res.render('resetPWpage',{lgfJSON:req.loginFormJson,newlrmNum: req.newlrmNumber,newlsmNum: req.newlsmNumber,userName: req.auRst,tk:req.query.token,fJSON:formJson});
 				}
 			}
 		});
@@ -631,7 +701,7 @@ function backerChange(req,res){
 	var json={FormContent:formContent};
 	var string=JSON.stringify(json);
 	req.flash('backerChange',string);
-	res.redirect(req.get('referer'));
+	res.redirect('/signup/changePWpage');
 }
 
 function backerReset(req,res){
@@ -643,7 +713,7 @@ function backerReset(req,res){
 	var json={FormContent:formContent};
 	var string=JSON.stringify(json);
 	req.flash('backerReset',string);
-	res.redirect(req.get('referer'));
+	res.redirect('/Users/resetPWpage?token='+req.body.Token);
 }
 
 function backerChangeUsername(req,res){
@@ -655,7 +725,7 @@ function backerChangeUsername(req,res){
 	var json={FormContent:formContent};
 	var string=JSON.stringify(json);
 	req.flash('backerChangeUsername',string);
-	res.redirect(req.get('referer'));
+	res.redirect('/signup/changeUsernamePage');
 }
 
 function pwChangedMail(newUpdated){

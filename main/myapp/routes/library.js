@@ -11,6 +11,7 @@ var Discussions  = mongoose.model('Discussions');
 var sanitizer = require('sanitizer');
 var nodemailer = require('nodemailer');
 var crypto = require('crypto');
+var base32 = require('thirty-two');
 var generator = require('xoauth2').createXOAuth2Generator({
     user: 'lendingzonesystem@gmail.com',
     clientId: '1064408122186-fheebavu1le96q0h0assuueda5kmb0nk.apps.googleusercontent.com',
@@ -216,7 +217,6 @@ exports.gridResponser=function(uid,category,req,res){
 exports.replacer=function(input,flag){
 	if(!flag){
 		return input.replace(/[^\w\s\/\.\-\"\u0800-\u9fa5]/ig,'').replace(/\s\s+/g,'').trim();
-		
 	}else{
 		return input.replace(/[^\w\s\/\.\-\"\u0800-\u9fa5]/ig,' ').replace(/\s\s+/g,' ').trim();
 	}
@@ -616,7 +616,7 @@ function redirector(req,res,target,message){
 	var string=JSON.stringify(json);
 	
 	req.flash('confirmForm',string);
-	res.redirect(req.get('referer'));
+	res.redirect('/lender/story?id='+req.body.FromBorrowRequest);
 }
 
 exports.directorDivider = function(dtr,input,type){
@@ -1864,6 +1864,23 @@ exports.randomString=function (len, charSet) {
     return randomString;
 }
 
+exports.randomKey = function(len) {
+  var buf = []
+    , chars = 'abcdefghijklmnopqrstuvwxyz0123456789'
+    , charlen = chars.length;
+
+  for (var i = 0; i < len; ++i) {
+    buf.push(chars[getRandomInt(0, charlen - 1)]);
+  }
+
+  return buf.join('');
+};
+
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+
 //ensureAuthenticated->newMsgChecker->ensureAdmin
 exports.newMsgChecker=function (req, res, next) {
 	if (!req.isAuthenticated()) { 
@@ -1895,14 +1912,100 @@ exports.newMsgChecker=function (req, res, next) {
 }
 
 exports.ensureAuthenticated=function (req, res, next) {
-  if (req.isAuthenticated()) { return next(); }
-	res.render('login',{lgfJSON:req.loginFormJson,newlrmNum:0,newlsmNum:0,userName:null,msg:'請登入'});
+	if (req.isAuthenticated()){ 
+		if(req.user.keyObj.flag===true){
+			if(req.session.passport.secondFactor === 'totp'){
+				return next();
+			}else{
+				var path=exports.pathProcesser(req,false);
+				res.redirect('/totp_login?path='+path);
+			}
+		}else{
+			return next();
+		}
+	}else{
+		res.render('login',{lgfJSON:req.loginFormJson,newlrmNum:0,newlsmNum:0,userName:null,msg:'請登入'});
+	}
 }
 
 //add after ensureAuthenticated to confirm ifAdmin
 exports.ensureAdmin=function (req, res, next) {
-  if(exports.adminID.equals(req.user._id)){ return next(); }
-	res.render('message',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,content:'請以管理員身分登入'});
+	if(exports.adminID.equals(req.user._id)){ 
+		return next(); 
+	}else{
+		res.render('message',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,content:'請以管理員身分登入'});
+	}
+}
+
+exports.usrNameGenerator=function (req, res, next) {
+	req.auRst=null;
+	if(req.isAuthenticated()){
+		if(req.user.keyObj.flag===true){
+			if(req.session.passport.secondFactor === 'totp'){
+				req.auRst=req.user.Username;
+			}
+		}else{
+			req.auRst=req.user.Username;
+		}
+	}
+	return next(); 
+}
+
+exports.totpDefender=function (req, res, next) {
+	if(req.isAuthenticated()){ 
+		if (req.user.keyObj.flag===true){
+			if (req.session.passport.secondFactor !== 'totp'){
+				return next(); 
+			}else{
+				res.redirect('/');
+			}
+		}else{
+			res.redirect('/');
+		}
+	}else{
+		res.redirect('/');
+	}
+}
+
+exports.routeChecker=function (origString){
+	var stringArray=origString.split('/');
+	var subString=stringArray[stringArray.length-1];
+	var subStringArray=subString.split('?');
+	var target=subStringArray[0];
+	if((target==='message')||(target==='forgetActOrPW')||(target==='borrowCreate')||(target==='readable')||(target==='buyInsurance')||(target==='buyInsuranceAll')||(target==='rejectToBorrowMessageInStory')||(target==='confirmToBorrowMessageInStory')||(target==='rejectToBorrowMessageInLRM')||(target==='confirmToBorrowMessageInLRM')||(target==='rejectToBorrowMessageInLRMall')||(target==='confirmToBorrowMessageInLRMall')||(target==='toLendCreate')||(target==='toLendUpdate')||(target==='destroy')||(target==='create')||(target==='update')||(target==='changeData')||(target==='changePW')||(target==='changeUsername')||(target==='deleteToLendMessageInLRMall')||(target==='buyInsuranceAll')||(target==='rejectToBorrowMessageInLRMall')||(target==='confirmToBorrowMessageInLRMall')||(target==='autoConfirmPost')||(target==='disableAutoConfirmPost')||(target==='autoNotReadablePost')||(target==='disableAutoNotReadablePost')){
+		return false;
+	}else{
+		return true;
+	}
+}
+
+exports.refererChecker=function(req){
+	var tester=req.get('referer');
+	if(typeof(tester) === 'string'){
+		var rootPath=req.protocol+'://'+req.headers.host;
+		var regp=new RegExp(rootPath);
+		if(tester.search(regp)>-1){
+			tester=tester.replace(regp,'');
+		}else{
+			tester='/'
+		}
+	}else{
+		tester='/'
+	}
+	return tester;
+}
+
+exports.pathProcesser=function (req,flag){
+	var origPath;
+	if(flag){
+		origPath=exports.refererChecker(req);
+	}else{
+		origPath=req.originalUrl;
+	}
+	
+	var path=encodeURIComponent(base32.encode(origPath).toString());
+	
+	return path;
 }
 
 exports.loginFormChecker=function(req, res, next) {

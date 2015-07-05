@@ -158,7 +158,7 @@
 					</div>
 					<ul class="nav navbar-nav navbar-right">
 						<!--<li><a href="#" onclick="if(ifLoadedCount<=0){if(!ifDrawed){doneResizing();}$('#introCanvas').show();}else{alert('請等候圖片載入完畢');}return false;">引導</a></li>%>-->
-						<% if(nav_cur!=='signup'){ %>
+						<% if((nav_cur!=='signup')&&(nav_cur!=='totp_login')){ %>
 							<% if(userName===null){ %>
 								<li><a href="#" data-toggle="modal" data-target="#myModal">登入</a></li>
 								<li><a href="/signupTest">註冊</a></li>
@@ -183,7 +183,7 @@
 								</li>
 							<% } %>
 						<%}else{%>
-							<li class="active"><a href="/signupTest">註冊</a></li>
+							<li<%if(nav_cur==='signup'){%> class="active"<%}%>><a href="/signupTest">註冊</a></li>
 						<% } %>
 					</ul>
 				</div><!-- /.navbar-collapse -->

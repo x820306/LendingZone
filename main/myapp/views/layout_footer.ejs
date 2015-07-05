@@ -4,7 +4,7 @@
         <p>Copyright © Lending Zone 2015</p>
       </div>
     </footer>
-	<% if((userName===null)&&((nav_cur!=='signup'))){ %>
+	<% if((userName===null)&&(nav_cur!=='signup')&&(nav_cur!=='totp_login')){ %>
 		<!--modal-->
 		<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 			<div class="modal-dialog modal-sm">
@@ -83,7 +83,7 @@
 	<%-imgSettingCode%>
 	
 	$(document).ready(function () {
-		<% if((userName===null)&&(nav_cur!=='signup')){ %>
+		<% if((userName===null)&&(nav_cur!=='signup')&&(nav_cur!=='totp_login')){ %>
 			if ($.cookie("rmbUser") === "true") {
 				$("#rememberID").prop("checked", true);
 				$("#usernameID").val($.cookie("username"));
@@ -201,7 +201,7 @@
 		}
 	}
 	
-	<% if((userName===null)&&(nav_cur!=='signup')){ %>
+	<% if((userName===null)&&(nav_cur!=='signup')&&(nav_cur!=='totp_login')){ %>
 		var captchaFlag=false;
 		function ajaxCaptcha(){
 			if(captchaFlag){
