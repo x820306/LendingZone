@@ -193,6 +193,9 @@
 								<button style="height:35px;" class="btn btn-default" type="button" data-toggle="modal" data-target="#myModal">
 									<span class="glyphicon glyphicon-comment myTitle2"></span>
 								</button>
+								<button style="height:35px;" class="btn btn-default" type="button" data-toggle="modal" data-target="#myModal">
+									<span class="glyphicon glyphicon-remove myTitle2"></span>
+								</button>
 							</span>
 						<% }else{ %>
 							<textarea id="iptCtr" style="height:35px;" placeholder="留言...Enter送出，Shift+Enter換行" class="form-control" onkeypress="if(event.keyCode===13){if(!event.shiftKey){sendComment();return false;}}"></textarea>
@@ -202,6 +205,9 @@
 								</button>
 								<button style="height:35px;" onclick="sendComment();" class="btn btn-default" type="button" id="sendButton">
 									<span class="glyphicon glyphicon-comment myTitle2"></span>
+								</button>
+								<button style="height:35px;" onclick="clearMain();" class="btn btn-default" type="button" id="revButton">
+									<span class="glyphicon glyphicon-remove myTitle2"></span>
 								</button>
 							</span>
 						<%}%>
@@ -449,7 +455,11 @@
 									<br>
 									<div class="my-divider"></div>
 									<h4>訊息（選填）：<span id="s4" class="red"><%if(hlfJSON){%><%if(hlfJSON.Target[3]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=hlfJSON.Message[3]%><%}%><%}%></span></h4>
-									<textarea class="form-control" name="Message" rows="3"><%if(hlfJSON){%><%=hlfJSON.FormContent.F4%><%}%></textarea>
+									<textarea id="msgIpt" class="form-control" name="Message" rows="3"><%if(hlfJSON){%><%=hlfJSON.FormContent.F4%><%}%></textarea>
+									<br>
+									<button type="button" class="btn btn-default" onclick="$('#msgIpt').val('');$('#msgIpt').focus();">
+										清除
+									</button>
 								</div>
 									<input type="hidden" name="FromBorrowRequest" value="<%=json._id%>">
 									<div class="modal-footer">
@@ -710,7 +720,11 @@
 									<br>
 									<div class="my-divider"></div>
 									<h4>訊息（選填）：<span id="s4" class="red"><%if(hlfJSON){%><%if(hlfJSON.Target[3]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=hlfJSON.Message[3]%><%}%><%}%></span></h4>
-									<textarea class="form-control" name="Message" rows="3"><%if(hlfJSON){%><%=hlfJSON.FormContent.F4%><%}else{%><%=jsonMessage.Message.replace(/&gt;/g,'>').replace(/&lt;/g,'<').replace(/&amp;/g,'&')%><%}%></textarea>
+									<textarea id="msgIpt" class="form-control" name="Message" rows="3"><%if(hlfJSON){%><%=hlfJSON.FormContent.F4%><%}else{%><%=jsonMessage.Message.replace(/&gt;/g,'>').replace(/&lt;/g,'<').replace(/&amp;/g,'&')%><%}%></textarea>
+									<br>
+									<button type="button" class="btn btn-default" onclick="$('#msgIpt').val('');$('#msgIpt').focus();">
+										清除
+									</button>
 								</div>
 								<input type="hidden" name="FromBorrowRequest" value="<%=json._id%>">
 								<input type="hidden" name="_id" value="<%=jsonMessage._id%>">
@@ -1238,6 +1252,7 @@
 			$('#iptCtr').attr('readonly','readonly');
 			$('#sendButton').addClass('disabled');
 			$('#newlButton').addClass('disabled');
+			$('#revButton').addClass('disabled');
 			$(".actionTa").each(function() {
 				$(this).attr('readonly','readonly');
 			});
@@ -1251,6 +1266,9 @@
 				$(this).addClass('disabled');
 			});
 			$(".newBtnRev").each(function() {
+				$(this).addClass('disabled');
+			});
+			$(".newBtnMin").each(function() {
 				$(this).addClass('disabled');
 			});
 		}
@@ -1310,6 +1328,7 @@
 			$('#iptCtr').removeAttr("readonly");
 			$('#sendButton').removeClass('disabled');
 			$('#newlButton').removeClass('disabled');
+			$('#revButton').removeClass('disabled');
 			$(".actionTa").each(function() {
 				$(this).removeAttr("readonly");
 			});
@@ -1323,6 +1342,9 @@
 				$(this).removeClass('disabled');
 			});
 			$(".newBtnRev").each(function() {
+				$(this).removeClass('disabled');
+			});
+			$(".newBtnMin").each(function() {
 				$(this).removeClass('disabled');
 			});
 		}
@@ -1404,10 +1426,20 @@
 			$('#actionTa'+index).focus();
 		}
 		
+		function clearMain(){
+			$('#iptCtr').val('');
+			$('#iptCtr').focus();
+		}
+		
+		function clearSub(index){
+			$('#actionTa'+index).val('');
+			$('#actionTa'+index).focus();
+		}
+	
 		function startEdit(index){
 			var content='<div class="input-group" style="width:70%;">';
 			content+='<textarea id="actionTa'+index+'" class="form-control actionTa" style="height:35px;min-width:150px;" placeholder="ESC鍵可取消編輯" onkeypress="if(event.keyCode===13){if(!event.shiftKey){editComment('+index+');return false;}}" onkeyup="if(event.keyCode===27){endEdit('+index+');}">'+$('#hdIpt2'+index).val().replace(/&quot;/g,'"').replace(/&gt;/g,'>').replace(/&lt;/g,'<').replace(/&amp;/g,'&')+'</textarea>';
-			content+='<span class="input-group-btn"><button class="btn btn-default newBtnNel" style="height:35px;" onclick="newLine('+index+');" type="button"><span class="glyphicon glyphicon-arrow-down myTitle2"></span></button><button class="btn btn-default newBtnCom" style="height:35px;" onclick="editComment('+index+');" type="button"><span class="glyphicon glyphicon-comment myTitle2"></span></button><button class="btn btn-default newBtnRev" style="height:35px;" onclick="endEdit('+index+');" type="button"><span class="glyphicon glyphicon-remove myTitle2"></span></button></span></div>';
+			content+='<span class="input-group-btn"><button class="btn btn-default newBtnNel" style="height:35px;" onclick="newLine('+index+');" type="button"><span class="glyphicon glyphicon-arrow-down myTitle2"></span></button><button class="btn btn-default newBtnCom" style="height:35px;" onclick="editComment('+index+');" type="button"><span class="glyphicon glyphicon-comment myTitle2"></span></button><button class="btn btn-default newBtnRev" style="height:35px;" onclick="clearSub('+index+');" type="button"><span class="glyphicon glyphicon-remove myTitle2"></span></button><button class="btn btn-default newBtnMin" style="height:35px;" onclick="endEdit('+index+');" type="button"><span class="glyphicon glyphicon-minus myTitle2"></span></button></span></div>';
 			$('#cntIptDiv'+index).html(content);
 		}
 		

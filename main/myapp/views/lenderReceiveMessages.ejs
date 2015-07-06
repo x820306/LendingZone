@@ -1148,6 +1148,8 @@ function sorterSelector(index){
 	}
 	$('#slis'+index).attr('class','active');
 	spanner($('#sorter0').text());
+	$('#lbound').trigger('change');
+	$('#ubound').trigger('change');
 	linker();
 }
 

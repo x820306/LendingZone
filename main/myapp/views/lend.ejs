@@ -628,6 +628,8 @@ function autoSorter(defaultValuel,defaultValueu){
 		}
 		disableDater();
 	}
+	$('#lboundSel').trigger('change');
+	$('#uboundSel').trigger('change');
 }
 
 function autoChanger(){
@@ -684,6 +686,8 @@ function autoChanger(){
 		$('#keywordSel').val('');
 		disableDater();
 	}
+	$('#lboundSel').trigger('change');
+	$('#uboundSel').trigger('change');
 }
 
 var ifDater=false;

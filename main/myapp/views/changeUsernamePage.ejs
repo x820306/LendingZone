@@ -7,12 +7,12 @@
 				<br>
 				<div class="input-group" style="text-align:center;">
 					<label for="oldPwdIpt">密碼確認</label>
-					<input type="password" class="form-control" id="oldPwdIpt" name="OldPassword" placeholder="請輸入密碼" required="required" onblur="ifOldPWRight(true);return false;" onkeyup="value=value.replace(/[^\w]/ig,'');return false;"<%if(fJSON){%> value="<%=fJSON.FormContent.F1%>"<%}%>><br><span id="confirmMessage1" class="confirmMessage1 red"></span>
+					<input type="password" class="form-control" id="oldPwdIpt" name="OldPassword" placeholder="請輸入密碼" required="required"<%if(fJSON){%> value="<%=fJSON.FormContent.F1%>"<%}%>><br><span id="confirmMessage1" class="confirmMessage1 red"></span>
 				</div>
 				<br>
 				<div class="input-group" style="text-align:center;">
 					<label for="AccIpt">新帳號名稱</label>
-					<input type="text" class="form-control" id="AccIpt" name="Username" placeholder="帳號" required="required" onblur="ifUsernameExist(true);return false;" onkeyup="value=value.replace(/[^\w]/ig,'');return false;"<%if(fJSON){%> value="<%=fJSON.FormContent.F2%>"<%}%>><br><span id="confirmMessage2" class="confirmMessage2 red"></span>
+					<input type="text" class="form-control" id="AccIpt" name="Username" placeholder="帳號" required="required"<%if(fJSON){%> value="<%=fJSON.FormContent.F2%>"<%}%>><br><span id="confirmMessage2" class="confirmMessage2 red"></span>
 				</div>
 				<br>
 				<div class="btn-toolbar" role="toolbar" style = "margin-top: 10px;">
@@ -198,8 +198,8 @@
 		}
 	}
 	
-	<%if(fJSON){%>
-		$(document).ready(function (){
+	$(document).ready(function (){
+		<%if(fJSON){%>
 			submitFlag=true;
 			start();
 			ifOldPWRight(false);
@@ -211,7 +211,29 @@
 			}
 			submitFlag=false;
 			end();
+		<%}%>
+		
+		$(document).on('blur', '#oldPwdIpt', function(){
+			ifOldPWRight(true);
+			return false;
 		});
-	<%}%>
+		
+		$(document).on('blur', '#AccIpt', function(){
+			ifUsernameExist(true);
+			return false;
+		});
+		
+		$(document).on('input keyup', '#oldPwdIpt', function(){
+			var valueNow=$(this).val();
+			$(this).val(valueNow.replace(/[^\w]/ig,''));
+			return false;
+		});
+		
+		$(document).on('input keyup', '#AccIpt', function(){
+			var valueNow=$(this).val();
+			$(this).val(valueNow.replace(/[^\w]/ig,''));
+			return false;
+		});
+	});
 </script>
 <%- include('layout_footer',{imgSettingCode:"var ifLoadedCount=0;",imgDrawingCode:"",nav_cur:'changeUsernamePage'}); -%>

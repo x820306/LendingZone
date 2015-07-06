@@ -1,3 +1,27 @@
+.form-control{
+	background: #fff9e5 url(download.png) no-repeat right -10px center;
+	padding: 3px 18px 3px 4px; /* Use the same right padding (18) in jQ! */
+	transition: background 0.4s;
+}
+.form-control.x  { background-position: right 5px center; }
+.form-control.onX{ cursor: pointer; }
+
+.textForm{
+	background: #fff9e5 url(download.png) no-repeat right -10px center;
+	padding: 3px 18px 3px 4px; /* Use the same right padding (18) in jQ! */
+	transition: background 0.4s;
+}
+.textForm.x  { background-position: right 5px center; }
+.textForm.onX{ cursor: pointer; }
+
+.brwIpt{
+	background: #fff9e5 url(download.png) no-repeat right -10px center;
+	padding: 3px 18px 3px 4px; /* Use the same right padding (18) in jQ! */
+	transition: background 0.4s;
+}
+.brwIpt.x  { background-position: right 5px center; }
+.brwIpt.onX{ cursor: pointer; }
+
 .textForm {
 	width: 100%;
 	height: 30px;

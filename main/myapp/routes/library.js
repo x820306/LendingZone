@@ -1917,8 +1917,9 @@ exports.ensureAuthenticated=function (req, res, next) {
 			if(req.session.passport.secondFactor === 'totp'){
 				return next();
 			}else{
-				var path=exports.pathProcesser(req,false);
-				res.redirect('/totp_login?path='+path);
+				//var path=exports.pathProcesser(req,false);
+				//res.redirect('/totp_login?path='+path);
+				res.render('login',{lgfJSON:req.loginFormJson,newlrmNum:0,newlsmNum:0,userName:null,msg:'請登入'});
 			}
 		}else{
 			return next();
