@@ -8,7 +8,7 @@
 				<br>
 				<div class="resp2">	
 					<div class="input-group">
-						<input type="text" class="form-control pageBar" id="keywordIpt" placeholder="搜尋借入者的名稱或故事標題、內容" value="<%=keywordDefault%>" onkeypress="if(event.keyCode===13){linker();}" onkeyup="$('#keywordIptMain').val($('#keywordIpt').val());">
+						<input type="text" class="form-control pageBar" id="keywordIpt" placeholder="搜尋借入者的名稱或故事標題、內容" value="<%=keywordDefault%>" onkeypress="if(event.keyCode===13){linker();}">
 						<span class="input-group-btn">
 							<div class="btn-group">
 								<button type="button" class="btn btn-default dropdown-toggle pageBar" data-toggle="dropdown" id="categorySelected">
@@ -317,6 +317,8 @@
 		}
 		$('#alis'+index).attr('class','active');
 		spanner($('#sorter0').text());
+		$('#lbound').trigger('change');
+		$('#ubound').trigger('change');
 		linker();
 	}
 	
@@ -441,6 +443,11 @@
 			});
 		}
 		
+		function copier(){
+			$('#keywordIptMain').val($('#keywordIpt').val());
+			$('#keywordIptMain').trigger('change');
+		}
+		
 		$(document).ready(function (){
 			<%if(userName!==null){%>
 				var proArray=[];
@@ -450,6 +457,11 @@
 				}	
 				proArray.forEach(ajaxer);
 			<%}%>
+			
+			$(document).on('input keyup', '#keywordIpt', function(){
+				copier();
+				return false;
+			});
 			
 			if(ifDater){
 				$("#lbound").datepicker();

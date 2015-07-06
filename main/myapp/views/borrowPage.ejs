@@ -20,13 +20,13 @@
 		<div class="borrowBlock">
 		  <div class="borrowBlockTitle">借款金額<i class="red">*</i></div><span id="s1" class="red"><%if(bfJSON){%><%if(bfJSON.Target[0]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=bfJSON.Message[0]%><%}%><%}%></span>
 		  <div>金額限制 $5,000~$150,000</div>
-		  <input id="f1" type="number" name="MoneyToBorrow" required<%if(bfJSON){%> value="<%=bfJSON.FormContent.F1%>"<%}%>>
+		  <input class="brwIpt" id="f1" type="number" name="MoneyToBorrow" required<%if(bfJSON){%> value="<%=bfJSON.FormContent.F1%>"<%}%>>
 		</div>
 
 		<div class="borrowBlock">
 		  <div class="borrowBlockTitle">可接受利率上限<i class="red">*</i></div><span id="s2" class="red"><%if(bfJSON){%><%if(bfJSON.Target[1]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=bfJSON.Message[1]%><%}%><%}%></span>
 		  <div>單位為%，須大於<%=(scr*100).toFixed(2)%>%</div>
-		  <input id="f2" type="text" name="MaxInterestRateAccepted" required<%if(bfJSON){%> value="<%=bfJSON.FormContent.F2%>"<%}%>>
+		  <input class="brwIpt" id="f2" type="text" name="MaxInterestRateAccepted" required<%if(bfJSON){%> value="<%=bfJSON.FormContent.F2%>"<%}%>>
 		</div>
 
 		<div class="borrowBlock">
@@ -52,7 +52,7 @@
 		<div class="borrowBlock">
 			<div class="borrowBlockTitle">標題</div><span id="s5" class="red"><%if(bfJSON){%><%if(bfJSON.Target[4]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=bfJSON.Message[4]%><%}%><%}%></span>
 			<div>選擇性填寫，但"標題"與"借款原因"均有填寫才會出現在供借出者閱覽的故事列表中！</div>
-			<input id="f5" name="StoryTitle"<%if(bfJSON){%> value="<%=bfJSON.FormContent.F5%>"<%}%>>
+			<input style="width:70%;" class="brwIpt" id="f5" name="StoryTitle"<%if(bfJSON){%> value="<%=bfJSON.FormContent.F5%>"<%}%>>
 		</div>
 
 		<div class="borrowBlock">
@@ -68,13 +68,18 @@
 		<div class="borrowBlock">
 			<div class="borrowBlockTitle">借款原因/故事</div><span id="s7" class="red"><%if(bfJSON){%><%if(bfJSON.Target[6]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=bfJSON.Message[6]%><%}%><%}%></span>
 			<div>選擇性填寫，不限字數，也可附上相關網頁/影片連結</div>
-			<textarea id="f7" name="Story"><%if(bfJSON){%><%=bfJSON.FormContent.F7%><%}%></textarea>
+			<textarea style="width:70%;" rows="6" id="f7" name="Story"><%if(bfJSON){%><%=bfJSON.FormContent.F7%><%}%></textarea>
+			<br>
+			<br>
+			<button type="button" class="btn btn-default" onclick="$('#f7').val('');$('#f7').focus();">
+				清除
+			</button>
 		</div>
 
 		<div class="borrowBlock">
 			<div class="borrowBlockTitle">媒合確定最晚期限</div><span id="s8" class="red"><%if(bfJSON){%><%if(bfJSON.Target[7]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=bfJSON.Message[7]%><%}%><%}%></span>
 			<div>系統預設為三天</div>
-			<input id="f8" type="text" placeholder="年/月/日" name="TimeLimit"<%if(bfJSON){%> value="<%=bfJSON.FormContent.F8%>"<%}%>>
+			<input class="brwIpt" id="f8" type="text" placeholder="年/月/日" name="TimeLimit"<%if(bfJSON){%> value="<%=bfJSON.FormContent.F8%>"<%}%>>
 		</div>
 	</div>
 	<input type="hidden" name="Idfr" value="<%=idfr%>">
@@ -262,13 +267,17 @@
 	
 	function clearForm(){
 		$('#f1').val('');
+		$('#f1').trigger('change');
 		$('#f2').val('');
+		$('#f2').trigger('change');
 		$('#f3').prop('selectedIndex', 0);
 		$('#f4').prop('selectedIndex', 0);
 		$('#f5').val('');
+		$('#f5').trigger('change');
 		$('#f6').prop('selectedIndex', 0);
 		$('#f7').val('');
 		$('#f8').val('');
+		$('#f8').trigger('change');
 	}
 
 	var submitFlag=false;

@@ -24,17 +24,17 @@
 		<br>
 		<div class="input-group" style="text-align:center;">
 			<label for="AccIpt">帳號</label>
-			<input type="text" class="form-control" id="AccIpt" name="Username" placeholder="帳號" required="required" onblur="ifUsernameExist(true);return false;" onkeyup="value=value.replace(/[^\w]/ig,'');return false;"><br><span id="confirmMessage1" class="confirmMessage1 red"></span>
+			<input type="text" class="form-control" id="AccIpt" name="Username" placeholder="帳號" required="required"><br><span id="confirmMessage1" class="confirmMessage1 red"></span>
 		</div>
 		<br>
 		<div class="input-group" style="text-align:center;">
 			<label for="PwdIpt">密碼</label>
-			<input type="password" class="form-control" id="PwdIpt" name="Password" placeholder="密碼" required="required" onkeyup="value=value.replace(/[^\w]/ig,'');checkLength();checkPwd(); return false;"><br><span id="confirmMessage2" class="confirmMessage2 red"></span>
+			<input type="password" class="form-control" id="PwdIpt" name="Password" placeholder="密碼" required="required"><br><span id="confirmMessage2" class="confirmMessage2 red"></span>
 		</div>
 		<br>
 		<div class="input-group" style="text-align:center;">
 			<label for="2PwdIpt">密碼確認</label>
-			<input type="password" class="form-control" id="2PwdIpt" name="Password2nd" placeholder="密碼確認" required="required" onkeyup="value=value.replace(/[^\w]/ig,'');checkPwd(); return false;"> <br><span id="confirmMessage3" class="confirmMessage3 red"></span>
+			<input type="password" class="form-control" id="2PwdIpt" name="Password2nd" placeholder="密碼確認" required="required"> <br><span id="confirmMessage3" class="confirmMessage3 red"></span>
 		</div>
 		<div class="registrationFormAlert" id="divCheckPwd"></div>
 		<br>
@@ -250,5 +250,33 @@
 			$(target).modal('show');
 		}
 	}
+	
+	$(document).ready(function (){
+		$(document).on('blur', '#AccIpt', function(){
+			ifUsernameExist(true);
+			return false;
+		});
+		
+		$(document).on('input keyup', '#AccIpt', function(){
+			var valueNow=$(this).val();
+			$(this).val(valueNow.replace(/[^\w]/ig,''));
+			return false;
+		});
+		
+		$(document).on('input keyup', '#PwdIpt', function(){
+			var valueNow=$(this).val();
+			$(this).val(valueNow.replace(/[^\w]/ig,''));
+			checkLength();
+			checkPwd(); 
+			return false;
+		});
+		
+		$(document).on('input keyup', '#2PwdIpt', function(){
+			var valueNow=$(this).val();
+			$(this).val(valueNow.replace(/[^\w]/ig,''));
+			checkPwd(); 
+			return false;
+		});
+	});
 </script>
 <%- include('layout_footer',{imgSettingCode:"var ifLoadedCount=0;",imgDrawingCode:"",nav_cur:'signup'}); -%>

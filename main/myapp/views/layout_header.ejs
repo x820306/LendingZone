@@ -87,7 +87,7 @@
 					<div class="navbar-form navbar-left" role="search">
 						<div class="resp2">
 							<div class="input-group">
-								<input type="text" class="form-control headerBar" id="keywordIptMain" placeholder="搜尋借入者的名稱或故事標題、內容" value="<%=keywordDefault%>" onkeypress="if(event.keyCode===13){<%if(nav_cur==='search'){%>linker();<%}else{%>linkerMain();<%}%>}"<%if(nav_cur==='search'){%> onkeyup="$('#keywordIpt').val($('#keywordIptMain').val());"<%}%>>
+								<input type="text" class="form-control headerBar" id="keywordIptMain" placeholder="搜尋借入者的名稱或故事標題、內容" value="<%=keywordDefault%>" onkeypress="if(event.keyCode===13){<%if(nav_cur==='search'){%>linker();<%}else{%>linkerMain();<%}%>}">
 								<span class="input-group-btn">
 									<div class="btn-group">
 										<button type="button" class="btn btn-default dropdown-toggle headerBar" data-toggle="dropdown" id="categoryMainSelected">
@@ -280,4 +280,18 @@
 		function linkerMain(){
 			window.open('/lender/search?keyword='+encodeURIComponent($('#keywordIptMain').val())+'&category='+encodeURIComponent($('#categoryMain0').text())+'&messenger='+encodeURIComponent($('#messengerMain0').text())+'&action='+encodeURIComponent($('#searchAction0').text())+'&director='+encodeURIComponent($('#directorMain0').text())+'&lbound=&ubound=&page=1','_self');
 		}
+		
+		<%if(nav_cur==='search'){%>
+			function copierMain(){
+				$('#keywordIpt').val($('#keywordIptMain').val());
+				$('#keywordIpt').trigger('change');
+			}
+			
+			$(document).ready(function () {
+				$(document).on('input keyup', '#keywordIptMain', function(){
+					copierMain();
+					return false;
+				});
+			});
+		<%}%>
 	</script>

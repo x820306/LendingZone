@@ -169,7 +169,25 @@
 		<%}%>
 		
 		$(".pagination").rPage();
+		
+		settingClearable('form-control');
+		settingClearable('textForm');
+		settingClearable('brwIpt');
 	});
+	
+	function settingClearable(targetClass){
+		$(document).on('keyup input change', 'input[class~="'+targetClass+'"][readonly!="readonly"]', function(){
+			$(this)[tog(this.value)]('x');
+		}).on('mousemove', '.x', function( e ){
+			$(this)[tog(this.offsetWidth-18 < e.clientX-this.getBoundingClientRect().left)]('onX');   
+		}).on('click', '.onX', function(){
+			$(this).removeClass('x onX').val('').change().keyup();
+		});
+		
+		$('input[class~="'+targetClass+'"][readonly!="readonly"]').trigger('change');
+	}
+	
+	function tog(v){return v?'addClass':'removeClass';} 
 
 	function canvasOnClick(){
 		$('#introCanvas').hide();
