@@ -237,7 +237,7 @@ app.get('/captcha/:captchaIdfr?', function (req, res) {
 		library.captchaTextArray.push({Idfr:tempIdfr,Text:ary[0],SaveT:Date.now()});
 		
 		var base64=ary[1].toString('base64');
-		var base64='data:image/bmp;base64,'+base64;
+		base64='data:image/bmp;base64,'+base64;
 		res.json({CaptchaIdfr:library.captchaIdfrCtr,CaptchaPic:base64,success:true});
 	}else{
 		res.json({success:false});
@@ -427,7 +427,7 @@ function captchaChecker(req, res, next){
 			for(i=0;i<library.captchaTextArray.length;i++){
 				if(Idfr===library.captchaTextArray[i].Idfr){
 					ctr=i;
-					if(Text===library.captchaTextArray[i].Text){
+					if(Text.toUpperCase()===library.captchaTextArray[i].Text.toUpperCase()){
 						passFlag=true;
 					}
 					break;
