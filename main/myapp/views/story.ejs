@@ -174,26 +174,23 @@
 				</div>
 				<div class="tab-pane" id="tab3">
 					<div class="my_discussion" id="discussionDiv">
-						<%for(i=0;i<json.Discussion.length;i++){%>
-							<span class="myTitle"><%=json.Discussion[i].CreatedBy.Username%>：</span>
-							<br>
-							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%-json.Discussion[i].Content.replace(new RegExp('\n','g'),'<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;').replace(new RegExp(' ','g'),'&nbsp;')%>
-							<br>
-							<table class="disFtrTable"><tr><td nowrap="nowrap"><span class="myTitle">No.<%=i+1%></span>&nbsp;&nbsp;&nbsp;</td><td><div class="myTitle">Created&nbsp;:&nbsp;<%=json.Discussion[i].Created.getFullYear()%>/<%if(json.Discussion[i].Created.getMonth()<9){%>0<%}%><%=json.Discussion[i].Created.getMonth()+1%>/<%if(json.Discussion[i].Created.getDate()<10){%>0<%}%><%=json.Discussion[i].Created.getDate()%></div><div class="myTitle">Updated:&nbsp;<%=json.Discussion[i].Updated.getFullYear()%>/<%if(json.Discussion[i].Updated.getMonth()<9){%>0<%}%><%=json.Discussion[i].Updated.getMonth()+1%>/<%if(json.Discussion[i].Updated.getDate()<10){%>0<%}%><%=json.Discussion[i].Updated.getDate()%></div></td></tr></table>
-							<br>
-						<%}%>
+						<div style="text-align:center;" id="ajaxBtnID" class="ajaxBtn">
+							<button type="button" class="btn btn-default" onclick="seeMore();">
+								看更多
+							</button>
+						</div>
 					</div>
 					<div class="input-group my_discussion_ipt">
 						<%if(userName===null){ %>
-							<textarea style="height:35px;" placeholder="留言...Enter送出，Shift+Enter換行" class="form-control" onkeyup="value='';$('#myModal').modal('show');return false;"></textarea>
+							<textarea id="iptCtr" style="height:35px;" placeholder="留言...Enter送出，Shift+Enter換行" class="form-control" onkeyup="value='';$('#myModal').modal('show');return false;"></textarea>
 							<span class="input-group-btn">
-								<button style="height:35px;" class="btn btn-default" type="button" data-toggle="modal" data-target="#myModal">
+								<button style="height:35px;" class="btn btn-default" type="button" id="newlButton" data-toggle="modal" data-target="#myModal">
 									<span class="glyphicon glyphicon-arrow-down myTitle2"></span>
 								</button>
-								<button style="height:35px;" class="btn btn-default" type="button" data-toggle="modal" data-target="#myModal">
+								<button style="height:35px;" class="btn btn-default" type="button" id="sendButton" data-toggle="modal" data-target="#myModal">
 									<span class="glyphicon glyphicon-comment myTitle2"></span>
 								</button>
-								<button style="height:35px;" class="btn btn-default" type="button" data-toggle="modal" data-target="#myModal">
+								<button style="height:35px;" class="btn btn-default" type="button" id="revButton" data-toggle="modal" data-target="#myModal">
 									<span class="glyphicon glyphicon-remove myTitle2"></span>
 								</button>
 							</span>
@@ -1125,118 +1122,89 @@
 <script>
 	<%if(userName!==null){%>
 		$(document).ready(function (){
-			$('.modal')
-				.on({
-					'show.bs.modal': function() {
-						var idx = $('.modal:visible').length;
-						$(this).css('z-index', 1040 + (10 * idx));
-					},
-					'shown.bs.modal': function() {
-						var idx = ($('.modal:visible').length) - 1; // raise backdrop after animation.
-						$('.modal-backdrop').not('.stacked')
-						.css('z-index', 1039 + (10 * idx))
-						.addClass('stacked');
-					},
-					'hidden.bs.modal': function() {
-						if ($('.modal:visible').length > 0) {
-							// restore the modal-open class to the body element, so that scrolling works
-							// properly after de-stacking a modal.
-							setTimeout(function() {
-								$(document.body).addClass('modal-open');
-							}, 0);
-						}
+			$('.modal').on({
+				'show.bs.modal': function() {
+					var idx = $('.modal:visible').length;
+					$(this).css('z-index', 1040 + (10 * idx));
+				},
+				'shown.bs.modal': function() {
+					var idx = ($('.modal:visible').length) - 1; // raise backdrop after animation.
+					$('.modal-backdrop').not('.stacked')
+					.css('z-index', 1039 + (10 * idx))
+					.addClass('stacked');
+				},
+				'hidden.bs.modal': function() {
+					if ($('.modal:visible').length > 0) {
+						// restore the modal-open class to the body element, so that scrolling works
+						// properly after de-stacking a modal.
+						setTimeout(function() {
+							$(document.body).addClass('modal-open');
+						}, 0);
 					}
+				}
+			});
+				
+			<%if(hlfJSON){%>
+				$('#myTab a[href="#tab2"]').tab('show');
+				$('#hendLendModal').on('shown.bs.modal.myevent', function () {
+					setTimeout(function() {
+						<%for(i=0;i<hlfJSON.Target.length;i++){%>
+							<%if(hlfJSON.Target[i]){%>
+								$('#f<%=i+1%>').focus();
+								<%break;%>
+							<%}%>
+						<%}%>
+						$('#hendLendModal').off('shown.bs.modal.myevent');
+					}, 100);
 				});
-				
-				<%if(hlfJSON){%>
-					$('#myTab a[href="#tab2"]').tab('show');
-					$('#hendLendModal').on('shown.bs.modal.myevent', function () {
-						setTimeout(function() {
-							<%for(i=0;i<hlfJSON.Target.length;i++){%>
-								<%if(hlfJSON.Target[i]){%>
-									$('#f<%=i+1%>').focus();
-									<%break;%>
-								<%}%>
+				$('#hendLendModal').modal('show');
+			<%}%>
+			
+			<%if(cfJSON){%>
+				$('#myTab a[href="#tab2"]').tab('show');
+				$('#confirmModal').on('shown.bs.modal.myevent', function () {
+					setTimeout(function() {
+						<%for(i=0;i<cfJSON.Target.length;i++){%>
+							<%if(cfJSON.Target[i]){%>
+								$('#f<%=i+1%>').focus();
+								<%break;%>
 							<%}%>
-							$('#hendLendModal').off('shown.bs.modal.myevent');
-						}, 100);
-					});
-					$('#hendLendModal').modal('show');
-				<%}%>
-				
-				<%if(cfJSON){%>
-					$('#myTab a[href="#tab2"]').tab('show');
-					$('#confirmModal').on('shown.bs.modal.myevent', function () {
-						setTimeout(function() {
-							<%for(i=0;i<cfJSON.Target.length;i++){%>
-								<%if(cfJSON.Target[i]){%>
-									$('#f<%=i+1%>').focus();
-									<%break;%>
-								<%}%>
-							<%}%>
-							$('#confirmModal').off('shown.bs.modal.myevent');
-						}, 100);
-					});
-					$('#confirmModal').modal('show');
-				<%}%>
-				
-				$('#btnID').addClass('disabled');
-				$.ajax({ 
-					url: '/Borrows/iflike',
-					type: 'POST',
-					data:{_id:"<%=json._id%>"},
-					dataType: 'json',
-					success: function(Jdata) {
-						if(Jdata.success){
-							var dateObj=new Date(Jdata.date);
-							var zeroMonth='';
-							if(dateObj.getMonth()<9){
-								zeroMonth='0';
-							}
-							var zeroDate='';
-							if(dateObj.getDate()<10){
-								zeroDate='0';
-							}
-							$('#updatedDate').html(dateObj.getFullYear()+'/'+zeroMonth+(dateObj.getMonth()+1)+'/'+zeroDate+dateObj.getDate());
-							if(Jdata.status===-1){
-								$('#likeBtn').html('<button class="btn btn-default" data-toggle="modal" data-target="#myModal" id="btnID"><span class="glyphicon glyphicon-thumbs-up myTitle2"></span></button>');	
-							}else if(Jdata.status===0){
-								$('#likeBtn').html('<button class="btn btn-default" onclick="like();" id="btnID"><span class="glyphicon glyphicon-thumbs-up myTitle2"></span></button>');	
-							}else if(Jdata.status===1){
-								$('#likeBtn').html('<button class="btn btn-default" onclick="unlike();" id="btnID"><span class="glyphicon glyphicon-remove myTitle2"></span></button>');	
-							}else if(Jdata.status===2){
-								$('#likeBtn').html('<button class="btn btn-default disabled" id="btnID"><span class="glyphicon glyphicon-thumbs-up myTitle2"></span></button>');	
-							}
-							$('#likeNum').html('&nbsp;'+Jdata.result);
-						}else{
+						<%}%>
+						$('#confirmModal').off('shown.bs.modal.myevent');
+					}, 100);
+				});
+				$('#confirmModal').modal('show');
+			<%}%>
+			
+			$('#btnID').addClass('disabled');
+			$.ajax({ 
+				url: '/Borrows/iflike',
+				type: 'POST',
+				data:{_id:"<%=json._id%>"},
+				dataType: 'json',
+				success: function(Jdata) {
+					if(Jdata.success){
+						brwDateUpdater(Jdata.date);
+						
+						if(Jdata.status===-1){
+							$('#likeBtn').html('<button class="btn btn-default" data-toggle="modal" data-target="#myModal" id="btnID"><span class="glyphicon glyphicon-thumbs-up myTitle2"></span></button>');	
+						}else if(Jdata.status===0){
+							$('#likeBtn').html('<button class="btn btn-default" onclick="like();" id="btnID"><span class="glyphicon glyphicon-thumbs-up myTitle2"></span></button>');	
+						}else if(Jdata.status===1){
+							$('#likeBtn').html('<button class="btn btn-default" onclick="unlike();" id="btnID"><span class="glyphicon glyphicon-remove myTitle2"></span></button>');	
+						}else if(Jdata.status===2){
+							$('#likeBtn').html('<button class="btn btn-default disabled" id="btnID"><span class="glyphicon glyphicon-thumbs-up myTitle2"></span></button>');	
 						}
-					},
-					error: function() {
+						$('#likeNum').html('&nbsp;'+Jdata.result);
+					}else{
 					}
-				});	
-				
-				startRenderComments();
-				$.ajax({ 
-					url: '/Discussions/findDiscussions',
-					type: 'POST',
-					data:{_id:"<%=json._id%>"},
-					dataType: 'json',
-					success: function(Jdata) {
-						if(Jdata.success){
-							renderComments(Jdata);
-						}else{
-							alert(Jdata.error);
-						}
-						$('#iptCtr').val('');
-						endRenderComments();
-					},
-					error: function() {
-						alert('something wrong.');
-						$('#iptCtr').val('');
-						endRenderComments();
-					}
-				});	
-				
+				},
+				error: function() {
+				}
+			});	
+			
+			var d = new Date();
+			disAjaxFinder(d.toString(),true);
 		});
 		
 		function openForm(target){
@@ -1244,113 +1212,13 @@
 			$(target).modal('show');
 		}
 		
-		function startRenderComments(){
-			dcFlag=true;
-			ecFlag=true;
-			scFlag=true;
-			$('#iptCtr').attr('onkeypress','');
-			$('#iptCtr').attr('readonly','readonly');
-			$('#sendButton').addClass('disabled');
-			$('#newlButton').addClass('disabled');
-			$('#revButton').addClass('disabled');
-			$(".actionTa").each(function() {
-				$(this).attr('readonly','readonly');
-			});
-			$(".actionLi").each(function() {
-				$(this).addClass('disabled');
-			});
-			$(".newBtnNel").each(function() {
-				$(this).addClass('disabled');
-			});
-			$(".newBtnCom").each(function() {
-				$(this).addClass('disabled');
-			});
-			$(".newBtnRev").each(function() {
-				$(this).addClass('disabled');
-			});
-			$(".newBtnMin").each(function() {
-				$(this).addClass('disabled');
-			});
-		}
-		
-		function renderComments(Jdata){
-			var dateObj=new Date(Jdata.date);
-			var zeroMonth='';
-			if(dateObj.getMonth()<9){
-				zeroMonth='0';
+		function flicker(index,flag){
+			var target;
+			if(flag){
+				target='#uptDate'+index;
+			}else{
+				target='#creDate'+index;
 			}
-			var zeroDate='';
-			if(dateObj.getDate()<10){
-				zeroDate='0';
-			}
-			$('#updatedDate').html(dateObj.getFullYear()+'/'+zeroMonth+(dateObj.getMonth()+1)+'/'+zeroDate+dateObj.getDate());
-			$('#discussionDiv').html('');
-			for(i=0;i<Jdata.result.length;i++){
-				var dateObj2=new Date(Jdata.result[i].Created);
-				var zeroMonth2_1='';
-				if(dateObj2.getMonth()<9){
-					zeroMonth2_1='0';
-				}
-				var zeroDate2_1='';
-				if(dateObj2.getDate()<10){
-					zeroDate2_1='0';
-				}
-				var year=dateObj2.getFullYear();
-				var month=dateObj2.getMonth()+1;
-				var date=dateObj2.getDate();
-				
-				dateObj2=new Date(Jdata.result[i].Updated);
-				var zeroMonth2_2='';
-				if(dateObj2.getMonth()<9){
-					zeroMonth2_2='0';
-				}
-				var zeroDate2_2='';
-				if(dateObj2.getDate()<10){
-					zeroDate2_2='0';
-				}
-				var year2=dateObj2.getFullYear();
-				var month2=dateObj2.getMonth()+1;
-				var date2=dateObj2.getDate();
-				
-				if(!Jdata.CreatedByViewer[i]){
-					$('#discussionDiv').append('<span class="myTitle">'+Jdata.result[i].CreatedBy.Username+'：</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+Jdata.result[i].Content.replace(/"/g,'&quot;').replace(new RegExp('\n','g'),'<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;').replace(new RegExp(' ','g'),'&nbsp;')+'<br><table class="disFtrTable"><tr><td nowrap="nowrap"><span class="myTitle">No.'+(i+1)+'</span>&nbsp;&nbsp;&nbsp;</td><td><div class="myTitle">Created&nbsp;:&nbsp;'+year+'/'+zeroMonth2_1+month+'/'+zeroDate2_1+date+'</div><div class="myTitle">Updated:&nbsp;'+year2+'/'+zeroMonth2_2+month2+'/'+zeroDate2_2+date2+'</div></td></tr></table><br>');
-				}else{
-					$('#discussionDiv').append('<span class="myTitle">'+Jdata.result[i].CreatedBy.Username+'：</span><table width="95%"><tr><td><div style="display:inline;" id="cntIptDiv'+i+'">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+Jdata.result[i].Content.replace(/"/g,'&quot;').replace(new RegExp('\n','g'),'<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;').replace(new RegExp(' ','g'),'&nbsp;')+'</div><td nowrap="nowrap" align="right">&nbsp;&nbsp;&nbsp;&nbsp;<div class="btn-group"><button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-pencil myTitle2"></span> <span class="caret myTitle2"></span></button><ul style="width:75px;min-width:75px;" class="dropdown-menu" role="menu"><li class="actionLi"><a href="#" onclick="startEdit('+i+');return false;">編輯</a></li><li class="actionLi"><a href="#" onclick="deleteComment('+i+');return false;">刪除</a></li></ul></div></td></tr></table><table class="disFtrTable"><tr><td nowrap="nowrap"><span class="myTitle">No.'+(i+1)+'</span>&nbsp;&nbsp;&nbsp;</td><td><div class="myTitle">Created&nbsp;:&nbsp;'+year+'/'+zeroMonth2_1+month+'/'+zeroDate2_1+date+'</div><div id="uptDate'+i+'" class="myTitle">Updated:&nbsp;'+year2+'/'+zeroMonth2_2+month2+'/'+zeroDate2_2+date2+'</div></td></tr></table></td><input type="hidden" id="hdIpt'+i+'" value="'+Jdata.result[i]._id+'"><input type="hidden" id="hdIpt2'+i+'" value="'+Jdata.result[i].Content.replace(/"/g,'&quot;')+'"><input type="hidden" id="hdIpt3'+i+'" value="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+Jdata.result[i].Content.replace(/"/g,'&quot;').replace(new RegExp('\n','g'),'<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;').replace(new RegExp(' ','g'),'&nbsp;')+'"><br>');
-				}	
-			}
-		}
-		
-		function endRenderComments(){
-			dcFlag=false;
-			ecFlag=false;
-			scFlag=false;
-			$('#iptCtr').attr('onkeypress','if(event.keyCode===13){if(!event.shiftKey){sendComment();return false;}}');
-			$('#iptCtr').removeAttr("readonly");
-			$('#sendButton').removeClass('disabled');
-			$('#newlButton').removeClass('disabled');
-			$('#revButton').removeClass('disabled');
-			$(".actionTa").each(function() {
-				$(this).removeAttr("readonly");
-			});
-			$(".actionLi").each(function() {
-				$(this).removeClass('disabled');
-			});
-			$(".newBtnNel").each(function() {
-				$(this).removeClass('disabled');
-			});
-			$(".newBtnCom").each(function() {
-				$(this).removeClass('disabled');
-			});
-			$(".newBtnRev").each(function() {
-				$(this).removeClass('disabled');
-			});
-			$(".newBtnMin").each(function() {
-				$(this).removeClass('disabled');
-			});
-		}
-
-		function flicker(index){
-			var target='#uptDate'+index;
 			$(target).addClass('red');
 			$(target).fadeOut(500).fadeIn(500);
 			var cidd=setInterval(function(){
@@ -1402,7 +1270,9 @@
 					dataType: 'json',
 					success: function(Jdata) {
 						if(Jdata.success){
-							renderComments(Jdata);
+							$('#disBlockID'+index).remove();
+							brwDateUpdater(Jdata.date);
+							noRefrain();
 						}else{
 							alert(Jdata.error);
 						}
@@ -1437,14 +1307,18 @@
 		}
 	
 		function startEdit(index){
-			var content='<div class="input-group" style="width:70%;">';
-			content+='<textarea id="actionTa'+index+'" class="form-control actionTa" style="height:35px;min-width:150px;" placeholder="ESC鍵可取消編輯" onkeypress="if(event.keyCode===13){if(!event.shiftKey){editComment('+index+');return false;}}" onkeyup="if(event.keyCode===27){endEdit('+index+');}">'+$('#hdIpt2'+index).val().replace(/&quot;/g,'"').replace(/&gt;/g,'>').replace(/&lt;/g,'<').replace(/&amp;/g,'&')+'</textarea>';
-			content+='<span class="input-group-btn"><button class="btn btn-default newBtnNel" style="height:35px;" onclick="newLine('+index+');" type="button"><span class="glyphicon glyphicon-arrow-down myTitle2"></span></button><button class="btn btn-default newBtnCom" style="height:35px;" onclick="editComment('+index+');" type="button"><span class="glyphicon glyphicon-comment myTitle2"></span></button><button class="btn btn-default newBtnRev" style="height:35px;" onclick="clearSub('+index+');" type="button"><span class="glyphicon glyphicon-remove myTitle2"></span></button><button class="btn btn-default newBtnMin" style="height:35px;" onclick="endEdit('+index+');" type="button"><span class="glyphicon glyphicon-minus myTitle2"></span></button></span></div>';
-			$('#cntIptDiv'+index).html(content);
+			if(!ecFlag){
+				var content='<div class="input-group" style="width:70%;">';
+				content+='<textarea id="actionTa'+index+'" class="form-control actionTa" style="height:35px;min-width:150px;" placeholder="ESC鍵可取消編輯" onkeypress="if(event.keyCode===13){if(!event.shiftKey){editComment('+index+');return false;}}" onkeyup="if(event.keyCode===27){endEdit('+index+');}">'+$('#hdIpt2'+index).val().replace(/&quot;/g,'"').replace(/&gt;/g,'>').replace(/&lt;/g,'<').replace(/&amp;/g,'&')+'</textarea>';
+				content+='<span class="input-group-btn"><button class="btn btn-default newBtnNel" style="height:35px;" onclick="newLine('+index+');" type="button"><span class="glyphicon glyphicon-arrow-down myTitle2"></span></button><button class="btn btn-default newBtnCom" style="height:35px;" onclick="editComment('+index+');" type="button"><span class="glyphicon glyphicon-comment myTitle2"></span></button><button class="btn btn-default newBtnRev" style="height:35px;" onclick="clearSub('+index+');" type="button"><span class="glyphicon glyphicon-remove myTitle2"></span></button><button class="btn btn-default newBtnMin" style="height:35px;" onclick="endEdit('+index+');" type="button"><span class="glyphicon glyphicon-minus myTitle2"></span></button></span></div>';
+				$('#cntIptDiv'+index).html(content);
+			}
 		}
 		
 		function endEdit(index){
-			$('#cntIptDiv'+index).html($('#hdIpt3'+index).val());
+			if(!ecFlag){
+				$('#cntIptDiv'+index).html($('#hdIpt3'+index).val());
+			}
 		}
 		
 		var ecFlag=false;
@@ -1460,21 +1334,26 @@
 						dataType: 'json',
 						success: function(Jdata) {
 							if(Jdata.success){
-								renderComments(Jdata);
+								$('#disBlockID'+index).replaceWith(disBlockCreator(true,Jdata.result,Jdata.date));
+								noRefrain();
+								var foundFlag=false;
+								$('.disBlock').each(function(index) {
+									if($(this).find('.hdIpt').length>0){
+										var tempppe=$(this).find('.hdIpt').val();
+										if(tempppe===savedID){
+											foundFlag=true;
+											flicker(index,true);
+											return false;
+										}
+									}
+								});
+								
+								if(!foundFlag){
+									alert('something wrong happened.');
+									endRenderComments();
+								}
 							}else{
 								alert(Jdata.error);
-							}
-							var foundFlag=false;
-							for(i=0;i<Jdata.result.length-1;i++){
-								var tempppe=$('#hdIpt'+i).val();
-								if(tempppe===savedID){
-									foundFlag=true;
-									flicker(i);
-									break;
-								}
-							}
-							if(!foundFlag){
-								alert('something wrong.');
 								endRenderComments();
 							}
 						},
@@ -1499,15 +1378,18 @@
 							dataType: 'json',
 							success: function(Jdata) {
 								if(Jdata.success){
-									renderComments(Jdata);
-									$('#discussionDiv').stop().animate({
-									  scrollTop: $("#discussionDiv")[0].scrollHeight
-									}, 800);
+									$('#discussionDiv').prepend(disBlockCreator(true,Jdata.result,Jdata.date));
+									noRefrain();
 									$('#iptCtr').val('');
+									$('#discussionDiv').stop().animate({
+									  scrollTop: 0
+									},800,null,function(){  
+										flicker(0,false);
+									});
 								}else{
 									alert(Jdata.error);
+									endRenderComments();
 								}
-								endRenderComments();
 							},
 							error: function() {
 								alert('something wrong.');
@@ -1528,16 +1410,7 @@
 						dataType: 'json',
 						success: function(Jdata) {
 							if(Jdata.success){
-								var dateObj=new Date(Jdata.date);
-								var zeroMonth='';
-								if(dateObj.getMonth()<9){
-									zeroMonth='0';
-								}
-								var zeroDate='';
-								if(dateObj.getDate()<10){
-									zeroDate='0';
-								}
-								$('#updatedDate').html(dateObj.getFullYear()+'/'+zeroMonth+(dateObj.getMonth()+1)+'/'+zeroDate+dateObj.getDate());
+								brwDateUpdater(Jdata.date);
 								$('#likeBtn').html('<button class="btn btn-default" onclick="unlike();" id="btnID"><span class="glyphicon glyphicon-remove myTitle2"></span></button>');
 								$('#likeNum').html('&nbsp;'+Jdata.result);
 							}else{
@@ -1561,16 +1434,7 @@
 						dataType: 'json',
 						success: function(Jdata) {
 							if(Jdata.success){
-								var dateObj=new Date(Jdata.date);
-								var zeroMonth='';
-								if(dateObj.getMonth()<9){
-									zeroMonth='0';
-								}
-								var zeroDate='';
-								if(dateObj.getDate()<10){
-									zeroDate='0';
-								}
-								$('#updatedDate').html(dateObj.getFullYear()+'/'+zeroMonth+(dateObj.getMonth()+1)+'/'+zeroDate+dateObj.getDate());
+								brwDateUpdater(Jdata.date);
 								$('#likeBtn').html('<button class="btn btn-default" onclick="like();" id="btnID"><span class="glyphicon glyphicon-thumbs-up myTitle2"></span></button>');
 								$('#likeNum').html('&nbsp;'+Jdata.result);
 							}else{
@@ -1916,6 +1780,223 @@
 				}
 			<%}%>
 		<%}%>
+	<%}else{%>
+		$(document).ready(function (){
+			var d = new Date();
+			disAjaxFinder(d.toString(),true);
+		});
 	<%}%>
+	
+	var fcFlag=false;
+	function disAjaxFinder(timeString,flag){
+		if(!fcFlag){
+			startRenderComments();
+			$('#ajaxBtnID').remove();
+			$('#discussionDiv').append('<div style="text-align:center;" id="ajaxUI"><img width="60px" height="60px" src="/images/loading.gif"></div>');
+			$.ajax({ 
+				url: '/Discussions/findDiscussions',
+				type: 'POST',
+				data:{_id:"<%=json._id%>",time: timeString},
+				dataType: 'json',
+				success: function(Jdata) {
+					$('#ajaxUI').remove();
+					if(Jdata.success){
+						renderComments(Jdata);
+					}else{
+						alert(Jdata.error);
+					}
+					if(flag){
+						$('#iptCtr').val('');
+					}
+					endRenderComments();
+				},
+				error: function() {
+					$('#ajaxUI').remove();
+					alert('something wrong.');
+					if(flag){
+						$('#iptCtr').val('');
+					}
+					endRenderComments();
+				}
+			});
+		}
+	}
+	
+	function seeMore(){
+		var timeString;
+		if($('.cDate:last').length>0){
+			timeString=$('.cDate:last').val();
+		}else{
+			var d = new Date();
+			timeString=d.toString();
+		}
+		
+		disAjaxFinder(timeString,false)
+	}
+	
+	function renderComments(Jdata){
+		for(i=0;i<Jdata.result.length;i++){
+			$('#discussionDiv').append(disBlockCreator(Jdata.CreatedByViewer[i],Jdata.result[i],Jdata.date));
+		}
+		
+		if(Jdata.dvFlag){
+			$('#discussionDiv').append('<div style="text-align:center;" id="ajaxBtnID" class="ajaxBtn"><button type="button" class="btn btn-default" onclick="seeMore();">看更多</button><p id="ajaxPID" class="ajaxP">#則留言中的#則</p><input id="ajaxCntID" class="ajaxCnt" type="hidden" value="'+Jdata.cnt+'"></div>');
+		}
+		
+		noRefrain();
+	}
+	
+	function startRenderComments(){
+		<%if(userName!==null){%>
+			dcFlag=true;
+			ecFlag=true;
+			scFlag=true;
+			$(".actionTa").each(function() {
+				$(this).attr('readonly','readonly');
+			});
+			$(".actionLi").each(function() {
+				$(this).addClass('disabled');
+			});
+			$(".newBtnNel").each(function() {
+				$(this).addClass('disabled');
+			});
+			$(".newBtnCom").each(function() {
+				$(this).addClass('disabled');
+			});
+			$(".newBtnRev").each(function() {
+				$(this).addClass('disabled');
+			});
+			$(".newBtnMin").each(function() {
+				$(this).addClass('disabled');
+			});
+			$('#iptCtr').attr('onkeypress','');
+		<%}else{%>
+			$('#iptCtr').attr('onkeyup','');
+		<%}%>
+		fcFlag=true;
+		$('#iptCtr').attr('readonly','readonly');
+		$('#sendButton').addClass('disabled');
+		$('#newlButton').addClass('disabled');
+		$('#revButton').addClass('disabled');
+		$(".ajaxBtn").each(function() {
+			$(this).addClass('disabled');
+		});
+	}
+	
+	function endRenderComments(){
+		<%if(userName!==null){%>
+			dcFlag=false;
+			ecFlag=false;
+			scFlag=false;
+			$(".actionTa").each(function() {
+				$(this).removeAttr("readonly");
+			});
+			$(".actionLi").each(function() {
+				$(this).removeClass('disabled');
+			});
+			$(".newBtnNel").each(function() {
+				$(this).removeClass('disabled');
+			});
+			$(".newBtnCom").each(function() {
+				$(this).removeClass('disabled');
+			});
+			$(".newBtnRev").each(function() {
+				$(this).removeClass('disabled');
+			});
+			$(".newBtnMin").each(function() {
+				$(this).removeClass('disabled');
+			});
+			$('#iptCtr').attr("onkeypress","if(event.keyCode===13){if(!event.shiftKey){sendComment();return false;}}");
+		<%}else{%>
+			$('#iptCtr').attr("onkeyup","value='';$('#myModal').modal('show');return false;");
+		<%}%>
+		fcFlag=false;
+		$('#iptCtr').removeAttr("readonly");
+		$('#sendButton').removeClass('disabled');
+		$('#newlButton').removeClass('disabled');
+		$('#revButton').removeClass('disabled');
+		$(".ajaxBtn").each(function() {
+			$(this).removeClass('disabled');
+		});
+	}
+	
+	function noRefrain(){
+		var counter=0;
+		$('.disBlock').each(function(index) {
+			counter++;
+			$(this).attr('id','disBlockID'+index);
+			$(this).find('.noSpan').text('No.'+(index+1));
+			$(this).find('.cDate').attr('id','cDateID'+index);
+			
+			if($(this).attr('myComment')==='yes'){
+				$(this).find('.cntIptDiv').attr('id','cntIptDiv'+index);
+				$(this).find('.startEditClass').attr('onclick','startEdit('+index+');return false;');
+				$(this).find('.deleteCommentClass').attr('onclick','deleteComment('+index+');return false;');
+				$(this).find('.uptDate').attr('id','uptDate'+index);
+				$(this).find('.creDate').attr('id','creDate'+index);
+				$(this).find('.hdIpt').attr('id','hdIpt'+index);
+				$(this).find('.hdIpt2').attr('id','hdIpt2'+index);
+				$(this).find('.hdIpt3').attr('id','hdIpt3'+index);
+			}
+		});
+		
+		if($('.ajaxBtn').length>0){
+			$('.ajaxBtn').each(function(index) {
+				var saveNum=$(this).find('.ajaxCnt').val();
+				var total=counter+parseInt(saveNum);
+				$(this).find('.ajaxP').text(total+'則留言中的'+counter+'則');
+			});
+		}
+	}
+	
+	function addZero(h) {
+		if (h < 10) {
+			h = "0" + h;
+		}
+		return h;
+	}
+	
+	function brwDateUpdater(input){
+		var dateObj=new Date(input);
+		var zeroMonth=addZero(dateObj.getMonth()+1);
+		var zeroDate=addZero(dateObj.getDate());
+		$('#updatedDate').html(dateObj.getFullYear()+'/'+zeroMonth+'/'+zeroDate);
+	}
+	
+	function disBlockCreator(CreatedByViewerFlag,jsonObj,brwUpDate){
+		brwDateUpdater(brwUpDate);
+		
+		var dateObj2=new Date(jsonObj.Created);
+			
+		var year=dateObj2.getFullYear();
+		var zeroMonth2_1=addZero(dateObj2.getMonth()+1);
+		var zeroDate2_1=addZero(dateObj2.getDate());
+		var zeroHour2_1=addZero(dateObj2.getHours());
+		var zeroMin2_1=addZero(dateObj2.getMinutes());
+		var zeroSec2_1=addZero(dateObj2.getSeconds());
+		
+		dateObj2=new Date(jsonObj.Updated);
+		
+		var year2=dateObj2.getFullYear();
+		var zeroMonth2_2=addZero(dateObj2.getMonth()+1);
+		var zeroDate2_2=addZero(dateObj2.getDate());
+		var zeroHour2_2=addZero(dateObj2.getHours());
+		var zeroMin2_2=addZero(dateObj2.getMinutes());
+		var zeroSec2_2=addZero(dateObj2.getSeconds());
+		
+		var returnString;
+		
+		<%if(userName!==null){%>
+			if(!CreatedByViewerFlag){
+		<%}%>
+				returnString='<div class="disBlock" id="disBlockID#" myComment="no"><span class="myTitle">'+jsonObj.CreatedBy.Username+'：</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+jsonObj.Content.replace(/"/g,'&quot;').replace(new RegExp('\n','g'),'<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;').replace(new RegExp(' ','g'),'&nbsp;')+'<br><table class="disFtrTable"><tr><td nowrap="nowrap"><span class="myTitle noSpan">No.#</span>&nbsp;&nbsp;&nbsp;</td><td><div class="myTitle">Created&nbsp;:&nbsp;'+year+'/'+zeroMonth2_1+'/'+zeroDate2_1+'&nbsp;&nbsp;'+zeroHour2_1+':'+zeroMin2_1+':'+zeroSec2_1+'</div><div class="myTitle">Updated:&nbsp;'+year2+'/'+zeroMonth2_2+'/'+zeroDate2_2+'&nbsp;&nbsp;'+zeroHour2_2+':'+zeroMin2_2+':'+zeroSec2_2+'</div></td></tr></table><input type="hidden" class="cDate" id="cDateID#" value="'+jsonObj.Created+'"><br></div>';
+		<%if(userName!==null){%>
+			}else{
+				returnString='<div class="disBlock" id="disBlockID#" myComment="yes"><span class="myTitle">'+jsonObj.CreatedBy.Username+'：</span><table width="95%"><tr><td><div style="display:inline;" class="cntIptDiv" id="cntIptDiv#">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+jsonObj.Content.replace(/"/g,'&quot;').replace(new RegExp('\n','g'),'<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;').replace(new RegExp(' ','g'),'&nbsp;')+'</div><td nowrap="nowrap" align="right">&nbsp;&nbsp;&nbsp;&nbsp;<div class="btn-group"><button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-pencil myTitle2"></span> <span class="caret myTitle2"></span></button><ul style="width:75px;min-width:75px;" class="dropdown-menu" role="menu"><li class="actionLi"><a class="startEditClass" href="#" onclick="startEdit(#);return false;">編輯</a></li><li class="actionLi"><a class="deleteCommentClass" href="#" onclick="deleteComment(#);return false;">刪除</a></li></ul></div></td></tr></table><table class="disFtrTable"><tr><td nowrap="nowrap"><span class="myTitle noSpan">No.'+(i+1)+'</span>&nbsp;&nbsp;&nbsp;</td><td><div id="creDate#" class="myTitle creDate">Created&nbsp;:&nbsp;'+year+'/'+zeroMonth2_1+'/'+zeroDate2_1+'&nbsp;&nbsp;'+zeroHour2_1+':'+zeroMin2_1+':'+zeroSec2_1+'</div><div id="uptDate#" class="myTitle uptDate">Updated:&nbsp;'+year2+'/'+zeroMonth2_2+'/'+zeroDate2_2+'&nbsp;&nbsp;'+zeroHour2_2+':'+zeroMin2_2+':'+zeroSec2_2+'</div></td></tr></table></td><input type="hidden" class="hdIpt" id="hdIpt#" value="'+jsonObj._id+'"><input type="hidden" class="hdIpt2" id="hdIpt2#" value="'+jsonObj.Content.replace(/"/g,'&quot;')+'"><input type="hidden" class="hdIpt3" id="hdIpt3#" value="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+jsonObj.Content.replace(/"/g,'&quot;').replace(new RegExp('\n','g'),'<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;').replace(new RegExp(' ','g'),'&nbsp;')+'"><input type="hidden" class="cDate" id="cDateID#" value="'+jsonObj.Created+'"><br></div>';
+			}
+		<%}%>
+
+		return returnString;
+	}
 </script>
 <%- include('layout_footer',{imgSettingCode:"var ifLoadedCount=0;",imgDrawingCode:"",nav_cur:'story'}); -%>

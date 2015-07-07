@@ -512,7 +512,7 @@ router.get('/story/:id?',library.loginFormChecker,library.newMsgChecker,library.
 			maxSettingAutoLend:0
 		};
 		
-		Borrows.findById(req.query.id).populate('CreatedBy', 'Username Level').populate('Discussion',null, null, {sort: { Created: 1 }}).populate('Message').exec(function (err, borrow){
+		Borrows.findById(req.query.id).populate('CreatedBy', 'Username Level').populate('Message').exec(function (err, borrow){
 			if (err) {
 				console.log(err);
 				res.redirect('/message?content='+encodeURIComponent('錯誤!'));
@@ -531,136 +531,124 @@ router.get('/story/:id?',library.loginFormChecker,library.newMsgChecker,library.
 							console.log(err);
 							res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 						}else{
-							var options = {
-								path: 'Discussion.CreatedBy',
-								model: Users,
-								select: 'Username'
-							};
-							Discussions.populate(borrow, options, function(err, borrow) {
-								if(err){
-									console.log(err);
-									res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+							borrow.Level=borrow.CreatedBy.Level;
+							borrow.TitleColor="default";
+							borrow.MaxInterestRateAccepted-=library.serviceChargeRate;//scr
+							borrow.Got=0;
+							for(r=0;r<borrow.Message.length;r++){
+								if(borrow.Message[r].Status==='Confirmed'){
+									if(borrow.Message[r].Transaction.length>=1){
+										borrow.Got+=(borrow.Message[r].Transaction[0].Principal);
+									}
+								}
+							}
+							borrow.Need=borrow.MoneyToBorrow-borrow.Got;
+							if(borrow.Need<0){
+								borrow.Need=0;
+							}
+							
+							var ifSelfValue=false;
+							var ifLikedValue=false;
+							if(req.auRst===null){
+								res.render('story',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.auRst,ifSelf:ifSelfValue,ifLiked:ifLikedValue,json:borrow,jsonMessage:null,jsonBorrowMessage:null,jsonLend:null,MoneyInBankAccountValue:0,MoneyLended:moneyLendedJson,hlfJSON:hendLendFormJson,cfJSON:confirmFormJson});
+							}else{
+								if(borrow.CreatedBy._id.equals(req.user._id)){
+									borrow.TitleColor='color4';
+									ifSelfValue=true;
+									res.render('story',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.auRst,ifSelf:ifSelfValue,ifLiked:ifLikedValue,json:borrow,jsonMessage:null,jsonBorrowMessage:null,jsonLend:null,MoneyInBankAccountValue:0,MoneyLended:moneyLendedJson,hlfJSON:hendLendFormJson,cfJSON:confirmFormJson});
 								}else{
-									borrow.Level=borrow.CreatedBy.Level;
-									borrow.TitleColor="default";
-									borrow.MaxInterestRateAccepted-=library.serviceChargeRate;//scr
-									borrow.Got=0;
-									for(r=0;r<borrow.Message.length;r++){
-										if(borrow.Message[r].Status==='Confirmed'){
-											if(borrow.Message[r].Transaction.length>=1){
-												borrow.Got+=(borrow.Message[r].Transaction[0].Principal);
-											}
+									var j = 0;
+									for (j = 0; j < borrow.Likes.length; j++) {
+										if (borrow.Likes[j].equals(req.user._id)) {
+											ifLikedValue = true;
 										}
 									}
-									borrow.Need=borrow.MoneyToBorrow-borrow.Got;
-									if(borrow.Need<0){
-										borrow.Need=0;
-									}
-									
-									var ifSelfValue=false;
-									var ifLikedValue=false;
-									if(req.auRst===null){
-										res.render('story',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.auRst,ifSelf:ifSelfValue,ifLiked:ifLikedValue,json:borrow,jsonMessage:null,jsonBorrowMessage:null,jsonLend:null,MoneyInBankAccountValue:0,MoneyLended:moneyLendedJson,hlfJSON:hendLendFormJson,cfJSON:confirmFormJson});
-									}else{
-										if(borrow.CreatedBy._id.equals(req.user._id)){
-											borrow.TitleColor='color4';
-											ifSelfValue=true;
-											res.render('story',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.auRst,ifSelf:ifSelfValue,ifLiked:ifLikedValue,json:borrow,jsonMessage:null,jsonBorrowMessage:null,jsonLend:null,MoneyInBankAccountValue:0,MoneyLended:moneyLendedJson,hlfJSON:hendLendFormJson,cfJSON:confirmFormJson});
+									BankAccounts.findOne({"OwnedBy": req.user._id}).exec(function (err, bankaccount){
+										if (err) {
+											console.log(err);
+											res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 										}else{
-											var j = 0;
-											for (j = 0; j < borrow.Likes.length; j++) {
-												if (borrow.Likes[j].equals(req.user._id)) {
-													ifLikedValue = true;
-												}
-											}
-											BankAccounts.findOne({"OwnedBy": req.user._id}).exec(function (err, bankaccount){
-												if (err) {
-													console.log(err);
-													res.redirect('/message?content='+encodeURIComponent('錯誤!'));
-												}else{
-													if(!bankaccount){
-														res.redirect('/message?content='+encodeURIComponent('無銀行帳戶!'));
+											if(!bankaccount){
+												res.redirect('/message?content='+encodeURIComponent('無銀行帳戶!'));
+											}else{
+												Transactions.find({"Lender": req.user._id}).populate('Return').populate('CreatedFrom','Type').exec(function (err, transactions){
+													if (err) {
+														console.log(err);
+														res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 													}else{
-														Transactions.find({"Lender": req.user._id}).populate('Return').populate('CreatedFrom','Type').exec(function (err, transactions){
+														if(transactions.length>0){
+															for(i=0;i<transactions.length;i++){
+																library.transactionProcessor(transactions[i],false);
+																if(transactions[i].CreatedFrom.Type==='toBorrow'){
+																	moneyLendedJson.autoLendCumulated+=transactions[i].PrincipalNotReturn;
+																}else if(transactions[i].CreatedFrom.Type==='toLend'){
+																	moneyLendedJson.hendLendCumulated+=transactions[i].PrincipalNotReturn;
+																}
+															}
+															moneyLendedJson.moneyLendedCumulated=moneyLendedJson.hendLendCumulated+moneyLendedJson.autoLendCumulated;
+														}
+														
+														var message=null;
+														var borrowMessage=null;
+														borrow.TitleColor='default';
+														for(j=0;j<borrow.Message.length;j++){
+															if((borrow.Message[j].CreatedBy.equals(req.user._id))&&(borrow.Message[j].Type==="toLend")){
+																message=borrow.Message[j];
+																if(message.Status==="NotConfirmed"){
+																	borrow.TitleColor='color1';
+																}else if(message.Status==="Rejected"){
+																	borrow.TitleColor='color2';
+																}else if(message.Status==="Confirmed"){
+																	borrow.TitleColor='color6';
+																}
+																break;
+															}else if((borrow.Message[j].SendTo.equals(req.user._id))&&(borrow.Message[j].Type==="toBorrow")){
+																borrowMessage=borrow.Message[j];
+																if(borrowMessage.Status==="NotConfirmed"){
+																	borrow.TitleColor='color3';
+																}else if(borrowMessage.Status==="Rejected"){
+																	borrow.TitleColor='color5';
+																}else if(borrowMessage.Status==="Confirmed"){
+																	borrow.TitleColor='color7';
+																}
+																break;
+															}
+														}
+
+														if(message){
+															library.messageProcessor(message);
+														}
+														if(borrowMessage){
+															library.messageProcessor(borrowMessage);
+														}	
+														
+														var Lends = mongoose.model('Lends');
+														Lends.findOne({"CreatedBy": req.user._id}).exec( function (err, lend){
 															if (err) {
 																console.log(err);
 																res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 															}else{
-																if(transactions.length>0){
-																	for(i=0;i<transactions.length;i++){
-																		library.transactionProcessor(transactions[i],false);
-																		if(transactions[i].CreatedFrom.Type==='toBorrow'){
-																			moneyLendedJson.autoLendCumulated+=transactions[i].PrincipalNotReturn;
-																		}else if(transactions[i].CreatedFrom.Type==='toLend'){
-																			moneyLendedJson.hendLendCumulated+=transactions[i].PrincipalNotReturn;
-																		}
-																	}
-																	moneyLendedJson.moneyLendedCumulated=moneyLendedJson.hendLendCumulated+moneyLendedJson.autoLendCumulated;
-																}
-																
-																var message=null;
-																var borrowMessage=null;
-																borrow.TitleColor='default';
-																for(j=0;j<borrow.Message.length;j++){
-																	if((borrow.Message[j].CreatedBy.equals(req.user._id))&&(borrow.Message[j].Type==="toLend")){
-																		message=borrow.Message[j];
-																		if(message.Status==="NotConfirmed"){
-																			borrow.TitleColor='color1';
-																		}else if(message.Status==="Rejected"){
-																			borrow.TitleColor='color2';
-																		}else if(message.Status==="Confirmed"){
-																			borrow.TitleColor='color6';
-																		}
-																		break;
-																	}else if((borrow.Message[j].SendTo.equals(req.user._id))&&(borrow.Message[j].Type==="toBorrow")){
-																		borrowMessage=borrow.Message[j];
-																		if(borrowMessage.Status==="NotConfirmed"){
-																			borrow.TitleColor='color3';
-																		}else if(borrowMessage.Status==="Rejected"){
-																			borrow.TitleColor='color5';
-																		}else if(borrowMessage.Status==="Confirmed"){
-																			borrow.TitleColor='color7';
-																		}
-																		break;
+																if(lend){
+																	moneyLendedJson.moneyLeftToAutoLend=lend.MaxMoneyToLend-moneyLendedJson.autoLendCumulated;
+																	if(moneyLendedJson.moneyLeftToAutoLend<=0){
+																		moneyLendedJson.moneyLeftToAutoLend=0;
 																	}
 																}
-
-																if(message){
-																	library.messageProcessor(message);
+																moneyLendedJson.moneyLeftToHendLend=bankaccount.MoneyInBankAccount-moneyLendedJson.moneyLeftToAutoLend;
+																if(moneyLendedJson.moneyLeftToHendLend<=0){
+																	moneyLendedJson.moneyLeftToHendLend=0;
 																}
-																if(borrowMessage){
-																	library.messageProcessor(borrowMessage);
-																}	
-																
-																var Lends = mongoose.model('Lends');
-																Lends.findOne({"CreatedBy": req.user._id}).exec( function (err, lend){
-																	if (err) {
-																		console.log(err);
-																		res.redirect('/message?content='+encodeURIComponent('錯誤!'));
-																	}else{
-																		if(lend){
-																			moneyLendedJson.moneyLeftToAutoLend=lend.MaxMoneyToLend-moneyLendedJson.autoLendCumulated;
-																			if(moneyLendedJson.moneyLeftToAutoLend<=0){
-																				moneyLendedJson.moneyLeftToAutoLend=0;
-																			}
-																		}
-																		moneyLendedJson.moneyLeftToHendLend=bankaccount.MoneyInBankAccount-moneyLendedJson.moneyLeftToAutoLend;
-																		if(moneyLendedJson.moneyLeftToHendLend<=0){
-																			moneyLendedJson.moneyLeftToHendLend=0;
-																		}
-																		moneyLendedJson.maxSettingAutoLend=bankaccount.MoneyInBankAccount+moneyLendedJson.autoLendCumulated;
-																		res.render('story',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.auRst,ifSelf:ifSelfValue,ifLiked:ifLikedValue,json:borrow,jsonMessage:message,jsonBorrowMessage:borrowMessage,jsonLend:lend,MoneyInBankAccountValue:bankaccount.MoneyInBankAccount,MoneyLended:moneyLendedJson,hlfJSON:hendLendFormJson,cfJSON:confirmFormJson});
-																	}
-																});
+																moneyLendedJson.maxSettingAutoLend=bankaccount.MoneyInBankAccount+moneyLendedJson.autoLendCumulated;
+																res.render('story',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.auRst,ifSelf:ifSelfValue,ifLiked:ifLikedValue,json:borrow,jsonMessage:message,jsonBorrowMessage:borrowMessage,jsonLend:lend,MoneyInBankAccountValue:bankaccount.MoneyInBankAccount,MoneyLended:moneyLendedJson,hlfJSON:hendLendFormJson,cfJSON:confirmFormJson});
 															}
 														});
 													}
-												}
-											});
+												});
+											}
 										}
-									}
+									});
 								}
-							});
+							}
 						}
 					});
 				}

@@ -117,35 +117,16 @@ router.post('/create',library.loginFormChecker,library.ensureAuthenticated, func
 									res.json({error: "Borrow saving failed.",success:false}, 500);
 								}else{
 									var options = {
-										path: 'Discussion',
-										model: Discussions
+										path: 'CreatedBy',
+										model: Users,
+										select: 'Username'
 									};
-									Borrows.populate(borrowUpdated, options, function(err, borrowUpdated) {
+									Discussions.populate(newCreate, options, function(err, newCreate) {
 										if(err){
 											console.log(err);
-											res.json({error: "1st Population failed.",success:false}, 500);
+											res.json({error: "Population failed.",success:false}, 500);
 										}else{
-											var options2 = {
-												path: 'Discussion.CreatedBy',
-												model: Users,
-												select: 'Username'
-											};
-											Discussions.populate(borrowUpdated, options2, function(err, borrowUpdated) {
-												if(err){
-													console.log(err);
-													res.json({error: "2nd Population failed.",success:false}, 500);
-												}else{
-													var createdByViewerArray=[];
-													for(i=0;i<borrowUpdated.Discussion.length;i++){
-														if(borrowUpdated.Discussion[i].CreatedBy._id.equals(req.user._id)){
-															createdByViewerArray.push(true);
-														}else{
-															createdByViewerArray.push(false);
-														}
-													}
-													res.json({success:true,result:borrowUpdated.Discussion,CreatedByViewer:createdByViewerArray,date:borrowUpdated.Updated});
-												}
-											});
+											res.json({success:true,result:newCreate,date:borrowUpdated.Updated});
 										}
 									});
 								}
@@ -204,39 +185,7 @@ router.post('/destroy',library.loginFormChecker,library.ensureAuthenticated, fun
 													console.log(err);
 													res.json({error: "Discussion removing fail.",success:false}, 500);
 												}else{
-													var options = {
-														path: 'Discussion',
-														model: Discussions
-													};
-													Borrows.populate(borrowUpdated, options, function(err, borrowUpdated) {
-														if(err){
-															console.log(err);
-															res.json({error: "1st Population failed.",success:false}, 500);
-														}else{
-															var options2 = {
-																path: 'Discussion.CreatedBy',
-																model: Users,
-																select: 'Username'
-															};
-															Discussions.populate(borrowUpdated, options2, function(err, borrowUpdated) {
-																if(err){
-																	console.log(err);
-																	res.json({error: "2nd Population failed.",success:false}, 500);
-																}else{
-																	var createdByViewerArray=[];
-																	for(i=0;i<borrowUpdated.Discussion.length;i++){
-																		if(borrowUpdated.Discussion[i].CreatedBy._id.equals(req.user._id)){
-																			createdByViewerArray.push(true);
-																		}else{
-																			createdByViewerArray.push(false);
-																		}
-																	}
-																	
-																	res.json({success:true,result:borrowUpdated.Discussion,CreatedByViewer:createdByViewerArray,date:borrowUpdated.Updated});
-																}
-															});
-														}
-													});
+													res.json({success:true,date:borrowUpdated.Updated});
 												}
 											});
 										}
@@ -290,36 +239,16 @@ router.post('/edit',library.loginFormChecker,library.ensureAuthenticated, functi
 													res.json({error: "Borrow updating fail.",success:false}, 500);
 												}else{	
 													var options = {
-														path: 'Discussion',
-														model: Discussions
+														path: 'CreatedBy',
+														model: Users,
+														select: 'Username'
 													};
-													Borrows.populate(borrowUpdated, options, function(err, borrowUpdated) {
+													Discussions.populate(discussionUpdated, options, function(err, discussionUpdated) {
 														if(err){
 															console.log(err);
-															res.json({error: "1st Population failed.",success:false}, 500);
+															res.json({error: "Population failed.",success:false}, 500);
 														}else{
-															var options2 = {
-																path: 'Discussion.CreatedBy',
-																model: Users,
-																select: 'Username'
-															};
-															Discussions.populate(borrowUpdated, options2, function(err, borrowUpdated) {
-																if(err){
-																	console.log(err);
-																	res.json({error: "2nd Population failed.",success:false}, 500);
-																}else{
-																	var createdByViewerArray=[];
-																	for(i=0;i<borrowUpdated.Discussion.length;i++){
-																		if(borrowUpdated.Discussion[i].CreatedBy._id.equals(req.user._id)){
-																			createdByViewerArray.push(true);
-																		}else{
-																			createdByViewerArray.push(false);
-																		}
-																	}
-																	
-																	res.json({success:true,result:borrowUpdated.Discussion,CreatedByViewer:createdByViewerArray,date:borrowUpdated.Updated});
-																}
-															});
+															res.json({success:true,result:discussionUpdated,date:borrowUpdated.Updated});
 														}
 													});
 												}
@@ -339,45 +268,59 @@ router.post('/edit',library.loginFormChecker,library.ensureAuthenticated, functi
 });
 
 router.post('/findDiscussions', function(req, res, next) {
-	if(typeof(req.body._id) === 'string'){
+	var divider=10;
+	var divideFlag=false;
+	if((typeof(req.body._id) === 'string')&&(typeof(req.body.time) === 'string')){
 		req.body._id=sanitizer.sanitize(req.body._id.trim());
+		req.body.time=sanitizer.sanitize(req.body.time.trim());
+		var time=new Date(req.body.time);
 		
-		Borrows.findById(req.body._id).populate('Discussion',null, null, {sort: { Created: 1 }}).exec(function (err, borrow){
-			if (err) {
+		Discussions.count({BelongTo:req.body._id, Created: { $lt: time }}, function (err, count) {
+			if(err){
 				console.log(err);
-				res.json({error: "Borrow finding failed.",success:false}, 500);
+				res.json({error: "Discussion counting failed.",success:false}, 500);
 			}else{
-				if(!borrow){
-					res.json({error: "Borrow not found.",success:false}, 500);
-				}else{	
-					var options = {
-						path: 'Discussion.CreatedBy',
-						model: Users,
-						select: 'Username'
-					};
-					Discussions.populate(borrow, options, function(err, borrow) {
-						if(err){
-							console.log(err);
-							res.json({error: "Population failed.",success:false}, 500);
-						}else{
-							var createdByViewerArray=[];
-							if(req.isAuthenticated()){
-								for(i=0;i<borrow.Discussion.length;i++){
-									if(borrow.Discussion[i].CreatedBy._id.equals(req.user._id)){
-										createdByViewerArray.push(true);
-									}else{
-										createdByViewerArray.push(false);
-									}
-								}
-							}else{
-								for(i=0;i<borrow.Discussion.length;i++){
-									createdByViewerArray.push(false);
-								}
-							}
-							res.json({success:true,result:borrow.Discussion,CreatedByViewer:createdByViewerArray,date:borrow.Updated});
-						}
-					});
+				if(count>divider){
+					divideFlag=true;
 				}
+				Borrows.findById(req.body._id).populate('Discussion',null, {Created: { $lt: time } }, {sort: { Created: -1 },limit: divider}).exec(function (err, borrow){
+					if (err) {
+						console.log(err);
+						res.json({error: "Borrow finding failed.",success:false}, 500);
+					}else{
+						if(!borrow){
+							res.json({error: "Borrow not found.",success:false}, 500);
+						}else{	
+							var options = {
+								path: 'Discussion.CreatedBy',
+								model: Users,
+								select: 'Username'
+							};
+							Discussions.populate(borrow, options, function(err, borrow) {
+								if(err){
+									console.log(err);
+									res.json({error: "Population failed.",success:false}, 500);
+								}else{
+									var createdByViewerArray=[];
+									if(req.isAuthenticated()){
+										for(i=0;i<borrow.Discussion.length;i++){
+											if(borrow.Discussion[i].CreatedBy._id.equals(req.user._id)){
+												createdByViewerArray.push(true);
+											}else{
+												createdByViewerArray.push(false);
+											}
+										}
+									}else{
+										for(i=0;i<borrow.Discussion.length;i++){
+											createdByViewerArray.push(false);
+										}
+									}
+									res.json({success:true,result:borrow.Discussion,CreatedByViewer:createdByViewerArray,date:borrow.Updated,dvFlag:divideFlag,cnt:count-borrow.Discussion.length});
+								}
+							});
+						}
+					}
+				});
 			}
 		});
 	}else{
