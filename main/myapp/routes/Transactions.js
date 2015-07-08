@@ -865,7 +865,14 @@ function redirector(req,res,content,info,address){
 	var string=JSON.stringify(json);
 	
 	req.flash('buyInsuranceFlash',string);
-	res.redirect(address);
+	req.session.save(function(err){
+		if(err){
+			console.log(err);
+			res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+		}else{
+			res.redirect(address);
+		}
+	});
 }
 
 module.exports = router;

@@ -37,10 +37,6 @@ var autoNotReadableArray=[];
 var insuranceRate=0.001;
 var serviceChargeRate=0.01;
 var ifMail=false;
-var captchaIdfrCtr=0;
-var captchaTextArray=[];
-var formIdfrCtr=0;
-var formIdfrArray=[];
 var tmpFilePathArray=[];
 var adminID=mongoose.Types.ObjectId('5555251bb08002f0068fd00f');//管理員ID
 
@@ -50,29 +46,7 @@ exports.adminID=adminID;
 exports.insuranceRate=insuranceRate;
 exports.serviceChargeRate=serviceChargeRate;
 exports.ifMail=ifMail;
-exports.captchaIdfrCtr=captchaIdfrCtr;
-exports.captchaTextArray=captchaTextArray;
-exports.formIdfrCtr=formIdfrCtr;
-exports.formIdfrArray=formIdfrArray;
 exports.tmpFilePathArray=tmpFilePathArray;
-
-setInterval( function(){
-	for(j=exports.captchaTextArray.length-1;j>-1;j--){
-		var NowT=Date.now();
-		if((NowT-exports.captchaTextArray[j].SaveT)>=600000){
-			exports.captchaTextArray.splice(j, 1);
-		}
-	}
-},600000);
-
-setInterval( function(){
-	for(j=exports.formIdfrArray.length-1;j>-1;j--){
-		var NowT=Date.now();
-		if((NowT-exports.formIdfrArray[j].SaveT)>=600000){
-			exports.formIdfrArray.splice(j, 1);
-		}
-	}
-},600000);
 
 setInterval( function(){
 	var findPath = __dirname+'/../';
@@ -616,7 +590,14 @@ function redirector(req,res,target,message){
 	var string=JSON.stringify(json);
 	
 	req.flash('confirmForm',string);
-	res.redirect('/lender/story?id='+req.body.FromBorrowRequest);
+	req.session.save(function(err){
+		if(err){
+			console.log(err);
+			res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+		}else{
+			res.redirect('/lender/story?id='+req.body.FromBorrowRequest);
+		}
+	});
 }
 
 exports.directorDivider = function(dtr,input,type){
@@ -2016,7 +1997,19 @@ exports.loginFormChecker=function(req, res, next) {
 		loginFormJson=JSON.parse(lgfArray[0]);
 	}
 	req.loginFormJson=loginFormJson;
-	return next();
+	
+	if(loginFormJson!==null){
+		req.session.save(function(err){
+			if(err){
+				console.log(err);
+				res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+			}else{
+				return next();
+			}
+		});
+	}else{
+		return next();
+	}
 }
 
 exports.checkSsnID=function(id) {
@@ -2317,7 +2310,14 @@ function confirmRedirector(req,res,content,info,address){
 	var string=JSON.stringify(json);
 	
 	req.flash('confirmFlash',string);
-	res.redirect(address);
+	req.session.save(function(err){
+		if(err){
+			console.log(err);
+			res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+		}else{
+			res.redirect(address);
+		}
+	});
 }
 
 function rejectRedirector(req,res,content,info,address){
@@ -2325,7 +2325,14 @@ function rejectRedirector(req,res,content,info,address){
 	var string=JSON.stringify(json);
 	
 	req.flash('rejectFlash',string);
-	res.redirect(address);
+	req.session.save(function(err){
+		if(err){
+			console.log(err);
+			res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+		}else{
+			res.redirect(address);
+		}
+	});
 }
 
 exports.autoNotReadableWorker=function (req,res){

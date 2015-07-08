@@ -186,7 +186,14 @@ router.get('/enableTotp',library.loginFormChecker,library.ensureAuthenticated,li
 							res.redirect('/message?content='+encodeURIComponent('錯誤'));
 						}else{
 							req.session.passport.secondFactor = 'totp';
-							res.render('enableTotp', {lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username, key: encodedKey, qrImage: qrImage, content:'<h4 class="red">您已啟用兩階段驗證</h4><br>' });
+							req.session.save(function(err){
+								if(err){
+									console.log(err);
+									res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+								}else{
+									res.render('enableTotp', {lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username, key: encodedKey, qrImage: qrImage, content:'<h4 class="red">您已啟用兩階段驗證</h4><br>' });
+								}
+							});
 						}
 					});
 				}
@@ -217,7 +224,14 @@ router.get('/disableTotp',library.loginFormChecker,library.ensureAuthenticated,l
 								delete req.session.passport.secondFactor;
 							}
 							req.flash('disableTOTP','您已停用兩階段驗證');
-							res.redirect('/signup/profile');
+							req.session.save(function(err){
+								if(err){
+									console.log(err);
+									res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+								}else{
+									res.redirect('/signup/profile');
+								}
+							});
 						}
 					});
 				}
@@ -428,7 +442,14 @@ router.get('/resetPWpage/:token?',library.loginFormChecker, library.newMsgChecke
 				if (!user) {
 					res.redirect('/message?content='+encodeURIComponent('token過期或無效!'));
 				}else{
-					res.render('resetPWpage',{lgfJSON:req.loginFormJson,newlrmNum: req.newlrmNumber,newlsmNum: req.newlsmNumber,userName: req.auRst,tk:req.query.token,fJSON:formJson});
+					req.session.save(function(err){
+						if(err){
+							console.log(err);
+							res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+						}else{
+							res.render('resetPWpage',{lgfJSON:req.loginFormJson,newlrmNum: req.newlrmNumber,newlsmNum: req.newlsmNumber,userName: req.auRst,tk:req.query.token,fJSON:formJson});
+						}
+					});
 				}
 			}
 		});
@@ -679,7 +700,14 @@ router.get('/confirmMail/:token?',library.loginFormChecker,library.ensureAuthent
 								res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 							}else{
 								req.flash('sendValidMail','您的E-mail已完成認證：<br><br><span style="color:red;">'+newUpdated.Email+'</span>');
-								res.redirect('/signup/profile');
+								req.session.save(function(err){
+									if(err){
+										console.log(err);
+										res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+									}else{
+										res.redirect('/signup/profile');
+									}
+								});
 							}
 						});
 					}
@@ -701,7 +729,14 @@ function backerChange(req,res){
 	var json={FormContent:formContent};
 	var string=JSON.stringify(json);
 	req.flash('backerChange',string);
-	res.redirect('/signup/changePWpage');
+	req.session.save(function(err){
+		if(err){
+			console.log(err);
+			res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+		}else{
+			res.redirect('/signup/changePWpage');
+		}
+	});
 }
 
 function backerReset(req,res){
@@ -713,7 +748,14 @@ function backerReset(req,res){
 	var json={FormContent:formContent};
 	var string=JSON.stringify(json);
 	req.flash('backerReset',string);
-	res.redirect('/Users/resetPWpage?token='+req.body.Token);
+	req.session.save(function(err){
+		if(err){
+			console.log(err);
+			res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+		}else{
+			res.redirect('/Users/resetPWpage?token='+req.body.Token);
+		}
+	});
 }
 
 function backerChangeUsername(req,res){
@@ -725,7 +767,14 @@ function backerChangeUsername(req,res){
 	var json={FormContent:formContent};
 	var string=JSON.stringify(json);
 	req.flash('backerChangeUsername',string);
-	res.redirect('/signup/changeUsernamePage');
+	req.session.save(function(err){
+		if(err){
+			console.log(err);
+			res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+		}else{
+			res.redirect('/signup/changeUsernamePage');
+		}
+	});
 }
 
 function pwChangedMail(newUpdated){

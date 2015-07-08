@@ -31,7 +31,6 @@
 									<h4>驗證碼：<span id="s3" class="red"><%if(lgfJSON){%><%if(lgfJSON.Target===3){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=lgfJSON.Message%><%}%><%}%></span></h4>
 								</div>
 							</div>
-							<input type="hidden" name="CaptchaIdfr" id="captchaIdfr" value="0">
 							<table width="100%;">
 								<tr>
 									<td align="right" style="width:50%;">
@@ -45,7 +44,7 @@
 									<td align="right">
 									</td>
 									<td align="left">
-										&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" onclick="ajaxCaptcha();return false;">看不清?</a>
+										&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" onclick="ajaxCaptcha('yes');return false;">看不清?</a>
 									</td>
 								</tr>
 							</table>
@@ -89,7 +88,7 @@
 				$("#usernameID").val($.cookie("username"));
 				$("#passwordID").val($.cookie("password"));
 			}
-			ajaxCaptcha();
+			ajaxCaptcha('no');
 			<% if(lgfJSON){ %>
 				$('#myModal').on('shown.bs.modal.myevent', function () {
 					setTimeout(function() {
@@ -221,30 +220,37 @@
 	
 	<% if((userName===null)&&(nav_cur!=='signup')&&(nav_cur!=='totp_login')){ %>
 		var captchaFlag=false;
-		function ajaxCaptcha(){
-			if(captchaFlag){
-				$('#s3').html('&nbsp;&nbsp;&nbsp;&nbsp;處理中......');
-			}else{
+		function ajaxCaptcha(flagString){
+			if(!captchaFlag){
+				if(flagString=='yes'){
+					$('#s3').html('&nbsp;&nbsp;&nbsp;&nbsp;處理中......');
+				}
 				captchaFlag=true;
 				submitFlag=true;
 				$('#lgBtn').addClass('disabled');
 				$.ajax({ 
-					url: '/captcha?captchaIdfr='+$('#captchaIdfr').val(),
-					type: 'GET',
+					url: '/captcha',
+					type: 'POST',
+					data:{refreshFlag:flagString},
 					dataType: 'json',
 					success: function(Jdata) {
 						if(Jdata.success){
-							$('#captchaIdfr').val(Jdata.CaptchaIdfr);
 							$('#captchaPic').attr('src',Jdata.CaptchaPic);
 						}
 						captchaFlag=false;
 						submitFlag=false;
 						$('#lgBtn').removeClass('disabled');
+						if(flagString=='yes'){
+							$('#s3').html('');
+						}
 					},
 					error: function() {
 						captchaFlag=false;
 						submitFlag=false;
 						$('#lgBtn').removeClass('disabled');
+						if(flagString=='yes'){
+							$('#s3').html('');
+						}
 					}
 				});
 			}
