@@ -387,7 +387,14 @@ function redirector(req,res,target,message){
 	var string=JSON.stringify(json);
 	
 	req.flash('hendLendForm',string);
-	res.redirect('/lender/story?id='+req.body.FromBorrowRequest);
+	req.session.save(function(err){
+		if(err){
+			console.log(err);
+			res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+		}else{
+			res.redirect('/lender/story?id='+req.body.FromBorrowRequest);
+		}
+	});
 }
 
 function toLendCreatePart(res,req,borrow,lenderBankaccount,outterPara){
@@ -1915,7 +1922,14 @@ function deleteRedirector(req,res,content,info,address){
 	var string=JSON.stringify(json);
 	
 	req.flash('deleteFlash',string);
-	res.redirect(address);
+	req.session.save(function(err){
+		if(err){
+			console.log(err);
+			res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+		}else{
+			res.redirect(address);
+		}
+	});
 }
 
 module.exports = router;

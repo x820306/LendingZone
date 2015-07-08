@@ -52,7 +52,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser('lendingZone'));
 app.use(session({ secret: 'lendingZone',
 				  name: 'cookie_name',
-				  resave: true,
+				  resave: false,
 				  saveUninitialized: true,
 				  store: new MongoStore({ mongooseConnection: mongoose.connection }),
 				  cookie:{maxAge:259200000}
@@ -153,16 +153,23 @@ app.post('/login',captchaChecker, function(req, res, next) {
 							cosole.log(err);
 							res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 						}else{
-							if((user.keyFlag===true)&&(req.session.passport.secondFactor !== 'totp')){
-								var path=library.pathProcesser(req,true);
-								res.redirect('/totp_login?path='+path);
-							}else{
-								var targetPath=library.refererChecker(req);
-								if(!library.routeChecker(targetPath)){
-									targetPath='/';
+							req.session.save(function(err) {
+								if(err){
+									console.log(err);
+									res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+								}else{
+									if((user.keyFlag===true)&&(req.session.passport.secondFactor !== 'totp')){
+										var path=library.pathProcesser(req,true);
+										res.redirect('/totp_login?path='+path);
+									}else{
+										var targetPath=library.refererChecker(req);
+										if(!library.routeChecker(targetPath)){
+											targetPath='/';
+										}
+										res.redirect(targetPath);
+									}
 								}
-								res.redirect(targetPath);
-							}
+							});
 						}
 					});
 				}
@@ -191,7 +198,14 @@ app.get('/totp_login/:path?',library.loginFormChecker,library.newMsgChecker,libr
 		if(!library.routeChecker(targetPath)){
 			targetPath='/';
 		}
-		res.render('totp_login',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:null,tgtPath:targetPath,totpCodeCnt:totpCodeContent});
+		req.session.save(function(err){
+			if(err){
+				console.log(err);
+				res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+			}else{
+				res.render('totp_login',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:null,tgtPath:targetPath,totpCodeCnt:totpCodeContent});
+			}
+		});
 	}else{
 		res.redirect('/');
 	}
@@ -204,10 +218,24 @@ app.post('/totp_login',library.totpDefender,function(req, res) {
 		var rv = totp.verify(req.body.Code, req.user.keyObj.key, { window: 6, time: req.user.keyObj.period });
 		if(rv){
 			req.session.passport.secondFactor = 'totp';
-			res.redirect(req.body.TargetPath);
+			req.session.save(function(err){
+				if(err){
+					console.log(err);
+					res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+				}else{
+					res.redirect(req.body.TargetPath);
+				}
+			});
 		}else{
 			req.flash('totpCode','驗證碼錯誤!');
-			res.redirect(library.refererChecker(req));
+			req.session.save(function(err){
+				if(err){
+					console.log(err);
+					res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+				}else{
+					res.redirect(library.refererChecker(req));
+				}
+			});
 		}
 	}else{
 		res.redirect('/message?content='+encodeURIComponent('錯誤!'));
@@ -215,32 +243,25 @@ app.post('/totp_login',library.totpDefender,function(req, res) {
 });
 
 
-app.get('/captcha/:captchaIdfr?', function (req, res) {
-	if(typeof(req.query.captchaIdfr) === 'string'){
-		var captchaIdfr=parseInt(req.query.captchaIdfr);
-		
-		if(captchaIdfr>0){
-			var ctr = -1;
-			for(i=0;i<library.captchaTextArray.length;i++){
-				if(captchaIdfr===library.captchaTextArray[i].Idfr){
-					ctr=i;
-					break;
-				}
-			}
-			if(ctr>-1){
-				library.captchaTextArray.splice(ctr, 1);
-			}
+app.post('/captcha', function (req, res) {
+	if(typeof(req.body.refreshFlag) === 'string'){
+		if((req.body.refreshFlag==='yes')||(!req.session.hasOwnProperty('captchaJSON'))){
+			var ary = captcha.get();
+			var base64=ary[1].toString('base64');
+			base64='data:image/bmp;base64,'+base64;
+			req.session.captchaJSON={Image:base64,Text:ary[0]};
 		}
-		var ary = captcha.get();
-		library.captchaIdfrCtr+=1;
-		var tempIdfr=library.captchaIdfrCtr;
-		library.captchaTextArray.push({Idfr:tempIdfr,Text:ary[0],SaveT:Date.now()});
 		
-		var base64=ary[1].toString('base64');
-		base64='data:image/bmp;base64,'+base64;
-		res.json({CaptchaIdfr:library.captchaIdfrCtr,CaptchaPic:base64,success:true});
+		req.session.save(function(err){
+			if(err){
+				console.log(err);
+				res.json({success:false}, 500);
+			}else{
+				res.json({CaptchaPic:req.session.captchaJSON.Image,success:true});
+			}
+		});
 	}else{
-		res.json({success:false});
+		res.json({success:false}, 500);
 	}
 });
 
@@ -249,7 +270,14 @@ app.get('/logout', function (req, res) {
 		delete req.session.passport.secondFactor;
 	}
 	req.logout();
-    res.redirect('/');
+	req.session.save(function(err) {
+		if(err){
+			console.log(err);
+			res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+		}else{
+			res.redirect('/');
+		}
+	});
 });
 
 app.get('/signupTest',library.loginFormChecker,library.newMsgChecker,library.usrNameGenerator, function (req, res) {
@@ -275,7 +303,14 @@ app.get('/autoPage',library.loginFormChecker,library.ensureAuthenticated,library
 	if(msgArray.length>0){
 		message=msgArray[0];
 	}
-	res.render('autoPage',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,ifE:ifEnable,ifE2:ifEnable2,msg:message});
+	req.session.save(function(err){
+		if(err){
+			console.log(err);
+			res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+		}else{
+			res.render('autoPage',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,ifE:ifEnable,ifE2:ifEnable2,msg:message});
+		}
+	});
 });
 
 app.post('/autoConfirmPost',library.loginFormChecker,library.ensureAuthenticated,library.newMsgChecker,library.ensureAdmin, function (req, res) {
@@ -293,7 +328,14 @@ app.post('/autoConfirmPost',library.loginFormChecker,library.ensureAuthenticated
 		},86400000*3);
 		library.autoConfirmArray.push(eid3);
 		req.flash('autoFlash','已啟動自動同意!');
-		res.redirect('/autoPage');
+		req.session.save(function(err){
+			if(err){
+				console.log(err);
+				res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+			}else{
+				res.redirect('/autoPage');
+			}
+		});
 	}else{
 		res.redirect('/autoPage');
 	}
@@ -306,7 +348,14 @@ app.post('/disableAutoConfirmPost',library.loginFormChecker,library.ensureAuthen
 		}
 		library.autoConfirmArray=[];
 		req.flash('autoFlash','已關閉自動同意!');
-		res.redirect('/autoPage');
+		req.session.save(function(err){
+			if(err){
+				console.log(err);
+				res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+			}else{
+				res.redirect('/autoPage');
+			}
+		});
 	}else{
 		res.redirect('/autoPage');
 	}
@@ -320,7 +369,14 @@ app.post('/autoNotReadablePost',library.loginFormChecker,library.ensureAuthentic
 		library.autoNotReadableArray.push(eid);
 		
 		req.flash('autoFlash','已啟動自動封存!');
-		res.redirect('/autoPage');
+		req.session.save(function(err){
+			if(err){
+				console.log(err);
+				res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+			}else{
+				res.redirect('/autoPage');
+			}
+		});
 	}else{
 		res.redirect('/autoPage');
 	}
@@ -333,40 +389,47 @@ app.post('/disableAutoNotReadablePost',library.loginFormChecker,library.ensureAu
 		}
 		library.autoNotReadableArray=[];
 		req.flash('autoFlash','已關閉自動封存!');
-		res.redirect('/autoPage');
+		req.session.save(function(err){
+			if(err){
+				console.log(err);
+				res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+			}else{
+				res.redirect('/autoPage');
+			}
+		});
 	}else{
 		res.redirect('/autoPage');
 	}
 });
 
 app.get('/test', function (req, res) {
-	console.log(library.captchaTextArray);
-	res.json(library.captchaTextArray);
+	if(req.session.hasOwnProperty('captchaJSON')){
+		console.log(req.session.captchaJSON.Text);
+		res.end(req.session.captchaJSON.Text);
+	}else{
+		console.log('not found');
+		res.end('not found');
+	}
 });
 
 app.get('/test2', function (req, res) {
-	console.log(library.formIdfrArray);
-	res.json(library.formIdfrArray);
-});
-
-app.get('/test3', function (req, res) {
 	console.log(library.tmpFilePathArray);
 	res.json(library.tmpFilePathArray);
 });
 
-app.get('/test4', function (req, res) {
+app.get('/test3', function (req, res) {
 	console.log(library.autoConfirmArray);
 	res.json(library.autoConfirmArray);
 });
 
-app.get('/test5', function (req, res) {
+app.get('/test4', function (req, res) {
 	console.log(library.autoNotReadableArray);
 	res.json(library.autoNotReadableArray);
 });
 
-app.get('/test6', function (req, res) {
-	console.log(req.session.passport);
-	res.json(req.session.passport);
+app.get('/test5', function (req, res) {
+	console.log(req.session);
+	res.json(req.session);
 });
 
 //database models routers
@@ -416,32 +479,29 @@ app.use(function(err, req, res, next) {
 });
 
 function captchaChecker(req, res, next){
-	if((typeof(req.body.CaptchaIdfr)  === 'string')&&(typeof(req.body.CaptchaText)  === 'string')){
-		req.body.CaptchaIdfr=sanitizer.sanitize(req.body.CaptchaIdfr.trim());
+	if(typeof(req.body.CaptchaText)  === 'string'){
 		req.body.CaptchaText=sanitizer.sanitize(req.body.CaptchaText.trim());
-		var Idfr=parseInt(req.body.CaptchaIdfr);
 		var Text=req.body.CaptchaText;
 		var passFlag=false;
-		if(Idfr>0){
-			var ctr = -1;
-			for(i=0;i<library.captchaTextArray.length;i++){
-				if(Idfr===library.captchaTextArray[i].Idfr){
-					ctr=i;
-					if(Text.toUpperCase()===library.captchaTextArray[i].Text.toUpperCase()){
-						passFlag=true;
-					}
-					break;
-				}
-			}
-			if(ctr>-1){
-				library.captchaTextArray.splice(ctr, 1);
+		
+		if(req.session.hasOwnProperty('captchaJSON')){
+			if(Text.toUpperCase()===req.session.captchaJSON.Text.toUpperCase()){
+				passFlag=true;
 			}
 		}
 		
 		if(passFlag){
-			return next();
+			delete req.session.captchaJSON;
+			req.session.save(function(err) {
+				if(err){
+					console.log(err);
+					res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+				}else{
+					return next();
+				}
+			});
 		}else{
-			redirector(req,res,3,'錯誤或過期!');
+			redirector(req,res,3,'錯誤!');
 		}
 	}else{
 		redirector(req,res,3,'未送出!');
@@ -462,7 +522,14 @@ function redirector(req,res,target,message){
 	if(!library.routeChecker(targetPath)){
 		targetPath='/';
 	}
-	res.redirect(targetPath);
+	req.session.save(function(err){
+		if(err){
+			console.log(err);
+			res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+		}else{
+			res.redirect(targetPath);
+		}
+	});
 }
 
 module.exports = app;

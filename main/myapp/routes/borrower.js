@@ -3,6 +3,7 @@ var mongoose = require('mongoose');
 var Borrows = mongoose.model('Borrows');
 var Users = mongoose.model('Users');
 var sanitizer = require('sanitizer');
+var uuid = require('node-uuid');
 
 var express = require('express');
 var router = express.Router();
@@ -14,18 +15,35 @@ router.get('/borrowPage',library.loginFormChecker, library.ensureAuthenticated, 
 		borrowFormJson=JSON.parse(stringArrayFlash[0]);
 	}
 	
-	library.formIdfrCtr+=1;
-	var tempIdfr=library.formIdfrCtr;
-	library.formIdfrArray.push({Idfr:tempIdfr,SaveT:Date.now()});
+	if(!req.session.hasOwnProperty('borrowPageFormArray')){
+		req.session.borrowPageFormArray=[];
+	}else{
+		for(j=req.session.borrowPageFormArray.length-1;j>-1;j--){
+			var NowT=Date.now();
+			if((NowT-req.session.borrowPageFormArray[j].SaveT)>=600000){
+				req.session.borrowPageFormArray.splice(j, 1);
+			}
+		}
+	}
 	
-	res.render('borrowPage', {
-		lgfJSON:req.loginFormJson,
-		newlrmNum: req.newlrmNumber,
-		newlsmNum: req.newlsmNumber,
-		userName: req.user.Username,
-		scr:library.serviceChargeRate,
-		idfr:tempIdfr,
-		bfJSON:borrowFormJson
+	var tempIdfr=uuid.v1();
+	req.session.borrowPageFormArray.push({Idfr:tempIdfr,SaveT:Date.now()});
+	
+	req.session.save(function(err){
+		if(err){
+			console.log(err);
+			res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+		}else{
+			res.render('borrowPage', {
+				lgfJSON:req.loginFormJson,
+				newlrmNum: req.newlrmNumber,
+				newlsmNum: req.newlsmNumber,
+				userName: req.user.Username,
+				scr:library.serviceChargeRate,
+				idfr:tempIdfr,
+				bfJSON:borrowFormJson
+			});
+		}
 	});
 });
 
@@ -45,16 +63,22 @@ function redirector(req,res,target,message){
 	var string=JSON.stringify(json);
 	
 	req.flash('borrowForm',string);
-	res.redirect('/borrower/borrowPage');
+	req.session.save(function(err){
+		if(err){
+			console.log(err);
+			res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+		}else{
+			res.redirect('/borrower/borrowPage');
+		}
+	});
 }
 
 router.post('/borrowCreate',library.loginFormChecker, library.ensureAuthenticated, function(req, res) {
 	if(typeof(req.body.Idfr) === 'string'){
-		var Idfr=parseInt(req.body.Idfr);
 		var passFlag=false;
-		if(Idfr>0){
-			for(i=0;i<library.formIdfrArray.length;i++){
-				if(Idfr===library.formIdfrArray[i].Idfr){
+		if(req.session.hasOwnProperty('borrowPageFormArray')){
+			for(i=0;i<req.session.borrowPageFormArray.length;i++){
+				if(req.body.Idfr===req.session.borrowPageFormArray[i].Idfr){
 					passFlag=true;
 					break;
 				}
@@ -296,19 +320,26 @@ router.post('/borrowCreate',library.loginFormChecker, library.ensureAuthenticate
 							if (err) {
 								res.redirect('/message?content='+encodeURIComponent('新建失敗!'));
 							} else {
-								var ctr=-1;
-								if(Idfr>0){
-									for(i=0;i<library.formIdfrArray.length;i++){
-										if(Idfr===library.formIdfrArray[i].Idfr){
+								if(req.session.hasOwnProperty('borrowPageFormArray')){
+									var ctr=-1;
+									for(i=0;i<req.session.borrowPageFormArray.length;i++){
+										if(req.body.Idfr===req.session.borrowPageFormArray[i].Idfr){
 											ctr=i;
 											break;
 										}
 									}
+									if(ctr>-1){
+										req.session.borrowPageFormArray.splice(ctr, 1);
+									}
 								}
-								if(ctr>-1){
-									library.formIdfrArray.splice(ctr, 1);
-								}
-								res.redirect('/borrower/borrowSuccess');
+								req.session.save(function(err){
+									if(err){
+										console.log(err);
+										res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+									}else{
+										res.redirect('/borrower/borrowSuccess');
+									}
+								});
 							}
 						});
 					}else{

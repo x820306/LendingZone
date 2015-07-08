@@ -505,7 +505,14 @@ function redirector(req,res,target,message){
 	var string=JSON.stringify(json);
 	
 	req.flash('lendForm',string);
-	res.redirect('/lender/lend');
+	req.session.save(function(err){
+		if(err){
+			console.log(err);
+			res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+		}else{
+			res.redirect('/lender/lend');
+		}
+	});
 }
 
 function createPart(res,req,outterPara){

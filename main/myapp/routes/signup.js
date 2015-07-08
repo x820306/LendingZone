@@ -7,6 +7,7 @@ var sanitizer = require('sanitizer');
 var express = require('express');
 var router = express.Router();
 var fs = require('fs');
+var uuid = require('node-uuid');
 
 router.get('/profile',library.loginFormChecker,library.ensureAuthenticated,library.newMsgChecker, function (req, res) {
 	var stringArrayFlash=req.flash('dataCDForm');
@@ -43,7 +44,14 @@ router.get('/profile',library.loginFormChecker,library.ensureAuthenticated,libra
 						if(!foundAccount){
 							res.redirect('/message?content='+encodeURIComponent('錯誤'));
 						}else{
-							res.render('profile',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,user:foundUser,account:foundAccount,dcdJSON:dataCDFormJson,mvString:mailValidString,dTotpString:disableTotpString});
+							req.session.save(function(err){
+								if(err){
+									console.log(err);
+									res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+								}else{
+									res.render('profile',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,user:foundUser,account:foundAccount,dcdJSON:dataCDFormJson,mvString:mailValidString,dTotpString:disableTotpString});
+								}
+							});
 						}
 					}
 				});
@@ -59,7 +67,14 @@ router.get('/changePWpage',library.loginFormChecker,library.ensureAuthenticated,
 		formJson=JSON.parse(stringArrayFlash[0]);
 	}
 	
-	res.render('changePWpage',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,fJSON:formJson});
+	req.session.save(function(err){
+		if(err){
+			console.log(err);
+			res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+		}else{
+			res.render('changePWpage',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,fJSON:formJson});
+		}
+	});
 });
 
 router.get('/changeUsernamePage',library.loginFormChecker,library.ensureAuthenticated,library.newMsgChecker, function (req, res) {
@@ -69,7 +84,14 @@ router.get('/changeUsernamePage',library.loginFormChecker,library.ensureAuthenti
 		formJson=JSON.parse(stringArrayFlash[0]);
 	}
 	
-	res.render('changeUsernamePage',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,fJSON:formJson});
+	req.session.save(function(err){
+		if(err){
+			console.log(err);
+			res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+		}else{
+			res.render('changeUsernamePage',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,fJSON:formJson});
+		}
+	});
 });
 
 router.get('/resendValidMail',library.loginFormChecker,library.ensureAuthenticated,library.newMsgChecker, function (req, res) {
@@ -84,10 +106,24 @@ router.get('/resendValidMail',library.loginFormChecker,library.ensureAuthenticat
 				if(!user.ifMailValid){
 					library.mailValid(user._id,req,function(){
 						req.flash('sendValidMail','E-mail認證信已寄往您所填寫的地址：<br><span style="color:red;">'+user.Email+'</span><br>您可於一小時內前往您的信箱點擊連結進行認證或於本頁面重發認證信');
-						res.redirect('/signup/profile');
+						req.session.save(function(err){
+							if(err){
+								console.log(err);
+								res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+							}else{
+								res.redirect('/signup/profile');
+							}
+						});
 					},function(){
 						req.flash('sendValidMail','E-mail認證信已寄往您所填寫的地址：<br><span style="color:red;">'+user.Email+'</span><br>您可於一小時內前往您的信箱點擊連結進行認證或於本頁面重發認證信');
-						res.redirect('/signup/profile');
+						req.session.save(function(err){
+							if(err){
+								console.log(err);
+								res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+							}else{
+								res.redirect('/signup/profile');
+							}
+						});
 					});
 				}else{
 					res.redirect('/signup/profile');
@@ -370,10 +406,24 @@ router.post('/changeData',library.loginFormChecker, library.ensureAuthenticated,
 																}else{
 																	library.mailValid(newUpdated._id,req,function(){
 																		req.flash('sendValidMail','E-mail認證信已寄往您所填寫的地址：<br><span style="color:red;">'+newUpdated.Email+'</span><br>您可於一小時內前往您的信箱點擊連結進行認證或於本頁面重發認證信');
-																		res.redirect('/signup/profile');
+																		req.session.save(function(err){
+																			if(err){
+																				console.log(err);
+																				res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+																			}else{
+																				res.redirect('/signup/profile');
+																			}
+																		});
 																	},function(){
 																		req.flash('sendValidMail','E-mail認證信已寄往您所填寫的地址：<br><span style="color:red;">'+newUpdated.Email+'</span><br>您可於一小時內前往您的信箱點擊連結進行認證或於本頁面重發認證信');
-																		res.redirect('/signup/profile');
+																		req.session.save(function(err){
+																			if(err){
+																				console.log(err);
+																				res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+																			}else{
+																				res.redirect('/signup/profile');
+																			}
+																		});
 																	});
 																}
 															},function(){
@@ -459,7 +509,14 @@ function redirectorCD(req,res,target,message){
 	var string=JSON.stringify(json);
 	
 	req.flash('dataCDForm',string);
-	res.redirect('/signup/profile');
+	req.session.save(function(err){
+		if(err){
+			console.log(err);
+			res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+		}else{
+			res.redirect('/signup/profile');
+		}
+	});
 }
 
 function redirectorNewACC(req,res,target,message){
@@ -479,7 +536,14 @@ function redirectorNewACC(req,res,target,message){
 	var string=JSON.stringify(json);
 	
 	req.flash('newAccForm',string);
-	res.redirect('/signup/newAcc');
+	req.session.save(function(err){
+		if(err){
+			console.log(err);
+			res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+		}else{
+			res.redirect('/signup/newAcc');
+		}
+	});
 }
 
 function redirectorCardData(req,res,target,message){
@@ -492,7 +556,14 @@ function redirectorCardData(req,res,target,message){
 	var string=JSON.stringify(json);
 	
 	req.flash('cardDataForm',string);
-	res.redirect('/signup/cardData');
+	req.session.save(function(err){
+		if(err){
+			console.log(err);
+			res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+		}else{
+			res.redirect('/signup/cardData');
+		}
+	});
 }
 
 // this is the basic type when page no need to ensure authenticated. U can try this by /signup/signupExample
@@ -503,24 +574,37 @@ router.get('/cardData',library.loginFormChecker,library.newMsgChecker,library.us
 		cardDataFormJson=JSON.parse(stringArrayFlash[0]);
 	}
 	
-	library.formIdfrCtr+=1;
-	var tempIdfr=library.formIdfrCtr;
-	library.formIdfrArray.push({Idfr:tempIdfr,SaveT:Date.now()});
+	if(!req.session.hasOwnProperty('cardDataFormArray')){
+		req.session.cardDataFormArray=[];
+	}else{
+		for(j=req.session.cardDataFormArray.length-1;j>-1;j--){
+			var NowT=Date.now();
+			if((NowT-req.session.cardDataFormArray[j].SaveT)>=600000){
+				req.session.cardDataFormArray.splice(j, 1);
+			}
+		}
+	}
 	
-	//get data from database and process them here
+	var tempIdfr=uuid.v1();
+	req.session.cardDataFormArray.push({Idfr:tempIdfr,SaveT:Date.now()});
 	
-	//pass what u get from database and send them into ejs in this line
-	res.render('cardData_1',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.auRst,formSession1:tempIdfr,cdfJSON:cardDataFormJson});
+	req.session.save(function(err){
+		if(err){
+			console.log(err);
+			res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+		}else{
+			res.render('cardData_1',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.auRst,formSession1:tempIdfr,cdfJSON:cardDataFormJson});
+		}
+	});
 });
 
 // this is the basic type when page no need to ensure authenticated. U can try this by /signup/signupExample
 router.post('/checkPro',library.loginFormChecker,library.newMsgChecker,library.usrNameGenerator, function (req, res) {
 	if(typeof(req.body.FormSession1) === 'string'){
-		var Idfr=parseInt(req.body.FormSession1);
 		var passFlag=false;
-		if(Idfr>0){
-			for(i=0;i<library.formIdfrArray.length;i++){
-				if(Idfr===library.formIdfrArray[i].Idfr){
+		if(req.session.hasOwnProperty('cardDataFormArray')){
+			for(i=0;i<req.session.cardDataFormArray.length;i++){
+				if(req.body.FormSession1===req.session.cardDataFormArray[i].Idfr){
 					passFlag=true;
 					break;
 				}
@@ -573,11 +657,28 @@ router.post('/checkPro',library.loginFormChecker,library.newMsgChecker,library.u
 						console.log(err);
 						res.redirect('/message?content='+encodeURIComponent('錯誤'));
 					}else{
-						library.formIdfrCtr+=1;
-						var tempIdfr=library.formIdfrCtr;
-						library.formIdfrArray.push({Idfr:tempIdfr,SaveT:Date.now()});
+						if(!req.session.hasOwnProperty('checkProFormArray')){
+							req.session.checkProFormArray=[];
+						}else{
+							for(j=req.session.checkProFormArray.length-1;j>-1;j--){
+								var NowT=Date.now();
+								if((NowT-req.session.checkProFormArray[j].SaveT)>=600000){
+									req.session.checkProFormArray.splice(j, 1);
+								}
+							}
+						}
 						
-						res.render('checkPro_1',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.auRst,BankAccountNumber:req.body.cardIpt,BankAccountPassword:req.body.cardPwdIpt,formSession1:req.body.FormSession1,formSession2:tempIdfr,usrNum:users.length+1});
+						var tempIdfr=uuid.v1();
+						req.session.checkProFormArray.push({Idfr:tempIdfr,SaveT:Date.now()});
+						
+						req.session.save(function(err) {
+							if(err){
+								console.log(err);
+								res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+							}else{
+								res.render('checkPro_1',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.auRst,BankAccountNumber:req.body.cardIpt,BankAccountPassword:req.body.cardPwdIpt,formSession1:req.body.FormSession1,formSession2:tempIdfr,usrNum:users.length+1});
+							}
+						});
 					}
 				});
 			}else{
@@ -599,24 +700,37 @@ router.get('/newAcc',library.loginFormChecker,library.newMsgChecker,library.usrN
 		newAccFormJson=JSON.parse(stringArrayFlash[0]);
 	}
 	
-	library.formIdfrCtr+=1;
-	var tempIdfr=library.formIdfrCtr;
-	library.formIdfrArray.push({Idfr:tempIdfr,SaveT:Date.now()});
+	if(!req.session.hasOwnProperty('newAccFormArray')){
+		req.session.newAccFormArray=[];
+	}else{
+		for(j=req.session.newAccFormArray.length-1;j>-1;j--){
+			var NowT=Date.now();
+			if((NowT-req.session.newAccFormArray[j].SaveT)>=600000){
+				req.session.newAccFormArray.splice(j, 1);
+			}
+		}
+	}
 	
-	//get data from database and process them here
+	var tempIdfr=uuid.v1();
+	req.session.newAccFormArray.push({Idfr:tempIdfr,SaveT:Date.now()});
 	
-	//pass what u get from database and send them into ejs in this line
-	res.render('newAcc_2',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.auRst,formSession1:tempIdfr,nafJSON:newAccFormJson});
+	req.session.save(function(err){
+		if(err){
+			console.log(err);
+			res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+		}else{
+			res.render('newAcc_2',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.auRst,formSession1:tempIdfr,nafJSON:newAccFormJson});
+		}
+	});
 });
 
 // this is the basic type when page no need to ensure authenticated. U can try this by /signup/signupExample
 router.post('/apply',library.loginFormChecker,library.newMsgChecker,library.usrNameGenerator, function (req, res) {
 	if((typeof(req.body.FormSession2) === 'string')&&(typeof(req.body.ssnIpt) === 'string')&&(typeof(req.body.nameIpt) === 'string')&&(typeof(req.body.genderIpt) === 'string')&&(typeof(req.body.birthIpt) === 'string')&&(typeof(req.body.telIpt) === 'string')&&(typeof(req.body.emailIpt) === 'string')&&(typeof(req.body.addrIpt) === 'string')&&(typeof(req.body.BankAccountNumber) === 'string')&&(typeof(req.body.BankAccountPassword) === 'string')&&(typeof(req.body.IdCardStr) === 'string')&&(typeof(req.body.SecondCardStr) === 'string')){
-		var Idfr=parseInt(req.body.FormSession2);
 		var passFlag=false;
-		if(Idfr>0){
-			for(i=0;i<library.formIdfrArray.length;i++){
-				if(Idfr===library.formIdfrArray[i].Idfr){
+		if(req.session.hasOwnProperty('checkProFormArray')){
+			for(i=0;i<req.session.checkProFormArray.length;i++){
+				if(req.body.FormSession2===req.session.checkProFormArray[i].Idfr){
 					passFlag=true;
 					break;
 				}
@@ -668,13 +782,30 @@ router.post('/apply',library.loginFormChecker,library.newMsgChecker,library.usrN
 							emailFlag=true;
 						}
 						if((tLimitFlag)&&(emailFlag)&&(library.checkSsnID(req.body.ssnIpt))&&(!ifIdCardNumberExist)){
-							library.formIdfrCtr+=1;
-							var tempIdfr=library.formIdfrCtr;
-							library.formIdfrArray.push({Idfr:tempIdfr,SaveT:Date.now()});
+							if(!req.session.hasOwnProperty('apply1FormArray')){
+								req.session.apply1FormArray=[];
+							}else{
+								for(j=req.session.apply1FormArray.length-1;j>-1;j--){
+									var NowT=Date.now();
+									if((NowT-req.session.apply1FormArray[j].SaveT)>=600000){
+										req.session.apply1FormArray.splice(j, 1);
+									}
+								}
+							}
 							
-							res.render('apply_1',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.auRst, Name:req.body.nameIpt, Email:req.body.emailIpt, Gender:req.body.genderIpt,
-								BirthDay:req.body.birthIpt, Phone:req.body.telIpt, Address:req.body.addrIpt,IdCardNumber:req.body.ssnIpt,IdCardStr:req.body.IdCardStr,SecondCardStr:req.body.SecondCardStr,
-								BankAccountNumber:req.body.BankAccountNumber,BankAccountPassword:req.body.BankAccountPassword,formSession1:req.body.FormSession1,formSession2:req.body.FormSession2,formSession3:tempIdfr});
+							var tempIdfr=uuid.v1();
+							req.session.apply1FormArray.push({Idfr:tempIdfr,SaveT:Date.now()});
+							
+							req.session.save(function(err) {
+								if(err){
+									console.log(err);
+									res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+								}else{
+									res.render('apply_1',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.auRst, Name:req.body.nameIpt, Email:req.body.emailIpt, Gender:req.body.genderIpt,
+									BirthDay:req.body.birthIpt, Phone:req.body.telIpt, Address:req.body.addrIpt,IdCardNumber:req.body.ssnIpt,IdCardStr:req.body.IdCardStr,SecondCardStr:req.body.SecondCardStr,
+									BankAccountNumber:req.body.BankAccountNumber,BankAccountPassword:req.body.BankAccountPassword,formSession1:req.body.FormSession1,formSession2:req.body.FormSession2,formSession3:tempIdfr});
+								}
+							});
 						}else{
 							if(ifIdCardNumberExist){
 								res.redirect('/message?content='+encodeURIComponent('身分證字號已存在!'));
@@ -697,11 +828,10 @@ router.post('/apply',library.loginFormChecker,library.newMsgChecker,library.usrN
 
 router.post('/_apply',library.loginFormChecker,library.newMsgChecker,library.usrNameGenerator, function (req, res) {
 	if(typeof(req.body.FormSession1) === 'string'){
-		var Idfr=parseInt(req.body.FormSession1);
 		var passFlag=false;
-		if(Idfr>0){
-			for(i=0;i<library.formIdfrArray.length;i++){
-				if(Idfr===library.formIdfrArray[i].Idfr){
+		if(req.session.hasOwnProperty('newAccFormArray')){
+			for(i=0;i<req.session.newAccFormArray.length;i++){
+				if(req.body.FormSession1===req.session.newAccFormArray[i].Idfr){
 					passFlag=true;
 					break;
 				}
@@ -934,14 +1064,30 @@ router.post('/_apply',library.loginFormChecker,library.newMsgChecker,library.usr
 						}
 						var secondCardString=JSON.stringify(secondCardJson);
 						
-						library.formIdfrCtr+=1;
-						var tempIdfr=library.formIdfrCtr;
-						library.formIdfrArray.push({Idfr:tempIdfr,SaveT:Date.now()});
+						if(!req.session.hasOwnProperty('apply2FormArray')){
+							req.session.apply2FormArray=[];
+						}else{
+							for(j=req.session.apply2FormArray.length-1;j>-1;j--){
+								var NowT=Date.now();
+								if((NowT-req.session.apply2FormArray[j].SaveT)>=600000){
+									req.session.apply2FormArray.splice(j, 1);
+								}
+							}
+						}
 						
-						//pass what u get from database and send them into ejs in this line
-						res.render('apply_2',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.auRst, Name:req.body.nameIpt, Email:req.body.emailIpt, Gender:req.body.genderIpt,
-							BirthDay:req.body.birthIpt, Phone:req.body.telIpt, Address:req.body.addrIpt,IdCardNumber:req.body.ssnIpt,IdCardStr:idCardString,SecondCardStr:secondCardString,
-							BankAccountNumber:req.body.cardIpt,BankAccountPassword:req.body.cardPwdIpt,formSession1:req.body.FormSession1,formSession2:tempIdfr});
+						var tempIdfr=uuid.v1();
+						req.session.apply2FormArray.push({Idfr:tempIdfr,SaveT:Date.now()});
+						
+						req.session.save(function(err) {
+							if(err){
+								console.log(err);
+								res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+							}else{
+								res.render('apply_2',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.auRst, Name:req.body.nameIpt, Email:req.body.emailIpt, Gender:req.body.genderIpt,
+								BirthDay:req.body.birthIpt, Phone:req.body.telIpt, Address:req.body.addrIpt,IdCardNumber:req.body.ssnIpt,IdCardStr:idCardString,SecondCardStr:secondCardString,
+								BankAccountNumber:req.body.cardIpt,BankAccountPassword:req.body.cardPwdIpt,formSession1:req.body.FormSession1,formSession2:tempIdfr});
+							}
+						});
 					}else{
 						if((req.files.ssnImg)||(req.files.cerImg)){
 							var findPath = __dirname+'/../';
@@ -1036,13 +1182,10 @@ router.post('/_apply',library.loginFormChecker,library.newMsgChecker,library.usr
 // this is the basic type when page no need to ensure authenticated. U can try this by /signup/signupExample
 router.post('/community',library.loginFormChecker,library.newMsgChecker,library.usrNameGenerator, function (req, res) {
 	if((typeof(req.body.FormSession1) === 'string')&&(typeof(req.body.FormSession2) === 'string')&&(typeof(req.body.FormSession3) === 'string')&&(typeof(req.body.IdCardNumber) === 'string')&&(typeof(req.body.Username) === 'string')&&(typeof(req.body.Password) === 'string')&&(typeof(req.body.Password2nd) === 'string')&&(typeof(req.body.Name) === 'string')&&(typeof(req.body.Email) === 'string')&&(typeof(req.body.Gender) === 'string')&&(typeof(req.body.BirthDay) === 'string')&&(typeof(req.body.Phone) === 'string')&&(typeof(req.body.Address) === 'string')&&(typeof(req.body.IdCardStr) === 'string')&&(typeof(req.body.SecondCardStr) === 'string')&&(typeof(req.body.BankAccountNumber) === 'string')&&(typeof(req.body.BankAccountPassword) === 'string')){
-		var Idfr1=parseInt(req.body.FormSession1);
-		var Idfr2=parseInt(req.body.FormSession2);
-		var Idfr3=parseInt(req.body.FormSession3);
 		var passFlag=false;
-		if(Idfr3>0){
-			for(i=0;i<library.formIdfrArray.length;i++){
-				if(Idfr3===library.formIdfrArray[i].Idfr){
+		if(req.session.hasOwnProperty('apply1FormArray')){
+			for(i=0;i<req.session.apply1FormArray.length;i++){
+				if(req.body.FormSession3===req.session.apply1FormArray[i].Idfr){
 					passFlag=true;
 					break;
 				}
@@ -1051,43 +1194,51 @@ router.post('/community',library.loginFormChecker,library.newMsgChecker,library.
 		
 		if(passFlag){
 			userCreator(req,res,function (){
-				var ctr1=-1;
-				if(Idfr1>0){
-					for(i=0;i<library.formIdfrArray.length;i++){
-						if(Idfr1===library.formIdfrArray[i].Idfr){
+				if(req.session.hasOwnProperty('cardDataFormArray')){
+					var ctr1=-1;
+					for(i=0;i<req.session.cardDataFormArray.length;i++){
+						if(req.body.FormSession1===req.session.cardDataFormArray[i].Idfr){
 							ctr1=i;
 							break;
 						}
 					}
+					if(ctr1>-1){
+						req.session.cardDataFormArray.splice(ctr1, 1);
+					}
 				}
-				if(ctr1>-1){
-					library.formIdfrArray.splice(ctr1, 1);
-				}
-				var ctr2=-1;
-				if(Idfr2>0){
-					for(i=0;i<library.formIdfrArray.length;i++){
-						if(Idfr2===library.formIdfrArray[i].Idfr){
+				if(req.session.hasOwnProperty('checkProFormArray')){
+					var ctr2=-1;
+					for(i=0;i<req.session.checkProFormArray.length;i++){
+						if(req.body.FormSession2===req.session.checkProFormArray[i].Idfr){
 							ctr2=i;
 							break;
 						}
 					}
+					if(ctr2>-1){
+						req.session.checkProFormArray.splice(ctr2, 1);
+					}
 				}
-				if(ctr2>-1){
-					library.formIdfrArray.splice(ctr2, 1);
-				}
-				var ctr3=-1;
-				if(Idfr3>0){
-					for(i=0;i<library.formIdfrArray.length;i++){
-						if(Idfr3===library.formIdfrArray[i].Idfr){
+				if(req.session.hasOwnProperty('apply1FormArray')){
+					var ctr3=-1;
+					for(i=0;i<req.session.apply1FormArray.length;i++){
+						if(req.body.FormSession3===req.session.apply1FormArray[i].Idfr){
 							ctr3=i;
 							break;
 						}
 					}
+					if(ctr3>-1){
+						req.session.apply1FormArray.splice(ctr3, 1);
+					}
 				}
-				if(ctr3>-1){
-					library.formIdfrArray.splice(ctr3, 1);
-				}
-				res.render('community_1',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.auRst,email:req.body.Email});
+				
+				req.session.save(function(err) {
+					if(err){
+						console.log(err);
+						res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+					}else{
+						res.render('community_1',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.auRst,email:req.body.Email});
+					}
+				});
 			});
 		}else{
 			res.redirect('/signupTest');
@@ -1100,12 +1251,10 @@ router.post('/community',library.loginFormChecker,library.newMsgChecker,library.
 // this is the basic type when page no need to ensure authenticated. U can try this by /signup/signupExample
 router.post('/_community',library.loginFormChecker,library.newMsgChecker,library.usrNameGenerator, function (req, res) {
 	if((typeof(req.body.FormSession1) === 'string')&&(typeof(req.body.FormSession2) === 'string')&&(typeof(req.body.IdCardNumber) === 'string')&&(typeof(req.body.Username) === 'string')&&(typeof(req.body.Password) === 'string')&&(typeof(req.body.Password2nd) === 'string')&&(typeof(req.body.Name) === 'string')&&(typeof(req.body.Email) === 'string')&&(typeof(req.body.Gender) === 'string')&&(typeof(req.body.BirthDay) === 'string')&&(typeof(req.body.Phone) === 'string')&&(typeof(req.body.Address) === 'string')&&(typeof(req.body.IdCardStr) === 'string')&&(typeof(req.body.SecondCardStr) === 'string')&&(typeof(req.body.BankAccountNumber) === 'string')&&(typeof(req.body.BankAccountPassword) === 'string')){
-		var Idfr1=parseInt(req.body.FormSession1);
-		var Idfr2=parseInt(req.body.FormSession2);
 		var passFlag=false;
-		if(Idfr2>0){
-			for(i=0;i<library.formIdfrArray.length;i++){
-				if(Idfr2===library.formIdfrArray[i].Idfr){
+		if(req.session.hasOwnProperty('apply2FormArray')){
+			for(i=0;i<req.session.apply2FormArray.length;i++){
+				if(req.body.FormSession2===req.session.apply2FormArray[i].Idfr){
 					passFlag=true;
 					break;
 				}
@@ -1114,31 +1263,39 @@ router.post('/_community',library.loginFormChecker,library.newMsgChecker,library
 		
 		if(passFlag){
 			userCreator(req,res,function (){
-				var ctr1=-1;
-				if(Idfr1>0){
-					for(i=0;i<library.formIdfrArray.length;i++){
-						if(Idfr1===library.formIdfrArray[i].Idfr){
+				if(req.session.hasOwnProperty('newAccFormArray')){
+					var ctr1=-1;
+					for(i=0;i<req.session.newAccFormArray.length;i++){
+						if(req.body.FormSession1===req.session.newAccFormArray[i].Idfr){
 							ctr1=i;
 							break;
 						}
 					}
+					if(ctr1>-1){
+						req.session.newAccFormArray.splice(ctr1, 1);
+					}
 				}
-				if(ctr1>-1){
-					library.formIdfrArray.splice(ctr1, 1);
-				}
-				var ctr2=-1;
-				if(Idfr2>0){
-					for(i=0;i<library.formIdfrArray.length;i++){
-						if(Idfr2===library.formIdfrArray[i].Idfr){
+				if(req.session.hasOwnProperty('apply2FormArray')){
+					var ctr2=-1;
+					for(i=0;i<req.session.apply2FormArray.length;i++){
+						if(req.body.FormSession2===req.session.apply2FormArray[i].Idfr){
 							ctr2=i;
 							break;
 						}
 					}
+					if(ctr2>-1){
+						req.session.apply2FormArray.splice(ctr2, 1);
+					}
 				}
-				if(ctr2>-1){
-					library.formIdfrArray.splice(ctr2, 1);
-				}
-				res.render('community_2',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.auRst,email:req.body.Email});
+				
+				req.session.save(function(err) {
+					if(err){
+						console.log(err);
+						res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+					}else{
+						res.render('community_2',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.auRst,email:req.body.Email});
+					}
+				});
 			});
 		}else{
 			res.redirect('/signupTest');
@@ -1194,7 +1351,7 @@ function userCreator(req,res,callback){
 					return;
 				}
 				
-				if((!idCardJson.originalname)||(!idCardJson.mimetype)||(!idCardJson.extension)||(!idCardJson.path)){
+				if((typeof(idCardJson.originalname) !== 'string')||(typeof(idCardJson.mimetype) !== 'string')||(typeof(idCardJson.extension) !== 'string')||(typeof(idCardJson.path) !== 'string')){
 					fileFlag1=false;
 				}else{
 					var tempArray1=idCardJson.originalname.split('.');
@@ -1211,13 +1368,26 @@ function userCreator(req,res,callback){
 							}else{
 								if(!fs.existsSync(idCardJson.path)){
 									fileFlag1=false;
+								}else{
+									var ctrA=-1;
+									for(k=0;k<library.tmpFilePathArray.length;k++){
+										if(idCardJson.path===library.tmpFilePathArray[k].Path){
+											ctrA=k;
+											break;
+										}
+									}
+									if(ctrA===-1){
+										if(idCardJson.path!=='tmp/brick.jpg'){
+											fileFlag1=false;
+										}
+									}
 								}
 							}
 						}
 					}
 				}
 				
-				if((!secondCardJson.originalname)||(!secondCardJson.mimetype)||(!secondCardJson.extension)||(!secondCardJson.path)){
+				if((typeof(secondCardJson.originalname) !== 'string')||(typeof(secondCardJson.mimetype) !== 'string')||(typeof(secondCardJson.extension) !== 'string')||(typeof(secondCardJson.path) !== 'string')){
 					fileFlag2=false;
 				}else{
 					var tempArray2=secondCardJson.originalname.split('.');
@@ -1234,6 +1404,19 @@ function userCreator(req,res,callback){
 							}else{
 								if(!fs.existsSync(secondCardJson.path)){
 									fileFlag2=false;
+								}else{
+									var ctrB=-1;
+									for(k=0;k<library.tmpFilePathArray.length;k++){
+										if(secondCardJson.path===library.tmpFilePathArray[k].Path){
+											ctrB=k;
+											break;
+										}
+									}
+									if(ctrB===-1){
+										if(secondCardJson.path!=='tmp/camera.png'){
+											fileFlag2=false;
+										}
+									}
 								}
 							}
 						}
