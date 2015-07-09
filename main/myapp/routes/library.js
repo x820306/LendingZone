@@ -62,7 +62,7 @@ setInterval( function(){
 	}
 },600000);
 
-exports.gridCreator=function(uid,filesArray,successCallback,failCallback){
+exports.gridCreator=function(uid,uname,filesArray,successCallback,failCallback){
 	async.each(filesArray, function(file, callback) {
 		if(file.flag){
 			var readPath = require('path').join(__dirname+'/../',file.path);
@@ -72,7 +72,7 @@ exports.gridCreator=function(uid,filesArray,successCallback,failCallback){
 			
 			var read_stream =  fs.createReadStream(readPath);
 			var writestream = gfs.createWriteStream({
-				filename: uid.toString()+'_'+file.category+'.'+file.extension,
+				filename: uname+'_'+file.category+'.'+file.extension,
 				mode: 'w',
 				content_type: file.mimetype,
 				root: 'images',
