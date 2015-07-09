@@ -67,7 +67,7 @@ app.use(multer({
 		fileSize: 4194304
 	},
 	onFileUploadStart: function (file, req, res) {
-		library.tmpFilePathArray.push({Path:file.path,SaveT:Date.now()});
+		library.tmpFilePathArray.push({Path:file.path,Originalname:file.originalname,Mimetype:file.mimetype,Extension:file.extension,SaveT:Date.now()});
 	}
 }));
 

@@ -400,7 +400,7 @@ router.post('/changeData',library.loginFormChecker, library.ensureAuthenticated,
 														}
 														
 														library.gridDeletor(newUpdated._id,filesArray,function(){
-															library.gridCreator(newUpdated._id,filesArray,function(){
+															library.gridCreator(newUpdated._id,newUpdated.Username,filesArray,function(){
 																if(!ifEmailChange){
 																	res.redirect('/signup/profile');
 																}else{
@@ -1046,23 +1046,15 @@ router.post('/_apply',library.loginFormChecker,library.newMsgChecker,library.usr
 					}
 					
 					if(valiFlag){
-						var idCardJson={};
+						var idCardString='';
 						if(req.files.ssnImg){
-							idCardJson.originalname=req.files.ssnImg.originalname;
-							idCardJson.mimetype=req.files.ssnImg.mimetype;
-							idCardJson.extension=req.files.ssnImg.extension;
-							idCardJson.path=req.files.ssnImg.path;
+							idCardString=req.files.ssnImg.path;
 						}
-						var idCardString=JSON.stringify(idCardJson);
 						
-						var secondCardJson={};
+						var secondCardString='';
 						if(req.files.cerImg){
-							secondCardJson.originalname=req.files.cerImg.originalname;
-							secondCardJson.mimetype=req.files.cerImg.mimetype;
-							secondCardJson.extension=req.files.cerImg.extension;
-							secondCardJson.path=req.files.cerImg.path;
+							secondCardString=req.files.cerImg.path;
 						}
-						var secondCardString=JSON.stringify(secondCardJson);
 						
 						if(!req.session.hasOwnProperty('apply2FormArray')){
 							req.session.apply2FormArray=[];
@@ -1342,84 +1334,60 @@ function userCreator(req,res,callback){
 				
 				var fileFlag1=true;
 				var fileFlag2=true;
+				var idCardJson={};
+				var secondCardJson={};
 				
-				try{
-					var idCardJson=JSON.parse(req.body.IdCardStr);
-					var secondCardJson=JSON.parse(req.body.SecondCardStr);
-				}catch(e){
-					res.redirect('/message?content='+encodeURIComponent('錯誤!'));
-					return;
-				}
-				
-				if((typeof(idCardJson.originalname) !== 'string')||(typeof(idCardJson.mimetype) !== 'string')||(typeof(idCardJson.extension) !== 'string')||(typeof(idCardJson.path) !== 'string')){
+				if(!fs.existsSync(req.body.IdCardStr)){
 					fileFlag1=false;
 				}else{
-					var tempArray1=idCardJson.originalname.split('.');
-					var fileTemper1=tempArray1[tempArray1.length-1].toUpperCase();
-					if((fileTemper1!=='PNG')&&(fileTemper1!=='JPG')&&(fileTemper1!=='JPEG')&&(fileTemper1!=='JPE')&&(fileTemper1!=='JFIF')){
-						fileFlag1=false;
-					}else{
-						fileTemper1=idCardJson.extension.toUpperCase();
-						if((fileTemper1!=='PNG')&&(fileTemper1!=='JPG')&&(fileTemper1!=='JPEG')&&(fileTemper1!=='JPE')&&(fileTemper1!=='JFIF')){
+					var ctrA=-1;
+					for(k=0;k<library.tmpFilePathArray.length;k++){
+						if(req.body.IdCardStr===library.tmpFilePathArray[k].Path){
+							ctrA=k;
+							break;
+						}
+					}
+					if(ctrA===-1){
+						if(req.body.IdCardStr!=='tmp/brick.jpg'){
 							fileFlag1=false;
 						}else{
-							if((idCardJson.mimetype !== 'image/png')&&(idCardJson.mimetype !== 'image/jpeg')){
-								fileFlag1=false;
-							}else{
-								if(!fs.existsSync(idCardJson.path)){
-									fileFlag1=false;
-								}else{
-									var ctrA=-1;
-									for(k=0;k<library.tmpFilePathArray.length;k++){
-										if(idCardJson.path===library.tmpFilePathArray[k].Path){
-											ctrA=k;
-											break;
-										}
-									}
-									if(ctrA===-1){
-										if(idCardJson.path!=='tmp/brick.jpg'){
-											fileFlag1=false;
-										}
-									}
-								}
-							}
+							idCardJson.path='tmp/brick.jpg';
+							idCardJson.originalname='brick.jpg';
+							idCardJson.mimetype='image/jpeg';
+							idCardJson.extension='jpg';
 						}
+					}else{
+						idCardJson.path=library.tmpFilePathArray[ctrA].Path;
+						idCardJson.originalname=library.tmpFilePathArray[ctrA].Originalname;
+						idCardJson.mimetype=library.tmpFilePathArray[ctrA].Mimetype;
+						idCardJson.extension=library.tmpFilePathArray[ctrA].Extension;
 					}
 				}
 				
-				if((typeof(secondCardJson.originalname) !== 'string')||(typeof(secondCardJson.mimetype) !== 'string')||(typeof(secondCardJson.extension) !== 'string')||(typeof(secondCardJson.path) !== 'string')){
+				if(!fs.existsSync(req.body.SecondCardStr)){
 					fileFlag2=false;
 				}else{
-					var tempArray2=secondCardJson.originalname.split('.');
-					var fileTemper2=tempArray2[tempArray2.length-1].toUpperCase();
-					if((fileTemper2!=='PNG')&&(fileTemper2!=='JPG')&&(fileTemper2!=='JPEG')&&(fileTemper2!=='JPE')&&(fileTemper2!=='JFIF')){
-						fileFlag2=false;
-					}else{
-						fileTemper2=secondCardJson.extension.toUpperCase();
-						if((fileTemper2!=='PNG')&&(fileTemper2!=='JPG')&&(fileTemper2!=='JPEG')&&(fileTemper2!=='JPE')&&(fileTemper2!=='JFIF')){
+					var ctrB=-1;
+					for(k=0;k<library.tmpFilePathArray.length;k++){
+						if(req.body.SecondCardStr===library.tmpFilePathArray[k].Path){
+							ctrB=k;
+							break;
+						}
+					}
+					if(ctrB===-1){
+						if(req.body.SecondCardStr!=='tmp/camera.png'){
 							fileFlag2=false;
 						}else{
-							if((secondCardJson.mimetype !== 'image/png')&&(secondCardJson.mimetype !== 'image/jpeg')){
-								fileFlag2=false;
-							}else{
-								if(!fs.existsSync(secondCardJson.path)){
-									fileFlag2=false;
-								}else{
-									var ctrB=-1;
-									for(k=0;k<library.tmpFilePathArray.length;k++){
-										if(secondCardJson.path===library.tmpFilePathArray[k].Path){
-											ctrB=k;
-											break;
-										}
-									}
-									if(ctrB===-1){
-										if(secondCardJson.path!=='tmp/camera.png'){
-											fileFlag2=false;
-										}
-									}
-								}
-							}
+							secondCardJson.path='tmp/camera.png';
+							secondCardJson.originalname='camera.png';
+							secondCardJson.mimetype='image/png';
+							secondCardJson.extension='png';
 						}
+					}else{
+						secondCardJson.path=library.tmpFilePathArray[ctrB].Path;
+						secondCardJson.originalname=library.tmpFilePathArray[ctrB].Originalname;
+						secondCardJson.mimetype=library.tmpFilePathArray[ctrB].Mimetype;
+						secondCardJson.extension=library.tmpFilePathArray[ctrB].Extension;
 					}
 				}
 				
@@ -1493,7 +1461,7 @@ function userCreator(req,res,callback){
 														secondCardJson.category='SecondCard';
 														filesArray.push(secondCardJson);
 														
-														library.gridCreator(newCreate._id,filesArray,function(){
+														library.gridCreator(newCreate._id,newCreate.Username,filesArray,function(){
 															library.mailValid(newCreate._id,req,callback,callback);
 														},function(){
 															res.redirect('/message?content='+encodeURIComponent('檔案新建失敗'));
