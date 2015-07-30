@@ -190,9 +190,9 @@ exports.gridResponser=function(uid,category,req,res){
 
 exports.replacer=function(input,flag){
 	if(!flag){
-		return input.replace(/[^\w\s\/\.\-\"\u0800-\u9fa5]/ig,'').replace(/\s\s+/g,'').trim();
+		return input.replace(/　/g,' ').replace(/\t/g,' ').replace(/[^\w\s\/\.\-\"\u0800-\u9fa5]/ig,'').replace(/\s\s+/g,'').trim();
 	}else{
-		return input.replace(/[^\w\s\/\.\-\"\u0800-\u9fa5]/ig,' ').replace(/\s\s+/g,' ').trim();
+		return input.replace(/　/g,' ').replace(/\t/g,' ').replace(/[^\w\s\/\.\-\"\u0800-\u9fa5]/ig,' ').replace(/\s\s+/g,' ').trim();
 	}
 }
 
