@@ -162,7 +162,7 @@ router.get('/enableTotp',library.loginFormChecker,library.ensureAuthenticated,li
 		var otpUrl = 'otpauth://totp/'+req.user.Username+'_at_lendingZone?secret=' + encodedKey + '&period=' + req.user.keyObj.period;
 		var qrImage = 'https://chart.googleapis.com/chart?chs=166x166&chld=L|0&cht=qr&chl=' + encodeURIComponent(otpUrl);
 		  
-		res.render('enableTotp', {lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username, key: encodedKey, qrImage: qrImage, content:'' });
+		res.render('enableTotp', {maxAge:req.session.cookie.maxAge,lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username, key: encodedKey, qrImage: qrImage, content:'' });
 	}else{
 		var key = library.randomKey(10);
 		var encodedKey = base32.encode(key);
@@ -194,7 +194,7 @@ router.get('/enableTotp',library.loginFormChecker,library.ensureAuthenticated,li
 									console.log(err);
 									res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 								}else{
-									res.render('enableTotp', {lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username, key: encodedKey, qrImage: qrImage, content:'<h4 class="red">您已啟用兩階段驗證</h4><br>' });
+									res.render('enableTotp', {maxAge:req.session.cookie.maxAge,lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username, key: encodedKey, qrImage: qrImage, content:'<h4 class="red">您已啟用兩階段驗證</h4><br>' });
 								}
 							});
 						}
@@ -453,7 +453,7 @@ router.get('/resetPWpage/:token?',library.loginFormChecker, library.newMsgChecke
 							console.log(err);
 							res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 						}else{
-							res.render('resetPWpage',{lgfJSON:req.loginFormJson,newlrmNum: req.newlrmNumber,newlsmNum: req.newlsmNumber,userName: req.auRst,tk:req.query.token,fJSON:formJson});
+							res.render('resetPWpage',{maxAge:req.session.cookie.maxAge,lgfJSON:req.loginFormJson,newlrmNum: req.newlrmNumber,newlsmNum: req.newlsmNumber,userName: req.auRst,tk:req.query.token,fJSON:formJson});
 						}
 					});
 				}

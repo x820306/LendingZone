@@ -53,9 +53,9 @@ app.use(cookieParser('lendingZone'));
 app.use(session({ secret: 'lendingZone',
 				  name: 'cookie_name',
 				  resave: false,
-				  saveUninitialized: true,
+				  saveUninitialized: false,
 				  store: new MongoStore({ mongooseConnection: mongoose.connection }),
-				  cookie:{maxAge:259200000}
+				  cookie:{ expires: false}
 				}));
 app.use(flash());
 app.use(passport.initialize());
@@ -123,20 +123,33 @@ app.get('/protocol', function (req, res) {
 });
 
 app.get('/',library.loginFormChecker,library.newMsgChecker,library.usrNameGenerator, function (req, res) {
-	res.render('index',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.auRst});
+	req.session.save(function(err){
+		if(err){
+			console.log(err);
+			res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+		}else{
+			res.render('index',{maxAge:req.session.cookie.maxAge,lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.auRst});
+		}
+	});
 });
 
 app.get('/message/:content?',library.loginFormChecker,library.newMsgChecker,library.usrNameGenerator, function (req, res) {
 	if(typeof(req.query.content) === 'string'){
 		var temp=decodeURIComponent(req.query.content);
-		res.render('message',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.auRst, content:temp});
-	
+		req.session.save(function(err){
+			if(err){
+				console.log(err);
+				res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+			}else{
+				res.render('message',{maxAge:req.session.cookie.maxAge,lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.auRst, content:temp});
+			}
+		});
 	}else{
 		res.redirect('/');
 	}
 });
 
-app.post('/login',captchaChecker, function(req, res, next) {
+app.post('/login',loginKeeper,captchaChecker, function(req, res, next) {
   if((typeof(req.body.Username) === 'string')&&(typeof(req.body.Password) === 'string')){
 		req.body.Username=sanitizer.sanitize(req.body.Username.trim());
 		req.body.Password=sanitizer.sanitize(req.body.Password.trim());
@@ -209,7 +222,7 @@ app.get('/totp_login/:path?',library.loginFormChecker,library.newMsgChecker,libr
 				console.log(err);
 				res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 			}else{
-				res.render('totp_login',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:null,tgtPath:targetPath,totpCodeCnt:totpCodeContent,totpRemember:totpRbr});
+				res.render('totp_login',{maxAge:req.session.cookie.maxAge,lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:null,tgtPath:targetPath,totpCodeCnt:totpCodeContent,totpRemember:totpRbr});
 			}
 		});
 	}else{
@@ -292,13 +305,19 @@ app.get('/logout', function (req, res) {
 });
 
 app.get('/signupTest',library.loginFormChecker,library.newMsgChecker,library.usrNameGenerator, function (req, res) {
-	res.render('signupTest',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.auRst});
+	res.render('signupTest',{maxAge:req.session.cookie.maxAge,lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.auRst});
 });
 
 app.get('/forgetActOrPW',library.loginFormChecker,library.newMsgChecker,library.usrNameGenerator, function (req, res) {
-	res.render('forgetActOrPW',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.auRst});
+	req.session.save(function(err){
+		if(err){
+			console.log(err);
+			res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+		}else{
+			res.render('forgetActOrPW',{maxAge:req.session.cookie.maxAge,lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.auRst});
+		}
+	});
 });
-
 
 app.get('/autoPage',library.loginFormChecker,library.ensureAuthenticated,library.newMsgChecker,library.ensureAdmin, function (req, res) {
     var ifEnable=false;
@@ -319,7 +338,7 @@ app.get('/autoPage',library.loginFormChecker,library.ensureAuthenticated,library
 			console.log(err);
 			res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 		}else{
-			res.render('autoPage',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,ifE:ifEnable,ifE2:ifEnable2,msg:message});
+			res.render('autoPage',{maxAge:req.session.cookie.maxAge,lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,ifE:ifEnable,ifE2:ifEnable2,msg:message});
 		}
 	});
 });
@@ -488,6 +507,30 @@ app.use(function(err, req, res, next) {
     error: {}
   });
 });
+
+function loginKeeper(req, res, next){
+	if(req.body.keepLogin){
+		req.session.cookie.maxAge = 30 * 24 * 60 * 60 * 1000;
+		req.session.save(function(err) {
+			if(err){
+				console.log(err);
+				res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+			}else{
+				return next();
+			}
+		});
+	}else{
+		req.session.cookie.expires = false;
+		req.session.save(function(err) {
+			if(err){
+				console.log(err);
+				res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+			}else{
+				return next();
+			}
+		});
+	}
+}
 
 function captchaChecker(req, res, next){
 	if(typeof(req.body.CaptchaText)  === 'string'){

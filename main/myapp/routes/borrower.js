@@ -35,7 +35,7 @@ router.get('/borrowPage',library.loginFormChecker, library.ensureAuthenticated, 
 			res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 		}else{
 			res.render('borrowPage', {
-				lgfJSON:req.loginFormJson,
+				maxAge:req.session.cookie.maxAge,lgfJSON:req.loginFormJson,
 				newlrmNum: req.newlrmNumber,
 				newlsmNum: req.newlsmNumber,
 				userName: req.user.Username,
@@ -358,7 +358,7 @@ router.post('/borrowCreate',library.loginFormChecker, library.ensureAuthenticate
 // this is the basic type when page need to ensure authenticated. U can try this by /borrower/borrowerExample2
 router.get('/checkMatch',library.loginFormChecker, library.ensureAuthenticated, library.newMsgChecker, function(req, res) {
 	res.render('checkMatch', {
-		lgfJSON:req.loginFormJson,
+		maxAge:req.session.cookie.maxAge,lgfJSON:req.loginFormJson,
 		newlrmNum: req.newlrmNumber,
 		newlsmNum: req.newlsmNumber,
 		userName: req.user.Username
@@ -368,7 +368,7 @@ router.get('/checkMatch',library.loginFormChecker, library.ensureAuthenticated, 
 // this is the basic type when page no need to ensure authenticated. U can try this by /borrower/borrowerExample
 router.get('/borrowerPanel',library.loginFormChecker, library.ensureAuthenticated, library.newMsgChecker, function(req, res) {
 	res.render('borrowerPanel', {
-		lgfJSON:req.loginFormJson,
+		maxAge:req.session.cookie.maxAge,lgfJSON:req.loginFormJson,
 		newlrmNum: req.newlrmNumber,
 		newlsmNum: req.newlsmNumber,
 		userName: req.user.Username
@@ -378,7 +378,7 @@ router.get('/borrowerPanel',library.loginFormChecker, library.ensureAuthenticate
 // this is the basic type when page no need to ensure authenticated. U can try this by /borrower/borrowerExample
 router.get('/borrowerConfirmedMatch',library.loginFormChecker, library.ensureAuthenticated, library.newMsgChecker, function(req, res) {
 	res.render('borrowerConfirmedMatch', {
-		lgfJSON:req.loginFormJson,
+		maxAge:req.session.cookie.maxAge,lgfJSON:req.loginFormJson,
 		newlrmNum: req.newlrmNumber,
 		newlsmNum: req.newlsmNumber,
 		userName: req.user.Username
@@ -388,7 +388,7 @@ router.get('/borrowerConfirmedMatch',library.loginFormChecker, library.ensureAut
 // this is the basic type when page no need to ensure authenticated. U can try this by /borrower/borrowerExample
 router.get('/borrowSuccess',library.loginFormChecker, library.ensureAuthenticated, library.newMsgChecker, function(req, res) {
 	res.render('borrowSuccess', {
-		lgfJSON:req.loginFormJson,
+		maxAge:req.session.cookie.maxAge,lgfJSON:req.loginFormJson,
 		newlrmNum: req.newlrmNumber,
 		newlsmNum: req.newlsmNumber,
 		userName: req.user.Username

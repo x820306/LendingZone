@@ -26,7 +26,7 @@
 								<div style="text-align:left;">
 									<h4>密碼：<span id="s2" class="red"><%if(lgfJSON){%><%if(lgfJSON.Target===2){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=lgfJSON.Message%><%}%><%}%></span></h4>
 								</div>
-								<input type="password" class="form-control" name="Password" id="passwordID" placeholder="密碼" required="required"<%if(lgfJSON){%> value="<%=lgfJSON.FormContent.F2%>"<%}%>>
+								<input type="password" class="form-control" name="Password" id="passwordID" placeholder="密碼" required="required">
 								<div style="text-align:left;margin-top:50px;">
 									<h4>驗證碼：<span id="s3" class="red"><%if(lgfJSON){%><%if(lgfJSON.Target===3){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=lgfJSON.Message%><%}%><%}%></span></h4>
 								</div>
@@ -50,13 +50,23 @@
 							</table>
 						</div>
 						<div class="modal-footer" style="text-align:center;">
-							<div class="checkbox">
-								<label>
-									<input type="checkbox" name="remember" id="rememberID"> 記住我
-									&nbsp;&nbsp;
-									<a href="/forgetActOrPW">忘記帳號或密碼</a>
-								</label>
-							</div>
+							<table class="loginFormTable" width="100%;">
+								<tr>
+									<td align="right">
+										<input type="checkbox" name="remember" id="rememberID">&nbsp;記住帳號&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+									</td>
+									<td align="left">
+										<input type="checkbox" name="keepLogin" id="keepLoginID"<%if(maxAge!==false){%>checked="checked"<%}%>>&nbsp;保持登入狀態
+									</td>
+								</tr>
+							</table>
+							<table class="loginFormTable" width="100%;">
+								<tr>
+									<td align="center">
+										<a href="/forgetActOrPW">忘記帳號或密碼</a>
+									</td>
+								</tr>
+							</table>
 							<div class="btn-group" role="group">
 								<button id="lgBtn" type="submit" class="btn btn-info" onclick="save();">登入</button>
 							</div>
@@ -86,7 +96,6 @@
 			if ($.cookie("rmbUser") === "true") {
 				$("#rememberID").prop("checked", true);
 				$("#usernameID").val($.cookie("username"));
-				$("#passwordID").val($.cookie("password"));
 			}
 			ajaxCaptcha('no');
 			<% if(lgfJSON){ %>
@@ -271,14 +280,11 @@
 		function save() {
 			if($("#rememberID").prop("checked")) {
 				var str_username = $("#usernameID").val();
-				var str_password = $("#passwordID").val();
-				$.cookie("rmbUser", "true", { expires: 7 }); 
-				$.cookie("username", str_username, { expires: 7 });
-				$.cookie("password", str_password, { expires: 7 });
+				$.cookie("rmbUser", "true", { expires: 7, path: '/'}); 
+				$.cookie("username", str_username, { expires: 7, path: '/' });
 			}else{
-				$.cookie("rmbUser", "false", { expire: -1 });
-				$.cookie("username", "", { expires: -1 });
-				$.cookie("password", "", { expires: -1 });
+				$.removeCookie('rmbUser', { path: '/' });
+				$.removeCookie('username', { path: '/' });
 			}
 		};
 	<%}%>

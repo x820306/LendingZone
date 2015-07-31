@@ -49,7 +49,7 @@ router.get('/profile',library.loginFormChecker,library.ensureAuthenticated,libra
 									console.log(err);
 									res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 								}else{
-									res.render('profile',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,user:foundUser,account:foundAccount,dcdJSON:dataCDFormJson,mvString:mailValidString,dTotpString:disableTotpString});
+									res.render('profile',{maxAge:req.session.cookie.maxAge,lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,user:foundUser,account:foundAccount,dcdJSON:dataCDFormJson,mvString:mailValidString,dTotpString:disableTotpString});
 								}
 							});
 						}
@@ -72,7 +72,7 @@ router.get('/changePWpage',library.loginFormChecker,library.ensureAuthenticated,
 			console.log(err);
 			res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 		}else{
-			res.render('changePWpage',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,fJSON:formJson});
+			res.render('changePWpage',{maxAge:req.session.cookie.maxAge,lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,fJSON:formJson});
 		}
 	});
 });
@@ -89,7 +89,7 @@ router.get('/changeUsernamePage',library.loginFormChecker,library.ensureAuthenti
 			console.log(err);
 			res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 		}else{
-			res.render('changeUsernamePage',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,fJSON:formJson});
+			res.render('changeUsernamePage',{maxAge:req.session.cookie.maxAge,lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,fJSON:formJson});
 		}
 	});
 });
@@ -593,7 +593,7 @@ router.get('/cardData',library.loginFormChecker,library.newMsgChecker,library.us
 			console.log(err);
 			res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 		}else{
-			res.render('cardData_1',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.auRst,formSession1:tempIdfr,cdfJSON:cardDataFormJson});
+			res.render('cardData_1',{maxAge:req.session.cookie.maxAge,lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.auRst,formSession1:tempIdfr,cdfJSON:cardDataFormJson});
 		}
 	});
 });
@@ -676,7 +676,7 @@ router.post('/checkPro',library.loginFormChecker,library.newMsgChecker,library.u
 								console.log(err);
 								res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 							}else{
-								res.render('checkPro_1',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.auRst,BankAccountNumber:req.body.cardIpt,BankAccountPassword:req.body.cardPwdIpt,formSession1:req.body.FormSession1,formSession2:tempIdfr,usrNum:users.length+1});
+								res.render('checkPro_1',{maxAge:req.session.cookie.maxAge,lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.auRst,BankAccountNumber:req.body.cardIpt,BankAccountPassword:req.body.cardPwdIpt,formSession1:req.body.FormSession1,formSession2:tempIdfr,usrNum:users.length+1});
 							}
 						});
 					}
@@ -719,7 +719,7 @@ router.get('/newAcc',library.loginFormChecker,library.newMsgChecker,library.usrN
 			console.log(err);
 			res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 		}else{
-			res.render('newAcc_2',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.auRst,formSession1:tempIdfr,nafJSON:newAccFormJson});
+			res.render('newAcc_2',{maxAge:req.session.cookie.maxAge,lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.auRst,formSession1:tempIdfr,nafJSON:newAccFormJson});
 		}
 	});
 });
@@ -801,7 +801,7 @@ router.post('/apply',library.loginFormChecker,library.newMsgChecker,library.usrN
 									console.log(err);
 									res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 								}else{
-									res.render('apply_1',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.auRst, Name:req.body.nameIpt, Email:req.body.emailIpt, Gender:req.body.genderIpt,
+									res.render('apply_1',{maxAge:req.session.cookie.maxAge,lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.auRst, Name:req.body.nameIpt, Email:req.body.emailIpt, Gender:req.body.genderIpt,
 									BirthDay:req.body.birthIpt, Phone:req.body.telIpt, Address:req.body.addrIpt,IdCardNumber:req.body.ssnIpt,IdCardStr:req.body.IdCardStr,SecondCardStr:req.body.SecondCardStr,
 									BankAccountNumber:req.body.BankAccountNumber,BankAccountPassword:req.body.BankAccountPassword,formSession1:req.body.FormSession1,formSession2:req.body.FormSession2,formSession3:tempIdfr});
 								}
@@ -1075,7 +1075,7 @@ router.post('/_apply',library.loginFormChecker,library.newMsgChecker,library.usr
 								console.log(err);
 								res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 							}else{
-								res.render('apply_2',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.auRst, Name:req.body.nameIpt, Email:req.body.emailIpt, Gender:req.body.genderIpt,
+								res.render('apply_2',{maxAge:req.session.cookie.maxAge,lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.auRst, Name:req.body.nameIpt, Email:req.body.emailIpt, Gender:req.body.genderIpt,
 								BirthDay:req.body.birthIpt, Phone:req.body.telIpt, Address:req.body.addrIpt,IdCardNumber:req.body.ssnIpt,IdCardStr:idCardString,SecondCardStr:secondCardString,
 								BankAccountNumber:req.body.cardIpt,BankAccountPassword:req.body.cardPwdIpt,formSession1:req.body.FormSession1,formSession2:tempIdfr});
 							}
@@ -1228,7 +1228,7 @@ router.post('/community',library.loginFormChecker,library.newMsgChecker,library.
 						console.log(err);
 						res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 					}else{
-						res.render('community_1',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.auRst,email:req.body.Email});
+						res.render('community_1',{maxAge:req.session.cookie.maxAge,lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.auRst,email:req.body.Email});
 					}
 				});
 			});
@@ -1285,7 +1285,7 @@ router.post('/_community',library.loginFormChecker,library.newMsgChecker,library
 						console.log(err);
 						res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 					}else{
-						res.render('community_2',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.auRst,email:req.body.Email});
+						res.render('community_2',{maxAge:req.session.cookie.maxAge,lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.auRst,email:req.body.Email});
 					}
 				});
 			});
@@ -1298,11 +1298,11 @@ router.post('/_community',library.loginFormChecker,library.newMsgChecker,library
 });
 
 router.get('/success',library.loginFormChecker,library.newMsgChecker,library.usrNameGenerator, function (req, res) {
-	res.render('success_1',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.auRst});
+	res.render('success_1',{maxAge:req.session.cookie.maxAge,lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.auRst});
 });
 
 router.get('/_success',library.loginFormChecker,library.newMsgChecker,library.usrNameGenerator, function (req, res) {
-	res.render('success_2',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.auRst});
+	res.render('success_2',{maxAge:req.session.cookie.maxAge,lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.auRst});
 });
 
 function userCreator(req,res,callback){
