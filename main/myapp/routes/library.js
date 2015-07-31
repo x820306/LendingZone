@@ -1900,13 +1900,13 @@ exports.ensureAuthenticated=function (req, res, next) {
 			}else{
 				//var path=exports.pathProcesser(req,false);
 				//res.redirect('/totp_login?path='+path);
-				res.render('login',{lgfJSON:req.loginFormJson,newlrmNum:0,newlsmNum:0,userName:null,msg:'請登入'});
+				res.render('login',{maxAge:req.session.cookie.maxAge,lgfJSON:req.loginFormJson,newlrmNum:0,newlsmNum:0,userName:null,msg:'請登入'});
 			}
 		}else{
 			return next();
 		}
 	}else{
-		res.render('login',{lgfJSON:req.loginFormJson,newlrmNum:0,newlsmNum:0,userName:null,msg:'請登入'});
+		res.render('login',{maxAge:req.session.cookie.maxAge,lgfJSON:req.loginFormJson,newlrmNum:0,newlsmNum:0,userName:null,msg:'請登入'});
 	}
 }
 
@@ -1915,7 +1915,7 @@ exports.ensureAdmin=function (req, res, next) {
 	if(exports.adminID.equals(req.user._id)){ 
 		return next(); 
 	}else{
-		res.render('message',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,content:'請以管理員身分登入'});
+		res.render('message',{maxAge:req.session.cookie.maxAge,lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,content:'請以管理員身分登入'});
 	}
 }
 

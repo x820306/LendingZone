@@ -22,6 +22,10 @@
 .brwIpt.x  { background-position: right 5px center; }
 .brwIpt.onX{ cursor: pointer; }
 
+.loginFormTable{
+	 margin-bottom:10px;
+}
+
 .textForm {
 	width: 100%;
 	height: 30px;
