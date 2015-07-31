@@ -185,7 +185,10 @@ router.get('/enableTotp',library.loginFormChecker,library.ensureAuthenticated,li
 							console.log(err);
 							res.redirect('/message?content='+encodeURIComponent('錯誤'));
 						}else{
-							req.session.passport.secondFactor = 'totp';
+							if(req.session.hasOwnProperty('totpRemember')){
+								delete req.session.totpRemember;
+							}
+							req.session.secondFactor = 'totp';
 							req.session.save(function(err){
 								if(err){
 									console.log(err);
@@ -220,8 +223,11 @@ router.get('/disableTotp',library.loginFormChecker,library.ensureAuthenticated,l
 							console.log(err);
 							res.redirect('/message?content='+encodeURIComponent('錯誤'));
 						}else{
-							if(req.session.passport.hasOwnProperty('secondFactor')){
-								delete req.session.passport.secondFactor;
+							if(req.session.hasOwnProperty('totpRemember')){
+								delete req.session.totpRemember;
+							}
+							if(req.session.hasOwnProperty('secondFactor')){
+								delete req.session.secondFactor;
 							}
 							req.flash('disableTOTP','您已停用兩階段驗證');
 							req.session.save(function(err){

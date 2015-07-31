@@ -158,7 +158,7 @@ app.post('/login',captchaChecker, function(req, res, next) {
 									console.log(err);
 									res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 								}else{
-									if((user.keyFlag===true)&&(req.session.passport.secondFactor !== 'totp')){
+									if((user.keyFlag===true)&&(req.session.secondFactor !== 'totp')){
 										var path=library.pathProcesser(req,true);
 										res.redirect('/totp_login?path='+path);
 									}else{
@@ -198,12 +198,18 @@ app.get('/totp_login/:path?',library.loginFormChecker,library.newMsgChecker,libr
 		if(!library.routeChecker(targetPath)){
 			targetPath='/';
 		}
+		
+		var totpRbr=false;
+		if(req.session.hasOwnProperty('totpRemember')){
+			totpRbr=true;
+		}
+		
 		req.session.save(function(err){
 			if(err){
 				console.log(err);
 				res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 			}else{
-				res.render('totp_login',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:null,tgtPath:targetPath,totpCodeCnt:totpCodeContent});
+				res.render('totp_login',{lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:null,tgtPath:targetPath,totpCodeCnt:totpCodeContent,totpRemember:totpRbr});
 			}
 		});
 	}else{
@@ -211,13 +217,16 @@ app.get('/totp_login/:path?',library.loginFormChecker,library.newMsgChecker,libr
 	}
 });
 
-app.post('/totp_login',library.totpDefender,function(req, res) {
+app.post('/totp_login',library.totpDefender,function(req, res){
 	if((typeof(req.body.Code) === 'string')&&(typeof(req.body.TargetPath) === 'string')){
 		req.body.Code=sanitizer.sanitize(req.body.Code.trim());
-		req.body.TargetPath=sanitizer.sanitize(req.body.TargetPath.trim()).replace(/&amp;/ig,'&');
+		req.body.TargetPath=req.body.TargetPath.trim();
 		var rv = totp.verify(req.body.Code, req.user.keyObj.key, { window: 6, time: req.user.keyObj.period });
 		if(rv){
-			req.session.passport.secondFactor = 'totp';
+			if(req.body.totpRemember){
+				req.session.totpRemember=true;
+			}
+			req.session.secondFactor = 'totp';
 			req.session.save(function(err){
 				if(err){
 					console.log(err);
@@ -266,8 +275,10 @@ app.post('/captcha', function (req, res) {
 });
 
 app.get('/logout', function (req, res) {
-    if(req.session.passport.hasOwnProperty('secondFactor')){
-		delete req.session.passport.secondFactor;
+    if(!req.session.hasOwnProperty('totpRemember')){
+		if(req.session.hasOwnProperty('secondFactor')){
+			delete req.session.secondFactor;
+		}
 	}
 	req.logout();
 	req.session.save(function(err) {

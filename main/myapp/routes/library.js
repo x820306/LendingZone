@@ -1895,7 +1895,7 @@ exports.newMsgChecker=function (req, res, next) {
 exports.ensureAuthenticated=function (req, res, next) {
 	if (req.isAuthenticated()){ 
 		if(req.user.keyObj.flag===true){
-			if(req.session.passport.secondFactor === 'totp'){
+			if(req.session.secondFactor === 'totp'){
 				return next();
 			}else{
 				//var path=exports.pathProcesser(req,false);
@@ -1923,7 +1923,7 @@ exports.usrNameGenerator=function (req, res, next) {
 	req.auRst=null;
 	if(req.isAuthenticated()){
 		if(req.user.keyObj.flag===true){
-			if(req.session.passport.secondFactor === 'totp'){
+			if(req.session.secondFactor === 'totp'){
 				req.auRst=req.user.Username;
 			}
 		}else{
@@ -1936,7 +1936,7 @@ exports.usrNameGenerator=function (req, res, next) {
 exports.totpDefender=function (req, res, next) {
 	if(req.isAuthenticated()){ 
 		if (req.user.keyObj.flag===true){
-			if (req.session.passport.secondFactor !== 'totp'){
+			if (req.session.secondFactor !== 'totp'){
 				return next(); 
 			}else{
 				res.redirect('/');
