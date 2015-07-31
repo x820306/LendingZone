@@ -7,13 +7,18 @@
 			<form action="/totp_login" method="post">
 				<div class="input-group" style="text-align:center;">
 					<label for="codeIpt">驗證碼</label>
-						<input id="codeIpt" class="form-control" type="text" name="Code">
+						<input type="text" name="Code" id="codeIpt" class="form-control">
 						<%if(totpCodeCnt!==''){%>
-							<br><span class="red"><%-totpCodeCnt%></span>
+							<br><span class="red"><%=totpCodeCnt%></span>
 						<%}%>
 				</div>
+				<div class="checkbox" style="text-align:center;">
+					<label for="totpRememberID">
+						<input type="checkbox" name="totpRemember" id="totpRememberID"<%if(totpRemember===true){%>checked="checked"<%}%>> 記住當前瀏覽設備
+					</label>
+				</div>
 				<br>
-				<input type="hidden" name="TargetPath" value="<%=tgtPath%>">
+				<input type="hidden" name="TargetPath" value="<%-tgtPath%>">
 				<div class="btn-toolbar" role="toolbar">
 					<button type="submit" class="btn btn-default btn-lg">
 						提交
