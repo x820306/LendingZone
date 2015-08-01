@@ -18,6 +18,13 @@
 					</h4>
 					<br>
 				<%}%>
+				<%if(totpRbrFlhString!==null){%>
+					<br>
+					<h4 class="red">
+						<%-totpRbrFlhString%>
+					</h4>
+					<br>
+				<%}%>
 				<div class="resp">
 					<table class="table table-hover myTbody" style="width:70%">
 						<tr>
@@ -191,6 +198,67 @@
 											查詢Key
 										</button>
 									</a>
+									<%if(totpRemember===true){%>
+										&nbsp;&nbsp;
+										<button type="button" class="btn btn-default" data-toggle="modal" data-target="#chkModal5">
+											忘記此設備
+										</button>
+										<div class="modal fade" id="chkModal5">
+											<div class="modal-dialog modal-sm">
+												<div class="modal-content">
+													<div class="modal-header" style="text-align: center;">
+														<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+														<h4 class="modal-title">再次確認</h4>
+													</div>
+													<div class="modal-body" style="text-align: center;">
+														<br>
+														您確定要忘記此設備嗎？
+														<br>
+														<br>
+													</div>
+													<div class="modal-footer" style="text-align: center;">
+														<a href="/signup/totpRemoveDevice">
+															<button type="button" class="btn btn-default" id="totpRemoveDeviceBtn" onclick="$('#chkModal5').modal('hide');disableButton();">
+																確定
+															</button>
+														</a>
+														&nbsp;
+														<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+													</div>
+												</div>
+											</div>
+										</div>
+									<%}else{%>
+										&nbsp;&nbsp;
+										<button type="button" class="btn btn-default" data-toggle="modal" data-target="#chkModal6">
+											記住此設備
+										</button>
+										<div class="modal fade" id="chkModal6">
+											<div class="modal-dialog modal-sm">
+												<div class="modal-content">
+													<div class="modal-header" style="text-align: center;">
+														<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+														<h4 class="modal-title">再次確認</h4>
+													</div>
+													<div class="modal-body" style="text-align: center;">
+														<br>
+														您確定要記住此設備嗎？
+														<br>
+														<br>
+													</div>
+													<div class="modal-footer" style="text-align: center;">
+														<a href="/signup/totpAddDevice">
+															<button type="button" class="btn btn-default" id="totpAddDeviceBtn" onclick="$('#chkModal6').modal('hide');disableButton();">
+																確定
+															</button>
+														</a>
+														&nbsp;
+														<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+													</div>
+												</div>
+											</div>
+										</div>
+									<%}%>
 									<div class="modal fade" id="chkModal3">
 										<div class="modal-dialog modal-sm">
 											<div class="modal-content">
@@ -324,6 +392,11 @@
 			<%if(user.keyObj.flag===true){%>
 				$('#findTotpBtn').addClass('disabled');
 				$('#disableTotpBtn').addClass('disabled');
+				<%if(totpRemember===true){%>
+					$('#totpRemoveDeviceBtn').addClass('disabled');
+				<%}else{%>
+					$('#totpAddDeviceBtn').addClass('disabled');
+				<%}%>
 			<%}else{%>
 				$('#enableTotpBtn').addClass('disabled');
 			<%}%>

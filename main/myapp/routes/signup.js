@@ -9,6 +9,26 @@ var router = express.Router();
 var fs = require('fs');
 var uuid = require('node-uuid');
 
+router.get('/totpRemoveDevice',library.loginFormChecker,library.ensureAuthenticated,library.newMsgChecker, function(req, res, next) {
+	if(req.session.hasOwnProperty('totpRemember')){
+		delete req.session.totpRemember;
+		req.flash('totpRememberFlash','您已忘記此設備');
+		res.redirect('/signup/profile');
+	}else{
+		res.redirect('/signup/profile');
+	}
+});
+
+router.get('/totpAddDevice',library.loginFormChecker,library.ensureAuthenticated,library.newMsgChecker, function(req, res, next) {
+	if(!req.session.hasOwnProperty('totpRemember')){
+		req.session.totpRemember=true;
+		req.flash('totpRememberFlash','您已記住此設備');
+		res.redirect('/signup/profile');
+	}else{
+		res.redirect('/signup/profile');
+	}
+});
+
 router.get('/profile',library.loginFormChecker,library.ensureAuthenticated,library.newMsgChecker, function (req, res) {
 	var stringArrayFlash=req.flash('dataCDForm');
 	var dataCDFormJson=null;
@@ -26,6 +46,17 @@ router.get('/profile',library.loginFormChecker,library.ensureAuthenticated,libra
 	var disableTotpString=null;
 	if(stringArrayFlash3.length>0){
 		disableTotpString=stringArrayFlash3[0];
+	}
+	
+	var stringArrayFlash4=req.flash('totpRememberFlash');
+	var totpRememberFlashString=null;
+	if(stringArrayFlash4.length>0){
+		totpRememberFlashString=stringArrayFlash4[0];
+	}
+	
+	var totpRbr=false;
+	if(req.session.hasOwnProperty('totpRemember')){
+		totpRbr=true;
 	}
 	
 	Users.findById(req.user._id).exec(function (err, foundUser){
@@ -49,7 +80,7 @@ router.get('/profile',library.loginFormChecker,library.ensureAuthenticated,libra
 									console.log(err);
 									res.redirect('/message?content='+encodeURIComponent('錯誤!'));
 								}else{
-									res.render('profile',{maxAge:req.session.cookie.maxAge,lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,user:foundUser,account:foundAccount,dcdJSON:dataCDFormJson,mvString:mailValidString,dTotpString:disableTotpString});
+									res.render('profile',{maxAge:req.session.cookie.maxAge,lgfJSON:req.loginFormJson,newlrmNum:req.newlrmNumber,newlsmNum:req.newlsmNumber,userName:req.user.Username,user:foundUser,account:foundAccount,dcdJSON:dataCDFormJson,mvString:mailValidString,dTotpString:disableTotpString,totpRbrFlhString:totpRememberFlashString,totpRemember:totpRbr});
 								}
 							});
 						}
