@@ -635,7 +635,11 @@
 							<tr>
 								<%if(filterDefault==='未被確認'){%>
 									<td>
-										<input type="checkbox" name="selectCheckBox" id="selectCheckBoxId<%=i%>" onclick="selectFun(<%=i%>);" value='{"MessageID":"<%=jsonMessage[i]._id%>"}'> 選擇
+										<div class="checkbox">
+											<label for="selectCheckBoxId<%=i%>">
+												<input type="checkbox" name="selectCheckBox" id="selectCheckBoxId<%=i%>" onclick="selectFun(<%=i%>);" value='{"MessageID":"<%=jsonMessage[i]._id%>"}'> 選擇
+											</label>
+										</div>
 									</td>
 								<%}else if(filterDefault==='不分類'){%>
 									<td>
