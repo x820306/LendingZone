@@ -55,7 +55,7 @@ app.use(session({ secret: 'lendingZone',
 				  resave: false,
 				  saveUninitialized: false,
 				  store: new MongoStore({ mongooseConnection: mongoose.connection }),
-				  cookie:{ expires: false}
+				  cookie:{ expires: false }
 				}));
 app.use(flash());
 app.use(passport.initialize());
