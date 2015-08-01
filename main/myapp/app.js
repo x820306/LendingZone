@@ -545,17 +545,33 @@ function captchaChecker(req, res, next){
 		}
 		
 		if(passFlag){
-			delete req.session.captchaJSON;
-			req.session.save(function(err) {
-				if(err){
-					console.log(err);
-					res.redirect('/message?content='+encodeURIComponent('錯誤!'));
-				}else{
-					return next();
-				}
-			});
+			if(req.session.hasOwnProperty('captchaJSON')){
+				delete req.session.captchaJSON;
+				req.session.save(function(err) {
+					if(err){
+						console.log(err);
+						res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+					}else{
+						return next();
+					}
+				});
+			}else{
+				return next();
+			}
 		}else{
-			redirector(req,res,3,'錯誤!');
+			if(req.session.hasOwnProperty('captchaJSON')){
+				delete req.session.captchaJSON;
+				req.session.save(function(err) {
+					if(err){
+						console.log(err);
+						res.redirect('/message?content='+encodeURIComponent('錯誤!'));
+					}else{
+						redirector(req,res,3,'錯誤!');
+					}
+				});
+			}else{
+				redirector(req,res,3,'錯誤!');
+			}
 		}
 	}else{
 		redirector(req,res,3,'未送出!');

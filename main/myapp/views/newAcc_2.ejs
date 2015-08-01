@@ -36,9 +36,9 @@
 								性別<br>
 								<span id="s2" class="red"><%if(nafJSON){%><%if(nafJSON.Target[1]){%>&nbsp;&nbsp;&nbsp;&nbsp;<%=nafJSON.Message[1]%><%}%><%}%></span>
 							</td>
-							<td><label class="radio-inline">
+							<td><label class="radio-inline" for="f2a">
 							<input type="radio" name="genderIpt" id="f2a" value="Male" required="required"<%if(nafJSON){%><%if(nafJSON.FormContent.F2==='Male'){%> checked="true"<%}%><%}%>> 男性</label>
-							<label class="radio-inline">
+							<label class="radio-inline" for="f2b">
 							<input type="radio" name="genderIpt" id="f2b" value="Female" required="required"<%if(nafJSON){%><%if(nafJSON.FormContent.F2==='Female'){%> checked="true"<%}%><%}%>> 女性</label></td>
 						</tr>
 						<tr>

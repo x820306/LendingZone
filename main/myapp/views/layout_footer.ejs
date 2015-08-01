@@ -53,10 +53,18 @@
 							<table class="loginFormTable" width="100%;">
 								<tr>
 									<td align="right">
-										<input type="checkbox" name="remember" id="rememberID">&nbsp;記住帳號&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+										<div class="checkbox">
+											<label for="rememberID">
+												<input type="checkbox" name="remember" id="rememberID">&nbsp;記住帳號&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+											</label>
+										</div>
 									</td>
 									<td align="left">
-										<input type="checkbox" name="keepLogin" id="keepLoginID"<%if(maxAge!==false){%>checked="checked"<%}%>>&nbsp;保持登入狀態
+										<div class="checkbox">
+											<label for="keepLoginID">
+												<input type="checkbox" name="keepLogin" id="keepLoginID"<%if(maxAge!==false){%>checked="checked"<%}%>>&nbsp;保持登入狀態
+											</label>
+										</div>
 									</td>
 								</tr>
 							</table>
