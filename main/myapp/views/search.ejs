@@ -29,7 +29,7 @@
 								</button>
 								<ul class="dropdown-menu">
 									<li style="display:none"><a href="#" id="messenger0"><%=messengerDefault%></a></li>
-									<li id="mlis1"<%if(messengerDefault==='不分訊息狀態'){%> class="active"<%}%>><a href="#" onclick="messengerMainSelector(1);messengerSelector(1);return false;" id="messenger1">不分訊息狀態</a></li>
+									<li id="mlis1"<%if(messengerDefault==='不分狀態'){%> class="active"<%}%>><a href="#" onclick="messengerMainSelector(1);messengerSelector(1);return false;" id="messenger1">不分狀態</a></li>
 									<%if(userName!==null){%><li id="mlis2"<%if(messengerDefault==='無訊息'){%> class="active"<%}%>><a href="#" onclick="messengerMainSelector(2);messengerSelector(2);return false;" id="messenger2">無訊息</a></li><%}%>
 									<%if(userName!==null){%><li id="mlis3"<%if(messengerDefault==='有訊息'){%> class="active"<%}%>><a href="#" onclick="messengerMainSelector(3);messengerSelector(3);return false;" id="messenger3">有訊息</a></li><%}%>
 									<%if(userName!==null){%><li id="mlis4"<%if(messengerDefault==='訊息未確認或未被確認'){%> class="active"<%}%>><a href="#" onclick="messengerMainSelector(4);messengerSelector(4);return false;" id="messenger4">訊息未確認或未被確認</a></li><%}%>
@@ -42,6 +42,11 @@
 									<%if(userName!==null){%><li id="mlis11"<%if(messengerDefault==='送出訊息已被同意'){%> class="active"<%}%>><a href="#" onclick="messengerMainSelector(11);messengerSelector(11);return false;" id="messenger11">送出訊息已被同意</a></li><%}%>
 									<%if(userName!==null){%><li id="mlis12"<%if(messengerDefault==='送出訊息已被婉拒'){%> class="active"<%}%>><a href="#" onclick="messengerMainSelector(12);messengerSelector(12);return false;" id="messenger12">送出訊息已被婉拒</a></li><%}%>
 									<%if(userName!==null){%><li id="mlis13"<%if(messengerDefault==='屬於我'){%> class="active"<%}%>><a href="#" onclick="messengerMainSelector(13);messengerSelector(13);return false;" id="messenger13">屬於我</a></li><%}%>
+									<%if(userName!==null){%><li id="mlis14"<%if(messengerDefault==='不屬於我'){%> class="active"<%}%>><a href="#" onclick="messengerMainSelector(14);messengerSelector(14);return false;" id="messenger14">不屬於我</a></li><%}%>
+									<%if(userName!==null){%><li id="mlis15"<%if(messengerDefault==='留言過'){%> class="active"<%}%>><a href="#" onclick="messengerMainSelector(15);messengerSelector(15);return false;" id="messenger15">留言過</a></li><%}%>
+									<%if(userName!==null){%><li id="mlis16"<%if(messengerDefault==='未留言過'){%> class="active"<%}%>><a href="#" onclick="messengerMainSelector(16);messengerSelector(16);return false;" id="messenger16">未留言過</a></li><%}%>
+									<%if(userName!==null){%><li id="mlis17"<%if(messengerDefault==='按過贊'){%> class="active"<%}%>><a href="#" onclick="messengerMainSelector(17);messengerSelector(17);return false;" id="messenger17">按過贊</a></li><%}%>
+									<%if(userName!==null){%><li id="mlis18"<%if(messengerDefault==='未按過贊'){%> class="active"<%}%>><a href="#" onclick="messengerMainSelector(18);messengerSelector(18);return false;" id="messenger18">未按過贊</a></li><%}%>
 								</ul>
 							</div>
 							<div class="btn-group">
@@ -281,7 +286,7 @@
 		$('#messengerSelected').html($('#messenger'+index).text());
 		$('#messenger0').html($('#messengerSelected').text());
 		$('#messengerSelected').append(' <span class=\'caret\'><\/span>');
-		for(i=1;i<=<%if(userName!==null){%>13<%}else{%>1<%}%>;i++){
+		for(i=1;i<=<%if(userName!==null){%>18<%}else{%>1<%}%>;i++){
 			$('#mlis'+i).attr('class','');
 		}
 		$('#mlis'+index).attr('class','active');

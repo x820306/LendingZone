@@ -101,15 +101,25 @@ router.get('/search/:keyword?/:category?/:messenger?/:action?/:director?/:lbound
 				messengerRec=true;
 			}else if(messenger==='屬於我'){
 				messengerRec=true;
-			}else if(messenger==='不分訊息狀態'){
+			}else if(messenger==='不屬於我'){
+				messengerRec=true;
+			}else if(messenger==='留言過'){
+				messengerRec=true;
+			}else if(messenger==='未留言過'){
+				messengerRec=true;
+			}else if(messenger==='按過贊'){
+				messengerRec=true;
+			}else if(messenger==='未按過贊'){
+				messengerRec=true;
+			}else if(messenger==='不分狀態'){
 				messengerRec=false;
 			}else{
 				messengerRec=false;
-				messenger='不分訊息狀態';
+				messenger='不分狀態';
 			}
 			if(req.auRst===null){
 				messengerRec=false;
-				messenger='不分訊息狀態';
+				messenger='不分狀態';
 			}
 			
 			var lboundRec=null;
@@ -255,7 +265,7 @@ router.get('/search/:keyword?/:category?/:messenger?/:action?/:director?/:lbound
 			}
 			
 			var Borrows  = mongoose.model('Borrows');
-			Borrows.find({$and:andFindCmdAry}).populate('CreatedBy', 'Username Level').populate('Message','CreatedBy SendTo Type Status Transaction').sort(actionRec).exec( function (err, borrows, count){
+			Borrows.find({$and:andFindCmdAry}).populate('CreatedBy', 'Username Level').populate('Message','CreatedBy SendTo Type Status Transaction').populate('Discussion','CreatedBy').sort(actionRec).exec( function (err, borrows, count){
 				if (err) {
 					console.log(err);
 					res.redirect('/message?content='+encodeURIComponent('錯誤!'));
@@ -328,6 +338,20 @@ router.get('/search/:keyword?/:category?/:messenger?/:action?/:director?/:lbound
 										if(borrows[i].CreatedBy._id.equals(req.user._id)){
 											borrows[i].TitleColor='color4';
 										}
+										var disFlag=false;
+										for(mpk=0;mpk<borrows[i].Discussion.length;mpk++){
+											if(borrows[i].Discussion[mpk].CreatedBy.equals(req.user._id)){
+												disFlag=true;
+												break;
+											}
+										}
+										var likFlag=false;
+										for(mpk=0;mpk<borrows[i].Likes.length;mpk++){
+											if(borrows[i].Likes[mpk].equals(req.user._id)){
+												likFlag=true;
+												break;
+											}
+										}
 									}
 									if(messengerRec){
 										if(messenger==='無訊息'){
@@ -376,6 +400,26 @@ router.get('/search/:keyword?/:category?/:messenger?/:action?/:director?/:lbound
 											}
 										}else if(messenger==='屬於我'){
 											if(borrows[i].TitleColor!=='color4'){
+												borrows.splice(i, 1);
+											}
+										}else if(messenger==='不屬於我'){
+											if(borrows[i].TitleColor==='color4'){
+												borrows.splice(i, 1);
+											}
+										}else if(messenger==='留言過'){
+											if(disFlag===false){
+												borrows.splice(i, 1);
+											}
+										}else if(messenger==='未留言過'){
+											if(disFlag===true){
+												borrows.splice(i, 1);
+											}
+										}else if(messenger==='按過贊'){
+											if(likFlag===false){
+												borrows.splice(i, 1);
+											}
+										}else if(messenger==='未按過贊'){
+											if(likFlag===true){
 												borrows.splice(i, 1);
 											}
 										}

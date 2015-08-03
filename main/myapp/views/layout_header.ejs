@@ -91,7 +91,7 @@
 										</button>
 										<ul class="dropdown-menu">
 											<li style="display:none"><a href="#" id="messengerMain0"><%=messengerDefault%></a></li>
-											<li id="mli1"<%if(messengerDefault==='不分訊息狀態'){%> class="active"<%}%>><a href="#" onclick="<%if(nav_cur==='search'){%>messengerSelector(1);<%}%>messengerMainSelector(1);return false;" id="messengerMain1">不分訊息狀態</a></li>
+											<li id="mli1"<%if(messengerDefault==='不分狀態'){%> class="active"<%}%>><a href="#" onclick="<%if(nav_cur==='search'){%>messengerSelector(1);<%}%>messengerMainSelector(1);return false;" id="messengerMain1">不分狀態</a></li>
 											<%if(userName!==null){%><li id="mli2"<%if(messengerDefault==='無訊息'){%> class="active"<%}%>><a href="#" onclick="<%if(nav_cur==='search'){%>messengerSelector(2);<%}%>messengerMainSelector(2);return false;" id="messengerMain2">無訊息</a></li><%}%>
 											<%if(userName!==null){%><li id="mli3"<%if(messengerDefault==='有訊息'){%> class="active"<%}%>><a href="#" onclick="<%if(nav_cur==='search'){%>messengerSelector(3);<%}%>messengerMainSelector(3);return false;" id="messengerMain3">有訊息</a></li><%}%>
 											<%if(userName!==null){%><li id="mli4"<%if(messengerDefault==='訊息未確認或未被確認'){%> class="active"<%}%>><a href="#" onclick="<%if(nav_cur==='search'){%>messengerSelector(4);<%}%>messengerMainSelector(4);return false;" id="messengerMain4">訊息未確認或未被確認</a></li><%}%>
@@ -104,6 +104,11 @@
 											<%if(userName!==null){%><li id="mli11"<%if(messengerDefault==='送出訊息已被同意'){%> class="active"<%}%>><a href="#" onclick="<%if(nav_cur==='search'){%>messengerSelector(11);<%}%>messengerMainSelector(11);return false;" id="messengerMain11">送出訊息已被同意</a></li><%}%>
 											<%if(userName!==null){%><li id="mli12"<%if(messengerDefault==='送出訊息已被婉拒'){%> class="active"<%}%>><a href="#" onclick="<%if(nav_cur==='search'){%>messengerSelector(12);<%}%>messengerMainSelector(12);return false;" id="messengerMain12">送出訊息已被婉拒</a></li><%}%>
 											<%if(userName!==null){%><li id="mli13"<%if(messengerDefault==='屬於我'){%> class="active"<%}%>><a href="#" onclick="<%if(nav_cur==='search'){%>messengerSelector(13);<%}%>messengerMainSelector(13);return false;" id="messengerMain13">屬於我</a></li><%}%>
+											<%if(userName!==null){%><li id="mli14"<%if(messengerDefault==='不屬於我'){%> class="active"<%}%>><a href="#" onclick="<%if(nav_cur==='search'){%>messengerSelector(14);<%}%>messengerMainSelector(14);return false;" id="messengerMain14">不屬於我</a></li><%}%>
+											<%if(userName!==null){%><li id="mli15"<%if(messengerDefault==='留言過'){%> class="active"<%}%>><a href="#" onclick="<%if(nav_cur==='search'){%>messengerSelector(15);<%}%>messengerMainSelector(15);return false;" id="messengerMain15">留言過</a></li><%}%>
+											<%if(userName!==null){%><li id="mli16"<%if(messengerDefault==='未留言過'){%> class="active"<%}%>><a href="#" onclick="<%if(nav_cur==='search'){%>messengerSelector(16);<%}%>messengerMainSelector(16);return false;" id="messengerMain16">未留言過</a></li><%}%>
+											<%if(userName!==null){%><li id="mli17"<%if(messengerDefault==='按過贊'){%> class="active"<%}%>><a href="#" onclick="<%if(nav_cur==='search'){%>messengerSelector(17);<%}%>messengerMainSelector(17);return false;" id="messengerMain17">按過贊</a></li><%}%>
+											<%if(userName!==null){%><li id="mli18"<%if(messengerDefault==='未按過贊'){%> class="active"<%}%>><a href="#" onclick="<%if(nav_cur==='search'){%>messengerSelector(18);<%}%>messengerMainSelector(18);return false;" id="messengerMain18">未按過贊</a></li><%}%>
 										</ul>
 									</div>
 									<div class="btn-group">
@@ -180,7 +185,7 @@
 			$('#messengerMainSelected').html($('#messengerMain'+index).text());
 			$('#messengerMain0').html($('#messengerMainSelected').text());
 			$('#messengerMainSelected').append(' <span class=\'caret\'><\/span>');
-			for(i=1;i<=<%if(userName!==null){%>13<%}else{%>1<%}%>;i++){
+			for(i=1;i<=<%if(userName!==null){%>18<%}else{%>1<%}%>;i++){
 				$('#mli'+i).attr('class','');
 			}
 			$('#mli'+index).attr('class','active');
